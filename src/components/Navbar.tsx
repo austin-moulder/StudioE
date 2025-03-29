@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Menu, X, LogOut } from "lucide-react"
 import { useAuth } from "@/lib/hooks/useAuth"
+import FirebaseLogo from "./FirebaseLogo"
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -35,7 +36,7 @@ export default function Navbar() {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="relative h-10 w-10"></div>
-            <span className="hidden font-montserrat font-bold sm:inline-block">STUDIO E</span>
+            <span className="font-montserrat font-bold text-xl">STUDIO E</span>
           </div>
         </div>
       </header>
@@ -46,10 +47,10 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <div className="relative h-10 w-10">
-            <Image src="/logo.svg" alt="Studio E Logo" fill className="object-contain" priority />
+          <div className="flex items-center justify-center h-10 w-36">
+            <FirebaseLogo width={125} height={40} alt="Studio E Logo" priority className="mx-auto" />
           </div>
-          <span className="hidden font-montserrat font-bold sm:inline-block">STUDIO E</span>
+          <span className="font-montserrat font-bold text-xl">STUDIO E</span>
         </Link>
 
         <nav className="hidden md:flex md:gap-6">
@@ -57,7 +58,7 @@ export default function Navbar() {
             <Link 
               key={link.name} 
               href={link.href} 
-              className="text-sm font-medium transition-colors hover:bg-clip-text hover:text-transparent hover:bg-brand-gradient"
+              className="text-sm font-medium transition-colors hover:text-gray-600"
             >
               {link.name}
             </Link>
@@ -102,7 +103,7 @@ export default function Navbar() {
             </>
           )}
           
-          <button className="hidden rounded-md bg-brand-gradient px-3 py-1.5 text-sm font-medium text-white md:block">
+          <button className="hidden rounded-md bg-[#EC407A] px-3 py-1.5 text-sm font-medium text-white md:block">
             Get Started
           </button>
 
@@ -118,10 +119,10 @@ export default function Navbar() {
         <div className="fixed inset-0 z-50 bg-background md:hidden">
           <div className="container flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <div className="relative h-10 w-10">
-                <Image src="/logo.svg" alt="Studio E Logo" fill className="object-contain" />
+              <div className="flex items-center justify-center h-10 w-36">
+                <FirebaseLogo width={125} height={40} alt="Studio E Logo" className="mx-auto" />
               </div>
-              <span className="font-montserrat font-bold">STUDIO E</span>
+              <span className="font-montserrat font-bold text-xl">STUDIO E</span>
             </Link>
 
             <button onClick={() => setMobileMenuOpen(false)}>
@@ -135,7 +136,7 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-lg font-medium transition-colors hover:bg-clip-text hover:text-transparent hover:bg-brand-gradient"
+                className="text-lg font-medium transition-colors hover:text-gray-600"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.name}
@@ -183,7 +184,7 @@ export default function Navbar() {
                   )}
                 </>
               )}
-              <button className="w-full rounded-md bg-brand-gradient px-4 py-2 text-sm font-medium text-white">
+              <button className="w-full rounded-md bg-[#EC407A] px-4 py-2 text-sm font-medium text-white">
                 Get Started
               </button>
             </div>
