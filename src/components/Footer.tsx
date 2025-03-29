@@ -1,8 +1,25 @@
+"use client";
+
 import Link from "next/link"
 import Image from "next/image"
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
+import { Facebook, Instagram, Twitter, Youtube, Settings } from "lucide-react"
+import { useAuth } from "@/lib/hooks/useAuth"
+import { useState, useEffect } from "react"
 
 export default function Footer() {
+  const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    try {
+      const { user } = useAuth();
+      setUser(user);
+    } catch (error) {
+      console.error("Error accessing auth context:", error);
+    }
+  }, []);
+
   return (
     <footer className="border-t bg-background">
       <div className="container py-8 md:py-12">
@@ -115,6 +132,12 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Studio E. All rights reserved.
           </p>
           <div className="flex gap-4 text-xs text-gray-500">
+            {mounted && user && (
+              <Link href="/admin/photos" className="hover:bg-clip-text hover:text-transparent hover:bg-brand-gradient flex items-center gap-1">
+                <Settings className="h-3 w-3" />
+                Admin
+              </Link>
+            )}
             <Link href="#" className="hover:bg-clip-text hover:text-transparent hover:bg-brand-gradient">
               Privacy Policy
             </Link>
