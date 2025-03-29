@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
+  "buildCommand": "next build",
+  "devCommand": "next dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "git": {
+    "deploymentEnabled": {
+      "main": true
     }
-  ],
+  },
   "env": {
     "NEXT_PUBLIC_FIREBASE_API_KEY": "AIzaSyD6IOJoBOFtKkk0-h18UMn9QvNSox9bM4E",
     "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN": "studioe-d9e5d.firebaseapp.com",
