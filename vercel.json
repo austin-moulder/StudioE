@@ -1,13 +1,18 @@
 {
   "version": 2,
-  "buildCommand": "next build",
-  "devCommand": "next dev",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "outputDirectory": ".next",
-  "git": {
-    "deploymentEnabled": {
-      "main": true
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
     }
+  ],
+  "env": {
+    "NEXT_PUBLIC_FIREBASE_API_KEY": "AIzaSyD6IOJoBOFtKkk0-h18UMn9QvNSox9bM4E",
+    "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN": "studioe-d9e5d.firebaseapp.com",
+    "NEXT_PUBLIC_FIREBASE_PROJECT_ID": "studioe-d9e5d",
+    "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET": "studioe-d9e5d.firebasestorage.app",
+    "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "732415616963",
+    "NEXT_PUBLIC_FIREBASE_APP_ID": "1:732415616963:web:ed23f3c24e4f31a5777f76",
+    "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID": "G-1TZP4S8DEZ"
   }
 } 
