@@ -4,6 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import Link from "next/link"
 
 export default function AboutPage() {
   const testimonials = [
@@ -236,9 +237,11 @@ export default function AboutPage() {
 
           <div className="text-center mt-12">
             <p className="text-lg font-medium">Build the life you desire with the people who can get you there.</p>
-            <Button size="lg" className="mt-4">
-              Find Your Instructor Today
-            </Button>
+            <Link href="/instructors">
+              <Button size="lg" className="mt-4">
+                Find Your Instructor Today
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

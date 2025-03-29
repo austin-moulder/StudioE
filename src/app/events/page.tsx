@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image"
 import { Calendar, MapPin, Clock, Users, Search, Filter, CalendarPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -6,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Link from "next/link"
 
 export default function EventsPage() {
   return (
@@ -76,10 +79,12 @@ export default function EventsPage() {
                 Filter
               </Button>
               
-              <Button className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 ml-2">
-                <CalendarPlus className="h-4 w-4" />
-                Add Event
-              </Button>
+              <Link href="https://forms.gle/2oaGTW52VBkpXa887" target="_blank" rel="noopener noreferrer">
+                <Button className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 ml-2">
+                  <CalendarPlus className="h-4 w-4" />
+                  Submit Your Event
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

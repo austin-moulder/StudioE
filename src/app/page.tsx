@@ -27,10 +27,12 @@ export default function Home() {
               placeholder="What dance style are you interested in?"
               className="h-12 bg-white/90 text-black placeholder:text-gray-500"
             />
-            <Button size="lg" className="h-12 px-8 border-2 border-white shadow-lg">
-              <Search className="mr-2 h-4 w-4" />
-              Search
-            </Button>
+            <Link href="/instructors" className="inline-flex">
+              <Button size="lg" className="h-12 px-8 border-2 border-white shadow-lg">
+                <Search className="mr-2 h-4 w-4" />
+                Search
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -52,7 +54,7 @@ export default function Home() {
               { name: "Heels", image: "/placeholder.svg", count: 15 },
               { name: "Choreo", image: "/placeholder.svg", count: 20 },
             ].map((style) => (
-              <Link key={style.name} href="#" className="group relative overflow-hidden rounded-lg">
+              <Link key={style.name} href="/instructors" className="group relative overflow-hidden rounded-lg">
                 <div className="aspect-square relative overflow-hidden rounded-lg">
                   <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
                     <span className="text-gray-400 text-lg">{style.name}</span>
@@ -68,10 +70,12 @@ export default function Home() {
           </div>
 
           <div className="mt-12 text-center">
-            <Button variant="outline" size="lg">
-              View All Dance Styles
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link href="/dance-styles">
+              <Button variant="outline" size="lg">
+                View All Dance Styles
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -145,10 +149,12 @@ export default function Home() {
           </div>
 
           <div className="mt-12 text-center">
-            <Button size="lg">
-              Browse All Instructors
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link href="/instructors">
+              <Button size="lg">
+                Browse All Instructors
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -228,16 +234,20 @@ export default function Home() {
                 world of dance, sharing stories, techniques, and inspiration for dancers of all levels.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Button className="flex items-center gap-2">
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
-                  </svg>
-                  Listen on Spotify
-                </Button>
-                <Button variant="outline">
-                  View All Episodes
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link href="https://open.spotify.com/show/3SdEa5nSOMzobeGp211vsq?si=238892d582ea4ec2" target="_blank" rel="noopener noreferrer">
+                  <Button className="flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+                      <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                    </svg>
+                    Listen on Spotify
+                  </Button>
+                </Link>
+                <Link href="/podcast">
+                  <Button variant="outline">
+                    View All Episodes
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
               <div className="mt-8">
                 <h3 className="font-semibold mb-4">Recent Episodes:</h3>
@@ -277,16 +287,20 @@ export default function Home() {
               Join hundreds of students who have found their perfect dance instructor through Studio E.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Button size="lg" variant="secondary">
-                Find an Instructor
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-transparent text-white hover:bg-white/10 hover:text-white"
-              >
-                Become an Instructor
-              </Button>
+              <Link href="/instructors">
+                <Button size="lg" variant="secondary">
+                  Find an Instructor
+                </Button>
+              </Link>
+              <Link href="https://forms.gle/LX4zHkZ1uLurnW9q6" target="_blank" rel="noopener noreferrer">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-transparent text-white hover:bg-white/10 hover:text-white"
+                >
+                  Become an Instructor
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -350,10 +364,12 @@ export default function Home() {
           </div>
 
           <div className="mt-12 text-center">
-            <Button variant="outline" size="lg">
-              View All Articles
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link href="/blog">
+              <Button size="lg" variant="outline">
+                View All Articles
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

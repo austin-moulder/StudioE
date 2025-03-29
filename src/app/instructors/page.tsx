@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { Star, MapPin, Filter, Search } from "lucide-react"
@@ -97,7 +99,14 @@ export default function InstructorsPage() {
               </div>
 
               <div className="flex items-end">
-                <button className="flex h-10 items-center justify-center rounded-md bg-[#F94C8D] px-4 py-2 text-sm font-medium text-white shadow hover:bg-[#F94C8D]/90">
+                <button 
+                  className="flex h-10 items-center justify-center rounded-md bg-[#F94C8D] px-4 py-2 text-sm font-medium text-white shadow hover:bg-[#F94C8D]/90"
+                  id="filter-button"
+                  onClick={() => {
+                    // This is a client side action that will need to be implemented in a separate client component
+                    // For now, we're just adding the button with the correct ID to be targeted
+                  }}
+                >
                   <Filter className="mr-2 h-4 w-4" />
                   Filter
                 </button>
@@ -285,8 +294,8 @@ export default function InstructorsPage() {
         </div>
       </section>
 
-      {/* Become an Instructor CTA */}
-      <section className="bg-gray-50 py-16">
+      {/* CTA Sections */}
+      <section className="py-16 bg-gray-50">
         <div className="container">
           <div className="grid gap-8 md:grid-cols-2 items-center">
             <div>
@@ -325,13 +334,13 @@ export default function InstructorsPage() {
                 </li>
               </ul>
               <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                <Link href="/apply-to-teach">
-                  <Button size="lg">Apply to Teach</Button>
+                <Link href="https://forms.gle/LX4zHkZ1uLurnW9q6" target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">Apply to Teach</Button>
                 </Link>
-                <Link href="/consulting">
+                <Link href="/dance-business-consulting">
                   <Button size="lg" variant="outline">Grow Your Business</Button>
                 </Link>
-                <Link href="/certifications">
+                <Link href="/dance-certifications">
                   <Button size="lg" variant="secondary">Get Certified</Button>
                 </Link>
               </div>
