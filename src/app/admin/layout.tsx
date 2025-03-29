@@ -67,18 +67,6 @@ export default function AdminLayout({
           >
             Photo Management
           </Link>
-          <Link
-            href="/admin/upload"
-            className="px-4 py-2 bg-white rounded-md border hover:bg-gray-50 text-sm"
-          >
-            Upload Files
-          </Link>
-          <Link
-            href="/debug"
-            className="px-4 py-2 bg-white rounded-md border hover:bg-gray-50 text-sm"
-          >
-            Debug Storage
-          </Link>
           {/* Add more admin navigation links as needed */}
         </div>
         
