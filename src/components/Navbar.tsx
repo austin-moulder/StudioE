@@ -59,11 +59,11 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex items-center justify-center h-10 w-36">
-            <FirebaseLogo width={125} height={40} alt="Studio E Logo" priority className="mx-auto" />
+        <Link href="/" className="flex items-center gap-1">
+          <div className="flex items-center justify-center h-10 w-28">
+            <FirebaseLogo width={100} height={32} alt="Studio E Logo" priority className="mx-auto" />
           </div>
-          <span className="font-montserrat font-bold text-xl">STUDIO E</span>
+          <span className="font-montserrat font-bold text-lg">STUDIO E</span>
         </Link>
 
         <nav className="hidden md:flex md:gap-6">
@@ -78,7 +78,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {!loading && (
             <>
               {user ? (
@@ -123,7 +123,7 @@ export default function Navbar() {
           </Link>
 
           <button 
-            className="md:hidden flex items-center justify-center h-10 w-10 rounded-full hover:bg-gray-100" 
+            className="md:hidden flex items-center justify-center h-9 w-9 rounded-full hover:bg-gray-100" 
             onClick={() => setMobileMenuOpen(true)}
           >
             <Menu className="h-5 w-5" />
@@ -146,9 +146,9 @@ export default function Navbar() {
           onClick={() => setMobileMenuOpen(false)}
         ></div>
         
-        {/* Menu container - slide in from right */}
+        {/* Menu container - full width */}
         <div 
-          className={`absolute top-0 right-0 h-full w-4/5 max-w-sm bg-white/90 backdrop-blur-sm shadow-xl transform transition-transform duration-300 ease-in-out ${
+          className={`absolute top-0 right-0 h-full w-full bg-white/90 backdrop-blur-sm shadow-xl transform transition-transform duration-300 ease-in-out ${
             mobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
