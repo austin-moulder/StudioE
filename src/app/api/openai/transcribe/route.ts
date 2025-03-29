@@ -2,11 +2,18 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import OpenAI from "openai";
 
-const openai = new OpenAI();
+// Initialize OpenAI with a fallback for build-time
+const openai = process.env.OPENAI_API_KEY 
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) 
+  : new OpenAI({ apiKey: 'dummy-key-for-build-process' });
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  // Check if the OpenAI API key is available at runtime
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json({ error: "OpenAI API key is not configured" }, { status: 500 });
+  }
 
+  const body = await req.json();
   const base64Audio = body.audio;
 
   // Convert the base64 audio data to a Buffer
@@ -16,6 +23,12 @@ export async function POST(req: Request) {
   const filePath = "tmp/input.wav";
 
   try {
+    // Create directory if it doesn't exist
+    const dir = 'tmp';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
     // Write the audio data to a temporary WAV file synchronously
     fs.writeFileSync(filePath, audio);
 
@@ -33,6 +46,6 @@ export async function POST(req: Request) {
     return NextResponse.json(data);
   } catch (error) {
     console.error("Error processing audio:", error);
-    return NextResponse.error();
+    return NextResponse.json({ error: "Error processing audio" }, { status: 500 });
   }
 }
