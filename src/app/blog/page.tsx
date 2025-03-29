@@ -70,7 +70,7 @@ export default function BlogPage() {
               <span className="text-gray-400 text-lg">Featured Article Image</span>
             </div>
             <div>
-              <Badge>Featured</Badge>
+              <Badge className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">Featured</Badge>
               <h3 className="mt-2 text-3xl font-bold">
                 The Evolution of Contemporary Dance: Past, Present, and Future
               </h3>

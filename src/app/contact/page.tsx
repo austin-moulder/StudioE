@@ -34,7 +34,7 @@ export default function ContactPage() {
         </div>
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Contact Us</h1>
-          <p className="mt-6 max-w-2xl text-lg">Have questions or feedback? We&apos;d love to hear from you.</p>
+          <p className="mt-6 max-w-2xl text-lg">Have questions or feedback? We'd love to hear from you.</p>
         </div>
       </section>
 
@@ -46,7 +46,7 @@ export default function ContactPage() {
             <div>
               <h2 className="text-3xl font-bold tracking-tight">Get in Touch</h2>
               <p className="mt-4 text-lg text-gray-500">
-                We&apos;re here to help with any questions about your Studio E experience.
+                We're here to help with any questions about your Studio E experience.
               </p>
 
               <div className="mt-8 space-y-6">
@@ -115,7 +115,7 @@ export default function ContactPage() {
             <div>
               <h2 className="text-3xl font-bold tracking-tight">Send Us a Message</h2>
               <p className="mt-4 text-lg text-gray-500">
-                Fill out the form below and we&apos;ll get back to you as soon as possible.
+                Fill out the form below and we'll get back to you as soon as possible.
               </p>
 
               <form onSubmit={handleSubmit} className="mt-8 space-y-6">
@@ -201,7 +201,7 @@ export default function ContactPage() {
               {
                 question: "How do I become an instructor on Studio E?",
                 answer:
-                  "Instructors can apply through our &apos;Become an Instructor&apos; page. We review applications based on experience, qualifications, and teaching style.",
+                  "Instructors can apply through our 'Become an Instructor' page. We review applications based on experience, qualifications, and teaching style.",
               },
               {
                 question: "How are payments handled?",
