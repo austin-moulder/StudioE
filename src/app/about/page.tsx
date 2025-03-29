@@ -106,7 +106,7 @@ export default function AboutPage() {
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Mission</h2>
             <p className="mt-6 text-xl text-gray-500">
-              "To unlock confidence, creativity, and technical mastery for all."
+              &quot;To unlock confidence, creativity, and technical mastery for all.&quot;
             </p>
           </div>
 

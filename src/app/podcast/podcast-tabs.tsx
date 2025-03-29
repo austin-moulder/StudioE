@@ -131,7 +131,7 @@ export function PodcastTabs() {
         <div className="mx-auto max-w-2xl text-center py-12">
           <h3 className="text-2xl font-bold">Season 2 Coming Soon!</h3>
           <p className="mt-4 text-muted-foreground">
-            We're currently working on exciting new episodes for Season 2 of The Studio E Podcast. Subscribe to our
+            We&apos;re currently working on exciting new episodes for Season 2 of The Studio E Podcast. Subscribe to our
             newsletter or follow us on social media to be the first to know when new episodes drop.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">

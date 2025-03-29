@@ -48,12 +48,12 @@ export default function PodcastPage() {
               </p>
               <p className="mt-4 text-muted-foreground">
                 Each episode features in-depth conversations with dance professionals, exploring their journeys,
-                techniques, and insights into the industry. Whether you're a beginner looking for inspiration or a
+                techniques, and insights into the industry. Whether you&apos;re a beginner looking for inspiration or a
                 seasoned dancer seeking to deepen your knowledge, this podcast offers valuable content for everyone
                 passionate about dance.
               </p>
               <p className="mt-4 text-muted-foreground">
-                With 10 episodes already released and Season 2 coming soon, we're just getting started on this journey
+                With 10 episodes already released and Season 2 coming soon, we&apos;re just getting started on this journey
                 of exploration and celebration of dance culture.
               </p>
               <div className="mt-8 flex items-center gap-4">

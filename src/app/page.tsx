@@ -198,7 +198,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="mt-4">
-                  <p className="text-gray-500">"{testimonial.quote}"</p>
+                  <p className="text-gray-500">&quot;{testimonial.quote}&quot;</p>
                 </div>
                 <div className="mt-4 flex">
                   {[...Array(5)].map((_, i) => (
