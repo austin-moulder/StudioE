@@ -33,6 +33,14 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+  // Disable webpack persistent caching to prevent cache corruption
+  webpack: (config, { dev, isServer }) => {
+    if (dev) {
+      // Disable persistent caching in development
+      config.cache = false;
+    }
+    return config;
+  },
   async rewrites() {
     return [
       {
