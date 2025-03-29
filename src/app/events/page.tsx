@@ -229,7 +229,7 @@ export default function EventsPage() {
                   <Button variant="outline" size="icon" disabled>
                     &lt;
                   </Button>
-                  <Button variant="outline" size="sm" className="bg-[#F94C8D] text-white border-[#F94C8D] hover:bg-[#F94C8D] hover:text-white hover:border-[#F94C8D]">
+                  <Button variant="outline" size="sm" className="bg-[#F94C8D] text-white border-[#F94C8D]">
                     1
                   </Button>
                   <Button variant="outline" size="sm">
