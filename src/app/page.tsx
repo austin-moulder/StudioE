@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star, MapPin, Search, ChevronDown } from "lucide-react";
@@ -12,15 +14,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [selectedStyle, setSelectedStyle] = useState("");
+  const router = useRouter();
 
   const handleSearch = () => {
     if (selectedStyle) {
-      window.location.href = `/instructors?style=${selectedStyle}`;
+      router.push(`/instructors?style=${selectedStyle}`);
     } else {
-      window.location.href = "/instructors";
+      router.push("/instructors");
     }
   };
 
@@ -45,11 +49,11 @@ export default function Home() {
                 <SelectTrigger className="h-12 bg-white/90 text-gray-800 border-0 w-full">
                   <SelectValue placeholder="What dance style are you interested in?" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="salsa">Salsa</SelectItem>
-                  <SelectItem value="bachata">Bachata</SelectItem>
-                  <SelectItem value="heels">Heels</SelectItem>
-                  <SelectItem value="other">Other Styles</SelectItem>
+                <SelectContent className="bg-white/90 backdrop-blur-sm border-0">
+                  <SelectItem value="salsa" className="hover:bg-gray-100/80">Salsa</SelectItem>
+                  <SelectItem value="bachata" className="hover:bg-gray-100/80">Bachata</SelectItem>
+                  <SelectItem value="heels" className="hover:bg-gray-100/80">Heels</SelectItem>
+                  <SelectItem value="other" className="hover:bg-gray-100/80">Other Styles</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -125,14 +129,16 @@ export default function Home() {
                 rating: 4.9,
                 reviews: 127,
                 location: "Chicago, IL",
+                featured: true,
               },
               {
                 name: "Del Dominguez",
                 image: "/placeholder.svg",
                 style: "Salsa & Social Dancing",
-                rating: 4.8,
-                reviews: 93,
+                rating: 4.7,
+                reviews: 82,
                 location: "Chicago, IL",
+                featured: true,
               },
               {
                 name: "Brian MacDonald",
@@ -149,6 +155,11 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
                     <span className="text-gray-400 text-lg">{instructor.name}</span>
                   </div>
+                  {instructor.featured && (
+                    <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
+                      Featured
+                    </div>
+                  )}
                 </div>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -156,20 +167,24 @@ export default function Home() {
                       <h3 className="text-xl font-bold">{instructor.name}</h3>
                       <p className="text-sm text-gray-500">{instructor.style}</p>
                     </div>
-                    <Badge variant="secondary" className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
                       <Star className="h-3 w-3 fill-current" />
                       {instructor.rating}
-                    </Badge>
+                    </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm text-gray-500">
                     <MapPin className="mr-1 h-4 w-4" />
                     {instructor.location}
                   </div>
+                  <div className="mt-2 text-sm">
+                    <span className="font-medium">$45-75</span>
+                    <span className="text-gray-500"> / hour</span>
+                  </div>
                   <div className="mt-4 flex justify-between">
                     <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
-                    <Button variant="link" className="p-0 h-auto">
+                    <Link href={`/instructors/${instructor.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-[#F94C8D] hover:underline text-sm">
                       View Profile
-                    </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
