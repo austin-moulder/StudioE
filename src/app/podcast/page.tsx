@@ -3,8 +3,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import dynamic from "next/dynamic"
 
-// Dynamically import PodcastTabs to avoid the module not found error
-const PodcastTabs = dynamic(() => import("./podcast-tabs").then(mod => mod.PodcastTabs), {
+// Dynamically import PodcastTabs with the correct path
+const PodcastTabs = dynamic(() => import("@/app/podcast/podcast-tabs").then(mod => mod.PodcastTabs), {
   ssr: true,
   loading: () => <div className="text-center py-12">Loading podcast episodes...</div>
 })
