@@ -20,6 +20,11 @@ interface Instructor {
   reviews: number
   alias: string
   image: string
+  featured?: boolean
+  price: {
+    lower: number
+    upper: number
+  }
 }
 
 function InstructorsContent() {
@@ -34,112 +39,110 @@ function InstructorsContent() {
   // Mock data for instructors
   const instructors: Instructor[] = [
     {
-      name: "Jocelyn Views",
+      name: "Jocelyn V.",
       style: "Heels & Reggaeton, Choreo",
       location: "Chicago, IL",
       rating: 4.9,
       reviews: 127,
       alias: "",
       image: "/placeholder.svg",
+      featured: true,
+      price: {
+        lower: 50,
+        upper: 70
+      }
     },
     {
-      name: "Nathalie Ocampo",
+      name: "Nathalie O.",
       style: "Heels & Contemporary",
       location: "Chicago, IL",
       rating: 4.8,
       reviews: 93,
       alias: "",
       image: "/placeholder.svg",
+      price: {
+        lower: 50,
+        upper: 70
+      }
     },
     {
-      name: "Rachel Marie",
+      name: "Rachel M.",
       style: "Choreo & Hip Hop",
       location: "Chicago, IL",
       rating: 5.0,
       reviews: 156,
       alias: "",
       image: "/placeholder.svg",
+      price: {
+        lower: 50,
+        upper: 70
+      }
     },
     {
-      name: "Del Dominguez",
+      name: "Del D.",
       style: "Salsa & Social Dancing",
       location: "Chicago, IL",
       rating: 4.7,
       reviews: 82,
       alias: "",
       image: "/placeholder.svg",
+      featured: true,
+      price: {
+        lower: 65,
+        upper: 85
+      }
     },
     {
-      name: "Sam Guerrero",
+      name: "Sam G.",
       style: "Salsa & Styling",
       location: "Chicago, IL",
       rating: 4.9,
       reviews: 115,
       alias: "",
       image: "/placeholder.svg",
+      price: {
+        lower: 65,
+        upper: 85
+      }
     },
     {
-      name: "Juan Hernandez",
+      name: "Juan H.",
       style: "Salsa & Performance",
       location: "Chicago, IL",
       rating: 4.8,
       reviews: 78,
       alias: "",
       image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
     },
     {
-      name: "Denisse Aldana",
-      style: "Salsa & Social Dancing",
-      location: "Chicago, IL",
-      rating: 4.9,
-      reviews: 104,
-      alias: "",
-      image: "/placeholder.svg",
-    },
-    {
-      name: "Mario Cuevas",
-      style: "DJ",
-      location: "Chicago, IL",
-      rating: 5.0,
-      reviews: 142,
-      alias: "DJ Machito",
-      image: "/placeholder.svg",
-    },
-    {
-      name: "Taylore Diem",
-      style: "DJ",
-      location: "Chicago, IL",
-      rating: 4.8,
-      reviews: 89,
-      alias: "DJ Diem Classic",
-      image: "/placeholder.svg",
-    },
-    {
-      name: "Eda Kachiri",
+      name: "Eda K.",
       style: "Bachata & Merengue",
-      location: "Chicago, IL",
+      location: "Minneapolis, MN",
       rating: 4.9,
       reviews: 118,
       alias: "",
       image: "/placeholder.svg",
+      price: {
+        lower: 60,
+        upper: 80
+      }
     },
     {
-      name: "Brian MacDonald",
+      name: "Brian M.",
       style: "Bachata & Sensual",
       location: "Barcelona, Spain",
       rating: 4.7,
       reviews: 95,
       alias: "B-Mac",
       image: "/placeholder.svg",
-    },
-    {
-      name: "Destiny Rivera",
-      style: "Bachata & Salsa",
-      location: "Chicago, IL",
-      rating: 4.8,
-      reviews: 107,
-      alias: "",
-      image: "/placeholder.svg",
+      price: {
+        lower: 60,
+        upper: 80
+      }
     },
   ]
 
@@ -223,7 +226,7 @@ function InstructorsContent() {
                     <SelectItem value="bachata">Bachata</SelectItem>
                     <SelectItem value="heels">Heels</SelectItem>
                     <SelectItem value="choreo">Choreo</SelectItem>
-                    <SelectItem value="zouk">Zouk</SelectItem>
+                    <SelectItem value="hiphop">Hip Hop</SelectItem>
                     <SelectItem value="dj">DJ</SelectItem>
                   </SelectContent>
                 </Select>
@@ -240,6 +243,7 @@ function InstructorsContent() {
                   <SelectContent>
                     <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="chicago">Chicago</SelectItem>
+                    <SelectItem value="minneapolis">Minneapolis</SelectItem>
                     <SelectItem value="barcelona">Barcelona</SelectItem>
                     <SelectItem value="online">Online Only</SelectItem>
                   </SelectContent>
@@ -247,19 +251,18 @@ function InstructorsContent() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="experience" className="text-sm font-medium">
-                  Experience Level
+                <label htmlFor="price" className="text-sm font-medium">
+                  Price Range
                 </label>
                 <Select>
-                  <SelectTrigger id="experience" className="w-full md:w-[180px]">
-                    <SelectValue placeholder="Any Experience" />
+                  <SelectTrigger id="price" className="w-full md:w-[180px]">
+                    <SelectValue placeholder="Any Price" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="any">Any Experience</SelectItem>
-                    <SelectItem value="beginner">Beginner Friendly</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
-                    <SelectItem value="advanced">Advanced</SelectItem>
-                    <SelectItem value="professional">Professional</SelectItem>
+                    <SelectItem value="any">Any Price</SelectItem>
+                    <SelectItem value="low">$20-50</SelectItem>
+                    <SelectItem value="medium">$50-75</SelectItem>
+                    <SelectItem value="high">$75+</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -302,7 +305,7 @@ function InstructorsContent() {
               <Card key={index} className="overflow-hidden">
                 <div className="aspect-[4/3] relative bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-400 text-lg">{instructor.name}</span>
-                  {(index === 0 || index === 3) && (
+                  {instructor.featured && (
                     <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
                       Featured
                     </div>
@@ -327,7 +330,7 @@ function InstructorsContent() {
                     {instructor.location}
                   </div>
                   <div className="mt-2 text-sm">
-                    <span className="font-medium">$45-75</span>
+                    <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
                     <span className="text-gray-500"> / hour</span>
                   </div>
                   <div className="mt-4 flex justify-between">
@@ -351,7 +354,6 @@ function InstructorsContent() {
               <Link href="/instructors?page=2" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm">&gt;</Link>
             </div>
           </div>
-
         </div>
       </section>
 

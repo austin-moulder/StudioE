@@ -123,31 +123,43 @@ export default function Home() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                name: "Jocelyn Views",
+                name: "Jocelyn V.",
                 image: "/placeholder.svg",
                 style: "Heels & Reggaeton",
                 rating: 4.9,
                 reviews: 127,
                 location: "Chicago, IL",
                 featured: true,
+                price: {
+                  lower: 50,
+                  upper: 70
+                }
               },
               {
-                name: "Del Dominguez",
+                name: "Del D.",
                 image: "/placeholder.svg",
                 style: "Salsa & Social Dancing",
                 rating: 4.7,
                 reviews: 82,
                 location: "Chicago, IL",
                 featured: true,
+                price: {
+                  lower: 65,
+                  upper: 85
+                }
               },
               {
-                name: "Brian MacDonald",
+                name: "Brian M.",
                 image: "/placeholder.svg",
                 style: "Bachata & Sensual",
                 rating: 5.0,
                 reviews: 156,
                 location: "Barcelona, Spain",
                 alias: "B-Mac",
+                price: {
+                  lower: 60,
+                  upper: 80
+                }
               },
             ].map((instructor) => (
               <Card key={instructor.name} className="overflow-hidden">
@@ -177,7 +189,7 @@ export default function Home() {
                     {instructor.location}
                   </div>
                   <div className="mt-2 text-sm">
-                    <span className="font-medium">$45-75</span>
+                    <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
                     <span className="text-gray-500"> / hour</span>
                   </div>
                   <div className="mt-4 flex justify-between">
