@@ -275,7 +275,7 @@ export default function InstructorsPage() {
           <div className="mt-12 flex justify-center">
             <div className="flex items-center gap-2">
               <Link href="/instructors?page=1" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm opacity-50 cursor-not-allowed">&lt;</Link>
-              <Link href="/instructors?page=1" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-[#F94C8D] bg-[#F94C8D] px-3 text-sm text-white">1</Link>
+              <Link href="/instructors?page=1" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-[#F94C8D] bg-[#F94C8D] px-3 text-sm text-white hover:bg-white hover:text-black hover:border-[#F94C8D]">1</Link>
               <Link href="/instructors?page=2" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">2</Link>
               <Link href="/instructors?page=3" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">3</Link>
               <Link href="/instructors?page=4" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">4</Link>
