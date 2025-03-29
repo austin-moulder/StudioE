@@ -85,7 +85,7 @@ const episodes = [
 export function PodcastTabs() {
   return (
     <Tabs defaultValue="season1" className="w-full">
-      <TabsList className="mb-8 grid w-full max-w-md mx-auto grid-cols-2">
+      <TabsList className="mb-8 grid w-full max-w-md mx-auto grid-cols-2 bg-gray-100">
         <TabsTrigger value="season1">Season 1</TabsTrigger>
         <TabsTrigger value="upcoming">Season 2 (Coming Soon)</TabsTrigger>
       </TabsList>
@@ -96,7 +96,7 @@ export function PodcastTabs() {
             <Card key={index} className="overflow-hidden">
               <div className="aspect-[3/2] relative bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC] flex items-center justify-center">
                 <Image src={episode.image || "/placeholder.svg"} alt={episode.title} fill className="object-cover" />
-                <div className="absolute top-4 left-4 bg-black/50 px-3 py-1 rounded-full text-white text-sm font-medium">
+                <div className="absolute top-4 left-4 bg-[#F94C8D] px-3 py-1 rounded-full text-white text-sm font-medium">
                   EP {episode.number}
                 </div>
               </div>
