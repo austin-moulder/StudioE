@@ -131,7 +131,7 @@ export default function Navbar() {
                   </div>
                   <button 
                     onClick={handleSignOut}
-                    className="hidden items-center gap-1 text-sm font-medium text-red-500 hover:text-red-600 md:flex"
+                    className="items-center gap-1 text-sm font-medium text-red-500 hover:text-red-600 md:flex"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Sign Out</span>
@@ -140,7 +140,7 @@ export default function Navbar() {
               ) : (
                 <button 
                   onClick={handleSignIn}
-                  className="hidden text-sm font-medium md:block"
+                  className="text-sm font-medium"
                 >
                   Sign In
                 </button>
