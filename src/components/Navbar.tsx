@@ -1,12 +1,10 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Menu, X, LogOut } from "lucide-react"
 import { useAuth } from "@/lib/hooks/useAuth"
-import { useRouter } from "next/navigation"
-import { User } from "firebase/auth"
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -18,60 +16,19 @@ const navLinks = [
   { name: "Contact", href: "/contact" },
 ]
 
-// Type definition for auth state
-interface AuthState {
-  user: User | null;
-  loading: boolean;
-  signInWithGoogle: () => Promise<void>;
-  signOut: () => Promise<void>;
-}
-
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const router = useRouter()
-  const [authState, setAuthState] = useState<AuthState | null>(null)
-  
-  // Only access auth context after component has mounted
-  useEffect(() => {
-    setMounted(true)
-    // We need to set mounted first before accessing auth
-  }, [])
-  
-  // Separate useEffect for auth to ensure it only runs client-side after mounting
-  useEffect(() => {
-    if (mounted) {
-      try {
-        const auth = useAuth()
-        setAuthState(auth)
-      } catch (error) {
-        console.error("Error accessing auth context:", error)
-      }
-    }
-  }, [mounted])
-  
-  const handleSignIn = async () => {
-    try {
-      if (authState?.signInWithGoogle) {
-        await authState.signInWithGoogle()
-        router.push('/')
-      }
-    } catch (error) {
-      console.error("Sign in error:", error)
-    }
-  }
-
-  const handleSignOut = async () => {
-    try {
-      if (authState?.signOut) {
-        await authState.signOut()
-      }
-    } catch (error) {
-      console.error("Sign out error:", error)
-    }
-  }
+  const { user, loading, signInWithGoogle, signOut } = useAuth()
 
   // Prevent hydration mismatch
+  useEffect(() => {
+    // Only set mounted to true on the client side
+    if (typeof window !== "undefined") {
+      setMounted(true)
+    }
+  }, [])
+
   if (!mounted) {
     return (
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -84,9 +41,6 @@ export default function Navbar() {
       </header>
     )
   }
-
-  // Extract auth state for easier access
-  const { user, loading } = authState || { user: null, loading: true };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -130,8 +84,8 @@ export default function Navbar() {
                     </div>
                   </div>
                   <button 
-                    onClick={handleSignOut}
-                    className="items-center gap-1 text-sm font-medium text-red-500 hover:text-red-600 md:flex"
+                    onClick={signOut}
+                    className="hidden items-center gap-1 text-sm font-medium text-red-500 hover:text-red-600 md:flex"
                   >
                     <LogOut className="h-4 w-4" />
                     <span>Sign Out</span>
@@ -139,7 +93,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <button 
-                  onClick={handleSignIn}
+                  onClick={signInWithGoogle}
                   className="text-sm font-medium"
                 >
                   Sign In
@@ -207,7 +161,7 @@ export default function Navbar() {
                       </div>
                       <button 
                         onClick={() => {
-                          handleSignOut();
+                          signOut();
                           setMobileMenuOpen(false);
                         }}
                         className="w-full flex items-center justify-center gap-2 rounded-md border border-red-500 bg-white px-4 py-2 text-sm font-medium text-red-500"
@@ -219,7 +173,7 @@ export default function Navbar() {
                   ) : (
                     <button 
                       onClick={() => {
-                        handleSignIn();
+                        signInWithGoogle();
                         setMobileMenuOpen(false);
                       }}
                       className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm font-medium"
