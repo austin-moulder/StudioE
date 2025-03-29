@@ -97,7 +97,7 @@ export default function InstructorsPage() {
               </div>
 
               <div className="flex items-end">
-                <button className="flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90">
+                <button className="flex h-10 items-center justify-center rounded-md bg-[#F94C8D] px-4 py-2 text-sm font-medium text-white shadow hover:bg-[#F94C8D]/90">
                   <Filter className="mr-2 h-4 w-4" />
                   Filter
                 </button>
@@ -240,7 +240,7 @@ export default function InstructorsPage() {
               <Card key={index} className="overflow-hidden">
                 <div className="aspect-[4/3] relative bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-400 text-lg">{instructor.name}</span>
-                  {index % 3 === 0 && <Badge className="absolute top-2 right-2">Featured</Badge>}
+                  {index % 3 === 0 && <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-4 py-1 rounded-full text-sm font-medium">Featured</div>}
                 </div>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -248,10 +248,10 @@ export default function InstructorsPage() {
                       <h3 className="text-xl font-bold">{instructor.name}</h3>
                       <p className="text-sm text-gray-500">{instructor.style}</p>
                     </div>
-                    <Badge variant="secondary" className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
                       <Star className="h-3 w-3 fill-current" />
                       {instructor.rating}
-                    </Badge>
+                    </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm text-gray-500">
                     <MapPin className="mr-1 h-4 w-4" />
@@ -263,7 +263,7 @@ export default function InstructorsPage() {
                   </div>
                   <div className="mt-4 flex justify-between">
                     <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
-                    <Link href={`/instructors/${instructor.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-blue-600 hover:underline text-sm">
+                    <Link href={`/instructors/${instructor.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-[#F94C8D] hover:underline text-sm">
                       View Profile
                     </Link>
                   </div>
@@ -275,7 +275,7 @@ export default function InstructorsPage() {
           <div className="mt-12 flex justify-center">
             <div className="flex items-center gap-2">
               <Link href="/instructors?page=1" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm opacity-50 cursor-not-allowed">&lt;</Link>
-              <Link href="/instructors?page=1" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC] px-3 text-sm text-white">1</Link>
+              <Link href="/instructors?page=1" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-[#F94C8D] px-3 text-sm text-white">1</Link>
               <Link href="/instructors?page=2" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">2</Link>
               <Link href="/instructors?page=3" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">3</Link>
               <Link href="/instructors?page=4" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">4</Link>

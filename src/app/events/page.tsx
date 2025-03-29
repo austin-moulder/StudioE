@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Calendar, MapPin, Clock, Users, Search, Filter } from "lucide-react"
+import { Calendar, MapPin, Clock, Users, Search, Filter, CalendarPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -71,9 +71,14 @@ export default function EventsPage() {
                 </Select>
               </div>
 
-              <Button className="flex items-center gap-2 h-10 self-end">
+              <Button className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">
                 <Filter className="h-4 w-4" />
                 Filter
+              </Button>
+              
+              <Button className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 ml-2">
+                <CalendarPlus className="h-4 w-4" />
+                Add Event
               </Button>
             </div>
           </div>
@@ -187,7 +192,7 @@ export default function EventsPage() {
                   <Card key={index} className="overflow-hidden">
                     <div className="aspect-[3/2] relative">
                       <Image src={event.image || "/placeholder.svg"} alt={event.title} fill className="object-cover" />
-                      {index % 3 === 0 && <Badge className="absolute top-2 right-2">Featured</Badge>}
+                      {index % 3 === 0 && <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-4 py-1 rounded-full text-sm font-medium">Featured</div>}
                     </div>
                     <CardContent className="p-6">
                       <Badge className="mb-2">{event.type}</Badge>
@@ -212,7 +217,7 @@ export default function EventsPage() {
                       </div>
                       <div className="mt-6 flex items-center justify-between">
                         <span className="font-medium">{event.price === 0 ? "Free" : `$${event.price}`}</span>
-                        <Button>Register</Button>
+                        <Button className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">Register</Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -224,7 +229,7 @@ export default function EventsPage() {
                   <Button variant="outline" size="icon" disabled>
                     &lt;
                   </Button>
-                  <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">
+                  <Button variant="outline" size="sm" className="bg-[#F94C8D] text-white border-[#F94C8D] hover:bg-[#F94C8D]/90 hover:text-white">
                     1
                   </Button>
                   <Button variant="outline" size="sm">
@@ -287,7 +292,7 @@ export default function EventsPage() {
                           fill
                           className="object-cover"
                         />
-                        <Badge className="absolute top-2 right-2">Featured</Badge>
+                        <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-4 py-1 rounded-full text-sm font-medium">Featured</div>
                       </div>
                       <CardContent className="p-6">
                         <Badge className="mb-2">Special Event</Badge>
@@ -309,7 +314,7 @@ export default function EventsPage() {
                         </div>
                         <div className="mt-6 flex items-center justify-between">
                           <span className="font-medium">${event.price}</span>
-                          <Button>Register</Button>
+                          <Button className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">Register</Button>
                         </div>
                       </CardContent>
                     </Card>
