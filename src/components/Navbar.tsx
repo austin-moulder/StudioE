@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, LogOut } from "lucide-react"
+import { Menu, X, LogOut, Settings } from "lucide-react"
 import { useAuth } from "@/lib/hooks/useAuth"
 import { useRouter } from "next/navigation"
 import { User } from "firebase/auth"
@@ -108,6 +108,15 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+          {user && (
+            <Link 
+              href="/admin/photos" 
+              className="text-sm font-medium transition-colors hover:bg-clip-text hover:text-transparent hover:bg-brand-gradient flex items-center gap-1"
+            >
+              <Settings className="h-3 w-3" />
+              Admin
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-4">
@@ -187,6 +196,17 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
+
+            {user && (
+              <Link
+                href="/admin/photos"
+                className="text-lg font-medium transition-colors hover:bg-clip-text hover:text-transparent hover:bg-brand-gradient flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Settings className="h-4 w-4" />
+                Admin
+              </Link>
+            )}
 
             <div className="mt-6 flex flex-col gap-4">
               {!loading && (

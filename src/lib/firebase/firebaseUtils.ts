@@ -1,3 +1,5 @@
+"use client";
+
 import { auth, db, storage } from "./firebase";
 import {
   signOut,
@@ -12,7 +14,8 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
+import { User } from "firebase/auth";
 
 // Auth functions
 export const logoutUser = () => signOut(auth);
@@ -51,4 +54,48 @@ export const uploadFile = async (file: File, path: string) => {
   const storageRef = ref(storage, path);
   await uploadBytes(storageRef, file);
   return getDownloadURL(storageRef);
+};
+
+// Upload an image to Firebase Storage
+export const uploadImage = async (
+  file: File,
+  path: string
+): Promise<string> => {
+  try {
+    const storageRef = ref(storage, path);
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
+};
+
+// Get all images from a specific folder
+export const getImagesFromFolder = async (folderPath: string): Promise<string[]> => {
+  try {
+    const listRef = ref(storage, folderPath);
+    const result = await listAll(listRef);
+    const urls = await Promise.all(
+      result.items.map(async (itemRef) => {
+        return getDownloadURL(itemRef);
+      })
+    );
+    return urls;
+  } catch (error) {
+    console.error("Error getting images from folder:", error);
+    return [];
+  }
+};
+
+// Delete an image from Firebase Storage
+export const deleteImage = async (path: string): Promise<void> => {
+  try {
+    const imageRef = ref(storage, path);
+    await deleteObject(imageRef);
+  } catch (error) {
+    console.error("Error deleting image:", error);
+    throw error;
+  }
 };
