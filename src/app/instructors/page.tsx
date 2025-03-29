@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSearchParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 
 // Define the instructor type
 interface Instructor {
@@ -22,7 +22,7 @@ interface Instructor {
   image: string
 }
 
-export default function InstructorsPage() {
+function InstructorsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
@@ -413,5 +413,13 @@ export default function InstructorsPage() {
         </div>
       </section>
     </div>
+  )
+}
+
+export default function InstructorsPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading instructors...</div>}>
+      <InstructorsContent />
+    </Suspense>
   )
 } 
