@@ -2,10 +2,31 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Facebook, Instagram, Twitter, Youtube, Settings } from "lucide-react"
+import { Facebook, Instagram, Youtube, Settings } from "lucide-react"
 import { useAuth } from "@/lib/hooks/useAuth"
 import { useState, useEffect } from "react"
 import FirebaseLogo from "./FirebaseLogo"
+
+// Custom Spotify icon component since it's not included in lucide-react
+const Spotify = (props: any) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M6 12c0-1 2.5-2 6-2s6 1 6 2" />
+    <path d="M6 9c0-1 3-2 6-2s6 1 6 2" />
+    <path d="M6 15c0-1 3-2 6-2s6 1 6 2" />
+  </svg>
+);
 
 export default function Footer() {
   const [mounted, setMounted] = useState(false);
@@ -45,12 +66,12 @@ export default function Footer() {
                 <span className="sr-only">Instagram</span>
               </Link>
               <Link href="#" className="text-gray-500 hover:text-gray-800">
-                <Twitter className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
-              </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-800">
                 <Youtube className="h-5 w-5" />
                 <span className="sr-only">YouTube</span>
+              </Link>
+              <Link href="#" className="text-gray-500 hover:text-gray-800">
+                <Spotify className="h-5 w-5" />
+                <span className="sr-only">Spotify</span>
               </Link>
             </div>
           </div>
