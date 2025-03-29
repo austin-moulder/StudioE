@@ -8,8 +8,168 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useSearchParams, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+
+// Define the instructor type
+interface Instructor {
+  name: string
+  style: string
+  location: string
+  rating: number
+  reviews: number
+  alias: string
+  image: string
+}
 
 export default function InstructorsPage() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  
+  // Get style from URL params or default to "all"
+  const [selectedStyle, setSelectedStyle] = useState(searchParams.get("style") || "all")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
+
+  // Mock data for instructors
+  const instructors: Instructor[] = [
+    {
+      name: "Jocelyn Views",
+      style: "Heels & Reggaeton, Choreo",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 127,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Nathalie Ocampo",
+      style: "Heels & Contemporary",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 93,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Rachel Marie",
+      style: "Choreo & Hip Hop",
+      location: "Chicago, IL",
+      rating: 5.0,
+      reviews: 156,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Del Dominguez",
+      style: "Salsa & Social Dancing",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 82,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Sam Guerrero",
+      style: "Salsa & Styling",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 115,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Juan Hernandez",
+      style: "Salsa & Performance",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 78,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Denisse Aldana",
+      style: "Salsa & Social Dancing",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 104,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Mario Cuevas",
+      style: "DJ",
+      location: "Chicago, IL",
+      rating: 5.0,
+      reviews: 142,
+      alias: "DJ Machito",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Taylore Diem",
+      style: "DJ",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 89,
+      alias: "DJ Diem Classic",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Eda Kachiri",
+      style: "Bachata & Merengue",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 118,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Brian MacDonald",
+      style: "Bachata & Sensual",
+      location: "Barcelona, Spain",
+      rating: 4.7,
+      reviews: 95,
+      alias: "B-Mac",
+      image: "/placeholder.svg",
+    },
+    {
+      name: "Destiny Rivera",
+      style: "Bachata & Salsa",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 107,
+      alias: "",
+      image: "/placeholder.svg",
+    },
+  ]
+
+  // Filter instructors based on selected style
+  useEffect(() => {
+    let filtered = [...instructors]
+    
+    if (selectedStyle && selectedStyle !== "all") {
+      filtered = instructors.filter(instructor => 
+        instructor.style.toLowerCase().includes(selectedStyle.toLowerCase())
+      )
+    }
+    
+    if (searchTerm) {
+      filtered = filtered.filter(instructor => 
+        instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        instructor.style.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (instructor.alias && instructor.alias.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    }
+    
+    setFilteredInstructors(filtered)
+  }, [selectedStyle, searchTerm])
+
+  // Update URL when filter changes
+  const handleStyleChange = (style: string) => {
+    setSelectedStyle(style)
+    router.push(`/instructors${style === "all" ? "" : `?style=${style}`}`)
+  }
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -38,7 +198,13 @@ export default function InstructorsPage() {
               </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                <Input id="search" placeholder="Name, dance style, or keyword" className="pl-10" />
+                <Input 
+                  id="search" 
+                  placeholder="Name, dance style, or keyword" 
+                  className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
             </div>
 
@@ -47,7 +213,7 @@ export default function InstructorsPage() {
                 <label htmlFor="style" className="text-sm font-medium">
                   Dance Style
                 </label>
-                <Select>
+                <Select value={selectedStyle} onValueChange={handleStyleChange}>
                   <SelectTrigger id="style" className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Styles" />
                   </SelectTrigger>
@@ -102,10 +268,6 @@ export default function InstructorsPage() {
                 <button 
                   className="flex h-10 items-center justify-center rounded-md bg-[#F94C8D] px-4 py-2 text-sm font-medium text-white shadow hover:bg-[#F94C8D]/90"
                   id="filter-button"
-                  onClick={() => {
-                    // This is a client side action that will need to be implemented in a separate client component
-                    // For now, we're just adding the button with the correct ID to be targeted
-                  }}
                 >
                   <Filter className="mr-2 h-4 w-4" />
                   Filter
@@ -120,7 +282,7 @@ export default function InstructorsPage() {
       <section className="py-16">
         <div className="container">
           <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-2xl font-bold">48 Instructors Found</h2>
+            <h2 className="text-2xl font-bold">{filteredInstructors.length} Instructors Found</h2>
             <Select defaultValue="recommended">
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Sort by" />
@@ -136,160 +298,38 @@ export default function InstructorsPage() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {[
-              {
-                name: "Jocelyn Views",
-                style: "Heels & Reggaeton, Choreo",
-                location: "Chicago, IL",
-                rating: 4.9,
-                reviews: 127,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Nathalie Ocampo",
-                style: "Heels & Contemporary",
-                location: "Chicago, IL",
-                rating: 4.8,
-                reviews: 93,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Rachel Marie",
-                style: "Choreo & Hip Hop",
-                location: "Chicago, IL",
-                rating: 5.0,
-                reviews: 156,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Del Dominguez",
-                style: "Salsa & Social Dancing",
-                location: "Chicago, IL",
-                rating: 4.7,
-                reviews: 82,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Sam Guerrero",
-                style: "Salsa & Styling",
-                location: "Chicago, IL",
-                rating: 4.9,
-                reviews: 115,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Juan Hernandez",
-                style: "Salsa & Performance",
-                location: "Chicago, IL",
-                rating: 4.8,
-                reviews: 78,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Denisse Aldana",
-                style: "Salsa & Social Dancing",
-                location: "Chicago, IL",
-                rating: 4.9,
-                reviews: 104,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Mario Cuevas",
-                style: "DJ",
-                location: "Chicago, IL",
-                rating: 5.0,
-                reviews: 142,
-                alias: "DJ Machito",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Taylore Diem",
-                style: "DJ",
-                location: "Chicago, IL",
-                rating: 4.8,
-                reviews: 89,
-                alias: "DJ Diem Classic",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Eda Kachiri",
-                style: "Bachata & Merengue",
-                location: "Chicago, IL",
-                rating: 4.9,
-                reviews: 118,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Brian MacDonald",
-                style: "Bachata & Sensual",
-                location: "Barcelona, Spain",
-                rating: 4.7,
-                reviews: 95,
-                alias: "B-Mac",
-                image: "/placeholder.svg",
-              },
-              {
-                name: "Destiny Rivera",
-                style: "Bachata & Salsa",
-                location: "Chicago, IL",
-                rating: 4.8,
-                reviews: 107,
-                alias: "",
-                image: "/placeholder.svg",
-              },
-            ].map((instructor, index) => (
+            {filteredInstructors.map((instructor, index) => (
               <Card key={index} className="overflow-hidden">
                 <div className="aspect-[4/3] relative bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-400 text-lg">{instructor.name}</span>
-                  {index % 3 === 0 && <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-4 py-1 rounded-full text-sm font-medium">Featured</div>}
                 </div>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-xl font-bold">{instructor.name}</h3>
+                      <h3 className="text-xl font-bold">
+                        {instructor.name}
+                        {instructor.alias && <span className="text-sm font-normal text-gray-500 ml-2">({instructor.alias})</span>}
+                      </h3>
                       <p className="text-sm text-gray-500">{instructor.style}</p>
                     </div>
-                    <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
+                    <Badge variant="secondary" className="flex items-center gap-1">
                       <Star className="h-3 w-3 fill-current" />
                       {instructor.rating}
-                    </div>
+                    </Badge>
                   </div>
                   <div className="mt-4 flex items-center text-sm text-gray-500">
                     <MapPin className="mr-1 h-4 w-4" />
                     {instructor.location}
                   </div>
-                  <div className="mt-2 text-sm">
-                    <span className="font-medium">$45-75</span>
-                    <span className="text-gray-500"> / hour</span>
-                  </div>
                   <div className="mt-4 flex justify-between">
                     <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
-                    <Link href={`/instructors/${instructor.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-[#F94C8D] hover:underline text-sm">
+                    <Button variant="link" className="p-0 h-auto">
                       View Profile
-                    </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
-          </div>
-
-          <div className="mt-12 flex justify-center">
-            <div className="flex items-center gap-2">
-              <Link href="/instructors?page=1" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm opacity-50 cursor-not-allowed">&lt;</Link>
-              <Link href="/instructors?page=1" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-[#F94C8D] bg-[#F94C8D] px-3 text-sm text-white hover:bg-white hover:text-black hover:border-[#F94C8D]">1</Link>
-              <Link href="/instructors?page=2" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">2</Link>
-              <Link href="/instructors?page=3" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">3</Link>
-              <Link href="/instructors?page=4" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">4</Link>
-              <Link href="/instructors?page=2" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm">&gt;</Link>
-            </div>
           </div>
         </div>
       </section>

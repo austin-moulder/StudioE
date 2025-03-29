@@ -1,12 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Star, MapPin, Search } from "lucide-react";
+import { ArrowRight, Star, MapPin, Search, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useState } from "react";
 
 export default function Home() {
+  const [selectedStyle, setSelectedStyle] = useState("");
+
+  const handleSearch = () => {
+    if (selectedStyle) {
+      window.location.href = `/instructors?style=${selectedStyle}`;
+    } else {
+      window.location.href = "/instructors";
+    }
+  };
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -23,16 +40,27 @@ export default function Home() {
             Connect with professional dance instructors for private lessons tailored to your skill level and goals.
           </p>
           <div className="mt-10 flex w-full max-w-md flex-col gap-4 sm:flex-row">
-            <Input
-              placeholder="What dance style are you interested in?"
-              className="h-12 bg-white/90 text-black placeholder:text-gray-500"
-            />
-            <Link href="/instructors" className="inline-flex">
-              <Button size="lg" className="h-12 px-8 border-2 border-white shadow-lg">
-                <Search className="mr-2 h-4 w-4" />
-                Search
-              </Button>
-            </Link>
+            <div className="relative w-full">
+              <Select value={selectedStyle} onValueChange={setSelectedStyle}>
+                <SelectTrigger className="h-12 bg-white/90 text-gray-800 border-0 w-full">
+                  <SelectValue placeholder="What dance style are you interested in?" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="salsa">Salsa</SelectItem>
+                  <SelectItem value="bachata">Bachata</SelectItem>
+                  <SelectItem value="heels">Heels</SelectItem>
+                  <SelectItem value="other">Other Styles</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button 
+              size="lg" 
+              className="h-12 px-8 border-2 border-white shadow-lg"
+              onClick={handleSearch}
+            >
+              <Search className="mr-2 h-4 w-4" />
+              Search
+            </Button>
           </div>
         </div>
       </section>
