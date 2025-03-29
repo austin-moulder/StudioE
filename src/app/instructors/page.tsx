@@ -302,6 +302,11 @@ export default function InstructorsPage() {
               <Card key={index} className="overflow-hidden">
                 <div className="aspect-[4/3] relative bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-400 text-lg">{instructor.name}</span>
+                  {(index === 0 || index === 3) && (
+                    <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
+                      Featured
+                    </div>
+                  )}
                 </div>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -312,25 +317,41 @@ export default function InstructorsPage() {
                       </h3>
                       <p className="text-sm text-gray-500">{instructor.style}</p>
                     </div>
-                    <Badge variant="secondary" className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
                       <Star className="h-3 w-3 fill-current" />
                       {instructor.rating}
-                    </Badge>
+                    </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm text-gray-500">
                     <MapPin className="mr-1 h-4 w-4" />
                     {instructor.location}
                   </div>
+                  <div className="mt-2 text-sm">
+                    <span className="font-medium">$45-75</span>
+                    <span className="text-gray-500"> / hour</span>
+                  </div>
                   <div className="mt-4 flex justify-between">
                     <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
-                    <Button variant="link" className="p-0 h-auto">
+                    <Link href={`/instructors/${instructor.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-[#F94C8D] hover:underline text-sm">
                       View Profile
-                    </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          <div className="mt-12 flex justify-center">
+            <div className="flex items-center gap-2">
+              <Link href="/instructors?page=1" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm opacity-50 cursor-not-allowed">&lt;</Link>
+              <Link href="/instructors?page=1" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-[#F94C8D] bg-[#F94C8D] px-3 text-sm text-white hover:bg-white hover:text-black hover:border-[#F94C8D]">1</Link>
+              <Link href="/instructors?page=2" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">2</Link>
+              <Link href="/instructors?page=3" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">3</Link>
+              <Link href="/instructors?page=4" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">4</Link>
+              <Link href="/instructors?page=2" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm">&gt;</Link>
+            </div>
+          </div>
+
         </div>
       </section>
 
