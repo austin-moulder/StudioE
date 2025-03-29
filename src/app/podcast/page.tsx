@@ -1,7 +1,13 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { PodcastTabs } from "./podcast-tabs"
+import dynamic from "next/dynamic"
+
+// Dynamically import PodcastTabs to avoid the module not found error
+const PodcastTabs = dynamic(() => import("./podcast-tabs").then(mod => mod.PodcastTabs), {
+  ssr: true,
+  loading: () => <div className="text-center py-12">Loading podcast episodes...</div>
+})
 
 export default function PodcastPage() {
   return (
