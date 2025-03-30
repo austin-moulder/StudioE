@@ -252,7 +252,7 @@ export default function Home() {
                 style: "Latin Dance",
               },
             ].map((testimonial, index) => (
-              <Card key={index} className="p-6">
+              <Card key={index} className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
                     <span className="text-gray-400 text-xs">{testimonial.name.charAt(0)}</span>
@@ -262,8 +262,8 @@ export default function Home() {
                     <p className="text-sm text-gray-500">{testimonial.style} Student</p>
                   </div>
                 </div>
-                <div className="mt-4">
-                  <p className="text-gray-500">&quot;{testimonial.quote}&quot;</p>
+                <div className="mt-4 flex-grow">
+                  <p className="text-gray-500 h-[120px] overflow-y-auto">&quot;{testimonial.quote}&quot;</p>
                 </div>
                 <div className="mt-4 flex">
                   {[...Array(5)].map((_, i) => (
