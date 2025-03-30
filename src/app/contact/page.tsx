@@ -221,9 +221,12 @@ export default function ContactPage() {
           <div className="mt-12 text-center">
             <p className="text-gray-500">
               Still have questions?{" "}
-              <Button variant="link" className="p-0 h-auto">
+              <a 
+                href="mailto:studioelatindance@gmail.com" 
+                className="text-[#F94C8D] hover:underline font-medium"
+              >
                 Contact our support team
-              </Button>
+              </a>
             </p>
           </div>
         </div>
