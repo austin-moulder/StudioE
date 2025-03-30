@@ -86,9 +86,13 @@ export default function Home() {
               { name: "Heels", image: "/placeholder.svg", count: 15 },
               { name: "Choreo", image: "/placeholder.svg", count: 20 },
             ].map((style) => (
-              <Link key={style.name} href="/instructors" className="group relative overflow-hidden rounded-lg">
+              <Link 
+                key={style.name} 
+                href={`/instructors?style=${style.name.toLowerCase()}`} 
+                className="group relative overflow-hidden rounded-lg hover:shadow-lg transition-shadow duration-300"
+              >
                 <div className="aspect-square relative overflow-hidden rounded-lg">
-                  <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-300 flex items-center justify-center">
                     <span className="text-gray-400 text-lg">{style.name}</span>
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
