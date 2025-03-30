@@ -63,7 +63,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await signInWithPopup(auth, provider);
       // We don't need to return the UserCredential since it's handled by the onAuthStateChanged listener
-    } catch (error) {
+    } catch (error: any) {
+      // Don't treat popup closed by user as an error
+      if (error.code === 'auth/popup-closed-by-user') {
+        console.log('Sign-in popup was closed by the user');
+        return; // Just return silently without throwing
+      }
+      
       console.error("Error signing in with Google", error);
       throw error;
     }
