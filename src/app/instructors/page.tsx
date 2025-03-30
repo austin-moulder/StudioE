@@ -754,8 +754,15 @@ function InstructorsContent() {
     
     setFilteredInstructors(filtered)
 
-    // Reset to page 1 if filters change
-    if (currentPage !== 1) {
+    // Calculate new max page based on filtered results
+    const newMaxPage = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
+    
+    // If current page is now out of bounds, adjust it
+    if (currentPage > newMaxPage) {
+      setCurrentPage(1)
+      updateURL(1, selectedStyle)
+    } else if (currentPage !== 1) {
+      // Reset to page 1 if filters change
       setCurrentPage(1)
       updateURL(1, selectedStyle)
     }
@@ -978,81 +985,93 @@ function InstructorsContent() {
                   &lt;
                 </button>
                 
-                {Array.from({ length: Math.min(totalPages, 7) }).map((_, i) => {
-                  // Create a sliding window of page numbers
-                  let pageNum;
+                {(() => {
+                  // Calculate pages based on filtered results
+                  const filteredTotalPages = Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE)
                   
-                  if (totalPages <= 7) {
-                    // If 7 or fewer pages, show all page numbers
-                    pageNum = i + 1;
-                  } else if (currentPage <= 4) {
-                    // If near the start, show pages 1-5, then ellipsis, then last page
-                    if (i < 5) {
+                  return Array.from({ length: Math.min(filteredTotalPages, 7) }).map((_, i) => {
+                    // Create a sliding window of page numbers
+                    let pageNum;
+                    
+                    if (filteredTotalPages <= 7) {
+                      // If 7 or fewer pages, show all page numbers
                       pageNum = i + 1;
-                    } else if (i === 5) {
-                      return (
-                        <span key="ellipsis-1" className="flex h-9 min-w-9 items-center justify-center">
-                          ...
-                        </span>
-                      );
+                    } else if (currentPage <= 4) {
+                      // If near the start, show pages 1-5, then ellipsis, then last page
+                      if (i < 5) {
+                        pageNum = i + 1;
+                      } else if (i === 5) {
+                        return (
+                          <span key="ellipsis-1" className="flex h-9 min-w-9 items-center justify-center">
+                            ...
+                          </span>
+                        );
+                      } else {
+                        pageNum = filteredTotalPages;
+                      }
+                    } else if (currentPage >= filteredTotalPages - 3) {
+                      // If near the end, show first page, then ellipsis, then last 5 pages
+                      if (i === 0) {
+                        pageNum = 1;
+                      } else if (i === 1) {
+                        return (
+                          <span key="ellipsis-2" className="flex h-9 min-w-9 items-center justify-center">
+                            ...
+                          </span>
+                        );
+                      } else {
+                        pageNum = filteredTotalPages - (6 - i);
+                      }
                     } else {
-                      pageNum = totalPages;
+                      // If in the middle, show first page, ellipsis, current-1, current, current+1, ellipsis, last page
+                      if (i === 0) {
+                        pageNum = 1;
+                      } else if (i === 1) {
+                        return (
+                          <span key="ellipsis-3" className="flex h-9 min-w-9 items-center justify-center">
+                            ...
+                          </span>
+                        );
+                      } else if (i >= 2 && i <= 4) {
+                        pageNum = currentPage + (i - 3);
+                      } else if (i === 5) {
+                        return (
+                          <span key="ellipsis-4" className="flex h-9 min-w-9 items-center justify-center">
+                            ...
+                          </span>
+                        );
+                      } else {
+                        pageNum = filteredTotalPages;
+                      }
                     }
-                  } else if (currentPage >= totalPages - 3) {
-                    // If near the end, show first page, then ellipsis, then last 5 pages
-                    if (i === 0) {
-                      pageNum = 1;
-                    } else if (i === 1) {
-                      return (
-                        <span key="ellipsis-2" className="flex h-9 min-w-9 items-center justify-center">
-                          ...
-                        </span>
-                      );
-                    } else {
-                      pageNum = totalPages - (6 - i);
-                    }
-                  } else {
-                    // If in the middle, show first page, ellipsis, current-1, current, current+1, ellipsis, last page
-                    if (i === 0) {
-                      pageNum = 1;
-                    } else if (i === 1) {
-                      return (
-                        <span key="ellipsis-3" className="flex h-9 min-w-9 items-center justify-center">
-                          ...
-                        </span>
-                      );
-                    } else if (i >= 2 && i <= 4) {
-                      pageNum = currentPage + (i - 3);
-                    } else if (i === 5) {
-                      return (
-                        <span key="ellipsis-4" className="flex h-9 min-w-9 items-center justify-center">
-                          ...
-                        </span>
-                      );
-                    } else {
-                      pageNum = totalPages;
-                    }
-                  }
-                  
-                  return (
-                    <button
-                      key={`page-${pageNum}`}
-                      onClick={() => handlePageChange(pageNum)}
-                      className={`flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm ${
-                        currentPage === pageNum
-                          ? 'border border-[#F94C8D] bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90'
-                          : 'border border-input bg-background hover:bg-gray-100'
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
+                    
+                    return (
+                      <button
+                        key={`page-${pageNum}`}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm ${
+                          currentPage === pageNum
+                            ? 'border border-[#F94C8D] bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90'
+                            : 'border border-input bg-background hover:bg-gray-100'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  });
+                })()}
                 
                 <button 
-                  onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                  className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'}`}
-                  disabled={currentPage === totalPages}
+                  onClick={() => {
+                    const filteredTotalPages = Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE)
+                    if (currentPage < filteredTotalPages) handlePageChange(currentPage + 1)
+                  }}
+                  className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${
+                    currentPage === Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE) 
+                      ? 'opacity-50 cursor-not-allowed' 
+                      : 'cursor-pointer hover:bg-gray-100'
+                  }`}
+                  disabled={currentPage === Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE)}
                 >
                   &gt;
                 </button>
