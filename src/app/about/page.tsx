@@ -359,16 +359,20 @@ export default function AboutPage() {
               the perfect place to start.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Button size="lg" variant="secondary">
-                Find an Instructor
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-transparent text-white hover:bg-white/10 hover:text-white"
-              >
-                Become an Instructor
-              </Button>
+              <Link href="/instructors">
+                <Button size="lg" variant="secondary">
+                  Find an Instructor
+                </Button>
+              </Link>
+              <Link href="https://forms.gle/GqcrCPNp4s7deonc9" target="_blank" rel="noopener noreferrer">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-transparent text-white hover:bg-white/10 hover:text-white"
+                >
+                  Become an Instructor
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
