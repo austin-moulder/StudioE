@@ -31,8 +31,11 @@ function InstructorsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
-  // Get style and page from URL params
+  // Get URL params
   const [selectedStyle, setSelectedStyle] = useState(searchParams.get("style") || "all")
+  const [selectedLocation, setSelectedLocation] = useState(searchParams.get("location") || "all")
+  const [selectedPrice, setSelectedPrice] = useState(searchParams.get("price") || "any")
+  const [sortOrder, setSortOrder] = useState(searchParams.get("sort") || "recommended")
   const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page") || 1))
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
@@ -734,16 +737,51 @@ function InstructorsContent() {
   const allInstructors = instructors;
   const totalPages = Math.ceil(allInstructors.length / ITEMS_PER_PAGE);
 
-  // Filter instructors based on selected style
+  // Filter instructors based on selected filters
   useEffect(() => {
     let filtered = [...allInstructors]
     
+    // Filter by style
     if (selectedStyle && selectedStyle !== "all") {
-      filtered = allInstructors.filter(instructor => 
-        instructor.style.toLowerCase().includes(selectedStyle.toLowerCase())
-      )
+      filtered = filtered.filter(instructor => {
+        const styleText = instructor.style.toLowerCase()
+        const searchStyle = selectedStyle.toLowerCase()
+        
+        // Special case for hip hop to handle variations
+        if (searchStyle === "hiphop" || searchStyle === "hip hop") {
+          return styleText.includes("hip hop") || styleText.includes("hiphop")
+        }
+        
+        return styleText.includes(searchStyle)
+      })
     }
     
+    // Filter by location
+    if (selectedLocation && selectedLocation !== "all") {
+      filtered = filtered.filter(instructor => {
+        return instructor.location.toLowerCase().includes(selectedLocation.toLowerCase())
+      })
+    }
+    
+    // Filter by price range
+    if (selectedPrice && selectedPrice !== "any") {
+      filtered = filtered.filter(instructor => {
+        const { lower, upper } = instructor.price
+        
+        switch(selectedPrice) {
+          case "low":
+            return lower >= 20 && lower <= 50
+          case "medium":
+            return lower > 50 && lower <= 75
+          case "high":
+            return lower > 75
+          default:
+            return true
+        }
+      })
+    }
+    
+    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(instructor => 
         instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -751,6 +789,9 @@ function InstructorsContent() {
         (instructor.alias && instructor.alias.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     }
+    
+    // Apply sorting
+    filtered = sortInstructors(filtered, sortOrder)
     
     setFilteredInstructors(filtered)
 
@@ -760,13 +801,35 @@ function InstructorsContent() {
     // If current page is now out of bounds, adjust it
     if (currentPage > newMaxPage) {
       setCurrentPage(1)
-      updateURL(1, selectedStyle)
+      updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     } else if (currentPage !== 1) {
       // Reset to page 1 if filters change
       setCurrentPage(1)
-      updateURL(1, selectedStyle)
+      updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     }
-  }, [selectedStyle, searchTerm])
+  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm])
+
+  // Sort instructors based on selected order
+  const sortInstructors = (instructors: Instructor[], order: string) => {
+    const sortedInstructors = [...instructors]
+    
+    switch (order) {
+      case "rating-high":
+        return sortedInstructors.sort((a, b) => b.rating - a.rating)
+      case "price-low":
+        return sortedInstructors.sort((a, b) => a.price.lower - b.price.lower)
+      case "price-high":
+        return sortedInstructors.sort((a, b) => b.price.upper - a.price.upper)
+      case "recommended":
+      default:
+        // For recommended, keep featured instructors first, then sort by rating
+        return sortedInstructors.sort((a, b) => {
+          if (a.featured && !b.featured) return -1
+          if (!a.featured && b.featured) return 1
+          return b.rating - a.rating
+        })
+    }
+  }
 
   // Apply pagination
   useEffect(() => {
@@ -775,24 +838,51 @@ function InstructorsContent() {
     setPaginatedInstructors(filteredInstructors.slice(startIndex, endIndex))
   }, [filteredInstructors, currentPage])
 
-  // Update URL when filter changes
+  // Update URL when filters change
   const handleStyleChange = (style: string) => {
     setSelectedStyle(style)
-    updateURL(1, style)
+    updateURL(1, style, selectedLocation, selectedPrice, sortOrder)
+  }
+
+  const handleLocationChange = (location: string) => {
+    setSelectedLocation(location)
+    updateURL(1, selectedStyle, location, selectedPrice, sortOrder)
+  }
+
+  const handlePriceChange = (price: string) => {
+    setSelectedPrice(price)
+    updateURL(1, selectedStyle, selectedLocation, price, sortOrder)
+  }
+
+  const handleSortChange = (sort: string) => {
+    setSortOrder(sort)
+    updateURL(currentPage, selectedStyle, selectedLocation, selectedPrice, sort)
   }
 
   // Update URL when page changes
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
-    updateURL(page, selectedStyle)
+    updateURL(page, selectedStyle, selectedLocation, selectedPrice, sortOrder)
   }
 
   // Helper function to update URL
-  const updateURL = (page: number, style: string) => {
+  const updateURL = (page: number, style: string, location: string, price: string, sort: string) => {
     const params = new URLSearchParams()
     
     if (style && style !== "all") {
       params.set("style", style)
+    }
+    
+    if (location && location !== "all") {
+      params.set("location", location)
+    }
+    
+    if (price && price !== "any") {
+      params.set("price", price)
+    }
+    
+    if (sort && sort !== "recommended") {
+      params.set("sort", sort)
     }
     
     if (page > 1) {
@@ -866,7 +956,7 @@ function InstructorsContent() {
                 <label htmlFor="location" className="text-sm font-medium">
                   Location
                 </label>
-                <Select>
+                <Select value={selectedLocation} onValueChange={handleLocationChange}>
                   <SelectTrigger id="location" className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Locations" />
                   </SelectTrigger>
@@ -874,8 +964,8 @@ function InstructorsContent() {
                     <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="chicago">Chicago</SelectItem>
                     <SelectItem value="minneapolis">Minneapolis</SelectItem>
+                    <SelectItem value="milwaukee">Milwaukee</SelectItem>
                     <SelectItem value="barcelona">Barcelona</SelectItem>
-                    <SelectItem value="online">Online Only</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -884,7 +974,7 @@ function InstructorsContent() {
                 <label htmlFor="price" className="text-sm font-medium">
                   Price Range
                 </label>
-                <Select>
+                <Select value={selectedPrice} onValueChange={handlePriceChange}>
                   <SelectTrigger id="price" className="w-full md:w-[180px]">
                     <SelectValue placeholder="Any Price" />
                   </SelectTrigger>
@@ -916,7 +1006,7 @@ function InstructorsContent() {
         <div className="container">
           <div className="mb-8 flex items-center justify-between">
             <h2 className="text-2xl font-bold">{filteredInstructors.length} Instructors Found</h2>
-            <Select defaultValue="recommended">
+            <Select value={sortOrder} onValueChange={handleSortChange}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
