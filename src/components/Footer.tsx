@@ -57,19 +57,19 @@ export default function Footer() {
               Connecting passionate dance instructors with eager students since 2023.
             </p>
             <div className="mt-4 flex gap-4">
-              <Link href="#" className="text-gray-500 hover:text-gray-800">
+              <Link href="https://www.facebook.com/profile.php?id=61551116319222" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800">
                 <Facebook className="h-5 w-5" />
                 <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-800">
+              <Link href="https://www.instagram.com/the_studio_e/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800">
                 <Instagram className="h-5 w-5" />
                 <span className="sr-only">Instagram</span>
               </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-800">
+              <Link href="https://www.youtube.com/@JoinStudioE" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800">
                 <Youtube className="h-5 w-5" />
                 <span className="sr-only">YouTube</span>
               </Link>
-              <Link href="#" className="text-gray-500 hover:text-gray-800">
+              <Link href="https://open.spotify.com/show/3SdEa5nSOMzobeGp211vsq?si=e40869ade9934ba6" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800">
                 <Spotify className="h-5 w-5" />
                 <span className="sr-only">Spotify</span>
               </Link>
@@ -111,27 +111,27 @@ export default function Footer() {
             <h3 className="mb-4 text-sm font-montserrat font-semibold">Dance Styles</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-800">
-                  Latin
+                <Link href="/instructors?search=salsa" className="text-gray-500 hover:text-gray-800">
+                  Salsa
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-800">
+                <Link href="/instructors?search=bachata" className="text-gray-500 hover:text-gray-800">
+                  Bachata
+                </Link>
+              </li>
+              <li>
+                <Link href="/instructors?search=heels" className="text-gray-500 hover:text-gray-800">
+                  Heels
+                </Link>
+              </li>
+              <li>
+                <Link href="/instructors?search=hip+hop" className="text-gray-500 hover:text-gray-800">
                   Hip Hop
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-800">
-                  Contemporary
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-800">
-                  Jazz
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-500 hover:text-gray-800">
+                <Link href="/instructors" className="text-gray-500 hover:text-gray-800">
                   Other
                 </Link>
               </li>
