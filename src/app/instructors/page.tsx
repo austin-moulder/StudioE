@@ -31,13 +31,18 @@ function InstructorsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
-  // Get style from URL params or default to "all"
+  // Get style and page from URL params
   const [selectedStyle, setSelectedStyle] = useState(searchParams.get("style") || "all")
+  const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page") || 1))
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
+  const [paginatedInstructors, setPaginatedInstructors] = useState<Instructor[]>([])
+  
+  const ITEMS_PER_PAGE = 8
 
-  // Mock data for instructors
+  // Extended mock data for 52 instructors (showing first 16 here)
   const instructors: Instructor[] = [
+    // Page 1
     {
       name: "Jocelyn V.",
       style: "Heels & Reggaeton, Choreo",
@@ -144,14 +149,138 @@ function InstructorsContent() {
         upper: 80
       }
     },
+    // Page 2
+    {
+      name: "Taylor D.",
+      style: "DJ",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 89,
+      alias: "DJ Diem Classic",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Gregory A.",
+      style: "Event Organizing, Photography",
+      location: "Chicago, IL",
+      rating: 4.6,
+      reviews: 76,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Rafa C.",
+      style: "Salsa & Competition",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 104,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 50,
+        upper: 70
+      }
+    },
+    {
+      name: "Jackie C.",
+      style: "Salsa & Competition",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 87,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 50,
+        upper: 70
+      }
+    },
+    {
+      name: "Briana H.",
+      style: "Salsa",
+      location: "Chicago, IL",
+      rating: 4.6,
+      reviews: 73,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 45,
+        upper: 65
+      }
+    },
+    {
+      name: "Tiara H.",
+      style: "Bachata",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 81,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 45,
+        upper: 65
+      }
+    },
+    {
+      name: "Brandon H.",
+      style: "Salsa, Branding",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 92,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Austin M.",
+      style: "Life Coaching, Salsa",
+      location: "Chicago, IL",
+      rating: 5.0,
+      reviews: 143,
+      alias: "",
+      image: "/placeholder.svg",
+      featured: true,
+      price: {
+        lower: 20,
+        upper: 40
+      }
+    }
   ]
+
+  // Additional mock data to reach 52 instructors (not shown in UI but counted for pagination)
+  const totalInstructors = Array.from({ length: 52 - instructors.length }).map((_, index) => ({
+    name: `Instructor ${instructors.length + index + 1}`,
+    style: "Dance Style",
+    location: "Chicago, IL",
+    rating: 4.5,
+    reviews: 50,
+    alias: "",
+    image: "/placeholder.svg",
+    price: {
+      lower: 45,
+      upper: 65
+    }
+  }));
+
+  const allInstructors = [...instructors, ...totalInstructors];
+  const totalPages = Math.ceil(allInstructors.length / ITEMS_PER_PAGE);
 
   // Filter instructors based on selected style
   useEffect(() => {
-    let filtered = [...instructors]
+    let filtered = [...allInstructors]
     
     if (selectedStyle && selectedStyle !== "all") {
-      filtered = instructors.filter(instructor => 
+      filtered = allInstructors.filter(instructor => 
         instructor.style.toLowerCase().includes(selectedStyle.toLowerCase())
       )
     }
@@ -165,12 +294,47 @@ function InstructorsContent() {
     }
     
     setFilteredInstructors(filtered)
+
+    // Reset to page 1 if filters change
+    if (currentPage !== 1) {
+      setCurrentPage(1)
+      updateURL(1, selectedStyle)
+    }
   }, [selectedStyle, searchTerm])
+
+  // Apply pagination
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    const endIndex = startIndex + ITEMS_PER_PAGE
+    setPaginatedInstructors(filteredInstructors.slice(startIndex, endIndex))
+  }, [filteredInstructors, currentPage])
 
   // Update URL when filter changes
   const handleStyleChange = (style: string) => {
     setSelectedStyle(style)
-    router.push(`/instructors${style === "all" ? "" : `?style=${style}`}`)
+    updateURL(1, style)
+  }
+
+  // Update URL when page changes
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    updateURL(page, selectedStyle)
+  }
+
+  // Helper function to update URL
+  const updateURL = (page: number, style: string) => {
+    const params = new URLSearchParams()
+    
+    if (style && style !== "all") {
+      params.set("style", style)
+    }
+    
+    if (page > 1) {
+      params.set("page", page.toString())
+    }
+    
+    const query = params.toString()
+    router.push(`/instructors${query ? `?${query}` : ""}`)
   }
 
   return (
@@ -301,7 +465,7 @@ function InstructorsContent() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredInstructors.map((instructor, index) => (
+            {paginatedInstructors.map((instructor, index) => (
               <Card key={index} className="overflow-hidden">
                 <div className="aspect-[4/3] relative bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-400 text-lg">{instructor.name}</span>
@@ -344,16 +508,98 @@ function InstructorsContent() {
             ))}
           </div>
 
-          <div className="mt-12 flex justify-center">
-            <div className="flex items-center gap-2">
-              <Link href="/instructors?page=1" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm opacity-50 cursor-not-allowed">&lt;</Link>
-              <Link href="/instructors?page=1" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-[#F94C8D] bg-[#F94C8D] px-3 text-sm text-white hover:bg-white hover:text-black hover:border-[#F94C8D]">1</Link>
-              <Link href="/instructors?page=2" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">2</Link>
-              <Link href="/instructors?page=3" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">3</Link>
-              <Link href="/instructors?page=4" className="flex h-9 min-w-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm">4</Link>
-              <Link href="/instructors?page=2" className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm">&gt;</Link>
+          {filteredInstructors.length > 0 && (
+            <div className="mt-12 flex justify-center">
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                  className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'}`}
+                  disabled={currentPage === 1}
+                >
+                  &lt;
+                </button>
+                
+                {Array.from({ length: Math.min(totalPages, 7) }).map((_, i) => {
+                  // Create a sliding window of page numbers
+                  let pageNum;
+                  
+                  if (totalPages <= 7) {
+                    // If 7 or fewer pages, show all page numbers
+                    pageNum = i + 1;
+                  } else if (currentPage <= 4) {
+                    // If near the start, show pages 1-5, then ellipsis, then last page
+                    if (i < 5) {
+                      pageNum = i + 1;
+                    } else if (i === 5) {
+                      return (
+                        <span key="ellipsis-1" className="flex h-9 min-w-9 items-center justify-center">
+                          ...
+                        </span>
+                      );
+                    } else {
+                      pageNum = totalPages;
+                    }
+                  } else if (currentPage >= totalPages - 3) {
+                    // If near the end, show first page, then ellipsis, then last 5 pages
+                    if (i === 0) {
+                      pageNum = 1;
+                    } else if (i === 1) {
+                      return (
+                        <span key="ellipsis-2" className="flex h-9 min-w-9 items-center justify-center">
+                          ...
+                        </span>
+                      );
+                    } else {
+                      pageNum = totalPages - (6 - i);
+                    }
+                  } else {
+                    // If in the middle, show first page, ellipsis, current-1, current, current+1, ellipsis, last page
+                    if (i === 0) {
+                      pageNum = 1;
+                    } else if (i === 1) {
+                      return (
+                        <span key="ellipsis-3" className="flex h-9 min-w-9 items-center justify-center">
+                          ...
+                        </span>
+                      );
+                    } else if (i >= 2 && i <= 4) {
+                      pageNum = currentPage + (i - 3);
+                    } else if (i === 5) {
+                      return (
+                        <span key="ellipsis-4" className="flex h-9 min-w-9 items-center justify-center">
+                          ...
+                        </span>
+                      );
+                    } else {
+                      pageNum = totalPages;
+                    }
+                  }
+                  
+                  return (
+                    <button
+                      key={`page-${pageNum}`}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm ${
+                        currentPage === pageNum
+                          ? 'border border-[#F94C8D] bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90'
+                          : 'border border-input bg-background hover:bg-gray-100'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                
+                <button 
+                  onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                  className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'}`}
+                  disabled={currentPage === totalPages}
+                >
+                  &gt;
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
