@@ -940,7 +940,7 @@ function InstructorsContent() {
                   <SelectTrigger id="style" className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Styles" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="all">All Styles</SelectItem>
                     <SelectItem value="salsa">Salsa</SelectItem>
                     <SelectItem value="bachata">Bachata</SelectItem>
@@ -960,7 +960,7 @@ function InstructorsContent() {
                   <SelectTrigger id="location" className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Locations" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="chicago">Chicago</SelectItem>
                     <SelectItem value="minneapolis">Minneapolis</SelectItem>
@@ -978,7 +978,7 @@ function InstructorsContent() {
                   <SelectTrigger id="price" className="w-full md:w-[180px]">
                     <SelectValue placeholder="Any Price" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="any">Any Price</SelectItem>
                     <SelectItem value="low">$20-50</SelectItem>
                     <SelectItem value="medium">$50-75</SelectItem>
@@ -1010,7 +1010,7 @@ function InstructorsContent() {
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="recommended">Recommended</SelectItem>
                 <SelectItem value="rating-high">Highest Rated</SelectItem>
                 <SelectItem value="price-low">Price: Low to High</SelectItem>

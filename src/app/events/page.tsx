@@ -48,7 +48,7 @@ export default function EventsPage() {
                   <SelectTrigger id="event-type" className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Events" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="all">All Events</SelectItem>
                     <SelectItem value="workshop">Workshops</SelectItem>
                     <SelectItem value="showcase">Showcases</SelectItem>
@@ -66,7 +66,7 @@ export default function EventsPage() {
                   <SelectTrigger id="location" className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Locations" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="chicago">Chicago</SelectItem>
                     <SelectItem value="online">Online Only</SelectItem>
