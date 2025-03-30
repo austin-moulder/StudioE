@@ -417,23 +417,6 @@ export default function EventsPage() {
           </Tabs>
         </div>
       </section>
-
-      {/* Host an Event CTA */}
-      <section className="relative py-16">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC]" />
-        <div className="container relative z-10">
-          <div className="mx-auto max-w-2xl text-center text-white">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Want to Host an Event?</h2>
-            <p className="mt-4 text-lg">
-              Are you a dance instructor or studio owner looking to host a workshop, showcase, or social event? Partner
-              with Studio E to reach more dancers!
-            </p>
-            <Button size="lg" variant="secondary" className="mt-8">
-              Submit Your Event
-            </Button>
-          </div>
-        </div>
-      </section>
     </div>
   )
 } 
