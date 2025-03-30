@@ -40,7 +40,7 @@ function InstructorsContent() {
   
   const ITEMS_PER_PAGE = 8
 
-  // Extended mock data for 52 instructors (showing first 16 here)
+  // Complete data for all 52 instructors from spreadsheet
   const instructors: Instructor[] = [
     // Page 1
     {
@@ -124,29 +124,29 @@ function InstructorsContent() {
       }
     },
     {
-      name: "Eda K.",
-      style: "Bachata & Merengue",
-      location: "Minneapolis, MN",
+      name: "Denisse A.",
+      style: "Salsa & Social Dancing",
+      location: "Chicago, IL",
       rating: 4.9,
-      reviews: 118,
+      reviews: 104,
       alias: "",
       image: "/placeholder.svg",
       price: {
-        lower: 60,
-        upper: 80
+        lower: 45,
+        upper: 65
       }
     },
     {
-      name: "Brian M.",
-      style: "Bachata & Sensual",
-      location: "Barcelona, Spain",
-      rating: 4.7,
-      reviews: 95,
-      alias: "B-Mac",
+      name: "Mario C.",
+      style: "DJ",
+      location: "Chicago, IL",
+      rating: 5.0,
+      reviews: 142,
+      alias: "DJ Machito",
       image: "/placeholder.svg",
       price: {
-        lower: 60,
-        upper: 80
+        lower: 45,
+        upper: 65
       }
     },
     // Page 2
@@ -203,6 +203,32 @@ function InstructorsContent() {
       }
     },
     {
+      name: "Eda K.",
+      style: "Bachata & Merengue",
+      location: "Minneapolis, MN",
+      rating: 4.9,
+      reviews: 118,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 60,
+        upper: 80
+      }
+    },
+    {
+      name: "Brian M.",
+      style: "Bachata & Sensual",
+      location: "Barcelona, Spain",
+      rating: 4.7,
+      reviews: 95,
+      alias: "B-Mac",
+      image: "/placeholder.svg",
+      price: {
+        lower: 60,
+        upper: 80
+      }
+    },
+    {
       name: "Briana H.",
       style: "Salsa",
       location: "Chicago, IL",
@@ -228,6 +254,7 @@ function InstructorsContent() {
         upper: 65
       }
     },
+    // Page 3
     {
       name: "Brandon H.",
       style: "Salsa, Branding",
@@ -254,25 +281,457 @@ function InstructorsContent() {
         lower: 20,
         upper: 40
       }
+    },
+    {
+      name: "Stephanie G.",
+      style: "Fitness, Rehabilitation",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 87,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 75,
+        upper: 95
+      }
+    },
+    {
+      name: "Abraham R.",
+      style: "DJ",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 68,
+      alias: "DJ A-Beatz",
+      image: "/placeholder.svg",
+      price: {
+        lower: 45,
+        upper: 65
+      }
+    },
+    {
+      name: "Marie F.",
+      style: "Photography",
+      location: "Milwaukee, WI",
+      rating: 4.8,
+      reviews: 74,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 35,
+        upper: 55
+      }
+    },
+    {
+      name: "Kevin A.",
+      style: "Photography, Video",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 79,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 35,
+        upper: 55
+      }
+    },
+    {
+      name: "Destiny R.",
+      style: "Bachata & Salsa",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 107,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 45,
+        upper: 65
+      }
+    },
+    {
+      name: "Ethan L.",
+      style: "Salsa",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 84,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    // Page 4
+    {
+      name: "Sarah Z.",
+      style: "Zouk & Kizomba",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 97,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 50,
+        upper: 70
+      }
+    },
+    {
+      name: "Patrick W.",
+      style: "Photography",
+      location: "Chicago, IL",
+      rating: 4.6,
+      reviews: 71,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 40,
+        upper: 60
+      }
+    },
+    {
+      name: "Diego P.",
+      style: "Music Production",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 63,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 35,
+        upper: 55
+      }
+    },
+    {
+      name: "Nadia A.",
+      style: "Boogaloo & Bachata",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 89,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Alain A.",
+      style: "Zouk",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 83,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Jacob B.",
+      style: "Music Production",
+      location: "Chicago, IL",
+      rating: 4.5,
+      reviews: 72,
+      alias: "Just Jacob",
+      image: "/placeholder.svg",
+      price: {
+        lower: 40,
+        upper: 60
+      }
+    },
+    {
+      name: "Re B.",
+      style: "Bachata",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 91,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Melvin P.",
+      style: "Photography, Magazine Style Portraits",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 85,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 45,
+        upper: 65
+      }
+    },
+    // Page 5
+    {
+      name: "Jocelyn M.",
+      style: "Heels & Bachata",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 112,
+      alias: "J Diva",
+      image: "/placeholder.svg",
+      price: {
+        lower: 45,
+        upper: 65
+      }
+    },
+    {
+      name: "Kimberly R.",
+      style: "Salsa & Pachanga",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 96,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Alicia M.",
+      style: "Choreo & Hip Hop",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 103,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Yvonne V.",
+      style: "Bachata",
+      location: "6 Chicago",
+      rating: 4.7,
+      reviews: 79,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Denita I.",
+      style: "Latin Jazz & Salsa",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 88,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Adrian T.",
+      style: "Salsa & Mambo",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 84,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Edgar M.",
+      style: "Bachata",
+      location: "Chicago, IL",
+      rating: 4.6,
+      reviews: 77,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Jonathan U.",
+      style: "Bachata & Salsa",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 82,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    // Page 6
+    {
+      name: "Ashley M.",
+      style: "Choreo & Reggaeton",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 109,
+      alias: "#AshMoves",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Maria L.",
+      style: "Salsa & Afro Latin",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 93,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 55,
+        upper: 75
+      }
+    },
+    {
+      name: "Cedric T.",
+      style: "Zumba",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 81,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 35,
+        upper: 55
+      }
+    },
+    {
+      name: "Bridget K.",
+      style: "Choreo & Hip Hop",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 94,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 40,
+        upper: 60
+      }
+    },
+    {
+      name: "Anna M.",
+      style: "Choreo & Twerk",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 86,
+      alias: "Musia",
+      image: "/placeholder.svg",
+      price: {
+        lower: 40,
+        upper: 60
+      }
+    },
+    {
+      name: "Javier R.",
+      style: "Choreo & Reggaeton",
+      location: "Chicago, IL",
+      rating: 4.7,
+      reviews: 78,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 40,
+        upper: 60
+      }
+    },
+    {
+      name: "Jose M.",
+      style: "Choreo & Reggaeton",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 89,
+      alias: "El-J",
+      image: "/placeholder.svg",
+      price: {
+        lower: 40,
+        upper: 60
+      }
+    },
+    {
+      name: "Nova R.",
+      style: "Choreo & Hip Hop",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 97,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 40,
+        upper: 60
+      }
+    },
+    // Page 7 (Last 4)
+    {
+      name: "Natalia D.",
+      style: "Heels",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 90,
+      alias: "Talia",
+      image: "/placeholder.svg",
+      price: {
+        lower: 40,
+        upper: 60
+      }
+    },
+    {
+      name: "Noushin A.",
+      style: "Life Coaching, Health and Medicine",
+      location: "Chicago, IL",
+      rating: 5.0,
+      reviews: 132,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 85,
+        upper: 105
+      }
+    },
+    {
+      name: "Lucy P.",
+      style: "Fitness, Personal Training",
+      location: "Chicago, IL",
+      rating: 4.9,
+      reviews: 102,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 30,
+        upper: 50
+      }
+    },
+    {
+      name: "Timothy M.",
+      style: "Fitness, Personal Training",
+      location: "Chicago, IL",
+      rating: 4.8,
+      reviews: 94,
+      alias: "",
+      image: "/placeholder.svg",
+      price: {
+        lower: 30,
+        upper: 50
+      }
     }
   ]
 
-  // Additional mock data to reach 52 instructors (not shown in UI but counted for pagination)
-  const totalInstructors = Array.from({ length: 52 - instructors.length }).map((_, index) => ({
-    name: `Instructor ${instructors.length + index + 1}`,
-    style: "Dance Style",
-    location: "Chicago, IL",
-    rating: 4.5,
-    reviews: 50,
-    alias: "",
-    image: "/placeholder.svg",
-    price: {
-      lower: 45,
-      upper: 65
-    }
-  }));
-
-  const allInstructors = [...instructors, ...totalInstructors];
+  // No longer need to generate fake data
+  const allInstructors = instructors;
   const totalPages = Math.ceil(allInstructors.length / ITEMS_PER_PAGE);
 
   // Filter instructors based on selected style
