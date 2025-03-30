@@ -15,6 +15,7 @@ const navLinks = [
   { name: "Podcast", href: "/podcast" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
+  { name: "Supabase Demo", href: "/supabase-demo" },
 ]
 
 export default function Navbar() {
