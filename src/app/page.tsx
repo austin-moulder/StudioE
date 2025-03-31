@@ -13,12 +13,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { getDanceStyleImages } from "@/lib/supabase/imageUtils";
 
 export default function Home() {
   const [selectedStyle, setSelectedStyle] = useState("");
+  const [danceStyleImages, setDanceStyleImages] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const images = await getDanceStyleImages();
+        setDanceStyleImages(images);
+      } catch (error) {
+        console.error("Error loading dance style images:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadImages();
+  }, []);
 
   const handleSearch = () => {
     if (selectedStyle) {
@@ -81,10 +99,10 @@ export default function Home() {
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { name: "Salsa", image: "/placeholder.svg", count: 24 },
-              { name: "Bachata", image: "/placeholder.svg", count: 18 },
-              { name: "Heels", image: "/placeholder.svg", count: 15 },
-              { name: "Choreo", image: "/placeholder.svg", count: 20 },
+              { name: "Salsa", count: 24 },
+              { name: "Bachata", count: 18 },
+              { name: "Heels", count: 15 },
+              { name: "Choreo", count: 20 },
             ].map((style) => (
               <Link 
                 key={style.name} 
@@ -92,9 +110,18 @@ export default function Home() {
                 className="group relative overflow-hidden rounded-lg hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="aspect-square relative overflow-hidden rounded-lg">
-                  <div className="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-300 flex items-center justify-center">
-                    <span className="text-gray-400 text-lg">{style.name}</span>
-                  </div>
+                  {danceStyleImages[style.name.toLowerCase()] ? (
+                    <Image
+                      src={danceStyleImages[style.name.toLowerCase()]}
+                      alt={`${style.name} dance style`}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-300 flex items-center justify-center">
+                      <span className="text-gray-400 text-lg">{style.name}</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   <div className="absolute bottom-0 left-0 p-4 text-white">
                     <h3 className="text-xl font-bold">{style.name}</h3>
