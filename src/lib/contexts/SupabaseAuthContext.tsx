@@ -3,14 +3,17 @@
 import React, { createContext, useEffect, useState, useMemo } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "../supabase/supabase";
-import { signInWithGoogle, signOut as supabaseSignOut } from "../supabase/supabaseUtils";
+import { signInWithGoogle, signOut as supabaseSignOut, signInWithMagicLink } from "../supabase/supabaseUtils";
 
 interface SupabaseAuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
+  authError: string | null;
+  clearAuthError: () => void;
 }
 
 // Create a default context value
@@ -21,9 +24,14 @@ const defaultContextValue: SupabaseAuthContextType = {
   signInWithGoogle: async () => {
     console.warn("signInWithGoogle was called before SupabaseAuthProvider was initialized");
   },
+  signInWithEmail: async () => {
+    console.warn("signInWithEmail was called before SupabaseAuthProvider was initialized");
+  },
   signOut: async () => {
     console.warn("signOut was called before SupabaseAuthProvider was initialized");
   },
+  authError: null,
+  clearAuthError: () => {},
 };
 
 // Create the context with the default value
@@ -34,6 +42,7 @@ export function SupabaseAuthProvider({ children }: { children: React.ReactNode }
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   // Set isClient to true when running in the browser
   useEffect(() => {
@@ -71,11 +80,16 @@ export function SupabaseAuthProvider({ children }: { children: React.ReactNode }
     }
   }, [isClient]);
 
+  const clearAuthError = () => {
+    setAuthError(null);
+  };
+
   const handleSignInWithGoogle = async (): Promise<void> => {
     // Ensure we're on the client
     if (typeof window === 'undefined') return;
     
     try {
+      setAuthError(null);
       await signInWithGoogle();
       // Auth state changes are handled by the listener
     } catch (error) {
@@ -86,7 +100,32 @@ export function SupabaseAuthProvider({ children }: { children: React.ReactNode }
       }
       
       console.error("Error signing in with Google", error);
-      throw error;
+      if (error instanceof Error && error.message.includes('provider is not enabled')) {
+        setAuthError("Google login is not enabled. Please use email sign-in instead or contact the administrator to enable Google login.");
+      } else {
+        setAuthError("An error occurred during sign in. Please try again later.");
+      }
+    }
+  };
+
+  const handleSignInWithEmail = async (email: string): Promise<void> => {
+    // Ensure we're on the client
+    if (typeof window === 'undefined') return;
+    
+    try {
+      setAuthError(null);
+      const { error } = await signInWithMagicLink(email);
+      if (error) {
+        throw error;
+      }
+      setAuthError("Check your email for the login link!");
+    } catch (error) {
+      console.error("Error signing in with email", error);
+      if (error instanceof Error) {
+        setAuthError(error.message);
+      } else {
+        setAuthError("An error occurred during email sign in. Please try again later.");
+      }
     }
   };
 
@@ -109,8 +148,11 @@ export function SupabaseAuthProvider({ children }: { children: React.ReactNode }
     session,
     loading,
     signInWithGoogle: handleSignInWithGoogle,
+    signInWithEmail: handleSignInWithEmail,
     signOut: handleSignOut,
-  }), [user, session, loading]);
+    authError,
+    clearAuthError,
+  }), [user, session, loading, authError]);
 
   return (
     <SupabaseAuthContext.Provider value={contextValue}>

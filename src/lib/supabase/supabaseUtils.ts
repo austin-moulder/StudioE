@@ -38,12 +38,30 @@ export const signInWithEmail = async (
 export const signInWithOAuth = async (provider: Provider): Promise<OAuthResponse> => {
   return await supabase.auth.signInWithOAuth({
     provider,
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`
+    }
   });
 };
 
 // Sign in with Google specifically (for easier migration from Firebase)
 export const signInWithGoogle = async (): Promise<OAuthResponse> => {
-  return await signInWithOAuth('google');
+  try {
+    return await signInWithOAuth('google');
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
+    throw error;
+  }
+};
+
+// Magic link sign in (alternative when OAuth is not available)
+export const signInWithMagicLink = async (email: string): Promise<AuthResponse> => {
+  return await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/callback`
+    }
+  });
 };
 
 // Sign out
