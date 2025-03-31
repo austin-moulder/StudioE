@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, LogOut, Mail } from "lucide-react"
+import { Menu, X, LogOut, Mail, User } from "lucide-react"
 import { useSupabaseAuth } from "@/lib/hooks/useSupabaseAuth"
 import SupabaseLogo from "./SupabaseLogo"
 
@@ -21,7 +21,7 @@ const navLinks = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const [showEmailForm, setShowEmailForm] = useState(false)
+  const [showEmailForm, setShowEmailForm] = useState(true)
   const [email, setEmail] = useState("")
   const { user, loading, signInWithGoogle, signInWithEmail, signOut, authError, clearAuthError } = useSupabaseAuth()
 
@@ -32,13 +32,6 @@ export default function Navbar() {
       setMounted(true)
     }
   }, [])
-
-  // Show email form when there's an auth error suggesting to use email
-  useEffect(() => {
-    if (authError && authError.includes("Google login is not enabled")) {
-      setShowEmailForm(true)
-    }
-  }, [authError])
 
   // Prevent scroll when mobile menu is open
   useEffect(() => {
@@ -106,7 +99,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-3">
                   <div className="hidden md:block">
                     <div className="flex items-center gap-2">
-                      {user.user_metadata?.avatar_url && (
+                      {user.user_metadata?.avatar_url ? (
                         <Image 
                           src={user.user_metadata.avatar_url} 
                           alt={user.user_metadata?.full_name || "User"} 
@@ -114,8 +107,12 @@ export default function Navbar() {
                           height={32} 
                           className="rounded-full" 
                         />
+                      ) : (
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-200">
+                          <User className="h-5 w-5 text-gray-500" />
+                        </div>
                       )}
-                      <span className="text-sm font-medium">{user.user_metadata?.full_name?.split(' ')[0] || 'User'}</span>
+                      <span className="text-sm font-medium">{user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'User'}</span>
                     </div>
                   </div>
                   <button 
@@ -128,15 +125,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <div className="relative">
-                  <button 
-                    onClick={handleSignIn}
-                    className="text-sm font-medium"
-                  >
-                    Sign In
-                  </button>
-                  
-                  {/* Email sign-in form */}
-                  {showEmailForm && (
+                  {showEmailForm ? (
                     <div className="absolute right-0 mt-2 w-64 p-4 bg-white rounded-md shadow-lg border z-50">
                       <div className="flex justify-between items-center mb-2">
                         <h3 className="text-sm font-medium">Sign in with Email</h3>
@@ -173,7 +162,22 @@ export default function Navbar() {
                           Send Magic Link
                         </button>
                       </form>
+                      <div className="mt-2 text-center">
+                        <button 
+                          onClick={handleSignIn}
+                          className="text-xs text-gray-600 hover:text-gray-900"
+                        >
+                          Try Google Sign In
+                        </button>
+                      </div>
                     </div>
+                  ) : (
+                    <button 
+                      onClick={() => setShowEmailForm(true)}
+                      className="text-sm font-medium"
+                    >
+                      Sign In
+                    </button>
                   )}
                 </div>
               )}
@@ -244,7 +248,7 @@ export default function Navbar() {
                   {user ? (
                     <div className="pb-4">
                       <div className="flex items-center gap-3 mb-4 p-3 bg-white/90 border border-gray-200 rounded-lg">
-                        {user.user_metadata?.avatar_url && (
+                        {user.user_metadata?.avatar_url ? (
                           <Image 
                             src={user.user_metadata.avatar_url} 
                             alt={user.user_metadata?.full_name || "User"} 
@@ -252,8 +256,12 @@ export default function Navbar() {
                             height={40} 
                             className="rounded-full" 
                           />
+                        ) : (
+                          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200">
+                            <User className="h-6 w-6 text-gray-500" />
+                          </div>
                         )}
-                        <span className="text-md font-medium text-gray-900">{user.user_metadata?.full_name || 'User'}</span>
+                        <span className="text-md font-medium text-gray-900">{user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}</span>
                       </div>
                       <button 
                         onClick={() => {
@@ -268,55 +276,52 @@ export default function Navbar() {
                     </div>
                   ) : (
                     <div>
-                      {showEmailForm ? (
-                        <div className="p-4 bg-white/90 rounded-md border mb-3">
-                          <div className="flex justify-between items-center mb-2">
-                            <h3 className="text-sm font-medium">Sign in with Email</h3>
+                      <div className="p-4 bg-white/90 rounded-md border mb-3">
+                        <div className="flex justify-between items-center mb-2">
+                          <h3 className="text-sm font-medium">Sign in with Email</h3>
+                          <button 
+                            onClick={() => {
+                              setShowEmailForm(false);
+                              clearAuthError();
+                              setMobileMenuOpen(false);
+                            }}
+                            className="text-gray-400 hover:text-gray-600"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                        {authError && !authError.includes("Check your email") && (
+                          <p className="text-xs text-red-500 mb-2">{authError}</p>
+                        )}
+                        {authError && authError.includes("Check your email") && (
+                          <p className="text-xs text-green-500 mb-2">{authError}</p>
+                        )}
+                        <form onSubmit={handleEmailSignIn}>
+                          <input
+                            type="email"
+                            placeholder="Your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full p-2 text-sm border rounded-md mb-2"
+                            required
+                          />
+                          <button
+                            type="submit"
+                            className="w-full flex justify-center items-center gap-1 bg-[#EC407A] text-white p-2 rounded-md text-sm"
+                          >
+                            <Mail className="h-4 w-4" />
+                            Send Magic Link
+                          </button>
+                          <div className="mt-2 text-center">
                             <button 
-                              onClick={() => {
-                                setShowEmailForm(false);
-                                clearAuthError();
-                              }}
-                              className="text-gray-400 hover:text-gray-600"
+                              onClick={handleSignIn}
+                              className="text-xs text-gray-600 hover:text-gray-900"
                             >
-                              <X className="h-4 w-4" />
+                              Try Google Sign In
                             </button>
                           </div>
-                          {authError && !authError.includes("Check your email") && (
-                            <p className="text-xs text-red-500 mb-2">{authError}</p>
-                          )}
-                          {authError && authError.includes("Check your email") && (
-                            <p className="text-xs text-green-500 mb-2">{authError}</p>
-                          )}
-                          <form onSubmit={handleEmailSignIn}>
-                            <input
-                              type="email"
-                              placeholder="Your email"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              className="w-full p-2 text-sm border rounded-md mb-2"
-                              required
-                            />
-                            <button
-                              type="submit"
-                              className="w-full flex justify-center items-center gap-1 bg-[#EC407A] text-white p-2 rounded-md text-sm"
-                            >
-                              <Mail className="h-4 w-4" />
-                              Send Magic Link
-                            </button>
-                          </form>
-                        </div>
-                      ) : (
-                        <button 
-                          onClick={() => {
-                            handleSignIn();
-                            setMobileMenuOpen(false);
-                          }}
-                          className="w-full rounded-md border-2 border-gray-300 bg-white/90 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50/90 transition"
-                        >
-                          Sign In
-                        </button>
-                      )}
+                        </form>
+                      </div>
                     </div>
                   )}
                 </>

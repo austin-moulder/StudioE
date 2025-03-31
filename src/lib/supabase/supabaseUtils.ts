@@ -56,12 +56,18 @@ export const signInWithGoogle = async (): Promise<OAuthResponse> => {
 
 // Magic link sign in (alternative when OAuth is not available)
 export const signInWithMagicLink = async (email: string): Promise<AuthResponse> => {
-  return await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${window.location.origin}/auth/callback`
-    }
-  });
+  try {
+    return await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        shouldCreateUser: true
+      }
+    });
+  } catch (error) {
+    console.error("Error signing in with magic link:", error);
+    throw error;
+  }
 };
 
 // Sign out
