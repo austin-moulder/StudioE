@@ -5,60 +5,40 @@ import { supabase } from './supabase';
  */
 export const getMainLogoUrl = async (): Promise<string> => {
   try {
-    // First attempt to get from logos/main directory
-    try {
-      const { data, error } = await supabase.storage
-        .from('logos')
-        .list('main');
+    // The direct URL to the Studio E logo
+    const directLogoUrl = "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Main.png";
+    return directLogoUrl;
+    
+    // If we need to fall back to searching and generating the URL dynamically, we can use this code
+    /*
+    // Try getting from correct bucket and path
+    const { data: logoData, error: logoError } = await supabase.storage
+      .from('assetsv1')
+      .list('Logos');
 
-      if (!error && data.length > 0) {
-        // Find the logo file (assuming it's named logo.png, logo.jpg, or similar)
-        const logoFile = data.find(file => 
-          file.name.toLowerCase().includes('logo') && 
-          !file.name.toLowerCase().includes('favicon')
-        );
-
-        if (logoFile) {
-          // Get the public URL for the logo
-          const { data: urlData } = supabase.storage
-            .from('logos')
-            .getPublicUrl(`main/${logoFile.name}`);
-
-          return urlData.publicUrl;
-        }
-      }
-    } catch (dirError) {
-      console.error('Error with main directory:', dirError);
-      // Continue to next approach
+    if (logoError) {
+      console.error('Error listing logos:', logoError.message);
+      return directLogoUrl; // Fall back to the direct URL
     }
 
-    // Try getting from root of logos bucket
-    const { data: rootData, error: rootError } = await supabase.storage
-      .from('logos')
-      .list();
-
-    if (rootError) {
-      console.error('Error listing root logos:', rootError.message);
-      throw rootError;
-    }
-
-    // Find the logo file in the root
-    const logoFile = rootData.find(file => 
+    // Find the logo file
+    const logoFile = logoData.find(file => 
       file.name.toLowerCase().includes('logo') && 
-      !file.name.toLowerCase().includes('favicon')
+      file.name.toLowerCase().includes('main')
     );
 
     if (!logoFile) {
-      console.error('No logo file found in logos storage');
-      return '/placeholder-logo.svg'; // Fallback to a default logo
+      console.error('No main logo file found in storage');
+      return directLogoUrl; // Fall back to the direct URL
     }
 
     // Get the public URL for the logo
     const { data: urlData } = supabase.storage
-      .from('logos')
-      .getPublicUrl(logoFile.name);
+      .from('assetsv1')
+      .getPublicUrl(`Logos/${logoFile.name}`);
 
     return urlData.publicUrl;
+    */
   } catch (error) {
     console.error('Error getting logo URL:', error);
     return '/placeholder-logo.svg'; // Fallback to a default logo
