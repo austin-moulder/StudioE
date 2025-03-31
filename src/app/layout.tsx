@@ -3,6 +3,7 @@ import { Inter, Montserrat } from "next/font/google";
 import { Metadata } from "next";
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Providers } from "@/lib/providers";
 import { cn } from "@/lib/utils";
 
 import Navbar from "@/components/Navbar";
@@ -48,13 +49,15 @@ export default function RootLayout({
         <link rel="icon" href="/studio-e-logo.svg" type="image/svg+xml" />
       </head>
       <body className={cn(inter.variable, montserrat.variable, "min-h-screen flex flex-col")}>
-        <SupabaseAuthProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </SupabaseAuthProvider>
-        <Analytics />
-        <SpeedInsights />
+        <Providers>
+          <SupabaseAuthProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </SupabaseAuthProvider>
+          <Analytics />
+          <SpeedInsights />
+        </Providers>
       </body>
     </html>
   );
