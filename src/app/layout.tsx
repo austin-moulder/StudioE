@@ -24,10 +24,13 @@ export const metadata: Metadata = {
   description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
   icons: {
     icon: [
-      {
-        url: "/icon.svg",
-        href: "/icon.svg",
-      },
+      { url: "/studio-e-logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/studio-e-logo.svg" }
+    ],
+    shortcut: [
+      { url: "/studio-e-logo.svg" }
     ],
   },
 };
@@ -40,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/studio-e-logo.svg" type="image/svg+xml" />
       </head>
       <body className={cn(inter.variable, montserrat.variable, "min-h-screen flex flex-col")}>
         <SupabaseAuthProvider>
