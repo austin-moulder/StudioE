@@ -111,22 +111,32 @@ export default function Home() {
               >
                 <div className="aspect-square relative overflow-hidden rounded-lg">
                   {danceStyleImages[style.name.toLowerCase()] ? (
-                    <Image
-                      src={danceStyleImages[style.name.toLowerCase()]}
-                      alt={`${style.name} dance style`}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    <>
+                      <Image
+                        src={danceStyleImages[style.name.toLowerCase()]}
+                        alt={`${style.name} dance style`}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        unoptimized
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      <div className="absolute bottom-0 left-0 p-4 text-white">
+                        <h3 className="text-xl font-bold">{style.name}</h3>
+                        <p className="text-sm">{style.count} Instructors</p>
+                      </div>
+                    </>
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-300 flex items-center justify-center">
-                      <span className="text-gray-400 text-lg">{style.name}</span>
-                    </div>
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-300 flex items-center justify-center">
+                        <span className="text-gray-400 text-lg">{style.name}</span>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      <div className="absolute bottom-0 left-0 p-4 text-white">
+                        <h3 className="text-xl font-bold">{style.name}</h3>
+                        <p className="text-sm">{style.count} Instructors</p>
+                      </div>
+                    </>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                  <div className="absolute bottom-0 left-0 p-4 text-white">
-                    <h3 className="text-xl font-bold">{style.name}</h3>
-                    <p className="text-sm">{style.count} Instructors</p>
-                  </div>
                 </div>
               </Link>
             ))}
