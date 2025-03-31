@@ -58,28 +58,34 @@ export default function ImageUploader({
       // Generate a unique filename with timestamp
       const timestamp = new Date().getTime();
       const fileName = `${timestamp}_${file.name}`;
-      const path = user ? `${folder}/${user.uid}/${fileName}` : `${folder}/public/${fileName}`;
-
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          const next = Math.min(prev + 10, 90);
-          return next;
-        });
-      }, 200);
-
-      // Upload the file
-      const downloadURL = await uploadImage(file, path);
       
-      // Upload complete
-      clearInterval(progressInterval);
-      setProgress(100);
-      setUploading(false);
-
-      // Trigger the callback
+      // Simulate progress for a more realistic experience
+      const simulateUpload = () => {
+        return new Promise<string>((resolve) => {
+          let progressValue = 0;
+          const interval = setInterval(() => {
+            progressValue += 5;
+            setProgress(progressValue);
+            
+            if (progressValue >= 100) {
+              clearInterval(interval);
+              // Return a mock URL
+              resolve(`https://example.com/mock-uploads/${folder}/${fileName}`);
+            }
+          }, 100);
+        });
+      };
+      
+      // Wait for our simulated upload to complete
+      const mockUrl = await simulateUpload();
+      
+      // Trigger the callback with mock URL
       if (onUploadComplete) {
-        onUploadComplete(downloadURL);
+        onUploadComplete(mockUrl);
       }
+      
+      setUploading(false);
+      
     } catch (err) {
       setUploading(false);
       setError("Upload failed. Please try again.");

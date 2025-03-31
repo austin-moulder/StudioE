@@ -3,9 +3,9 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Facebook, Instagram, Youtube, Settings } from "lucide-react"
-import { useAuth } from "@/lib/hooks/useAuth"
+import { useSupabaseAuth } from "@/lib/hooks/useSupabaseAuth"
 import { useState, useEffect } from "react"
-import FirebaseLogo from "./FirebaseLogo"
+import StudioELogo from "./StudioELogo"
 
 // Custom Spotify icon component since it's not included in lucide-react
 const Spotify = (props: any) => (
@@ -35,7 +35,7 @@ export default function Footer() {
   useEffect(() => {
     setMounted(true);
     try {
-      const { user } = useAuth();
+      const { user } = useSupabaseAuth();
       setUser(user);
     } catch (error) {
       console.error("Error accessing auth context:", error);
@@ -48,8 +48,8 @@ export default function Footer() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col gap-2">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex items-center justify-center h-10 w-36">
-                <FirebaseLogo width={125} height={40} alt="Studio E Logo" className="mx-auto" />
+              <div className="flex items-center justify-center h-10 w-10">
+                <StudioELogo width={40} height={40} alt="Studio E Logo" className="mx-auto" />
               </div>
               <span className="font-montserrat font-bold text-xl">STUDIO E</span>
             </Link>

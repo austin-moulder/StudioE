@@ -10,75 +10,105 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 const episodes = [
   {
     number: 10,
-    title: "Eda Kachiri: Unleashing Passion in Your Dance Growing Your City",
+    title: "Unleashing Passion in Your Dance Growing Your City",
     guest: "Eda Kachiri",
     guestTitle: "Bachata & Merengue Instructor",
     duration: "55:42",
     date: "September 13, 2024",
     description: "Eda discusses how to build a thriving dance community and grow the dance scene in your city.",
-    image: "/placeholder.svg?height=400&width=600&text=Eda",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_EdaKachiri.png",
   },
   {
     number: 9,
-    title: "B-Mac: Becoming an International Bachata Sensual Ambassador",
+    title: "Becoming an International Bachata Sensual Ambassador",
     guest: "Brian MacDonald",
     guestTitle: "Bachata Instructor",
     duration: "51:05",
     date: "August 30, 2024",
     description:
       "Brian shares his journey from local instructor to international bachata ambassador and offers advice for aspiring teachers.",
-    image: "/placeholder.svg?height=400&width=600&text=BMac",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_BMac.png",
   },
   {
     number: 8,
-    title: "The Harrison Twins: Fighting the Urge to Compare in Social Dance",
+    title: "Fighting the Urge to Compare in Social Dance",
     guest: "Harrison Twins",
     guestTitle: "Dance Instructors",
-    duration: "1:04:10",
+    duration: "01:04:10",
     date: "August 16, 2024",
     description: "The Harrison Twins explore the psychology of comparison in social dance and how to overcome it.",
-    image: "/placeholder.svg?height=400&width=600&text=Twins",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_HarrisonTwins.png",
   },
   {
     number: 7,
-    title: "Stephanie Groth: Physical Therapist Shares Best Practices for Social Dancer Longevity",
+    title: "Physical Therapist Shares Best Practices for Social Dancer Longevity",
     guest: "Stephanie Groth",
     guestTitle: "Physical Therapist",
     duration: "52:41",
     date: "August 2, 2024",
     description: "Stephanie shares expert advice on injury prevention and body maintenance for dancers.",
-    image: "/placeholder.svg?height=400&width=600&text=Stephanie",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Stephanie.png",
   },
   {
     number: 6,
-    title: "Jocelyn & Nathalie: Confidence, Femininity, and Unleashing Your Sexy Alter Ego",
+    title: "Confidence, Femininity, and Unleashing Your Sexy Alter Ego",
     guest: "Jocelyn & Nathalie",
     guestTitle: "Heels & Reggaeton Instructors",
     duration: "44:28",
     date: "July 19, 2024",
     description:
       "Jocelyn and Nathalie discuss how dance can be a powerful tool for self-expression and confidence building.",
-    image: "/placeholder.svg?height=400&width=600&text=J&N",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Jocelyn_&_Nathalie.png",
   },
   {
     number: 5,
-    title: "Ritmos Negros: Exploring the Evolution of Bachata and Afro-Cuban Culture",
+    title: "Exploring the Evolution of Bachata and Afro-Cuban Culture",
     guest: "Ritmos Negros",
     guestTitle: "Dance Historian & Performer",
-    duration: "1:02:25",
+    duration: "01:02:25",
     date: "June 28, 2024",
     description: "A deep dive into the rich cultural history and evolution of Bachata and Afro-Cuban dance styles.",
-    image: "/placeholder.svg?height=400&width=600&text=Ritmos",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_RitmosNegros.png",
   },
   {
     number: 4,
-    title: "Jackie & Rafa: Building a Dance Partnership",
+    title: "Dance Travel, Injury Recovery, and Dating Non-Dancers",
+    guest: "Natalye Medina",
+    guestTitle: "Professional Dancer & Instructor",
+    duration: "47:18",
+    date: "June 14, 2024",
+    description: "Natalye shares insights on balancing travel as a dancer, recovering from injuries, and navigating relationships with non-dancers.",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Natalye.png",
+  },
+  {
+    number: 3,
+    title: "Build A Career as a Latin Social Dance DJ",
+    guest: "DJ Diem",
+    guestTitle: "Professional Latin DJ",
+    duration: "49:51",
+    date: "May 31, 2024",
+    description: "DJ Diem shares his journey and insights on building a successful career as a Latin social dance DJ.",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_DJDiemClassic.png",
+  },
+  {
+    number: 2,
+    title: "Training Fundamentals and Tips for Growing as a Dancer",
     guest: "Jackie & Rafa",
     guestTitle: "Professional Dance Partners",
-    duration: "48:15",
-    date: "June 14, 2024",
-    description: "Jackie and Rafa discuss the challenges and rewards of building a successful dance partnership.",
-    image: "/placeholder.svg?height=400&width=600&text=Jackie&Rafa",
+    duration: "54:02",
+    date: "May 17, 2024",
+    description: "Jackie and Rafa discuss training fundamentals and share their best tips for growing as a dancer.",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Jackie_&_Rafa.png",
+  },
+  {
+    number: 1,
+    title: "Welcome to Studio E: The Podcast for Latin Dancers",
+    guest: "Austin Moulder",
+    guestTitle: "Host & Founder",
+    duration: "06:56",
+    date: "March 23, 2024",
+    description: "An introduction to Studio E Podcast, where we explore the world of Latin dance through conversations with instructors and industry professionals.",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Main.png",
   },
 ]
 
@@ -93,34 +123,45 @@ export function PodcastTabs() {
       <TabsContent value="season1" className="space-y-8">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {episodes.map((episode, index) => (
-            <Card key={index} className="overflow-hidden">
-              <div className="aspect-[3/2] relative bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC] flex items-center justify-center">
-                <Image src={episode.image || "/placeholder.svg"} alt={episode.title} fill className="object-cover" />
-                <div className="absolute top-4 left-4 bg-[#F94C8D] px-3 py-1 rounded-full text-white text-sm font-medium">
+            <Card key={index} className="overflow-hidden flex flex-col h-full">
+              <div className="aspect-square relative overflow-hidden">
+                <Image 
+                  src={episode.image} 
+                  alt={episode.title} 
+                  fill 
+                  className="object-cover" 
+                  style={{ objectPosition: "center" }}
+                  priority={index < 3}
+                />
+                <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded-full text-[#F94C8D] text-sm font-bold shadow-md">
                   EP {episode.number}
                 </div>
               </div>
-              <CardContent className="p-6">
+              <CardContent className="p-6 bg-white flex-grow flex flex-col">
                 <h3 className="text-xl font-bold">{episode.title}</h3>
                 <div className="mt-2 flex items-center gap-2">
                   <Badge variant="outline">Guest</Badge>
                   <span className="text-sm font-medium">{episode.guest}</span>
                 </div>
                 <p className="mt-4 text-sm text-muted-foreground line-clamp-3">{episode.description}</p>
-                <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                  <div className="flex items-center">
-                    <Calendar className="mr-1 h-4 w-4" />
-                    {episode.date}
+                <div className="mt-auto pt-4">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <div className="flex items-center">
+                      <Calendar className="mr-1 h-4 w-4" />
+                      {episode.date}
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="mr-1 h-4 w-4" />
+                      {episode.duration}
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <Clock className="mr-1 h-4 w-4" />
-                    {episode.duration}
+                  <div className="flex items-start mt-2">
+                    <Button variant="link" className="p-0 h-auto text-primary pl-0">
+                      Listen Now
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-                <Button variant="link" className="mt-4 p-0 h-auto">
-                  Listen Now
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
               </CardContent>
             </Card>
           ))}

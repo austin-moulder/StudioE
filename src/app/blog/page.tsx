@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { Calendar, ArrowRight, Search } from "lucide-react"
@@ -6,8 +8,29 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function BlogPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const router = useRouter();
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    
+    if (searchTerm) {
+      params.set("q", searchTerm);
+    }
+    
+    if (selectedCategory && selectedCategory !== "all") {
+      params.set("category", selectedCategory);
+    }
+    
+    const query = params.toString();
+    router.push(`/blog${query ? `?${query}` : ""}`);
+  };
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -32,7 +55,13 @@ export default function BlogPage() {
               </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                <Input id="search" placeholder="Search by keyword or topic" className="pl-10" />
+                <Input 
+                  id="search" 
+                  placeholder="Search by keyword or topic" 
+                  className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)} 
+                />
               </div>
             </div>
 
@@ -40,11 +69,11 @@ export default function BlogPage() {
               <label htmlFor="category" className="text-sm font-medium">
                 Category
               </label>
-              <Select>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger id="category" className="w-full md:w-[180px]">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="tips">Tips & Techniques</SelectItem>
                   <SelectItem value="instructor">Instructor Spotlights</SelectItem>
@@ -55,7 +84,7 @@ export default function BlogPage() {
               </Select>
             </div>
 
-            <Button>Search</Button>
+            <Button onClick={handleSearch}>Search</Button>
           </div>
         </div>
       </section>

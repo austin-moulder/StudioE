@@ -1,59 +1,45 @@
 "use client";
 
+// Import from mock implementation
 import { auth, db, storage } from "./firebase";
-import {
-  signOut,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "firebase/storage";
 import { User } from "firebase/auth";
 
-// Auth functions
-export const logoutUser = () => signOut(auth);
+// Auth functions - using mock implementations
+export const logoutUser = async () => {
+  console.info("Firebase auth is disabled - using Supabase instead");
+  return Promise.resolve();
+};
 
 export const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
-    return result.user;
-  } catch (error) {
-    console.error("Error signing in with Google", error);
-    throw error;
-  }
+  console.info("Firebase auth is disabled - using Supabase instead");
+  return null;
 };
 
-// Firestore functions
-export const addDocument = (collectionName: string, data: any) =>
-  addDoc(collection(db, collectionName), data);
+// Firestore functions - using mock implementations 
+export const addDocument = async (collectionName: string, data: any) => {
+  console.info(`Mock: Adding document to ${collectionName}`, data);
+  return { id: 'mock-doc-id' };
+};
 
 export const getDocuments = async (collectionName: string) => {
-  const querySnapshot = await getDocs(collection(db, collectionName));
-  return querySnapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
+  console.info(`Mock: Getting documents from ${collectionName}`);
+  return [];
 };
 
-export const updateDocument = (collectionName: string, id: string, data: any) =>
-  updateDoc(doc(db, collectionName, id), data);
+export const updateDocument = async (collectionName: string, id: string, data: any) => {
+  console.info(`Mock: Updating document ${id} in ${collectionName}`, data);
+  return Promise.resolve();
+};
 
-export const deleteDocument = (collectionName: string, id: string) =>
-  deleteDoc(doc(db, collectionName, id));
+export const deleteDocument = async (collectionName: string, id: string) => {
+  console.info(`Mock: Deleting document ${id} from ${collectionName}`);
+  return Promise.resolve();
+};
 
-// Storage functions
+// Storage functions - using mock implementations
 export const uploadFile = async (file: File, path: string) => {
-  const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file);
-  return getDownloadURL(storageRef);
+  console.info(`Mock: Uploading file to ${path}`);
+  return 'https://example.com/mock-file.jpg';
 };
 
 // Upload an image to Firebase Storage
@@ -61,41 +47,19 @@ export const uploadImage = async (
   file: File,
   path: string
 ): Promise<string> => {
-  try {
-    const storageRef = ref(storage, path);
-    const snapshot = await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    return downloadURL;
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    throw error;
-  }
+  console.info(`Mock: Uploading image to ${path}`);
+  return 'https://example.com/mock-image.jpg';
 };
 
 // Get all images from a specific folder
 export const getImagesFromFolder = async (folderPath: string): Promise<string[]> => {
-  try {
-    const listRef = ref(storage, folderPath);
-    const result = await listAll(listRef);
-    const urls = await Promise.all(
-      result.items.map(async (itemRef) => {
-        return getDownloadURL(itemRef);
-      })
-    );
-    return urls;
-  } catch (error) {
-    console.error("Error getting images from folder:", error);
-    return [];
-  }
+  console.info(`Mock: Getting images from folder ${folderPath}`);
+  // Return empty array
+  return [];
 };
 
 // Delete an image from Firebase Storage
 export const deleteImage = async (path: string): Promise<void> => {
-  try {
-    const imageRef = ref(storage, path);
-    await deleteObject(imageRef);
-  } catch (error) {
-    console.error("Error deleting image:", error);
-    throw error;
-  }
+  console.info(`Mock: Deleting image from ${path}`);
+  return Promise.resolve();
 };

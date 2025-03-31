@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useEffect, useState, useMemo } from "react";
-import { signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut, UserCredential } from "firebase/auth";
+// Import mock types instead of real Firebase
 import { User } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 
@@ -15,12 +15,12 @@ interface AuthContextType {
 // Create a default context value
 const defaultContextValue: AuthContextType = {
   user: null,
-  loading: true,
+  loading: false,
   signInWithGoogle: async () => {
-    console.warn("signInWithGoogle was called before AuthProvider was initialized");
+    console.info("Firebase auth is disabled - using Supabase instead");
   },
   signOut: async () => {
-    console.warn("signOut was called before AuthProvider was initialized");
+    console.info("Firebase auth is disabled - using Supabase instead");
   },
 };
 
@@ -28,63 +28,19 @@ const defaultContextValue: AuthContextType = {
 const AuthContext = createContext<AuthContextType>(defaultContextValue);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  // Use default context value - we're not actually using Firebase
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isClient, setIsClient] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Set isClient to true when running in the browser
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Only set up the auth listener when in the browser
-  useEffect(() => {
-    // Skip if not in client-side environment
-    if (!isClient) return;
-
-    try {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
-        setUser(user);
-        setLoading(false);
-      });
-      
-      return () => unsubscribe();
-    } catch (error) {
-      console.error("Error setting up auth state listener:", error);
-      setLoading(false);
-    }
-  }, [isClient]);
-
+  // Simple mock - no actual Firebase operations
   const signInWithGoogle = async (): Promise<void> => {
-    // Ensure we're on the client
-    if (typeof window === 'undefined') return;
-    
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      // We don't need to return the UserCredential since it's handled by the onAuthStateChanged listener
-    } catch (error: any) {
-      // Don't treat popup closed by user as an error
-      if (error.code === 'auth/popup-closed-by-user') {
-        console.log('Sign-in popup was closed by the user');
-        return; // Just return silently without throwing
-      }
-      
-      console.error("Error signing in with Google", error);
-      throw error;
-    }
+    console.info("Firebase auth is disabled - using Supabase instead");
+    return Promise.resolve();
   };
 
   const signOutUser = async (): Promise<void> => {
-    // Ensure we're on the client
-    if (typeof window === 'undefined') return;
-    
-    try {
-      await firebaseSignOut(auth);
-    } catch (error) {
-      console.error("Error signing out", error);
-      throw error;
-    }
+    console.info("Firebase auth is disabled - using Supabase instead");
+    return Promise.resolve();
   };
 
   // Memoize the context value to prevent unnecessary re-renders

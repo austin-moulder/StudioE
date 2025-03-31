@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { SupabaseAuthProvider } from "@/lib/contexts/SupabaseAuthContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,17 +43,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="light">
       <head>
         <link rel="icon" href="/studio-e-logo.svg" type="image/svg+xml" />
+        <meta name="color-scheme" content="light only" />
       </head>
-      <body className={cn(inter.variable, montserrat.variable, "min-h-screen flex flex-col")}>
+      <body className={cn(inter.variable, montserrat.variable, "min-h-screen flex flex-col bg-white text-black")}>
         <Providers>
-          <SupabaseAuthProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </SupabaseAuthProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
           <Analytics />
           <SpeedInsights />
         </Providers>

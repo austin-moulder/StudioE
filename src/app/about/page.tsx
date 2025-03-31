@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import { getInstructorCount, getDanceStyleCount } from "@/lib/instructors/instructorUtils"
 
 export default function AboutPage() {
   const testimonials = [
@@ -50,6 +51,10 @@ export default function AboutPage() {
     setCurrentTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))
   }
 
+  // Calculate counts directly using the utility functions
+  const instructorCount = getInstructorCount()
+  const danceStyleCount = getDanceStyleCount()
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -94,8 +99,14 @@ export default function AboutPage() {
                 <li>A path of continuous learning</li>
               </ul>
             </div>
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-400 text-lg">Founder Image</span>
+            <div className="relative aspect-square overflow-hidden rounded-lg">
+              <Image
+                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Profile_Picture_Sitting.jpeg"
+                alt="Austin Moulder, Founder of Studio E"
+                fill
+                className="object-cover"
+                priority
+              />
             </div>
           </div>
         </div>
@@ -260,18 +271,27 @@ export default function AboutPage() {
                 name: "Austin Moulder, MBA",
                 role: "Founder & CEO",
                 bio: "Tech entrepreneur and Former Boston Consulting Group Consultant",
-                image: "/placeholder.svg",
+                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Profile_Picture_Standing.jpeg",
               },
               {
                 name: "Noushin Ansari",
                 role: "Head of Culture",
                 bio: "Seasoned medical professional and social dancer who believes in the power of building safe and inclusive communities.",
-                image: "/placeholder.svg",
+                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Noushin_Ansari.jpeg",
               },
             ].map((member, index) => (
               <div key={index} className="flex flex-col items-center text-center">
-                <div className="relative h-48 w-48 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400 text-sm">{member.name}</span>
+                <div className="relative h-48 w-48 overflow-hidden rounded-full">
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    className="object-cover"
+                    style={{
+                      objectPosition: member.name === "Noushin Ansari" ? "center bottom" : "center"
+                    }}
+                    priority
+                  />
                 </div>
                 <h3 className="mt-6 text-xl font-bold">{member.name}</h3>
                 <p className="text-[#FF3366]">{member.role}</p>
@@ -288,8 +308,8 @@ export default function AboutPage() {
           <div className="grid gap-8 md:grid-cols-3">
             {[
               { number: "100+", label: "Satisfied Students" },
-              { number: "30+", label: "Qualified Instructors" },
-              { number: "10+", label: "Dance Styles" },
+              { number: `${instructorCount}+`, label: "Qualified Instructors" },
+              { number: `${danceStyleCount}+`, label: "Dance Styles" },
             ].map((stat, index) => (
               <div key={index} className="flex flex-col items-center text-center">
                 <span className="text-4xl font-bold text-[#FF3366]">{stat.number}</span>

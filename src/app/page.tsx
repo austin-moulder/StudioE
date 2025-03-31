@@ -165,7 +165,7 @@ export default function Home() {
             {[
               {
                 name: "Jocelyn V.",
-                image: "/placeholder.svg",
+                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Jocelyn.png",
                 style: "Heels & Reggaeton",
                 rating: 4.9,
                 reviews: 127,
@@ -178,7 +178,7 @@ export default function Home() {
               },
               {
                 name: "Del D.",
-                image: "/placeholder.svg",
+                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Del_1.png",
                 style: "Salsa & Social Dancing",
                 rating: 4.7,
                 reviews: 82,
@@ -191,7 +191,7 @@ export default function Home() {
               },
               {
                 name: "Brian M.",
-                image: "/placeholder.svg",
+                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Brian.jpeg",
                 style: "Bachata & Sensual",
                 rating: 5.0,
                 reviews: 156,
@@ -205,16 +205,30 @@ export default function Home() {
             ].map((instructor) => (
               <Card key={instructor.name} className="overflow-hidden">
                 <div className="aspect-[4/3] relative">
-                  <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400 text-lg">{instructor.name}</span>
-                  </div>
+                  {instructor.image !== "/placeholder.svg" ? (
+                    <Image
+                      src={instructor.image}
+                      alt={`${instructor.name} profile photo`}
+                      fill
+                      className="object-cover"
+                      style={{
+                        objectPosition: instructor.name === "Jocelyn V." ? "center 25%" : 
+                                        instructor.name === "Brian M." ? "center 30%" : "center"
+                      }}
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-400 text-lg">{instructor.name}</span>
+                    </div>
+                  )}
                   {instructor.featured && (
                     <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
                       Featured
                     </div>
                   )}
                 </div>
-                <CardContent className="p-6">
+                <CardContent className="p-6 bg-white">
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="text-xl font-bold">{instructor.name}</h3>
@@ -317,8 +331,14 @@ export default function Home() {
       <section className="py-16 md:py-24">
         <div className="container">
           <div className="grid gap-12 md:grid-cols-2 items-center">
-            <div className="relative aspect-square max-w-md mx-auto md:mx-0 bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-400 text-lg">Podcast Cover</span>
+            <div className="relative aspect-square max-w-md mx-auto md:mx-0">
+              <Image
+                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Main.png"
+                alt="Studio E Podcast Cover"
+                fill
+                className="object-cover rounded-lg"
+                unoptimized
+              />
             </div>
             <div>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">The Studio E Podcast</h2>
@@ -349,19 +369,19 @@ export default function Home() {
                 <h3 className="font-semibold mb-4">Recent Episodes:</h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient/10 text-[#FF3366] font-semibold">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-[#FF3366] font-semibold">
                       10
                     </div>
                     <span>Eda Kachiri: Unleashing Passion in Your Dance Growing Your City</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient/10 text-[#FF3366] font-semibold">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-[#FF3366] font-semibold">
                       9
                     </div>
                     <span>B-Mac: Becoming an International Bachata Sensual Ambassador</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient/10 text-[#FF3366] font-semibold">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-[#FF3366] font-semibold">
                       8
                     </div>
                     <span>The Harrison Twins: Fighting the Urge to Compare in Social Dance</span>
@@ -443,7 +463,7 @@ export default function Home() {
                 <div className="aspect-[3/2] relative bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-400 text-lg">{post.title}</span>
                 </div>
-                <CardContent className="p-6">
+                <CardContent className="p-6 bg-white">
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">{post.category}</Badge>
                     <span className="text-xs text-gray-500">{post.date}</span>

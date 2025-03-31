@@ -9,8 +9,36 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
+import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 
 export default function EventsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
+  const [eventType, setEventType] = useState(searchParams.get("type") || "all");
+  const [location, setLocation] = useState(searchParams.get("location") || "all");
+  
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    
+    if (searchTerm) {
+      params.set("q", searchTerm);
+    }
+    
+    if (eventType && eventType !== "all") {
+      params.set("type", eventType);
+    }
+    
+    if (location && location !== "all") {
+      params.set("location", location);
+    }
+    
+    const query = params.toString();
+    router.push(`/events${query ? `?${query}` : ""}`);
+  };
+  
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -35,7 +63,13 @@ export default function EventsPage() {
               </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input id="search" placeholder="Event name, dance style, or keyword" className="pl-10" />
+                <Input 
+                  id="search" 
+                  placeholder="Event name, dance style, or keyword" 
+                  className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
             </div>
 
@@ -44,7 +78,7 @@ export default function EventsPage() {
                 <label htmlFor="event-type" className="text-sm font-medium">
                   Event Type
                 </label>
-                <Select>
+                <Select value={eventType} onValueChange={setEventType}>
                   <SelectTrigger id="event-type" className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Events" />
                   </SelectTrigger>
@@ -62,7 +96,7 @@ export default function EventsPage() {
                 <label htmlFor="location" className="text-sm font-medium">
                   Location
                 </label>
-                <Select>
+                <Select value={location} onValueChange={setLocation}>
                   <SelectTrigger id="location" className="w-full md:w-[180px]">
                     <SelectValue placeholder="All Locations" />
                   </SelectTrigger>
@@ -74,7 +108,10 @@ export default function EventsPage() {
                 </Select>
               </div>
 
-              <Button className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">
+              <Button 
+                className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
+                onClick={handleSearch}
+              >
                 <Filter className="h-4 w-4" />
                 Filter
               </Button>
