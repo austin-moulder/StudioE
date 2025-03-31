@@ -1,7 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { AuthProvider } from "@/lib/contexts/AuthContext";
+import { SupabaseAuthProvider } from "@/lib/contexts/SupabaseAuthContext";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -25,11 +25,11 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
       </head>
       <body className="min-h-screen flex flex-col">
-        <AuthProvider>
+        <SupabaseAuthProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
-        </AuthProvider>
+        </SupabaseAuthProvider>
       </body>
     </html>
   );

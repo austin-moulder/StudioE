@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Menu, X, LogOut } from "lucide-react"
-import { useAuth } from "@/lib/hooks/useAuth"
-import FirebaseLogo from "./FirebaseLogo"
+import { useSupabaseAuth } from "@/lib/hooks/useSupabaseAuth"
+import SupabaseLogo from "./SupabaseLogo"
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -21,7 +21,7 @@ const navLinks = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const { user, loading, signInWithGoogle, signOut } = useAuth()
+  const { user, loading, signInWithGoogle, signOut } = useSupabaseAuth()
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function Navbar() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-1">
           <div className="flex items-center justify-center h-10 w-28">
-            <FirebaseLogo width={100} height={32} alt="Studio E Logo" priority className="mx-auto" />
+            <SupabaseLogo width={100} height={32} alt="Studio E Logo" priority className="mx-auto" />
           </div>
           <span className="font-montserrat font-bold text-lg">STUDIO E</span>
         </Link>
@@ -86,16 +86,16 @@ export default function Navbar() {
                 <div className="flex items-center gap-3">
                   <div className="hidden md:block">
                     <div className="flex items-center gap-2">
-                      {user.photoURL && (
+                      {user.user_metadata?.avatar_url && (
                         <Image 
-                          src={user.photoURL} 
-                          alt={user.displayName || "User"} 
+                          src={user.user_metadata.avatar_url} 
+                          alt={user.user_metadata?.full_name || "User"} 
                           width={32} 
                           height={32} 
                           className="rounded-full" 
                         />
                       )}
-                      <span className="text-sm font-medium">{user.displayName?.split(' ')[0] || 'User'}</span>
+                      <span className="text-sm font-medium">{user.user_metadata?.full_name?.split(' ')[0] || 'User'}</span>
                     </div>
                   </div>
                   <button 
@@ -181,16 +181,16 @@ export default function Navbar() {
                   {user ? (
                     <div className="pb-4">
                       <div className="flex items-center gap-3 mb-4 p-3 bg-white/90 border border-gray-200 rounded-lg">
-                        {user.photoURL && (
+                        {user.user_metadata?.avatar_url && (
                           <Image 
-                            src={user.photoURL} 
-                            alt={user.displayName || "User"} 
+                            src={user.user_metadata.avatar_url} 
+                            alt={user.user_metadata?.full_name || "User"} 
                             width={40} 
                             height={40} 
                             className="rounded-full" 
                           />
                         )}
-                        <span className="text-md font-medium text-gray-900">{user.displayName || 'User'}</span>
+                        <span className="text-md font-medium text-gray-900">{user.user_metadata?.full_name || 'User'}</span>
                       </div>
                       <button 
                         onClick={() => {

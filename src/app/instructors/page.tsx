@@ -1065,8 +1065,8 @@ function InstructorsContent() {
           </div>
 
           {filteredInstructors.length > 0 && (
-            <div className="mt-12 flex justify-center">
-              <div className="flex items-center gap-2">
+          <div className="mt-12 flex justify-center">
+            <div className="flex items-center gap-2">
                 <button 
                   onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
                   className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'}`}
