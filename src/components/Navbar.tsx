@@ -15,13 +15,12 @@ const navLinks = [
   { name: "Podcast", href: "/podcast" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
-  { name: "Supabase Demo", href: "/supabase-demo" },
 ]
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const [showEmailForm, setShowEmailForm] = useState(true)
+  const [showEmailForm, setShowEmailForm] = useState(false)
   const [email, setEmail] = useState("")
   const { user, loading, signInWithGoogle, signInWithEmail, signOut, authError, clearAuthError } = useSupabaseAuth()
 
@@ -276,52 +275,60 @@ export default function Navbar() {
                     </div>
                   ) : (
                     <div>
-                      <div className="p-4 bg-white/90 rounded-md border mb-3">
-                        <div className="flex justify-between items-center mb-2">
-                          <h3 className="text-sm font-medium">Sign in with Email</h3>
-                          <button 
-                            onClick={() => {
-                              setShowEmailForm(false);
-                              clearAuthError();
-                              setMobileMenuOpen(false);
-                            }}
-                            className="text-gray-400 hover:text-gray-600"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </div>
-                        {authError && !authError.includes("Check your email") && (
-                          <p className="text-xs text-red-500 mb-2">{authError}</p>
-                        )}
-                        {authError && authError.includes("Check your email") && (
-                          <p className="text-xs text-green-500 mb-2">{authError}</p>
-                        )}
-                        <form onSubmit={handleEmailSignIn}>
-                          <input
-                            type="email"
-                            placeholder="Your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full p-2 text-sm border rounded-md mb-2"
-                            required
-                          />
-                          <button
-                            type="submit"
-                            className="w-full flex justify-center items-center gap-1 bg-[#EC407A] text-white p-2 rounded-md text-sm"
-                          >
-                            <Mail className="h-4 w-4" />
-                            Send Magic Link
-                          </button>
-                          <div className="mt-2 text-center">
+                      <button 
+                        onClick={() => setShowEmailForm(true)}
+                        className="w-full rounded-md border-2 border-gray-300 bg-white/90 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50/90 transition mb-3"
+                      >
+                        Sign In
+                      </button>
+                      
+                      {showEmailForm && (
+                        <div className="p-4 bg-white/90 rounded-md border mb-3">
+                          <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-sm font-medium">Sign in with Email</h3>
                             <button 
-                              onClick={handleSignIn}
-                              className="text-xs text-gray-600 hover:text-gray-900"
+                              onClick={() => {
+                                setShowEmailForm(false);
+                                clearAuthError();
+                              }}
+                              className="text-gray-400 hover:text-gray-600"
                             >
-                              Try Google Sign In
+                              <X className="h-4 w-4" />
                             </button>
                           </div>
-                        </form>
-                      </div>
+                          {authError && !authError.includes("Check your email") && (
+                            <p className="text-xs text-red-500 mb-2">{authError}</p>
+                          )}
+                          {authError && authError.includes("Check your email") && (
+                            <p className="text-xs text-green-500 mb-2">{authError}</p>
+                          )}
+                          <form onSubmit={handleEmailSignIn}>
+                            <input
+                              type="email"
+                              placeholder="Your email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              className="w-full p-2 text-sm border rounded-md mb-2"
+                              required
+                            />
+                            <button
+                              type="submit"
+                              className="w-full flex justify-center items-center gap-1 bg-[#EC407A] text-white p-2 rounded-md text-sm"
+                            >
+                              <Mail className="h-4 w-4" />
+                              Send Magic Link
+                            </button>
+                            <div className="mt-2 text-center">
+                              <button 
+                                onClick={handleSignIn}
+                                className="text-xs text-gray-600 hover:text-gray-900"
+                              >
+                                Try Google Sign In
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      )}
                     </div>
                   )}
                 </>
