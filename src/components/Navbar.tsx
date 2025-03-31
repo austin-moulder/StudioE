@@ -72,10 +72,11 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-1">
-          <div className="flex items-center justify-center h-10 w-28">
-            <StudioELogo width={120} height={40} alt="Studio E Logo" priority className="mx-auto" />
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex items-center justify-center h-10 w-10">
+            <StudioELogo width={40} height={40} alt="Studio E Logo" priority className="mx-auto" />
           </div>
+          <span className="font-montserrat font-bold text-xl">STUDIO E</span>
         </Link>
 
         <nav className="hidden md:flex md:gap-6">
@@ -219,8 +220,9 @@ export default function Navbar() {
           }`}
         >
           <div className="flex justify-between p-4 border-b border-gray-300 bg-white/90">
-            <div className="flex items-center h-8 w-24">
-              <StudioELogo width={96} height={32} alt="Studio E Logo" className="mx-auto" />
+            <div className="flex items-center gap-2">
+              <StudioELogo width={36} height={36} alt="Studio E Logo" className="mx-auto" />
+              <span className="font-montserrat font-bold text-lg">STUDIO E</span>
             </div>
             <button 
               onClick={() => setMobileMenuOpen(false)} 

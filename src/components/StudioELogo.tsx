@@ -13,8 +13,8 @@ interface StudioELogoProps {
 }
 
 export default function StudioELogo({
-  width = 100,
-  height = 32,
+  width = 40,
+  height = 40,
   alt = 'Studio E Logo',
   priority = false,
   className = '',
@@ -41,16 +41,16 @@ export default function StudioELogo({
 
   if (isLoading) {
     return (
-      <div className={`flex items-center justify-center ${className}`}>
-        <div className="w-8 h-8 animate-pulse bg-gray-200 rounded-md"></div>
+      <div className={`flex items-center justify-center ${className}`} style={{ width: `${width}px`, height: `${height}px` }}>
+        <div className="w-full h-full animate-pulse bg-gray-200 rounded-md"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center ${className}`}>
-        <span className="font-bold">STUDIO E</span>
+      <div className={`flex items-center justify-center ${className}`} style={{ width: `${width}px`, height: `${height}px` }}>
+        <span className="font-bold text-xs">LOGO</span>
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function StudioELogo({
   
   if (isSupabaseUrl) {
     return (
-      <div className={`flex items-center justify-center ${className}`}>
+      <div className={`flex items-center justify-center ${className}`} style={{ width: `${width}px`, height: `${height}px` }}>
         <Image 
           src={logoUrl} 
           alt={alt} 
@@ -76,7 +76,7 @@ export default function StudioELogo({
 
   // For local images
   return (
-    <div className={`flex items-center justify-center ${className}`}>
+    <div className={`flex items-center justify-center ${className}`} style={{ width: `${width}px`, height: `${height}px` }}>
       <Image 
         src={logoUrl} 
         alt={alt} 
