@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Menu, X, LogOut, Mail, User } from "lucide-react"
 import { useSupabaseAuth } from "@/lib/hooks/useSupabaseAuth"
-import SupabaseLogo from "./SupabaseLogo"
+import StudioELogo from "./StudioELogo"
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -74,9 +74,8 @@ export default function Navbar() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-1">
           <div className="flex items-center justify-center h-10 w-28">
-            <SupabaseLogo width={100} height={32} alt="Studio E Logo" priority className="mx-auto" />
+            <StudioELogo width={120} height={40} alt="Studio E Logo" priority className="mx-auto" />
           </div>
-          <span className="font-montserrat font-bold text-lg">STUDIO E</span>
         </Link>
 
         <nav className="hidden md:flex md:gap-6">
@@ -219,7 +218,10 @@ export default function Navbar() {
             mobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <div className="flex justify-end p-4 border-b border-gray-300 bg-white/90">
+          <div className="flex justify-between p-4 border-b border-gray-300 bg-white/90">
+            <div className="flex items-center h-8 w-24">
+              <StudioELogo width={96} height={32} alt="Studio E Logo" className="mx-auto" />
+            </div>
             <button 
               onClick={() => setMobileMenuOpen(false)} 
               className="p-2 rounded-full hover:bg-gray-100/90 transition" 
