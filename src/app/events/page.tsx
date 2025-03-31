@@ -17,10 +17,17 @@ function EventsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
   const [eventType, setEventType] = useState(searchParams.get("type") || "all");
   const [location, setLocation] = useState(searchParams.get("location") || "all");
   
+  const ITEMS_PER_PAGE = 9; // 3x3 grid
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const handleSearch = () => {
     const params = new URLSearchParams();
     
@@ -269,21 +276,49 @@ function EventsContent() {
 
               <div className="mt-12 flex justify-center">
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" disabled>
+                  <button 
+                    onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                    className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${
+                      currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'
+                    }`}
+                    disabled={currentPage === 1}
+                  >
                     &lt;
-                  </Button>
-                  <Button variant="outline" size="sm" className="bg-[#F94C8D] text-white border-[#F94C8D] hover:bg-white hover:text-black hover:border-[#F94C8D]">
-                    1
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    2
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    3
-                  </Button>
-                  <Button variant="outline" size="icon">
+                  </button>
+                  
+                  {(() => {
+                    const totalPages = Math.ceil(9 / ITEMS_PER_PAGE); // Replace with actual total
+                    
+                    return Array.from({ length: Math.min(totalPages, 7) }).map((_, i) => {
+                      const pageNum = i + 1;
+                      
+                      return (
+                        <button
+                          key={`page-${pageNum}`}
+                          onClick={() => handlePageChange(pageNum)}
+                          className={`flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm ${
+                            currentPage === pageNum
+                              ? 'border border-[#F94C8D] bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90'
+                              : 'border border-input bg-background hover:bg-gray-100'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    });
+                  })()}
+                  
+                  <button 
+                    onClick={() => currentPage < Math.ceil(9 / ITEMS_PER_PAGE) && handlePageChange(currentPage + 1)}
+                    className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${
+                      currentPage === Math.ceil(9 / ITEMS_PER_PAGE)
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : 'cursor-pointer hover:bg-gray-100'
+                    }`}
+                    disabled={currentPage === Math.ceil(9 / ITEMS_PER_PAGE)}
+                  >
                     &gt;
-                  </Button>
+                  </button>
                 </div>
               </div>
             </TabsContent>

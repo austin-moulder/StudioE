@@ -384,7 +384,7 @@ export default function AboutPage() {
                   Find an Instructor
                 </Button>
               </Link>
-              <Link href="https://forms.gle/GqcrCPNp4s7deonc9" target="_blank" rel="noopener noreferrer">
+              <Link href="https://forms.gle/reV28gHLZ8zvobUZ6" target="_blank" rel="noopener noreferrer">
                 <Button
                   size="lg"
                   variant="outline"

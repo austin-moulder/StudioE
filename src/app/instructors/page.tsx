@@ -335,8 +335,26 @@ function InstructorsContent() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {paginatedInstructors.map((instructor, index) => (
               <Card key={index} className="overflow-hidden">
-                <div className="aspect-[4/3] relative bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400 text-lg">{instructor.name}</span>
+                <div className="aspect-[4/3] relative bg-gray-200 overflow-hidden">
+                  {instructor.image ? (
+                    <Image
+                      src={`https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/${instructor.name.split(' ')[0]}_${instructor.name.split(' ')[1][0]}.png`}
+                      alt={`${instructor.name} - Dance Instructor`}
+                      fill
+                      className="object-cover object-[50%_25%]"
+                      onError={(e) => {
+                        // If PNG fails, try JPG
+                        const imgElement = e.target as HTMLImageElement;
+                        if (imgElement.src.endsWith('.png')) {
+                          imgElement.src = imgElement.src.replace('.png', '.jpg');
+                        }
+                      }}
+                    />
+                  ) : (
+                    <span className="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">
+                      {instructor.name}
+                    </span>
+                  )}
                   {instructor.featured && (
                     <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
                       Featured
@@ -486,56 +504,63 @@ function InstructorsContent() {
       {/* CTA Sections */}
       <section className="py-16 bg-gray-50">
         <div className="container">
-          <div className="grid gap-8 md:grid-cols-2 items-center">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight">Are You a Dance Instructor?</h2>
-              <p className="mt-4 text-lg text-gray-500">
-                Join our community of professional dance instructors and connect with students who are eager to learn.
-              </p>
-              <ul className="mt-6 space-y-2">
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Set your own rates and availability</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Turn your side hustle into your main hustle</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Discounted rates for training spaces (coming soon)</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Connect with students in your area</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Establish credibility in the community</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Automate recurring payments and schedule instant payouts (coming soon)</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Access business experts dedicated to helping you grow</span>
-                </li>
-              </ul>
+          <div className="grid gap-8 md:grid-cols-2 items-stretch">
+            <div className="flex flex-col justify-between">
+              <div>
+                <h2 className="text-3xl font-bold tracking-tight">Are You a Dance Instructor?</h2>
+                <p className="mt-4 text-lg text-gray-500">
+                  Join our community of professional dance instructors and connect with students who are eager to learn.
+                </p>
+                <ul className="mt-6 space-y-2">
+                  <li className="flex items-start">
+                    <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
+                    <span>Set your own rates and availability</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
+                    <span>Turn your side hustle into your main hustle</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
+                    <span>Discounted rates for training spaces (coming soon)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
+                    <span>Connect with students in your area</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
+                    <span>Establish credibility in the community</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
+                    <span>Automate recurring payments and schedule instant payouts (coming soon)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
+                    <span>Access business experts dedicated to helping you grow</span>
+                  </li>
+                </ul>
+              </div>
               <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                <Link href="https://forms.gle/LX4zHkZ1uLurnW9q6" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">Apply to Teach</Button>
+                <Link href="https://forms.gle/reV28gHLZ8zvobUZ6" target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-[#FF3366]/90 w-[200px]">Apply to Teach</Button>
                 </Link>
                 <Link href="/dance-business-consulting">
-                  <Button size="lg" variant="outline">Grow Your Business</Button>
+                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-[#FF3366]/90 w-[200px]">Grow Your Business</Button>
                 </Link>
                 <Link href="/dance-certifications">
-                  <Button size="lg" variant="secondary">Get Certified</Button>
+                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-[#FF3366]/90 w-[200px]">Get Certified</Button>
                 </Link>
               </div>
             </div>
-            <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-400 text-lg">Dance instructor teaching</span>
+            <div className="relative h-full rounded-lg overflow-hidden">
+              <Image
+                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Adrian_1.jpg"
+                alt="Dance instructor teaching"
+                fill
+                className="object-cover object-[50%_35%]"
+              />
             </div>
           </div>
         </div>

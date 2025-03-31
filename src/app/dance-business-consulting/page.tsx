@@ -5,8 +5,22 @@ import { Check, Calendar, Briefcase, Award, TrendingUp, Lightbulb, DollarSign, M
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import Script from "next/script"
+import { useEffect } from "react"
 
 export default function BusinessExpertsPage() {
+  // Load Calendly widget when component mounts
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://assets.calendly.com/assets/external/widget.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -20,9 +34,6 @@ export default function BusinessExpertsPage() {
           <p className="mt-6 max-w-2xl text-lg">
             Expert business coaching services to help dance instructors build thriving businesses
           </p>
-          <Button size="lg" variant="secondary" className="mt-8">
-            Schedule a Consultation
-          </Button>
         </div>
       </section>
 
@@ -52,27 +63,15 @@ export default function BusinessExpertsPage() {
                 icon: <Briefcase className="h-10 w-10" />,
               },
               {
-                title: "Sales Strategy",
-                description:
-                  "Develop effective sales strategies to increase bookings, retain students, and maximize revenue.",
-                icon: <TrendingUp className="h-10 w-10" />,
-              },
-              {
                 title: "Financial Management",
                 description:
                   "Financial planning, budgeting, and cash flow management to ensure your business is profitable and sustainable.",
                 icon: <DollarSign className="h-10 w-10" />,
               },
               {
-                title: "Tax Strategy",
+                title: "Content & Branding",
                 description:
-                  "Tax planning and optimization strategies specifically for dance professionals and small business owners.",
-                icon: <DollarSign className="h-10 w-10" />,
-              },
-              {
-                title: "Content Creation",
-                description:
-                  "Professional content creation services including photography, videography, and social media content.",
+                  "Professional content creation, photography, videography, and branding services to help you stand out and attract your ideal clients.",
                 icon: <Lightbulb className="h-10 w-10" />,
               },
               {
@@ -80,12 +79,6 @@ export default function BusinessExpertsPage() {
                 description:
                   "Comprehensive marketing strategies to build your brand, attract new students, and grow your audience.",
                 icon: <Megaphone className="h-10 w-10" />,
-              },
-              {
-                title: "Branding",
-                description:
-                  "Professional branding services to help you stand out in a competitive market and attract your ideal clients.",
-                icon: <Award className="h-10 w-10" />,
               },
               {
                 title: "Talent Acquisition",
@@ -102,9 +95,6 @@ export default function BusinessExpertsPage() {
                     </div>
                     <h3 className="text-xl font-bold">{service.title}</h3>
                     <p className="mt-2 text-muted-foreground">{service.description}</p>
-                    <Button variant="link" className="mt-4 text-[#FF3366]">
-                      Learn More
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -150,14 +140,18 @@ export default function BusinessExpertsPage() {
                   <span>Exclusive networking opportunities with industry leaders</span>
                 </li>
               </ul>
-              <Button size="lg" className="mt-8 bg-[#FF3366] hover:bg-[#FF3366]/90">
+              <Button 
+                size="lg" 
+                className="mt-8 bg-[#FF3366] hover:bg-[#FF3366]/90"
+                onClick={() => window.open('https://forms.gle/3xXrTP8sSGgXiUeb8', '_blank')}
+              >
                 Join the Waitlist
               </Button>
             </div>
             <div className="relative aspect-square overflow-hidden rounded-lg">
               <Image
-                src="/placeholder.svg"
-                alt="Dance Business Expert"
+                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Speaking.jpg"
+                alt="Dance Business Expert Speaking"
                 fill
                 className="object-cover"
               />
@@ -172,44 +166,35 @@ export default function BusinessExpertsPage() {
           <div className="mb-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Success Stories</h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-              Hear from dance instructors who have transformed their businesses with our coaching services.
+              Hear from professionals who have transformed their businesses with our coaching services.
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2">
             {[
               {
-                name: "Maria Rodriguez",
-                role: "Salsa Instructor",
-                quote:
-                  "Working with Studio E's business experts helped me double my student base in just 6 months. Their marketing strategies and business planning were game-changers for my career.",
-                image: "/placeholder.svg?height=100&width=100",
+                name: "Mitzi H.",
+                role: "Small Business Owner",
+                quote: "They have far exceeded any expectation for quantity and quality of solutions to solve the main set of problems our small business is facing. I am overjoyed, hopeful, inspired, refreshed, enthusiastic, and beyond excited.",
               },
               {
-                name: "James Wilson",
-                role: "Bachata Instructor & Studio Owner",
-                quote:
-                  "The financial management and tax strategies I learned saved me thousands of dollars and gave me the confidence to open my own studio. I couldn't have done it without Studio E's guidance.",
-                image: "/placeholder.svg?height=100&width=100",
+                name: "Rittwik R.",
+                role: "Product Manager",
+                quote: "Studio E experts are able to drive really strong participation in the sessions. This speaks a lot about their teaching style and how practically helpful the concepts taught are. I would highly recommend this masterclass series.",
               },
               {
-                name: "Sophia Chen",
-                role: "Contemporary Dance Teacher",
-                quote:
-                  "The content creation and branding services helped me establish a strong online presence. I now have a waiting list of students wanting to take my classes!",
-                image: "/placeholder.svg?height=100&width=100",
+                name: "Watunyu S.",
+                role: "Head of Technology",
+                quote: "Austin's direct and engaging teaching style made complex ideas easy to grasp. The course's real-world applications and personalized feedback significantly boosted my skills and confidence. A game-changer for anyone looking to excel.",
+              },
+              {
+                name: "Anthony K.",
+                role: "Real Estate Development Finance Manager",
+                quote: "There are some knowledge that one can only access from experts who have been through the process. If I would have tried navigating this journey alone, I would be have been lost and frustrated. These sessions provide much value than can be quantified.",
               },
             ].map((testimonial, index) => (
               <Card key={index} className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="relative h-12 w-12 overflow-hidden rounded-full">
-                    <Image
-                      src={testimonial.image || "/placeholder.svg"}
-                      alt={testimonial.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+                <div>
                   <div>
                     <h3 className="font-semibold">{testimonial.name}</h3>
                     <p className="text-sm text-muted-foreground">{testimonial.role}</p>
@@ -228,23 +213,18 @@ export default function BusinessExpertsPage() {
       <section className="relative py-16">
         <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC]" />
         <div className="container relative z-10">
-          <div className="mx-auto max-w-2xl text-center text-white">
+          <div className="mx-auto max-w-3xl text-center text-white">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Ready to Grow Your Dance Business?</h2>
             <p className="mt-4 text-lg">
               Schedule a free 30-minute consultation with one of our business experts to discuss your goals and
               challenges.
             </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Button size="lg" className="bg-[#7357D2] text-white hover:bg-[#6346C1]">
-                Schedule a Consultation
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white bg-transparent text-white hover:bg-white/10"
-              >
-                View Service Packages
-              </Button>
+            <div className="mt-8 bg-white rounded-lg shadow-lg overflow-hidden">
+              <div 
+                className="calendly-inline-widget" 
+                data-url="https://calendly.com/studioelatindance/30min" 
+                style={{ minWidth: "320px", height: "700px" }}
+              ></div>
             </div>
           </div>
         </div>
