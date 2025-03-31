@@ -41,6 +41,6 @@ export const getMainLogoUrl = async (): Promise<string> => {
     */
   } catch (error) {
     console.error('Error getting logo URL:', error);
-    return '/placeholder-logo.svg'; // Fallback to a default logo
+    return '/placeholder-logo.svg'; // Fallback to a placeholder logo
   }
 }; 

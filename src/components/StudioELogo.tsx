@@ -41,7 +41,7 @@ export default function StudioELogo({
 
   if (isLoading) {
     return (
-      <div className={`flex items-center justify-center h-${height/4} w-${width/4} ${className}`}>
+      <div className={`flex items-center justify-center ${className}`}>
         <div className="w-8 h-8 animate-pulse bg-gray-200 rounded-md"></div>
       </div>
     );
@@ -55,6 +55,26 @@ export default function StudioELogo({
     );
   }
 
+  // Check if the URL is from Supabase
+  const isSupabaseUrl = logoUrl.includes('supabase.co');
+  
+  if (isSupabaseUrl) {
+    return (
+      <div className={`flex items-center justify-center ${className}`}>
+        <Image 
+          src={logoUrl} 
+          alt={alt} 
+          width={width} 
+          height={height} 
+          priority={priority}
+          className="object-contain"
+          unoptimized // This bypasses Next.js image optimization for external URLs
+        />
+      </div>
+    );
+  }
+
+  // For local images
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <Image 
