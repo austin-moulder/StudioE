@@ -200,7 +200,7 @@ export default function EventsPage() {
                       {index % 3 === 0 && <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-4 py-1 rounded-full text-sm font-medium">Featured</div>}
                     </div>
                     <CardContent className="p-6">
-                      <Badge className="mb-2 bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">{event.type}</Badge>
+                      <Badge className="mb-2 bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90">{event.type}</Badge>
                       <h3 className="text-xl font-bold">{event.title}</h3>
                       <div className="mt-4 space-y-2">
                         <div className="flex items-center text-sm text-muted-foreground">
@@ -300,7 +300,7 @@ export default function EventsPage() {
                         <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-4 py-1 rounded-full text-sm font-medium">Featured</div>
                       </div>
                       <CardContent className="p-6">
-                        <Badge className="mb-2 bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">Special Event</Badge>
+                        <Badge className="mb-2 bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90">Special Event</Badge>
                         <h3 className="text-xl font-bold">{event.title}</h3>
                         <p className="mt-2 text-sm text-muted-foreground">{event.description}</p>
                         <div className="mt-4 space-y-2">
