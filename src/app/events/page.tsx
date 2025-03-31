@@ -9,10 +9,11 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
-export default function EventsPage() {
+// Wrap the component that uses useSearchParams in Suspense
+function EventsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -456,4 +457,13 @@ export default function EventsPage() {
       </section>
     </div>
   )
+}
+
+// Main component that provides the Suspense boundary
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className="container py-12">Loading events...</div>}>
+      <EventsContent />
+    </Suspense>
+  );
 } 

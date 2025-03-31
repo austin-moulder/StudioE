@@ -1,5 +1,5 @@
 import { Instructor } from "@/types/instructor";
-import { instructorsData } from "@/app/instructors/page";
+import { instructorsData } from "@/lib/instructors/instructorsData";
 
 /**
  * Gets all unique dance styles from the instructors list
