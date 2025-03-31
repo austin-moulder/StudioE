@@ -12,25 +12,37 @@ export async function getDanceStyleImages(): Promise<Record<string, string>> {
       return {};
     }
 
-    // Transform the data into a more usable format
-    const imageMap = data
-      .filter(file => !file.id.endsWith('/') && file.name.endsWith('.jpg') || file.name.endsWith('.png') || file.name.endsWith('.jpeg'))
-      .reduce((acc, file) => {
-        // Extract the dance style name from the filename
-        // Assuming filenames are like "Salsa.jpg", "Bachata.jpg", etc.
-        const styleName = file.name.split('.')[0];
-        
-        // Create the public URL
+    // Filter for image files only
+    const imageFiles = data
+      .filter(file => !file.id.endsWith('/') && (file.name.endsWith('.jpg') || file.name.endsWith('.png') || file.name.endsWith('.jpeg')))
+      .sort((a, b) => {
+        // Sort by updated_at in descending order (most recent first)
+        const aTime = a.updated_at || '';
+        const bTime = b.updated_at || '';
+        return new Date(bTime).getTime() - new Date(aTime).getTime();
+      });
+
+    // Map of dance styles to search for
+    const styleMap: Record<string, string> = {};
+    const targetStyles = ['salsa', 'bachata', 'heels', 'choreo'];
+
+    // Find the most recent image for each style
+    for (const style of targetStyles) {
+      const matchingImage = imageFiles.find(file => 
+        file.name.toLowerCase().includes(style.toLowerCase())
+      );
+      
+      if (matchingImage) {
         const url = supabase
           .storage
           .from('assetsv1')
-          .getPublicUrl(`Dance_Styles/${file.name}`).data.publicUrl;
+          .getPublicUrl(`Dance_Styles/${matchingImage.name}`).data.publicUrl;
         
-        acc[styleName.toLowerCase()] = url;
-        return acc;
-      }, {} as Record<string, string>);
+        styleMap[style] = url;
+      }
+    }
     
-    return imageMap;
+    return styleMap;
   } catch (error) {
     console.error('Error in getDanceStyleImages:', error);
     return {};
