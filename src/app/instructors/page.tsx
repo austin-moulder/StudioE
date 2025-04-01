@@ -338,15 +338,17 @@ function InstructorsContent() {
                 <div className="aspect-[4/3] relative bg-gray-200 overflow-hidden">
                   {instructor.image ? (
                     <Image
-                      src={`https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/${instructor.name.split(' ')[0]}_${instructor.name.split(' ')[1][0]}.png`}
+                      src={instructor.image}
                       alt={`${instructor.name} - Dance Instructor`}
                       fill
                       className="object-cover object-[50%_25%]"
                       onError={(e) => {
-                        // If PNG fails, try JPG
                         const imgElement = e.target as HTMLImageElement;
-                        if (imgElement.src.endsWith('.png')) {
-                          imgElement.src = imgElement.src.replace('.png', '.jpg');
+                        // If the image fails to load, show a fallback
+                        imgElement.style.display = 'none';
+                        const fallbackElement = imgElement.parentElement;
+                        if (fallbackElement) {
+                          fallbackElement.innerHTML = `<div class="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">${instructor.name}</div>`;
                         }
                       }}
                     />
@@ -544,13 +546,16 @@ function InstructorsContent() {
               </div>
               <div className="mt-6 flex flex-col sm:flex-row gap-4">
                 <Link href="https://forms.gle/reV28gHLZ8zvobUZ6" target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-[#FF3366]/90 w-[200px]">Apply to Teach</Button>
+                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-white hover:text-[#FF3366] border-2 border-[#FF3366] transition-all duration-300 ease-in-out w-[150px] font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">Apply to Teach</Button>
                 </Link>
                 <Link href="/dance-business-consulting">
-                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-[#FF3366]/90 w-[200px]">Grow Your Business</Button>
+                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-white hover:text-[#FF3366] border-2 border-[#FF3366] transition-all duration-300 ease-in-out w-[150px] font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">Grow Your Business</Button>
                 </Link>
                 <Link href="/dance-certifications">
-                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-[#FF3366]/90 w-[200px]">Get Certified</Button>
+                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-white hover:text-[#FF3366] border-2 border-[#FF3366] transition-all duration-300 ease-in-out w-[150px] font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">Get Certified</Button>
+                </Link>
+                <Link href="https://forms.gle/y2va5XxXg9D2irw89" target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="bg-[#FF3366] text-white hover:bg-white hover:text-[#FF3366] border-2 border-[#FF3366] transition-all duration-300 ease-in-out w-[150px] font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">Cross-Train</Button>
                 </Link>
               </div>
             </div>

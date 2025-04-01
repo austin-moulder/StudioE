@@ -24,6 +24,26 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Studio E | Dance Instruction Marketplace",
   description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
+  metadataBase: new URL('https://studioe.dance'),
+  openGraph: {
+    title: "Studio E | Dance Instruction Marketplace",
+    description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
+    images: [
+      {
+        url: "/studio-e-logo.svg",
+        width: 1200,
+        height: 630,
+        alt: "Studio E Logo"
+      }
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Studio E | Dance Instruction Marketplace",
+    description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
+    images: ["/studio-e-logo.svg"],
+  },
   icons: {
     icon: [
       { url: "/studio-e-logo.svg", type: "image/svg+xml" },

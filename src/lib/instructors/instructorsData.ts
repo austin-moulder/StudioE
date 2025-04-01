@@ -84,20 +84,6 @@ export const instructorsData: Instructor[] = [
     }
   },
   {
-    name: "Mario C.",
-    style: "DJ",
-    location: "Chicago, IL",
-    rating: 5.0,
-    reviews: 142,
-    alias: "DJ Machito",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Mario_C.png",
-    price: {
-      lower: 45,
-      upper: 65
-    }
-  },
-  // Page 2
-  {
     name: "Taylor D.",
     style: "DJ",
     location: "Chicago, IL",
@@ -188,47 +174,6 @@ export const instructorsData: Instructor[] = [
       upper: 65
     }
   },
-  // Page 3
-  {
-    name: "Brandon H.",
-    style: "Salsa, Branding",
-    location: "Chicago, IL",
-    rating: 4.8,
-    reviews: 92,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Brandon_H.png",
-    price: {
-      lower: 55,
-      upper: 75
-    }
-  },
-  {
-    name: "Noushin A.",
-    style: "Salsa & Bachata",
-    location: "Chicago, IL",
-    rating: 4.9,
-    reviews: 108,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Noushin_A.png",
-    price: {
-      lower: 60,
-      upper: 80
-    }
-  },
-  {
-    name: "Austin M.",
-    style: "Life Coaching, Personal Finance, Interview Prep",
-    location: "Chicago, IL",
-    rating: 4.9,
-    reviews: 127,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Austin_M.png",
-    featured: true,
-    price: {
-      lower: 20,
-      upper: 40
-    }
-  },
   {
     name: "Stephanie G.",
     style: "Fitness, Rehabilitation",
@@ -289,45 +234,6 @@ export const instructorsData: Instructor[] = [
     reviews: 142,
     alias: "",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Destiny_R.png",
-    price: {
-      lower: 45,
-      upper: 65
-    }
-  },
-  {
-    name: "Eda K.",
-    style: "Bachata & Merengue",
-    location: "Minneapolis, MN",
-    rating: 4.9,
-    reviews: 118,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Eda_K.png",
-    price: {
-      lower: 60,
-      upper: 80
-    }
-  },
-  {
-    name: "Briana H.",
-    style: "Salsa",
-    location: "Chicago, IL",
-    rating: 4.6,
-    reviews: 73,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Briana_H.png",
-    price: {
-      lower: 45,
-      upper: 65
-    }
-  },
-  {
-    name: "Tiara H.",
-    style: "Bachata",
-    location: "Chicago, IL",
-    rating: 4.7,
-    reviews: 81,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Tiara_H.png",
     price: {
       lower: 45,
       upper: 65
@@ -516,19 +422,6 @@ export const instructorsData: Instructor[] = [
     }
   },
   {
-    name: "Adrian T.",
-    style: "Salsa, Mambo",
-    location: "Chicago, IL",
-    rating: 4.8,
-    reviews: 114,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Adrian_T.png",
-    price: {
-      lower: 55,
-      upper: 75
-    }
-  },
-  {
     name: "Edgar M.",
     style: "Bachata",
     location: "Chicago, IL",
@@ -562,19 +455,6 @@ export const instructorsData: Instructor[] = [
     reviews: 105,
     alias: "#AshMoves",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Ashley_M.png",
-    price: {
-      lower: 55,
-      upper: 75
-    }
-  },
-  {
-    name: "Maria L.",
-    style: "Salsa, Afro Latin",
-    location: "Chicago, IL",
-    rating: 4.9,
-    reviews: 129,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Maria_L.png",
     price: {
       lower: 55,
       upper: 75
@@ -672,19 +552,6 @@ export const instructorsData: Instructor[] = [
     }
   },
   {
-    name: "Noushin A.",
-    style: "Life Coaching, Health and Medicine",
-    location: "Chicago, IL",
-    rating: 4.8,
-    reviews: 121,
-    alias: "",
-    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Noushin_A.png",
-    price: {
-      lower: 85,
-      upper: 105
-    }
-  },
-  {
     name: "Lucy P.",
     style: "Fitness, Personal Training",
     location: "Chicago, IL",
@@ -708,6 +575,97 @@ export const instructorsData: Instructor[] = [
     price: {
       lower: 30,
       upper: 50
+    }
+  },
+  {
+    name: "Juan H.",
+    style: "Salsa, Bachata",
+    location: "Chicago, IL",
+    rating: 4.8,
+    reviews: 95,
+    alias: "",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Juan_H.png",
+    price: {
+      lower: 55,
+      upper: 75
+    }
+  },
+  {
+    name: "Brian M.",
+    style: "Salsa, Bachata",
+    location: "Chicago, IL",
+    rating: 4.7,
+    reviews: 88,
+    alias: "",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Brian_M.png",
+    price: {
+      lower: 50,
+      upper: 70
+    }
+  },
+  {
+    name: "Brandon H.",
+    style: "Salsa, Branding",
+    location: "Chicago, IL",
+    rating: 4.8,
+    reviews: 92,
+    alias: "",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Brandon_H.png",
+    price: {
+      lower: 55,
+      upper: 75
+    }
+  },
+  {
+    name: "Noushin A.",
+    style: "Salsa & Bachata",
+    location: "Chicago, IL",
+    rating: 4.9,
+    reviews: 108,
+    alias: "",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Noushin_A.png",
+    price: {
+      lower: 60,
+      upper: 80
+    }
+  },
+  {
+    name: "Mario C.",
+    style: "DJ",
+    location: "Chicago, IL",
+    rating: 5.0,
+    reviews: 142,
+    alias: "DJ Machito",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Mario_C.png",
+    price: {
+      lower: 45,
+      upper: 65
+    }
+  },
+  {
+    name: "Austin M.",
+    style: "Life Coaching, Personal Finance, Interview Prep",
+    location: "Chicago, IL",
+    rating: 4.9,
+    reviews: 127,
+    alias: "",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Austin_M.png",
+    price: {
+      lower: 20,
+      upper: 40
+    }
+  },
+  {
+    name: "Adrian T.",
+    style: "Salsa, Mambo",
+    location: "Chicago, IL",
+    rating: 4.8,
+    reviews: 114,
+    alias: "",
+    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Adrian_T.png",
+    price: {
+      lower: 55,
+      upper: 75
     }
   }
 ]; 
