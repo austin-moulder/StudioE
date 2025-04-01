@@ -42,6 +42,8 @@ function InstructorsContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
   const [paginatedInstructors, setPaginatedInstructors] = useState<Instructor[]>([])
+  const [totalInstructors, setTotalInstructors] = useState(0)
+  const instructorGridRef = React.useRef<HTMLDivElement>(null)
   
   const ITEMS_PER_PAGE = 8
 
@@ -87,12 +89,46 @@ function InstructorsContent() {
         const styleText = instructor.style.toLowerCase()
         const searchStyle = selectedStyle.toLowerCase()
         
-        // Special case for hip hop to handle variations
-        if (searchStyle === "hiphop" || searchStyle === "hip hop") {
-          return styleText.includes("hip hop") || styleText.includes("hiphop")
-        }
+        // Split instructor's styles by common separators
+        const instructorStyles = styleText.split(/[,&]/).map(s => s.trim())
         
-        return styleText.includes(searchStyle)
+        // Handle special cases and variations
+        switch(searchStyle) {
+          case "hiphop":
+          case "hip hop":
+            return instructorStyles.some(style => 
+              style.includes("hip hop") || 
+              style.includes("hiphop")
+            )
+          case "salsa":
+            return instructorStyles.some(style => 
+              style.includes("salsa") || 
+              style.includes("mambo") ||
+              style.includes("pachanga")
+            )
+          case "bachata":
+            return instructorStyles.some(style => 
+              style.includes("bachata") || 
+              style.includes("sensual")
+            )
+          case "heels":
+            return instructorStyles.some(style => 
+              style.includes("heels") || 
+              style.includes("heels dance")
+            )
+          case "choreo":
+            return instructorStyles.some(style => 
+              style.includes("choreo") || 
+              style.includes("choreography")
+            )
+          case "dj":
+            return instructorStyles.some(style => 
+              style.includes("dj") || 
+              style.includes("disc jockey")
+            )
+          default:
+            return instructorStyles.some(style => style.includes(searchStyle))
+        }
       })
     }
     
@@ -134,20 +170,22 @@ function InstructorsContent() {
     filtered = sortInstructors(filtered, sortOrder)
     
     setFilteredInstructors(filtered)
+    setTotalInstructors(filtered.length)
 
     // Calculate new max page based on filtered results
     const newMaxPage = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
     
-    // If current page is now out of bounds, adjust it
+    // Only reset to page 1 if filters change and current page is out of bounds
     if (currentPage > newMaxPage) {
       setCurrentPage(1)
       updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
-    } else if (currentPage !== 1) {
-      // Reset to page 1 if filters change
-      setCurrentPage(1)
-      updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     }
-  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm])
+
+    // Scroll to the instructor grid when page changes
+    if (instructorGridRef.current) {
+      instructorGridRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, currentPage])
 
   // Sort instructors based on selected order
   const sortInstructors = (instructors: Instructor[], order: string) => {
