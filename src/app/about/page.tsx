@@ -49,6 +49,8 @@ export default function AboutPage() {
   const [selectedTeamIndex, setSelectedTeamIndex] = useState(0);
   const [featuresEmblaRef, featuresEmblaApi] = useEmblaCarousel({ loop: true });
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(0);
+  const [ambassadorsEmblaRef, ambassadorsEmblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedAmbassadorIndex, setSelectedAmbassadorIndex] = useState(0);
 
   useEffect(() => {
     if (valuesEmblaApi) {
@@ -74,6 +76,14 @@ export default function AboutPage() {
     }
   }, [featuresEmblaApi]);
 
+  useEffect(() => {
+    if (ambassadorsEmblaApi) {
+      ambassadorsEmblaApi.on('select', () => {
+        setSelectedAmbassadorIndex(ambassadorsEmblaApi.selectedScrollSnap());
+      });
+    }
+  }, [ambassadorsEmblaApi]);
+
   const scrollToValue = useCallback((index: number) => {
     valuesEmblaApi && valuesEmblaApi.scrollTo(index);
   }, [valuesEmblaApi]);
@@ -85,6 +95,10 @@ export default function AboutPage() {
   const scrollToFeature = useCallback((index: number) => {
     featuresEmblaApi && featuresEmblaApi.scrollTo(index);
   }, [featuresEmblaApi]);
+
+  const scrollToAmbassador = useCallback((index: number) => {
+    ambassadorsEmblaApi && ambassadorsEmblaApi.scrollTo(index);
+  }, [ambassadorsEmblaApi]);
 
   const nextTestimonial = () => {
     setCurrentTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
@@ -527,7 +541,67 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={ambassadorsEmblaRef}>
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 mx-2">
+                      <div className="aspect-w-1 aspect-h-1 bg-gray-50 flex items-center justify-center">
+                        <span className="text-gray-400 text-lg">Accepting Applications</span>
+                      </div>
+                      <div className="p-6">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Ambassador {index}
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                          Term: {new Date().toLocaleDateString()} - {new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                        </p>
+                        <div className="space-y-2">
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                            Blog Content Contributor
+                          </p>
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                            Monthly Social Safe Person
+                          </p>
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                            24/7 Hotline Operator
+                          </p>
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                            Social Media Manager
+                          </p>
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                            Community Event Coordinator
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {[0, 1, 2, 3, 4].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToAmbassador(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedAmbassadorIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to ambassador ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {[1, 2, 3, 4, 5].map((index) => (
               <div
                 key={index}
@@ -574,8 +648,10 @@ export default function AboutPage() {
             <p className="text-gray-600 mb-6">
               Interested in becoming a Community Ambassador? Applications are open for our next term.
             </p>
-            <Link
-              href="/contact"
+            <Link 
+              href="https://forms.gle/1i18AQS9vyNea6A99" 
+              target="_blank" 
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#FF3366] hover:bg-[#FF3366]/90 transition-colors"
             >
               Apply Now

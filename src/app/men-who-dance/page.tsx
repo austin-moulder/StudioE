@@ -88,9 +88,7 @@ export default function MenWhoDancePage() {
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A]/90 via-[#FF3366]/90 to-[#9933CC]/90 z-10" />
-        <div className="relative h-[400px] w-full bg-gray-300">
-          {/* Placeholder for hero image */}
-        </div>
+        <div className="relative h-[400px] w-full bg-gray-300" />
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Men Who Dance</h1>
           <p className="mt-6 max-w-2xl text-lg">
@@ -121,7 +119,7 @@ export default function MenWhoDancePage() {
             </div>
             <div className="relative aspect-square overflow-hidden rounded-lg">
               <Image
-                src="/placeholder.svg"
+                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/Men_Who_Dance_ADC.jpg"
                 alt="Men Who Dance group"
                 fill
                 className="object-cover"
