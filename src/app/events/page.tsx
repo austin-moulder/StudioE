@@ -92,10 +92,12 @@ function EventsContent() {
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     <SelectItem value="all">All Events</SelectItem>
-                    <SelectItem value="workshop">Workshops</SelectItem>
-                    <SelectItem value="showcase">Showcases</SelectItem>
-                    <SelectItem value="competition">Competitions</SelectItem>
                     <SelectItem value="social">Social Events</SelectItem>
+                    <SelectItem value="workshop">Workshops</SelectItem>
+                    <SelectItem value="congress">Congress</SelectItem>
+                    <SelectItem value="festival">Festival</SelectItem>
+                    <SelectItem value="competition">Competition</SelectItem>
+                    <SelectItem value="community">Community</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
