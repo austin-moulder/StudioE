@@ -12,7 +12,6 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect, useState, Suspense, useRef } from "react"
 import { Instructor } from "@/types/instructor"
 import { instructorsData } from "@/lib/instructors/instructorsData"
-import { getInstructors } from "@/lib/instructors/instructorUtils"
 
 // Define the instructor type (keep this for backward compatibility)
 interface InstructorInterface {
@@ -44,6 +43,7 @@ function InstructorsContent() {
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
   const [paginatedInstructors, setPaginatedInstructors] = useState<Instructor[]>([])
   const instructorGridRef = useRef<HTMLDivElement>(null)
+  const [totalInstructors, setTotalInstructors] = useState(0)
   
   const ITEMS_PER_PAGE = 8
 
@@ -210,9 +210,8 @@ function InstructorsContent() {
   useEffect(() => {
     const loadInstructors = async () => {
       try {
-        const { instructors: data, total } = await getInstructors(currentPage)
-        setFilteredInstructors(data)
-        setTotalInstructors(total)
+        setFilteredInstructors(instructorsData)
+        setTotalInstructors(instructorsData.length)
       } catch (error) {
         console.error("Error loading instructors:", error)
       }
