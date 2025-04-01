@@ -465,10 +465,10 @@ export default function Home() {
               <div className="flex">
                 {[
                   {
-                    name: "Susan Clark",
+                    name: "Sara Clark",
                     quote:
                       "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience. He is lovely, happy and very inspiring!",
-                    image: "/placeholder.svg",
+                    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Sara_Clark.jpeg",
                     style: "Zumba",
                   },
                   {
@@ -526,10 +526,10 @@ export default function Home() {
             <div className="flex justify-center mt-6 space-x-2">
               {[
                 {
-                  name: "Susan Clark",
+                  name: "Sara Clark",
                   quote:
                     "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience. He is lovely, happy and very inspiring!",
-                  image: "/placeholder.svg",
+                  image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Sara_Clark.jpeg",
                   style: "Zumba",
                 },
                 {
@@ -563,10 +563,10 @@ export default function Home() {
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                name: "Susan Clark",
+                name: "Sara Clark",
                 quote:
                   "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience. He is lovely, happy and very inspiring!",
-                image: "/placeholder.svg",
+                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Sara_Clark.jpeg",
                 style: "Zumba",
               },
               {

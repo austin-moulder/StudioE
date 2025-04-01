@@ -11,10 +11,10 @@ import useEmblaCarousel from 'embla-carousel-react'
 export default function AboutPage() {
   const testimonials = [
     {
-      name: "Susan Clark",
+      name: "Sara Clark",
       quote:
         "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience, you get exercise and he also helps teach us different style of music, which keeps it so interesting, and also some spanish, and just general fun dance moves!! He is lovely, happy and very inspiring, always smiling and his class is very special and excellent!",
-      image: "/placeholder.svg",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Sara_Clark.jpeg",
     },
     {
       name: "Laurencia O.",
