@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { getInstructorCount, getDanceStyleCount } from "@/lib/instructors/instructorUtils"
+import useEmblaCarousel from 'embla-carousel-react'
 
 export default function AboutPage() {
   const testimonials = [
@@ -42,6 +43,48 @@ export default function AboutPage() {
   ]
 
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const [valuesEmblaRef, valuesEmblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedValueIndex, setSelectedValueIndex] = useState(0);
+  const [teamEmblaRef, teamEmblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedTeamIndex, setSelectedTeamIndex] = useState(0);
+  const [featuresEmblaRef, featuresEmblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(0);
+
+  useEffect(() => {
+    if (valuesEmblaApi) {
+      valuesEmblaApi.on('select', () => {
+        setSelectedValueIndex(valuesEmblaApi.selectedScrollSnap());
+      });
+    }
+  }, [valuesEmblaApi]);
+
+  useEffect(() => {
+    if (teamEmblaApi) {
+      teamEmblaApi.on('select', () => {
+        setSelectedTeamIndex(teamEmblaApi.selectedScrollSnap());
+      });
+    }
+  }, [teamEmblaApi]);
+
+  useEffect(() => {
+    if (featuresEmblaApi) {
+      featuresEmblaApi.on('select', () => {
+        setSelectedFeatureIndex(featuresEmblaApi.selectedScrollSnap());
+      });
+    }
+  }, [featuresEmblaApi]);
+
+  const scrollToValue = useCallback((index: number) => {
+    valuesEmblaApi && valuesEmblaApi.scrollTo(index);
+  }, [valuesEmblaApi]);
+
+  const scrollToTeam = useCallback((index: number) => {
+    teamEmblaApi && teamEmblaApi.scrollTo(index);
+  }, [teamEmblaApi]);
+
+  const scrollToFeature = useCallback((index: number) => {
+    featuresEmblaApi && featuresEmblaApi.scrollTo(index);
+  }, [featuresEmblaApi]);
 
   const nextTestimonial = () => {
     setCurrentTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
@@ -122,24 +165,69 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
+          {/* Mobile Carousel */}
+          <div className="md:hidden mt-16">
+            <div className="overflow-hidden" ref={valuesEmblaRef}>
+              <div className="flex">
+                {[
+                  {
+                    title: "Accessibility",
+                    description: "Making quality dance instruction available to everyone, regardless of location or experience level.",
+                    icon: "🌍",
+                  },
+                  {
+                    title: "Community",
+                    description: "Building a supportive network of dancers, instructors, and enthusiasts who share a passion for movement.",
+                    icon: "👥",
+                  },
+                  {
+                    title: "Excellence",
+                    description: "Maintaining high standards for our instructors to ensure students receive the best possible education.",
+                    icon: "🏆",
+                  },
+                ].map((value, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg mx-2">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-gradient/10 text-3xl">
+                        {value.icon}
+                      </div>
+                      <h3 className="mt-6 text-xl font-bold">{value.title}</h3>
+                      <p className="mt-2 text-gray-500">{value.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {[0, 1, 2].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToValue(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedValueIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to value ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid mt-16 grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 title: "Accessibility",
-                description:
-                  "Making quality dance instruction available to everyone, regardless of location or experience level.",
+                description: "Making quality dance instruction available to everyone, regardless of location or experience level.",
                 icon: "🌍",
               },
               {
                 title: "Community",
-                description:
-                  "Building a supportive network of dancers, instructors, and enthusiasts who share a passion for movement.",
+                description: "Building a supportive network of dancers, instructors, and enthusiasts who share a passion for movement.",
                 icon: "👥",
               },
               {
                 title: "Excellence",
-                description:
-                  "Maintaining high standards for our instructors to ensure students receive the best possible education.",
+                description: "Maintaining high standards for our instructors to ensure students receive the best possible education.",
                 icon: "🏆",
               },
             ].map((value, index) => (
@@ -159,7 +247,77 @@ export default function AboutPage() {
       <section className="py-16 md:py-24 bg-gradient-to-r from-[#FF7A5A]/10 via-[#FF3366]/10 to-[#9933CC]/10">
         <div className="container">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-12">Why Choose Studio E?</h2>
-          <div className="grid gap-8 md:grid-cols-3">
+
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={featuresEmblaRef}>
+              <div className="flex">
+                {[
+                  {
+                    title: "Simplified Search",
+                    description: "We take the struggle out of finding qualified instructors.",
+                    number: "1"
+                  },
+                  {
+                    title: "Personalized Learning",
+                    description: "Our vast network of instructors means you will find someone who understands your learning style and can enable you to grow beyond what you imagined.",
+                    number: "2"
+                  },
+                  {
+                    title: "Vibrant Community",
+                    description: "Join a vibrant and supportive network where you'll connect with like-minded individuals and gain access to exclusive events and experiences.",
+                    number: "3"
+                  },
+                  {
+                    title: "Vetted Instructors",
+                    description: "We personally review every instructor on the platform for your safety.",
+                    icon: "✓"
+                  },
+                  {
+                    title: "Value for Money",
+                    description: "Heavily discounted rates to access instructors and exclusive events.",
+                    icon: "✓"
+                  },
+                  {
+                    title: "24/7 Support",
+                    description: "Customer support and confidential hotline available around the clock (coming soon).",
+                    icon: "✓"
+                  }
+                ].map((feature, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0 px-2">
+                    <div className="bg-white p-6 rounded-lg shadow-md h-[280px] flex flex-col">
+                      {feature.number ? (
+                        <div className="h-12 w-12 rounded-full bg-brand-gradient/10 flex items-center justify-center text-xl mb-4">
+                          {feature.number}
+                        </div>
+                      ) : (
+                        <div className="h-12 w-12 rounded-full bg-brand-gradient/10 flex items-center justify-center text-xl mb-4">
+                          {feature.icon}
+                        </div>
+                      )}
+                      <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                      <p className="text-gray-500 flex-grow">{feature.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {[0, 1, 2, 3, 4, 5].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToFeature(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedFeatureIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to feature ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid gap-8 md:grid-cols-3">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="h-12 w-12 rounded-full bg-brand-gradient/10 flex items-center justify-center text-xl mb-4">
                 1
@@ -189,7 +347,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="hidden md:grid mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="bg-white p-5 rounded-lg shadow-md flex items-start">
               <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0">✓</div>
               <div>
@@ -265,7 +423,62 @@ export default function AboutPage() {
             <p className="mt-4 text-lg text-gray-500">The passionate individuals behind Studio E</p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2">
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={teamEmblaRef}>
+              <div className="flex">
+                {[
+                  {
+                    name: "Austin Moulder, MBA",
+                    role: "Founder & CEO",
+                    bio: "Tech entrepreneur and Former Boston Consulting Group Consultant",
+                    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Profile_Picture_Standing.jpeg",
+                  },
+                  {
+                    name: "Noushin Ansari",
+                    role: "Head of Culture",
+                    bio: "Seasoned medical professional and social dancer who believes in the power of building safe and inclusive communities.",
+                    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Noushin_Ansari.jpeg",
+                  },
+                ].map((member, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <div className="flex flex-col items-center text-center mx-2">
+                      <div className="relative h-48 w-48 overflow-hidden rounded-full">
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          fill
+                          className="object-cover"
+                          style={{
+                            objectPosition: member.name === "Noushin Ansari" ? "center bottom" : "center"
+                          }}
+                          priority
+                        />
+                      </div>
+                      <h3 className="mt-6 text-xl font-bold">{member.name}</h3>
+                      <p className="text-[#FF3366]">{member.role}</p>
+                      <p className="mt-2 text-sm text-gray-500">{member.bio}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {[0, 1].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToTeam(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedTeamIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to team member ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
               {
                 name: "Austin Moulder, MBA",

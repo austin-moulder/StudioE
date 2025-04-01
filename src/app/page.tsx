@@ -18,6 +18,13 @@ import { useRouter } from "next/navigation";
 import { getDanceStyleImages } from "@/lib/supabase/imageUtils";
 import useEmblaCarousel from 'embla-carousel-react'
 
+interface Instructor {
+  id: string;
+  name: string;
+  image: string;
+  specialty: string;
+}
+
 export default function Home() {
   const [selectedStyle, setSelectedStyle] = useState("");
   const [danceStyleImages, setDanceStyleImages] = useState<Record<string, string>>({});
@@ -25,6 +32,33 @@ export default function Home() {
   const router = useRouter();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [danceStyleEmblaRef, danceStyleEmblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedDanceStyleIndex, setSelectedDanceStyleIndex] = useState(0);
+  const [instructorsEmblaRef, instructorsEmblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedInstructorIndex, setSelectedInstructorIndex] = useState(0);
+  const [blogEmblaRef, blogEmblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedBlogIndex, setSelectedBlogIndex] = useState(0);
+
+  const instructors: Instructor[] = [
+    {
+      id: "jocelyn-v",
+      name: "Jocelyn V.",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Jocelyn.png",
+      specialty: "Heels & Reggaeton"
+    },
+    {
+      id: "del-d",
+      name: "Del D.",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Del_1.png",
+      specialty: "Salsa & Social Dancing"
+    },
+    {
+      id: "brian-m",
+      name: "Brian M.",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Brian.jpeg",
+      specialty: "Bachata & Sensual"
+    }
+  ];
 
   useEffect(() => {
     const loadImages = async () => {
@@ -41,18 +75,6 @@ export default function Home() {
     loadImages();
   }, []);
 
-  const handleSearch = () => {
-    if (selectedStyle) {
-      router.push(`/instructors?style=${selectedStyle}`);
-    } else {
-      router.push("/instructors");
-    }
-  };
-
-  const scrollTo = useCallback((index: number) => {
-    emblaApi && emblaApi.scrollTo(index);
-  }, [emblaApi]);
-
   useEffect(() => {
     if (emblaApi) {
       emblaApi.on('select', () => {
@@ -60,6 +82,54 @@ export default function Home() {
       });
     }
   }, [emblaApi]);
+
+  useEffect(() => {
+    if (danceStyleEmblaApi) {
+      danceStyleEmblaApi.on('select', () => {
+        setSelectedDanceStyleIndex(danceStyleEmblaApi.selectedScrollSnap());
+      });
+    }
+  }, [danceStyleEmblaApi]);
+
+  useEffect(() => {
+    if (instructorsEmblaApi) {
+      instructorsEmblaApi.on('select', () => {
+        setSelectedInstructorIndex(instructorsEmblaApi.selectedScrollSnap());
+      });
+    }
+  }, [instructorsEmblaApi]);
+
+  useEffect(() => {
+    if (blogEmblaApi) {
+      blogEmblaApi.on('select', () => {
+        setSelectedBlogIndex(blogEmblaApi.selectedScrollSnap());
+      });
+    }
+  }, [blogEmblaApi]);
+
+  const scrollTo = useCallback((index: number) => {
+    emblaApi && emblaApi.scrollTo(index);
+  }, [emblaApi]);
+
+  const scrollToDanceStyle = useCallback((index: number) => {
+    danceStyleEmblaApi && danceStyleEmblaApi.scrollTo(index);
+  }, [danceStyleEmblaApi]);
+
+  const scrollToInstructor = useCallback((index: number) => {
+    instructorsEmblaApi && instructorsEmblaApi.scrollTo(index);
+  }, [instructorsEmblaApi]);
+
+  const scrollToBlog = useCallback((index: number) => {
+    blogEmblaApi && blogEmblaApi.scrollTo(index);
+  }, [blogEmblaApi]);
+
+  const handleSearch = () => {
+    if (selectedStyle) {
+      router.push(`/instructors?style=${selectedStyle}`);
+    } else {
+      router.push("/instructors");
+    }
+  };
 
   return (
     <div className="flex flex-col">
@@ -112,7 +182,71 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={danceStyleEmblaRef}>
+              <div className="flex">
+                {[
+                  { name: "Salsa", count: 24 },
+                  { name: "Bachata", count: 18 },
+                  { name: "Heels", count: 15 },
+                  { name: "Choreo", count: 20 },
+                ].map((style, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <Link 
+                      href={`/instructors?style=${style.name.toLowerCase()}`} 
+                      className="group relative overflow-hidden rounded-lg hover:shadow-lg transition-shadow duration-300 mx-2"
+                    >
+                      <div className="aspect-square relative overflow-hidden rounded-lg">
+                        {danceStyleImages[style.name.toLowerCase()] ? (
+                          <>
+                            <Image
+                              src={danceStyleImages[style.name.toLowerCase()]}
+                              alt={`${style.name} dance style`}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                              unoptimized
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                            <div className="absolute bottom-0 left-0 p-4 text-white">
+                              <h3 className="text-xl font-bold">{style.name}</h3>
+                              <p className="text-sm">{style.count} Instructors</p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-300 flex items-center justify-center">
+                              <span className="text-gray-400 text-lg">{style.name}</span>
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                            <div className="absolute bottom-0 left-0 p-4 text-white">
+                              <h3 className="text-xl font-bold">{style.name}</h3>
+                              <p className="text-sm">{style.count} Instructors</p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {[0, 1, 2, 3].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToDanceStyle(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedDanceStyleIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to dance style ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { name: "Salsa", count: 24 },
               { name: "Bachata", count: 18 },
@@ -176,7 +310,55 @@ export default function Home() {
             <p className="mt-4 text-lg text-gray-500">Learn from the best dance instructors in the industry</p>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={instructorsEmblaRef}>
+              <div className="flex">
+                {instructors.map((instructor, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <div className="flex flex-col items-center text-center mx-2">
+                      <div className="relative h-48 w-48 overflow-hidden rounded-full">
+                        <Image
+                          src={instructor.image}
+                          alt={instructor.name}
+                          fill
+                          className="object-cover"
+                          priority
+                        />
+                      </div>
+                      <h3 className="mt-6 text-xl font-bold">{instructor.name}</h3>
+                      <p className="text-[#FF3366]">{instructor.specialty}</p>
+                      <div className="flex justify-center gap-2 mt-4">
+                        <Link href={`/instructors/${instructor.id}`}>
+                          <Button size="sm" variant="outline">
+                            View Profile
+                          </Button>
+                        </Link>
+                        <Link href={`/instructors/${instructor.id}?tab=book`}>
+                          <Button size="sm">Book Now</Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {[0, 1, 2].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToInstructor(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedInstructorIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to instructor ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
                 name: "Jocelyn V.",
@@ -218,58 +400,41 @@ export default function Home() {
                 }
               },
             ].map((instructor) => (
-              <Card key={instructor.name} className="overflow-hidden">
-                <div className="aspect-[4/3] relative">
+              <Link 
+                key={instructor.name} 
+                href={`/instructors?style=${instructor.style.toLowerCase()}`} 
+                className="group relative overflow-hidden rounded-lg hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="aspect-square relative overflow-hidden rounded-lg">
                   {instructor.image !== "/placeholder.svg" ? (
-                    <Image
-                      src={instructor.image}
-                      alt={`${instructor.name} profile photo`}
-                      fill
-                      className="object-cover"
-                      style={{
-                        objectPosition: instructor.name === "Jocelyn V." ? "center 25%" : 
-                                        instructor.name === "Brian M." ? "center 30%" : "center"
-                      }}
-                      unoptimized
-                    />
+                    <>
+                      <Image
+                        src={instructor.image}
+                        alt={`${instructor.name} profile photo`}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        unoptimized
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      <div className="absolute bottom-0 left-0 p-4 text-white">
+                        <h3 className="text-xl font-bold">{instructor.name}</h3>
+                        <p className="text-sm">{instructor.style}</p>
+                      </div>
+                    </>
                   ) : (
-                    <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400 text-lg">{instructor.name}</span>
-                    </div>
-                  )}
-                  {instructor.featured && (
-                    <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
-                      Featured
-                    </div>
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-300 flex items-center justify-center">
+                        <span className="text-gray-400 text-lg">{instructor.name}</span>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      <div className="absolute bottom-0 left-0 p-4 text-white">
+                        <h3 className="text-xl font-bold">{instructor.name}</h3>
+                        <p className="text-sm">{instructor.style}</p>
+                      </div>
+                    </>
                   )}
                 </div>
-                <CardContent className="p-6 bg-white">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold">{instructor.name}</h3>
-                      <p className="text-sm text-gray-500">{instructor.style}</p>
-                    </div>
-                    <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
-                      <Star className="h-3 w-3 fill-current" />
-                      {instructor.rating}
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-center text-sm text-gray-500">
-                    <MapPin className="mr-1 h-4 w-4" />
-                    {instructor.location}
-                  </div>
-                  <div className="mt-2 text-sm">
-                    <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
-                    <span className="text-gray-500"> / hour</span>
-                  </div>
-                  <div className="mt-4 flex justify-between">
-                    <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
-                    <Link href={`/instructors/${instructor.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-[#F94C8D] hover:underline text-sm">
-                      View Profile
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
+              </Link>
             ))}
           </div>
 
@@ -285,17 +450,80 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 md:py-24">
-        <div className="container">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">What Our Students Say</h2>
-            <p className="mt-4 text-lg text-gray-500">
-              Hear from students who have found their perfect dance instructors
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">What Our Students Say</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Join our community of dancers who have transformed their lives through dance
             </p>
           </div>
 
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex touch-pan-y">
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex">
+                {[
+                  {
+                    name: "Susan Clark",
+                    quote:
+                      "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience. He is lovely, happy and very inspiring!",
+                    image: "/placeholder.svg",
+                    style: "Zumba",
+                  },
+                  {
+                    name: "Brianna Hook",
+                    quote:
+                      "They broke down the steps so clearly and answered every question patiently. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
+                    image: "/placeholder.svg",
+                    style: "Bachata",
+                  },
+                  {
+                    name: "Brandon Hampton",
+                    quote:
+                      "Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson.",
+                    image: "/placeholder.svg",
+                    style: "Latin Dance",
+                  },
+                ].map((testimonial, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <div className="bg-white rounded-lg shadow-lg p-6 mx-2">
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden">
+                          <Image
+                            src={testimonial.image}
+                            alt={testimonial.name}
+                            width={48}
+                            height={48}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{testimonial.name}</h3>
+                          <p className="text-sm text-gray-500">{testimonial.style} Student</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
+                      <div className="flex items-center">
+                        <div className="flex text-yellow-400">
+                          {[...Array(5)].map((_, i) => (
+                            <svg
+                              key={i}
+                              className="w-5 h-5"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
               {[
                 {
                   name: "Susan Clark",
@@ -318,47 +546,83 @@ export default function Home() {
                   image: "/placeholder.svg",
                   style: "Latin Dance",
                 },
-              ].map((testimonial, index) => (
-                <div key={index} className="flex-[0_0_100%] min-w-0 pl-4 md:pl-8 first:pl-0">
-                  <Card className="p-6 flex flex-col h-full">
-                    <div className="flex items-center gap-4">
-                      <div className="h-12 w-12 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">{testimonial.name.charAt(0)}</span>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{testimonial.name}</h3>
-                        <p className="text-sm text-gray-500">{testimonial.style} Student</p>
-                      </div>
-                    </div>
-                    <div className="mt-4 flex-grow">
-                      <p className="text-gray-500">&quot;{testimonial.quote}&quot;</p>
-                    </div>
-                    <div className="mt-4 flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-current text-yellow-400" />
-                      ))}
-                    </div>
-                  </Card>
-                </div>
+              ].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollTo(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
               ))}
             </div>
           </div>
-          <div className="flex justify-center gap-2 mt-6">
-            {[0, 1, 2].map((index) => (
-              <button
-                key={index}
-                className={`h-2 w-2 rounded-full transition-colors ${
-                  selectedIndex === index ? "bg-[#FF3366]" : "bg-gray-300"
-                }`}
-                onClick={() => scrollTo(index)}
-              />
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Susan Clark",
+                quote:
+                  "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience. He is lovely, happy and very inspiring!",
+                image: "/placeholder.svg",
+                style: "Zumba",
+              },
+              {
+                name: "Brianna Hook",
+                quote:
+                  "They broke down the steps so clearly and answered every question patiently. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
+                image: "/placeholder.svg",
+                style: "Bachata",
+              },
+              {
+                name: "Brandon Hampton",
+                quote:
+                  "Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson.",
+                image: "/placeholder.svg",
+                style: "Latin Dance",
+              },
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg p-6">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden">
+                    <Image
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      width={48}
+                      height={48}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{testimonial.name}</h3>
+                    <p className="text-sm text-gray-500">{testimonial.style} Student</p>
+                  </div>
+                </div>
+                <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
+                <div className="flex items-center">
+                  <div className="flex text-yellow-400">
+                    {[...Array(5)].map((_, i) => (
+                      <svg
+                        key={i}
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Podcast Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-8 md:py-24">
         <div className="container">
           <div className="grid gap-12 md:grid-cols-2 items-center">
             <div className="relative aspect-square max-w-md mx-auto md:mx-0">
@@ -462,7 +726,74 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={blogEmblaRef}>
+              <div className="flex">
+                {[
+                  {
+                    title: "10 Tips for Beginner Ballet Dancers",
+                    excerpt:
+                      "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
+                    image: "/placeholder.svg",
+                    date: "June 15, 2025",
+                    category: "Ballet",
+                  },
+                  {
+                    title: "The History and Evolution of Hip Hop Dance",
+                    excerpt:
+                      "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
+                    image: "/placeholder.svg",
+                    date: "June 10, 2025",
+                    category: "Hip Hop",
+                  },
+                  {
+                    title: "Preparing for Your First Dance Competition",
+                    excerpt:
+                      "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
+                    image: "/placeholder.svg",
+                    date: "June 5, 2025",
+                    category: "Competition",
+                  },
+                ].map((post, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <Card className="mx-2 overflow-hidden">
+                      <div className="aspect-[3/2] relative bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400 text-lg">{post.title}</span>
+                      </div>
+                      <CardContent className="p-6 bg-white">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{post.category}</Badge>
+                          <span className="text-xs text-gray-500">{post.date}</span>
+                        </div>
+                        <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
+                        <p className="mt-2 text-gray-500">{post.excerpt}</p>
+                        <Button variant="link" className="mt-4 p-0 h-auto">
+                          Read More
+                          <ArrowRight className="ml-1 h-4 w-4" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {[0, 1, 2].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToBlog(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedBlogIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to blog post ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
                 title: "10 Tips for Beginner Ballet Dancers",
@@ -489,23 +820,18 @@ export default function Home() {
                 category: "Competition",
               },
             ].map((post, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="aspect-[3/2] relative bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400 text-lg">{post.title}</span>
+              <div key={index} className="bg-white rounded-lg shadow-lg p-6">
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline">{post.category}</Badge>
+                  <span className="text-xs text-gray-500">{post.date}</span>
                 </div>
-                <CardContent className="p-6 bg-white">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline">{post.category}</Badge>
-                    <span className="text-xs text-gray-500">{post.date}</span>
-                  </div>
-                  <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
-                  <p className="mt-2 text-gray-500">{post.excerpt}</p>
-                  <Button variant="link" className="mt-4 p-0 h-auto">
-                    Read More
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </Button>
-                </CardContent>
-              </Card>
+                <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
+                <p className="mt-2 text-gray-500">{post.excerpt}</p>
+                <Button variant="link" className="mt-4 p-0 h-auto">
+                  Read More
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
             ))}
           </div>
 
