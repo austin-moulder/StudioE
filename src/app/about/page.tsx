@@ -515,6 +515,75 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Community Ambassadors Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Community Ambassadors
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Our Community Ambassadors are selected for 3-month terms and play a vital role in fostering a safe, inclusive, and engaging dance community.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {[1, 2, 3, 4, 5].map((index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200"
+              >
+                <div className="aspect-w-1 aspect-h-1 bg-gray-50 flex items-center justify-center">
+                  <span className="text-gray-400 text-lg">Accepting Applications</span>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Ambassador {index}
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Term: {new Date().toLocaleDateString()} - {new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                  </p>
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-600 flex items-center">
+                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                      Blog Content Contributor
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center">
+                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                      Monthly Social Safe Person
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center">
+                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                      24/7 Hotline Operator
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center">
+                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                      Social Media Manager
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center">
+                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
+                      Community Event Coordinator
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <p className="text-gray-600 mb-6">
+              Interested in becoming a Community Ambassador? Applications are open for our next term.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#FF3366] hover:bg-[#FF3366]/90 transition-colors"
+            >
+              Apply Now
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Stats Section */}
       <section className="bg-gray-50 py-16 md:py-24">
         <div className="container">
@@ -615,6 +684,15 @@ export default function AboutPage() {
                 className="bg-transparent text-white hover:bg-white/10 hover:text-white"
               >
                 Travel with Studio E
+              </Button>
+            </Link>
+            <Link href="/men-who-dance">
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent text-white hover:bg-white/10 hover:text-white"
+              >
+                Men Who Dance
               </Button>
             </Link>
           </div>
