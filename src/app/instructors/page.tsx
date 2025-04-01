@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Star, MapPin, Filter, Search } from "lucide-react"
@@ -9,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSearchParams, useRouter } from "next/navigation"
-import { useEffect, useState, Suspense } from "react"
+import { Suspense } from "react"
 import { Instructor } from "@/types/instructor"
 import { instructorsData } from "@/lib/instructors/instructorsData"
 
@@ -42,8 +43,6 @@ function InstructorsContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
   const [paginatedInstructors, setPaginatedInstructors] = useState<Instructor[]>([])
-  const [totalInstructors, setTotalInstructors] = useState(0)
-  const instructorGridRef = React.useRef<HTMLDivElement>(null)
   
   const ITEMS_PER_PAGE = 8
 
@@ -89,46 +88,12 @@ function InstructorsContent() {
         const styleText = instructor.style.toLowerCase()
         const searchStyle = selectedStyle.toLowerCase()
         
-        // Split instructor's styles by common separators
-        const instructorStyles = styleText.split(/[,&]/).map(s => s.trim())
-        
-        // Handle special cases and variations
-        switch(searchStyle) {
-          case "hiphop":
-          case "hip hop":
-            return instructorStyles.some(style => 
-              style.includes("hip hop") || 
-              style.includes("hiphop")
-            )
-          case "salsa":
-            return instructorStyles.some(style => 
-              style.includes("salsa") || 
-              style.includes("mambo") ||
-              style.includes("pachanga")
-            )
-          case "bachata":
-            return instructorStyles.some(style => 
-              style.includes("bachata") || 
-              style.includes("sensual")
-            )
-          case "heels":
-            return instructorStyles.some(style => 
-              style.includes("heels") || 
-              style.includes("heels dance")
-            )
-          case "choreo":
-            return instructorStyles.some(style => 
-              style.includes("choreo") || 
-              style.includes("choreography")
-            )
-          case "dj":
-            return instructorStyles.some(style => 
-              style.includes("dj") || 
-              style.includes("disc jockey")
-            )
-          default:
-            return instructorStyles.some(style => style.includes(searchStyle))
+        // Special case for hip hop to handle variations
+        if (searchStyle === "hiphop" || searchStyle === "hip hop") {
+          return styleText.includes("hip hop") || styleText.includes("hiphop")
         }
+        
+        return styleText.includes(searchStyle)
       })
     }
     
@@ -170,22 +135,20 @@ function InstructorsContent() {
     filtered = sortInstructors(filtered, sortOrder)
     
     setFilteredInstructors(filtered)
-    setTotalInstructors(filtered.length)
 
     // Calculate new max page based on filtered results
     const newMaxPage = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
     
-    // Only reset to page 1 if filters change and current page is out of bounds
+    // If current page is now out of bounds, adjust it
     if (currentPage > newMaxPage) {
       setCurrentPage(1)
       updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
+    } else if (currentPage !== 1) {
+      // Reset to page 1 if filters change
+      setCurrentPage(1)
+      updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     }
-
-    // Scroll to the instructor grid when page changes
-    if (instructorGridRef.current) {
-      instructorGridRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
-    }
-  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, currentPage])
+  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm])
 
   // Sort instructors based on selected order
   const sortInstructors = (instructors: Instructor[], order: string) => {
