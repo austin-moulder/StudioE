@@ -368,32 +368,42 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-16 md:py-24">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC]" />
-        <div className="container relative z-10">
-          <div className="mx-auto max-w-2xl text-center text-white">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Join Our Community</h2>
-            <p className="mt-4 text-lg">
-              Whether you're looking to learn a new dance style or share your expertise as an instructor, Studio E is
-              the perfect place to start.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link href="/instructors">
-                <Button size="lg" variant="secondary">
-                  Find an Instructor
-                </Button>
-              </Link>
-              <Link href="https://forms.gle/reV28gHLZ8zvobUZ6" target="_blank" rel="noopener noreferrer">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="bg-transparent text-white hover:bg-white/10 hover:text-white"
-                >
-                  Become an Instructor
-                </Button>
-              </Link>
-            </div>
+      {/* Join Our Community */}
+      <section className="py-16 bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC] text-white">
+        <div className="container text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Join Our Community</h2>
+          <p className="mt-4 text-lg">
+            Whether you're looking to learn a new dance style or share your expertise as an instructor, Studio E is
+            the perfect place to start.
+          </p>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <Link href="/instructors">
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent text-white hover:bg-white/10 hover:text-white"
+              >
+                Find an Instructor
+              </Button>
+            </Link>
+            <Link href="https://forms.gle/reV28gHLZ8zvobUZ6" target="_blank" rel="noopener noreferrer">
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent text-white hover:bg-white/10 hover:text-white"
+              >
+                Become an Instructor
+              </Button>
+            </Link>
+            <Link href="/studio-e-travel">
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent text-white hover:bg-white/10 hover:text-white"
+              >
+                Travel with Studio E
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

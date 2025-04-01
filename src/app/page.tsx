@@ -13,15 +13,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getDanceStyleImages } from "@/lib/supabase/imageUtils";
+import useEmblaCarousel from 'embla-carousel-react'
 
 export default function Home() {
   const [selectedStyle, setSelectedStyle] = useState("");
   const [danceStyleImages, setDanceStyleImages] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -45,6 +48,18 @@ export default function Home() {
       router.push("/instructors");
     }
   };
+
+  const scrollTo = useCallback((index: number) => {
+    emblaApi && emblaApi.scrollTo(index);
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.on('select', () => {
+        setSelectedIndex(emblaApi.selectedScrollSnap());
+      });
+    }
+  }, [emblaApi]);
 
   return (
     <div className="flex flex-col">
@@ -279,49 +294,64 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                name: "Susan Clark",
-                quote:
-                  "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience. He is lovely, happy and very inspiring!",
-                image: "/placeholder.svg",
-                style: "Zumba",
-              },
-              {
-                name: "Brianna Hook",
-                quote:
-                  "They broke down the steps so clearly and answered every question patiently. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
-                image: "/placeholder.svg",
-                style: "Bachata",
-              },
-              {
-                name: "Brandon Hampton",
-                quote:
-                  "Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson.",
-                image: "/placeholder.svg",
-                style: "Latin Dance",
-              },
-            ].map((testimonial, index) => (
-              <Card key={index} className="p-6 flex flex-col h-full">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400 text-xs">{testimonial.name.charAt(0)}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{testimonial.name}</h3>
-                    <p className="text-sm text-gray-500">{testimonial.style} Student</p>
-                  </div>
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex touch-pan-y">
+              {[
+                {
+                  name: "Susan Clark",
+                  quote:
+                    "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience. He is lovely, happy and very inspiring!",
+                  image: "/placeholder.svg",
+                  style: "Zumba",
+                },
+                {
+                  name: "Brianna Hook",
+                  quote:
+                    "They broke down the steps so clearly and answered every question patiently. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
+                  image: "/placeholder.svg",
+                  style: "Bachata",
+                },
+                {
+                  name: "Brandon Hampton",
+                  quote:
+                    "Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson.",
+                  image: "/placeholder.svg",
+                  style: "Latin Dance",
+                },
+              ].map((testimonial, index) => (
+                <div key={index} className="flex-[0_0_100%] min-w-0 pl-4 md:pl-8 first:pl-0">
+                  <Card className="p-6 flex flex-col h-full">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">{testimonial.name.charAt(0)}</span>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">{testimonial.name}</h3>
+                        <p className="text-sm text-gray-500">{testimonial.style} Student</p>
+                      </div>
+                    </div>
+                    <div className="mt-4 flex-grow">
+                      <p className="text-gray-500">&quot;{testimonial.quote}&quot;</p>
+                    </div>
+                    <div className="mt-4 flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current text-yellow-400" />
+                      ))}
+                    </div>
+                  </Card>
                 </div>
-                <div className="mt-4 flex-grow">
-                  <p className="text-gray-500 h-[120px] overflow-y-auto">&quot;{testimonial.quote}&quot;</p>
-                </div>
-                <div className="mt-4 flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-current text-yellow-400" />
-                  ))}
-                </div>
-              </Card>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-center gap-2 mt-6">
+            {[0, 1, 2].map((index) => (
+              <button
+                key={index}
+                className={`h-2 w-2 rounded-full transition-colors ${
+                  selectedIndex === index ? "bg-[#FF3366]" : "bg-gray-300"
+                }`}
+                onClick={() => scrollTo(index)}
+              />
             ))}
           </div>
         </div>
