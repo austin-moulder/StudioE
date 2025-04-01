@@ -475,14 +475,14 @@ export default function Home() {
                     name: "Brianna Hook",
                     quote:
                       "They broke down the steps so clearly and answered every question patiently. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
-                    image: "/placeholder.svg",
+                    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Briana_Hall.jpeg",
                     style: "Bachata",
                   },
                   {
                     name: "Brandon Hampton",
                     quote:
                       "Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson.",
-                    image: "/placeholder.svg",
+                    image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Brandon_Hampton.png",
                     style: "Latin Dance",
                   },
                 ].map((testimonial, index) => (
@@ -536,14 +536,14 @@ export default function Home() {
                   name: "Brianna Hook",
                   quote:
                     "They broke down the steps so clearly and answered every question patiently. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
-                  image: "/placeholder.svg",
+                  image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Briana_Hall.jpeg",
                   style: "Bachata",
                 },
                 {
                   name: "Brandon Hampton",
                   quote:
                     "Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson.",
-                  image: "/placeholder.svg",
+                  image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Brandon_Hampton.png",
                   style: "Latin Dance",
                 },
               ].map((_, index) => (
@@ -573,14 +573,14 @@ export default function Home() {
                 name: "Brianna Hook",
                 quote:
                   "They broke down the steps so clearly and answered every question patiently. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
-                image: "/placeholder.svg",
+                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Briana_Hall.jpeg",
                 style: "Bachata",
               },
               {
                 name: "Brandon Hampton",
                 quote:
                   "Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson.",
-                image: "/placeholder.svg",
+                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Brandon_Hampton.png",
                 style: "Latin Dance",
               },
             ].map((testimonial, index) => (

@@ -26,7 +26,7 @@ export default function AboutPage() {
       name: "Brianna Hook",
       quote:
         "I have been wanting to learn to lead for a long time, but I don't get the chance to take dance classes very often. As a single parent, it's also hard to carve out the time to travel to dance, but I am SO glad I set aside this weekend and had the opportunity to take classes with Austin! They broke down the steps so clearly and answered every question patiently with as much repetition as we needed. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
-      image: "/placeholder.svg",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Briana_Hall.jpeg",
     },
     {
       name: "Becca Yang",
@@ -38,7 +38,7 @@ export default function AboutPage() {
       name: "Brandon Hampton",
       quote:
         "Detailed, Fundamentals-Driven, Accessible to All, Inclusive, Passionate, Fun! Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson. He has simplified an approach to Latin Dance that any level can utilize to improve their skills.",
-      image: "/placeholder.svg",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Brandon_Hampton.png",
     },
   ]
 
