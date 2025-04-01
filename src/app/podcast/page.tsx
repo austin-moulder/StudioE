@@ -4,6 +4,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import dynamic from "next/dynamic"
+import useEmblaCarousel from "embla-carousel-react"
+import { useEffect, useState } from "react"
 
 // Dynamically import PodcastTabs with the correct path
 const PodcastTabs = dynamic(() => import("@/app/podcast/podcast-tabs").then(mod => mod.PodcastTabs), {
@@ -12,6 +14,54 @@ const PodcastTabs = dynamic(() => import("@/app/podcast/podcast-tabs").then(mod 
 })
 
 export default function PodcastPage() {
+  const [instructorsEmblaRef, instructorsEmblaApi] = useEmblaCarousel({ loop: true })
+  const [selectedInstructorIndex, setSelectedInstructorIndex] = useState(0)
+
+  useEffect(() => {
+    if (instructorsEmblaApi) {
+      instructorsEmblaApi.on('select', () => {
+        setSelectedInstructorIndex(instructorsEmblaApi.selectedScrollSnap())
+      })
+    }
+  }, [instructorsEmblaApi])
+
+  const scrollToInstructor = (index: number) => {
+    if (instructorsEmblaApi) {
+      instructorsEmblaApi.scrollTo(index)
+    }
+  }
+
+  const featuredInstructors = [
+    {
+      name: "Eda Kachiri",
+      role: "Bachata & Merengue Instructor",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Eda_Kachiri.png",
+      episode: 10,
+      spotifyLink: "https://open.spotify.com/episode/4bDxnq1c7OASVESYIU2EU3?si=1d292bc6e0bf4d2a"
+    },
+    {
+      name: "B-Mac",
+      role: "Bachata Instructor",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Brian.jpeg",
+      episode: 9,
+      spotifyLink: "https://open.spotify.com/episode/63vAHHJvfRiHNrUQ3OmnRK?si=bd6895e091614d01"
+    },
+    {
+      name: "The Harrison Twins",
+      role: "Dance Instructors",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Harrison_Twins.png",
+      episode: 8,
+      spotifyLink: "https://open.spotify.com/episode/3DxiwclbTdxcbTpgJ5jvUU?si=cbb7cc9e69864cdd"
+    },
+    {
+      name: "Jocelyn & Nathalie",
+      role: "Heels & Reggaeton Instructors",
+      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Jocelyn_&_Nathalie.png",
+      episode: 6,
+      spotifyLink: "https://open.spotify.com/episode/0JDUrjDFdgQwcwqjAuHpZe?si=ec115ec0d7be44b9"
+    },
+  ]
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -157,33 +207,50 @@ export default function PodcastPage() {
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                name: "Eda Kachiri",
-                role: "Bachata & Merengue Instructor",
-                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Eda_Kachiri.png",
-                episode: 10,
-              },
-              {
-                name: "B-Mac",
-                role: "Bachata Instructor",
-                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Brian.jpeg",
-                episode: 9,
-              },
-              {
-                name: "The Harrison Twins",
-                role: "Dance Instructors",
-                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Harrison_Twins.png",
-                episode: 8,
-              },
-              {
-                name: "Jocelyn & Nathalie",
-                role: "Heels & Reggaeton Instructors",
-                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Jocelyn_&_Nathalie.png",
-                episode: 6,
-              },
-            ].map((guest, index) => (
+          {/* Mobile Carousel */}
+          <div className="md:hidden">
+            <div className="overflow-hidden" ref={instructorsEmblaRef}>
+              <div className="flex">
+                {featuredInstructors.map((guest, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <div className="flex flex-col items-center text-center mx-2">
+                      <div className="relative h-48 w-48 overflow-hidden rounded-full">
+                        <Image
+                          src={guest.image || "/placeholder.svg"}
+                          alt={guest.name}
+                          fill
+                          className="object-cover object-top"
+                        />
+                      </div>
+                      <h3 className="mt-6 text-xl font-bold">{guest.name}</h3>
+                      <p className="text-primary">
+                        {guest.role}
+                      </p>
+                      <Link href={guest.spotifyLink} target="_blank" rel="noopener noreferrer" className="mt-2 text-sm font-medium hover:underline">
+                        Listen to Episode {guest.episode}
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-6 space-x-2">
+              {featuredInstructors.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToInstructor(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedInstructorIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to instructor ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {featuredInstructors.map((guest, index) => (
               <div key={index} className="flex flex-col items-center text-center">
                 <div className="relative h-48 w-48 overflow-hidden rounded-full">
                   <Image
@@ -197,7 +264,7 @@ export default function PodcastPage() {
                 <p className="text-primary">
                   {guest.role}
                 </p>
-                <Link href="#" className="mt-2 text-sm font-medium hover:underline">
+                <Link href={guest.spotifyLink} target="_blank" rel="noopener noreferrer" className="mt-2 text-sm font-medium hover:underline">
                   Listen to Episode {guest.episode}
                 </Link>
               </div>

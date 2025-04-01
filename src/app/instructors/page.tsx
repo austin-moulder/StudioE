@@ -9,9 +9,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useSearchParams, useRouter } from "next/navigation"
-import { useEffect, useState, Suspense } from "react"
+import { useEffect, useState, Suspense, useRef } from "react"
 import { Instructor } from "@/types/instructor"
 import { instructorsData } from "@/lib/instructors/instructorsData"
+import { getInstructors } from "@/lib/instructors/instructorUtils"
 
 // Define the instructor type (keep this for backward compatibility)
 interface InstructorInterface {
@@ -42,6 +43,7 @@ function InstructorsContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
   const [paginatedInstructors, setPaginatedInstructors] = useState<Instructor[]>([])
+  const instructorGridRef = useRef<HTMLDivElement>(null)
   
   const ITEMS_PER_PAGE = 8
 
@@ -205,6 +207,25 @@ function InstructorsContent() {
     updateURL(page, selectedStyle, selectedLocation, selectedPrice, sortOrder)
   }
 
+  useEffect(() => {
+    const loadInstructors = async () => {
+      try {
+        const { instructors: data, total } = await getInstructors(currentPage)
+        setFilteredInstructors(data)
+        setTotalInstructors(total)
+      } catch (error) {
+        console.error("Error loading instructors:", error)
+      }
+    }
+
+    loadInstructors()
+
+    // Scroll to the instructor grid when page changes
+    if (instructorGridRef.current) {
+      instructorGridRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }, [currentPage])
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -332,7 +353,7 @@ function InstructorsContent() {
             </Select>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div ref={instructorGridRef} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {paginatedInstructors.map((instructor, index) => (
               <Card key={index} className="overflow-hidden">
                 <div className="aspect-[4/3] relative bg-gray-200 overflow-hidden">

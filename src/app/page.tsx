@@ -666,19 +666,25 @@ export default function Home() {
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-[#FF3366] font-semibold">
                       10
                     </div>
-                    <span>Eda Kachiri: Unleashing Passion in Your Dance Growing Your City</span>
+                    <Link href="https://open.spotify.com/episode/4bDxnq1c7OASVESYIU2EU3?si=1d292bc6e0bf4d2a" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF3366]">
+                      Eda Kachiri: Unleashing Passion in Your Dance Growing Your City
+                    </Link>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-[#FF3366] font-semibold">
                       9
                     </div>
-                    <span>B-Mac: Becoming an International Bachata Sensual Ambassador</span>
+                    <Link href="https://open.spotify.com/episode/63vAHHJvfRiHNrUQ3OmnRK?si=bd6895e091614d01" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF3366]">
+                      B-Mac: Becoming an International Bachata Sensual Ambassador
+                    </Link>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-[#FF3366] font-semibold">
                       8
                     </div>
-                    <span>The Harrison Twins: Fighting the Urge to Compare in Social Dance</span>
+                    <Link href="https://open.spotify.com/episode/3DxiwclbTdxcbTpgJ5jvUU?si=cbb7cc9e69864cdd" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF3366]">
+                      The Harrison Twins: Fighting the Urge to Compare in Social Dance
+                    </Link>
                   </li>
                 </ul>
               </div>

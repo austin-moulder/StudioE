@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Link from "next/link"
 
 // Episode data
 const episodes = [
@@ -17,6 +18,7 @@ const episodes = [
     date: "September 13, 2024",
     description: "Eda discusses how to build a thriving dance community and grow the dance scene in your city.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_EdaKachiri.png",
+    spotifyLink: "https://open.spotify.com/episode/4bDxnq1c7OASVESYIU2EU3?si=1d292bc6e0bf4d2a"
   },
   {
     number: 9,
@@ -28,6 +30,7 @@ const episodes = [
     description:
       "Brian shares his journey from local instructor to international bachata ambassador and offers advice for aspiring teachers.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_BMac.png",
+    spotifyLink: "https://open.spotify.com/episode/63vAHHJvfRiHNrUQ3OmnRK?si=bd6895e091614d01"
   },
   {
     number: 8,
@@ -38,6 +41,7 @@ const episodes = [
     date: "August 16, 2024",
     description: "The Harrison Twins explore the psychology of comparison in social dance and how to overcome it.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_HarrisonTwins.png",
+    spotifyLink: "https://open.spotify.com/episode/3DxiwclbTdxcbTpgJ5jvUU?si=cbb7cc9e69864cdd"
   },
   {
     number: 7,
@@ -48,6 +52,7 @@ const episodes = [
     date: "August 2, 2024",
     description: "Stephanie shares expert advice on injury prevention and body maintenance for dancers.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Stephanie.png",
+    spotifyLink: "https://open.spotify.com/episode/2cz7kJdKocv44x2XziFTIe?si=0bddec90d8fe42ac"
   },
   {
     number: 6,
@@ -59,6 +64,7 @@ const episodes = [
     description:
       "Jocelyn and Nathalie discuss how dance can be a powerful tool for self-expression and confidence building.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Jocelyn_&_Nathalie.png",
+    spotifyLink: "https://open.spotify.com/episode/0JDUrjDFdgQwcwqjAuHpZe?si=ec115ec0d7be44b9"
   },
   {
     number: 5,
@@ -69,6 +75,7 @@ const episodes = [
     date: "June 28, 2024",
     description: "A deep dive into the rich cultural history and evolution of Bachata and Afro-Cuban dance styles.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_RitmosNegros.png",
+    spotifyLink: "https://open.spotify.com/episode/3QR9X3n2e2U25BtjZ46n7e?si=ad2ed9d20c874161"
   },
   {
     number: 4,
@@ -79,6 +86,7 @@ const episodes = [
     date: "June 14, 2024",
     description: "Natalye shares insights on balancing travel as a dancer, recovering from injuries, and navigating relationships with non-dancers.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Natalye.png",
+    spotifyLink: "https://open.spotify.com/episode/3JpugA2wdnObi7YXnJP3Hb?si=461e3523664f45f7"
   },
   {
     number: 3,
@@ -89,6 +97,7 @@ const episodes = [
     date: "May 31, 2024",
     description: "DJ Diem shares his journey and insights on building a successful career as a Latin social dance DJ.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_DJDiemClassic.png",
+    spotifyLink: "https://open.spotify.com/episode/4dk32goyQqZBFYrDXopbXl?si=86136b5e18e447bd"
   },
   {
     number: 2,
@@ -99,6 +108,7 @@ const episodes = [
     date: "May 17, 2024",
     description: "Jackie and Rafa discuss training fundamentals and share their best tips for growing as a dancer.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Jackie_&_Rafa.png",
+    spotifyLink: "https://open.spotify.com/episode/6vIoRLH371UZlqD0bqUFhB?si=6a5b9306b2fe4905"
   },
   {
     number: 1,
@@ -109,6 +119,7 @@ const episodes = [
     date: "March 23, 2024",
     description: "An introduction to Studio E Podcast, where we explore the world of Latin dance through conversations with instructors and industry professionals.",
     image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Main.png",
+    spotifyLink: "https://open.spotify.com/episode/51UU3SA1qnXkYBvUT3fOEs?si=978712eb095d4b69"
   },
 ]
 
@@ -156,10 +167,12 @@ export function PodcastTabs() {
                     </div>
                   </div>
                   <div className="flex items-start mt-2">
-                    <Button variant="link" className="p-0 h-auto text-primary pl-0">
-                      Listen Now
-                      <ArrowRight className="ml-1 h-4 w-4" />
-                    </Button>
+                    <Link href={episode.spotifyLink} target="_blank" rel="noopener noreferrer">
+                      <Button variant="link" className="p-0 h-auto text-primary pl-0">
+                        Listen Now
+                        <ArrowRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardContent>
