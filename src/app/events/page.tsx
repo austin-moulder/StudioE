@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase/client"
 
@@ -574,6 +574,8 @@ function EventsContent() {
 // Main component that provides the Suspense boundary
 export default function EventsPage() {
   return (
-    <EventsContent />
+    <Suspense fallback={<div className="container py-12">Loading events...</div>}>
+      <EventsContent />
+    </Suspense>
   )
 } 
