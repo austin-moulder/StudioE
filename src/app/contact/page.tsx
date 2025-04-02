@@ -11,17 +11,71 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 
 export default function ContactPage() {
-  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    // In a real application, you would handle the form submission here
-    setFormSubmitted(true)
+    setIsSubmitting(true)
+    setSubmitStatus('idle')
 
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setFormSubmitted(false)
-    }, 3000)
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          message: `Subject: ${formData.subject}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to send message')
+      }
+
+      setSubmitStatus('success')
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      })
+
+      // Reset success message after 3 seconds
+      setTimeout(() => {
+        setSubmitStatus('idle')
+      }, 3000)
+    } catch (error) {
+      setSubmitStatus('error')
+      // Reset error message after 3 seconds
+      setTimeout(() => {
+        setSubmitStatus('idle')
+      }, 3000)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target
+    setFormData(prev => ({ ...prev, [id]: value }))
+  }
+
+  const handleSelectChange = (value: string) => {
+    setFormData(prev => ({ ...prev, subject: value }))
   }
 
   return (
@@ -121,28 +175,49 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="mt-8 space-y-6">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="first-name">First Name</Label>
-                    <Input id="first-name" required />
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input 
+                      id="firstName" 
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      required 
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="last-name">Last Name</Label>
-                    <Input id="last-name" required />
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input 
+                      id="lastName" 
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      required 
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" required />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    value={formData.email}
+                    onChange={handleChange}
+                    required 
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone (Optional)</Label>
-                  <Input id="phone" type="tel" />
+                  <Input 
+                    id="phone" 
+                    type="tel" 
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject</Label>
-                  <Select>
+                  <Select onValueChange={handleSelectChange} value={formData.subject}>
                     <SelectTrigger id="subject">
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
@@ -159,11 +234,23 @@ export default function ContactPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="message">Message</Label>
-                  <Textarea id="message" rows={5} required />
+                  <Textarea 
+                    id="message" 
+                    rows={5} 
+                    value={formData.message}
+                    onChange={handleChange}
+                    required 
+                  />
                 </div>
 
-                <Button type="submit" className="w-full" disabled={formSubmitted}>
-                  {formSubmitted ? (
+                <Button 
+                  type="submit" 
+                  className="w-full" 
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    "Sending..."
+                  ) : submitStatus === 'success' ? (
                     "Message Sent!"
                   ) : (
                     <>
@@ -172,6 +259,12 @@ export default function ContactPage() {
                     </>
                   )}
                 </Button>
+
+                {submitStatus === 'error' && (
+                  <p className="text-red-600 text-sm text-center">
+                    Failed to send message. Please try again.
+                  </p>
+                )}
               </form>
             </div>
           </div>
