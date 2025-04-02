@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { Calendar, MapPin, Clock, Users, Search, Filter, CalendarPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,51 +9,236 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Link from "next/link"
-import { useState, Suspense } from "react"
+import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { supabase } from "@/lib/supabase/client"
 
-// Wrap the component that uses useSearchParams in Suspense
+// Types for our event data
+interface Event {
+  id: number
+  title: string
+  description: string
+  event_date: string
+  event_date_end: string
+  start_time: string
+  end_time: string
+  location: string
+  price: string
+  image_url: string
+  is_featured: boolean
+  status: string
+  event_type: string
+  spots_left?: number
+  cta_url?: string  // Make cta_url optional
+}
+
 function EventsContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const searchParams = useSearchParams()
+  const router = useRouter()
   
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
-  const [eventType, setEventType] = useState(searchParams.get("type") || "all");
-  const [location, setLocation] = useState(searchParams.get("location") || "all");
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "")
+  const [eventType, setEventType] = useState(searchParams.get("type") || "all")
+  const [location, setLocation] = useState(searchParams.get("location") || "all")
+  const [events, setEvents] = useState<Event[]>([])
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([])
   
-  const ITEMS_PER_PAGE = 9; // 3x3 grid
+  const ITEMS_PER_PAGE = 9 // 3x3 grid
+
+  // Fetch events from Supabase
+  useEffect(() => {
+    async function fetchEvents() {
+      const { data, error } = await supabase
+        .from('EVENT')
+        .select('*')
+      
+      if (error) {
+        console.error('Error fetching events:', error)
+        return
+      }
+
+      if (data) {
+        console.log('Raw event data from Supabase:', data);
+        const now = new Date();
+        // Filter out events older than 30 days
+        const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+        
+        const filteredData = data.filter(event => {
+          const eventDate = new Date(event.event_date);
+          console.log('Processing event:', event.title, 'with date:', event.event_date, 'parsed as:', eventDate);
+          return eventDate >= thirtyDaysAgo;
+        });
+
+        // Sort events by date
+        const sortedEvents = filteredData.sort((a, b) => {
+          const dateA = new Date(a.event_date);
+          const dateB = new Date(b.event_date);
+          const now = new Date();
+          
+          // If both dates are in the past, show most recent first
+          if (dateA < now && dateB < now) {
+            return dateB.getTime() - dateA.getTime();
+          }
+          
+          // If both dates are in the future, show closest first
+          if (dateA > now && dateB > now) {
+            return dateA.getTime() - dateB.getTime();
+          }
+          
+          // If one is past and one is future, show future first
+          return dateA > dateB ? -1 : 1;
+        });
+
+        setEvents(sortedEvents)
+        setFilteredEvents(sortedEvents)
+      }
+    }
+
+    fetchEvents()
+  }, [])
+
+  // Filter events based on search criteria
+  useEffect(() => {
+    let filtered = [...events]
+    
+    // Filter by type
+    if (eventType && eventType !== "all") {
+      filtered = filtered.filter(event => 
+        event.event_type?.toLowerCase() === eventType.toLowerCase()
+      )
+    }
+    
+    // Filter by location
+    if (location && location !== "all") {
+      filtered = filtered.filter(event => 
+        event.location.toLowerCase().includes(location.toLowerCase())
+      )
+    }
+    
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(event => 
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.location.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    // Sort events by date, keeping upcoming events first
+    const now = new Date();
+    filtered.sort((a, b) => {
+      const dateA = new Date(a.event_date);
+      const dateB = new Date(b.event_date);
+      
+      // If one is upcoming and one is past, upcoming comes first
+      if (dateA >= now && dateB < now) return -1;
+      if (dateA < now && dateB >= now) return 1;
+      
+      // If both are upcoming, closest first
+      if (dateA >= now && dateB >= now) {
+        return dateA.getTime() - dateB.getTime();
+      }
+      
+      // If both are past, most recent first
+      return dateB.getTime() - dateA.getTime();
+    });
+    
+    setFilteredEvents(filtered)
+  }, [events, eventType, location, searchTerm])
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+    setCurrentPage(page)
+  }
 
   const handleSearch = () => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams()
     
     if (searchTerm) {
-      params.set("q", searchTerm);
+      params.set("q", searchTerm)
     }
     
     if (eventType && eventType !== "all") {
-      params.set("type", eventType);
+      params.set("type", eventType)
     }
     
     if (location && location !== "all") {
-      params.set("location", location);
+      params.set("location", location)
     }
     
-    const query = params.toString();
-    router.push(`/events${query ? `?${query}` : ""}`);
-  };
+    const query = params.toString()
+    router.push(`/events${query ? `?${query}` : ""}`)
+  }
+
+  // Get current page events
+  const indexOfLastEvent = currentPage * ITEMS_PER_PAGE
+  const indexOfFirstEvent = indexOfLastEvent - ITEMS_PER_PAGE
+  const currentEvents = filteredEvents.slice(indexOfFirstEvent, indexOfLastEvent)
   
+  const formatEventTime = (startTime: string, endTime: string) => {
+    // Parse hours and minutes
+    const [startHours, startMinutes] = startTime.split(':').map(Number);
+    const [endHours, endMinutes] = endTime.split(':').map(Number);
+    
+    // Format start time
+    const startPeriod = startHours >= 12 ? 'PM' : 'AM';
+    const startHour = startHours % 12 || 12;
+    const formattedStartTime = `${startHour}:${startMinutes.toString().padStart(2, '0')} ${startPeriod}`;
+    
+    // Format end time
+    const endPeriod = endHours >= 12 ? 'PM' : 'AM';
+    const endHour = endHours % 12 || 12;
+    const formattedEndTime = `${endHour}:${endMinutes.toString().padStart(2, '0')} ${endPeriod}`;
+    
+    return `${formattedStartTime} - ${formattedEndTime}`;
+  };
+
+  const formatLocation = (location: string) => {
+    // Split by comma and trim whitespace
+    const parts = location.split(',').map(part => part.trim());
+    
+    // Keep only the venue name and city
+    // This assumes format is typically: "Venue, Address, City, State ZIP, Country"
+    // or "Venue Address, City, State ZIP, Country"
+    if (parts.length >= 3) {
+      // If we have a separate venue and address line, combine them
+      if (parts.length > 3) {
+        return `${parts[0]}, ${parts[1]}, ${parts[2].split(' ')[0]}`; // Include city name only
+      }
+      // If venue and address are combined
+      return `${parts[0]}, ${parts[1].split(' ')[0]}`; // Include city name only
+    }
+    return parts[0]; // Return first part if format is different
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      // Ensure we have a valid date string
+      if (!dateString) return 'Date unavailable';
+      
+      // Create a date object - Supabase returns ISO format
+      const date = new Date(dateString);
+      
+      // Check if the date is valid
+      if (isNaN(date.getTime())) return 'Date unavailable';
+      
+      // Format the date
+      return date.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric',
+        timeZone: 'UTC' // Use UTC to avoid timezone issues
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error, 'for date string:', dateString);
+      return 'Date unavailable';
+    }
+  };
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A]/90 via-[#FF3366]/90 to-[#9933CC]/90 z-10" />
-        <div className="relative h-[300px] w-full">{/* Removed the image placeholder */}</div>
+        <div className="relative h-[300px] w-full" />
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Upcoming Dance Events</h1>
           <p className="mt-6 max-w-2xl text-lg">
@@ -148,134 +334,71 @@ function EventsContent() {
             </TabsList>
 
             <TabsContent value="upcoming" className="space-y-8">
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {[
-                  {
-                    title: "Salsa Sundays at Cubby Bear",
-                    type: "Social",
-                    date: "April 16, 2023",
-                    time: "7:00 PM - 1:00 AM",
-                    location: "Cubby Bear, Chicago",
-                    price: 15,
-                    spotsLeft: 45,
-                    image: "/placeholder.svg?height=400&width=600&text=SalsaSundays",
-                  },
-                  {
-                    title: "Sensual Tuesdays",
-                    type: "Workshop",
-                    date: "April 18, 2023",
-                    time: "8:00 PM - 12:30 AM",
-                    location: "Dance Studio Chicago",
-                    price: 20,
-                    spotsLeft: 32,
-                    image: "/placeholder.svg?height=400&width=600&text=SensualTuesdays",
-                  },
-                  {
-                    title: "Baila Tuesdays",
-                    type: "Social",
-                    date: "April 18, 2023",
-                    time: "8:00 PM - 1:00 AM",
-                    location: "Baila Chicago",
-                    price: 15,
-                    spotsLeft: 50,
-                    image: "/placeholder.svg?height=400&width=600&text=BailaTuesdays",
-                  },
-                  {
-                    title: "Latin Wednesdays at Jonny Cabs",
-                    type: "Social",
-                    date: "April 19, 2023",
-                    time: "7:00 PM - 11:00 PM",
-                    location: "Jonny Cabs, Chicago",
-                    price: 10,
-                    spotsLeft: 38,
-                    image: "/placeholder.svg?height=400&width=600&text=LatinWednesdays",
-                  },
-                  {
-                    title: "Tropical Wednesdays at Vintage",
-                    type: "Social",
-                    date: "April 19, 2023",
-                    time: "7:00 PM - 2:00 AM",
-                    location: "Vintage Lounge, Chicago",
-                    price: 15,
-                    spotsLeft: 42,
-                    image: "/placeholder.svg?height=400&width=600&text=TropicalWednesdays",
-                  },
-                  {
-                    title: "SALSA BACHATA THURSDAY'S AT ALHAMBRA PALACE",
-                    type: "Social",
-                    date: "April 20, 2023",
-                    time: "8:00 PM - 2:00 AM",
-                    location: "Alhambra Palace, Chicago",
-                    price: 20,
-                    spotsLeft: 35,
-                    image: "/placeholder.svg?height=400&width=600&text=AlhambraPalace",
-                  },
-                  {
-                    title: "Tropical Thursdays at The Loft",
-                    type: "Social",
-                    date: "April 20, 2023",
-                    time: "8:30 PM - 2:00 AM",
-                    location: "The Loft, Chicago",
-                    price: 15,
-                    spotsLeft: 40,
-                    image: "/placeholder.svg?height=400&width=600&text=TropicalThursdays",
-                  },
-                  {
-                    title: "Video Mix First Friday @ CLUB M",
-                    type: "Social",
-                    date: "April 21, 2023",
-                    time: "7:00 PM - 2:00 AM",
-                    location: "Club M, Chicago",
-                    price: 0,
-                    spotsLeft: 60,
-                    image: "/placeholder.svg?height=400&width=600&text=VideoMixFriday",
-                  },
-                  {
-                    title: "Latin Fridays and Saturdays at LV Club",
-                    type: "Social",
-                    date: "April 21, 2023",
-                    time: "9:00 PM - 4:00 AM",
-                    location: "LV Club, Chicago",
-                    price: 25,
-                    spotsLeft: 30,
-                    image: "/placeholder.svg?height=400&width=600&text=LatinFridays",
-                  },
-                ].map((event, index) => (
-                  <Card key={index} className="overflow-hidden">
-                    <div className="aspect-[3/2] relative">
-                      <Image src={event.image || "/placeholder.svg"} alt={event.title} fill className="object-cover" />
-                      {index % 3 === 0 && <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-4 py-1 rounded-full text-sm font-medium">Featured</div>}
-                    </div>
-                    <CardContent className="p-6">
-                      <Badge className="mb-2 bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90">{event.type}</Badge>
-                      <h3 className="text-xl font-bold">{event.title}</h3>
-                      <div className="mt-4 space-y-2">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Calendar className="mr-2 h-4 w-4" />
-                          {event.date}
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Clock className="mr-2 h-4 w-4" />
-                          {event.time}
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <MapPin className="mr-2 h-4 w-4" />
-                          {event.location}
-                        </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Users className="mr-2 h-4 w-4" />
-                          {`${event.spotsLeft} spots left`}
-                        </div>
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {currentEvents
+                  .filter(event => {
+                    const eventDate = new Date(event.event_date);
+                    const now = new Date();
+                    return eventDate >= now; // Only show future events
+                  })
+                  .map((event, index) => (
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                      <div className="aspect-[3/4] relative">
+                        <Image 
+                          src={event.image_url || "/placeholder.svg"} 
+                          alt={event.title} 
+                          fill 
+                          className="object-cover" 
+                          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+                          priority={index < 5}
+                        />
+                        {event.is_featured && (
+                          <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-3 py-0.5 rounded-full text-xs font-medium">
+                            Featured
+                          </div>
+                        )}
                       </div>
-                      <div className="mt-6 flex items-center justify-between">
-                        <span className="font-medium">{event.price === 0 ? "Free" : `$${event.price}`}</span>
-                        <Button className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">Register</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      <CardContent className="p-4 space-y-3">
+                        <Badge className="bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90 text-xs">
+                          {event.event_type || "Event"}
+                        </Badge>
+                        <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
+                        <div className="space-y-2">
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Calendar className="mr-1.5 h-3 w-3" />
+                            {formatDate(event.event_date)}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Clock className="mr-1.5 h-3 w-3" />
+                            {formatEventTime(event.start_time, event.end_time)}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <MapPin className="mr-1.5 h-4 w-4" />
+                            {formatLocation(event.location)}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between pt-3">
+                          <span className="text-sm font-semibold">
+                            {event.price === "0" ? "Free" : `$${event.price}`}
+                          </span>
+                          {event.cta_url && (
+                            <Link 
+                              href={event.cta_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                            >
+                              <Button size="sm" className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7">
+                                Register
+                              </Button>
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
               </div>
 
+              {/* Pagination */}
               <div className="mt-12 flex justify-center">
                 <div className="flex items-center gap-2">
                   <button 
@@ -289,10 +412,10 @@ function EventsContent() {
                   </button>
                   
                   {(() => {
-                    const totalPages = Math.ceil(9 / ITEMS_PER_PAGE); // Replace with actual total
+                    const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE)
                     
                     return Array.from({ length: Math.min(totalPages, 7) }).map((_, i) => {
-                      const pageNum = i + 1;
+                      const pageNum = i + 1
                       
                       return (
                         <button
@@ -306,18 +429,18 @@ function EventsContent() {
                         >
                           {pageNum}
                         </button>
-                      );
-                    });
+                      )
+                    })
                   })()}
                   
                   <button 
-                    onClick={() => currentPage < Math.ceil(9 / ITEMS_PER_PAGE) && handlePageChange(currentPage + 1)}
+                    onClick={() => currentPage < Math.ceil(filteredEvents.length / ITEMS_PER_PAGE) && handlePageChange(currentPage + 1)}
                     className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${
-                      currentPage === Math.ceil(9 / ITEMS_PER_PAGE)
+                      currentPage === Math.ceil(filteredEvents.length / ITEMS_PER_PAGE)
                         ? 'opacity-50 cursor-not-allowed' 
                         : 'cursor-pointer hover:bg-gray-100'
                     }`}
-                    disabled={currentPage === Math.ceil(9 / ITEMS_PER_PAGE)}
+                    disabled={currentPage === Math.ceil(filteredEvents.length / ITEMS_PER_PAGE)}
                   >
                     &gt;
                   </button>
@@ -326,167 +449,119 @@ function EventsContent() {
             </TabsContent>
 
             <TabsContent value="featured">
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 3 }).map((_, index) => {
-                  const featuredEvents = [
-                    {
-                      title: "Annual Dance Gala",
-                      description:
-                        "Join us for our prestigious annual gala featuring performances from top dancers across all styles.",
-                      date: "October 15, 2025",
-                      time: "7:00 PM - 11:00 PM",
-                      location: "Grand Ballroom, Plaza Hotel, New York",
-                      price: 150,
-                      image: "/placeholder.svg?height=400&width=600&text=Gala",
-                    },
-                    {
-                      title: "International Dance Festival",
-                      description:
-                        "A week-long celebration of dance from around the world, featuring workshops, performances, and cultural exchanges.",
-                      date: "September 20-27, 2025",
-                      time: "Various Times",
-                      location: "Cultural Arts Center, Los Angeles",
-                      price: 200,
-                      image: "/placeholder.svg?height=400&width=600&text=Festival",
-                    },
-                    {
-                      title: "Dance for a Cause",
-                      description:
-                        "A charity event bringing together dancers of all styles to raise funds for arts education in underserved communities.",
-                      date: "August 30, 2025",
-                      time: "6:00 PM - 10:00 PM",
-                      location: "Community Center, Chicago",
-                      price: 75,
-                      image: "/placeholder.svg?height=400&width=600&text=Charity",
-                    },
-                  ]
-
-                  const event = featuredEvents[index]
-
-                  return (
-                    <Card key={index} className="overflow-hidden">
-                      <div className="aspect-[3/2] relative">
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {filteredEvents
+                  .filter(event => {
+                    const eventDate = new Date(event.event_date);
+                    const now = new Date();
+                    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+                    return event.is_featured && (eventDate >= now || (eventDate < now && eventDate >= thirtyDaysAgo));
+                  })
+                  .map((event) => (
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                      <div className="aspect-[3/4] relative">
                         <Image
-                          src={event.image || "/placeholder.svg"}
+                          src={event.image_url || "/placeholder.svg"}
                           alt={event.title}
                           fill
                           className="object-cover"
+                          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+                          priority
                         />
-                        <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-4 py-1 rounded-full text-sm font-medium">Featured</div>
+                        <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-3 py-0.5 rounded-full text-xs font-medium">
+                          Featured
+                        </div>
                       </div>
-                      <CardContent className="p-6">
-                        <Badge className="mb-2 bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90">Special Event</Badge>
-                        <h3 className="text-xl font-bold">{event.title}</h3>
-                        <p className="mt-2 text-sm text-muted-foreground">{event.description}</p>
-                        <div className="mt-4 space-y-2">
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Calendar className="mr-2 h-4 w-4" />
-                            {event.date}
+                      <CardContent className="p-4 space-y-3">
+                        <Badge className="bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90 text-xs">
+                          {event.event_type || "Special Event"}
+                        </Badge>
+                        <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{event.description}</p>
+                        <div className="space-y-2">
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Calendar className="mr-1.5 h-3 w-3" />
+                            {formatDate(event.event_date)}
                           </div>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Clock className="mr-2 h-4 w-4" />
-                            {event.time}
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Clock className="mr-1.5 h-3 w-3" />
+                            {formatEventTime(event.start_time, event.end_time)}
                           </div>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <MapPin className="mr-2 h-4 w-4" />
-                            {event.location}
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <MapPin className="mr-1.5 h-4 w-4" />
+                            {formatLocation(event.location)}
                           </div>
                         </div>
-                        <div className="mt-6 flex items-center justify-between">
-                          <span className="font-medium">${event.price}</span>
-                          <Button className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">Register</Button>
+                        <div className="flex items-center justify-between pt-3">
+                          <span className="text-sm font-semibold">
+                            {event.price === "0" ? "Free" : `$${event.price}`}
+                          </span>
+                          {event.cta_url && (
+                            <Link 
+                              href={event.cta_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                            >
+                              <Button size="sm" className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7">
+                                Register
+                              </Button>
+                            </Link>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
-                  )
-                })}
+                  ))}
               </div>
             </TabsContent>
 
             <TabsContent value="past">
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {[
-                  {
-                    title: "Salsa Sundays at Cubby Bear",
-                    type: "Social",
-                    date: "March 19, 2023",
-                    time: "7:00 PM - 1:00 AM",
-                    location: "Cubby Bear, Chicago",
-                    image: "/placeholder.svg?height=400&width=600&text=PastSalsaSundays",
-                  },
-                  {
-                    title: "Sensual Tuesdays",
-                    type: "Workshop",
-                    date: "March 21, 2023",
-                    time: "8:00 PM - 12:30 AM",
-                    location: "Dance Studio Chicago",
-                    image: "/placeholder.svg?height=400&width=600&text=PastSensualTuesdays",
-                  },
-                  {
-                    title: "Baila Tuesdays",
-                    type: "Social",
-                    date: "March 21, 2023",
-                    time: "8:00 PM - 1:00 AM",
-                    location: "Baila Chicago",
-                    image: "/placeholder.svg?height=400&width=600&text=PastBailaTuesdays",
-                  },
-                  {
-                    title: "Latin Wednesdays at Jonny Cabs",
-                    type: "Social",
-                    date: "March 22, 2023",
-                    time: "7:00 PM - 11:00 PM",
-                    location: "Jonny Cabs, Chicago",
-                    image: "/placeholder.svg?height=400&width=600&text=PastLatinWednesdays",
-                  },
-                  {
-                    title: "St Patrick's Sunday Salsa Party",
-                    type: "Special Event",
-                    date: "March 19, 2023",
-                    time: "5:00 PM - 9:00 PM",
-                    location: "Studio E Main Hall, Chicago",
-                    image: "/placeholder.svg?height=400&width=600&text=StPatricks",
-                  },
-                  {
-                    title: "The Mambo Revival",
-                    type: "Workshop",
-                    date: "March 23, 2023",
-                    time: "6:00 PM - 10:00 PM",
-                    location: "Dance Hub, Chicago",
-                    image: "/placeholder.svg?height=400&width=600&text=MamboRevival",
-                  },
-                ].map((event, index) => (
-                  <Card key={index} className="overflow-hidden opacity-80">
-                    <div className="aspect-[3/2] relative">
-                      <Image
-                        src={event.image || "/placeholder.svg"}
-                        alt={event.title}
-                        fill
-                        className="object-cover grayscale"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                        <Badge variant="secondary" className="text-lg py-1 px-3">
-                          Completed
+              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {filteredEvents
+                  .filter(event => {
+                    const eventDate = new Date(event.event_date);
+                    const now = new Date();
+                    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+                    return eventDate < now && eventDate >= thirtyDaysAgo;
+                  })
+                  .map((event) => (
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow opacity-80">
+                      <div className="aspect-[3/4] relative">
+                        <Image
+                          src={event.image_url || "/placeholder.svg"}
+                          alt={event.title}
+                          fill
+                          className="object-cover grayscale"
+                          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <Badge variant="secondary" className="text-sm py-1 px-3">
+                            Completed
+                          </Badge>
+                        </div>
+                      </div>
+                      <CardContent className="p-4 space-y-3">
+                        <Badge className="bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90 text-xs">
+                          {event.event_type || "Event"}
                         </Badge>
-                      </div>
-                    </div>
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold">{event.title}</h3>
-                      <div className="mt-4 space-y-2">
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Calendar className="mr-2 h-4 w-4" />
-                          {event.date}
+                        <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
+                        <div className="space-y-2">
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Calendar className="mr-1.5 h-4 w-4" />
+                            {formatDate(event.event_date)}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <MapPin className="mr-1.5 h-4 w-4" />
+                            {formatLocation(event.location)}
+                          </div>
                         </div>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <MapPin className="mr-2 h-4 w-4" />
-                          {event.location}
+                        <div className="flex items-center justify-end pt-3">
+                          <Button size="sm" variant="outline" className="text-xs px-3 py-1 h-7">
+                            View Gallery
+                          </Button>
                         </div>
-                      </div>
-                      <div className="mt-6 flex items-center justify-end">
-                        <Button variant="outline">View Gallery</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  ))}
               </div>
             </TabsContent>
           </Tabs>
@@ -499,8 +574,6 @@ function EventsContent() {
 // Main component that provides the Suspense boundary
 export default function EventsPage() {
   return (
-    <Suspense fallback={<div className="container py-12">Loading events...</div>}>
-      <EventsContent />
-    </Suspense>
-  );
+    <EventsContent />
+  )
 } 
