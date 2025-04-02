@@ -6,6 +6,6 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "env": {
-    "RESEND_API_KEY": "re_fDmnEX6G_8d1afYhhoTUbYT6QtZMhG7ht"
+    "RESEND_API_KEY": "re_Y9ohAKuT_DqwPK2FNgrnc4EsjTqb8o8oA"
   }
 } 
