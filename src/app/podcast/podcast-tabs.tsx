@@ -185,12 +185,12 @@ export function PodcastTabs() {
         <div className="mx-auto max-w-2xl text-center py-12">
           <h3 className="text-2xl font-bold">Season 2 Coming Soon!</h3>
           <p className="mt-4 text-muted-foreground">
-            We&apos;re currently working on exciting new episodes for Season 2 of The Studio E Podcast. Subscribe to our
-            newsletter or follow us on social media to be the first to know when new episodes drop.
+            We&apos;re currently working on exciting new episodes for Season 2 of The Studio E Podcast. Follow us on social media to be the first to know when new episodes drop.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button>Subscribe for Updates</Button>
-            <Button variant="outline">Suggest a Topic</Button>
+          <div className="mt-8 flex justify-center">
+            <Link href="https://www.instagram.com/the_studio_e/" target="_blank" rel="noopener noreferrer">
+              <Button>Follow on Instagram</Button>
+            </Link>
           </div>
         </div>
       </TabsContent>

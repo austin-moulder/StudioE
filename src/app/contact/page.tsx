@@ -218,10 +218,10 @@ export default function ContactPage() {
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject</Label>
                   <Select onValueChange={handleSelectChange} value={formData.subject}>
-                    <SelectTrigger id="subject">
+                    <SelectTrigger id="subject" className="bg-white">
                       <SelectValue placeholder="Select a subject" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="general">General Inquiry</SelectItem>
                       <SelectItem value="instructor">Becoming an Instructor</SelectItem>
                       <SelectItem value="student">Student Support</SelectItem>

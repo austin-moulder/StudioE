@@ -161,14 +161,6 @@ export default function Navbar() {
                           Send Magic Link
                         </button>
                       </form>
-                      <div className="mt-2 text-center">
-                        <button 
-                          onClick={handleSignIn}
-                          className="text-xs text-gray-600 hover:text-gray-900"
-                        >
-                          Try Google Sign In
-                        </button>
-                      </div>
                     </div>
                   ) : (
                     <button 
@@ -322,14 +314,6 @@ export default function Navbar() {
                               <Mail className="h-4 w-4" />
                               Send Magic Link
                             </button>
-                            <div className="mt-2 text-center">
-                              <button 
-                                onClick={handleSignIn}
-                                className="text-xs text-gray-600 hover:text-gray-900"
-                              >
-                                Try Google Sign In
-                              </button>
-                            </div>
                           </form>
                         </div>
                       )}

@@ -555,8 +555,14 @@ function InstructorsContent() {
                 </Link>
               </div>
             </div>
-            <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-400 text-lg">Dance instructor teaching</span>
+            <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-200">
+              <Image
+                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Adrian_1.jpg"
+                alt="Dance instructor teaching"
+                fill
+                className="object-cover object-[50%_35%]"
+                priority
+              />
             </div>
           </div>
         </div>
