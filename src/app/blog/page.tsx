@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Calendar, ArrowRight, Search } from "lucide-react"
@@ -8,28 +9,121 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useState } from "react"
+import { getBlogPosts, getBlogCategories, searchBlogPosts, getBlogPostsByCategory } from "@/lib/blog/blogUtils"
+import { BlogPost, BlogCategory } from "@/types/blog"
+import { format } from 'date-fns'
 import { useRouter } from "next/navigation"
 
 export default function BlogPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [posts, setPosts] = useState<BlogPost[]>([])
+  const [categories, setCategories] = useState<BlogCategory[]>([])
+  const [loading, setLoading] = useState(true)
+  const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null)
+  const router = useRouter()
 
-  const handleSearch = () => {
-    const params = new URLSearchParams();
-    
-    if (searchTerm) {
-      params.set("q", searchTerm);
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true)
+      try {
+        const fetchedPosts = await getBlogPosts()
+        setPosts(fetchedPosts)
+
+        // Set the first post as featured for demo purposes
+        if (fetchedPosts.length > 0) {
+          setFeaturedPost(fetchedPosts[0])
+        }
+
+        const fetchedCategories = await getBlogCategories()
+        setCategories(fetchedCategories)
+      } catch (error) {
+        console.error("Error loading blog data:", error)
+      } finally {
+        setLoading(false)
+      }
     }
-    
-    if (selectedCategory && selectedCategory !== "all") {
-      params.set("category", selectedCategory);
+
+    loadData()
+  }, [])
+
+  const handleSearch = async () => {
+    setLoading(true)
+    try {
+      let filteredPosts: BlogPost[] = []
+      
+      if (searchTerm && selectedCategory !== "all") {
+        // Search with both term and category
+        const searched = await searchBlogPosts(searchTerm)
+        filteredPosts = searched.filter(post => post.category === selectedCategory)
+      } else if (searchTerm) {
+        // Search by term only
+        filteredPosts = await searchBlogPosts(searchTerm)
+      } else if (selectedCategory !== "all") {
+        // Filter by category only
+        filteredPosts = await getBlogPostsByCategory(selectedCategory)
+      } else {
+        // No filters, get all posts
+        filteredPosts = await getBlogPosts()
+      }
+      
+      setPosts(filteredPosts)
+    } catch (error) {
+      console.error("Error searching posts:", error)
+    } finally {
+      setLoading(false)
     }
-    
-    const query = params.toString();
-    router.push(`/blog${query ? `?${query}` : ""}`);
-  };
+  }
+
+  // Fallback data for when no posts are available
+  const placeholderPosts = Array.from({ length: 6 }).map((_, index) => ({
+    id: index,
+    title: [
+      "10 Tips for Beginner Ballet Dancers",
+      "The History and Evolution of Hip Hop Dance",
+      "Preparing for Your First Dance Competition",
+      "How to Choose the Right Dance Shoes",
+      "Instructor Spotlight: Maria Chen's Journey",
+      "The Mental Health Benefits of Regular Dancing",
+    ][index],
+    slug: `post-${index}`,
+    excerpt: [
+      "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
+      "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
+      "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
+      "Different dance styles require different footwear. Learn how to select the perfect shoes for your dance practice.",
+      "From taking her first dance class at age 5 to becoming one of our most sought-after instructors, Maria's story inspires.",
+      "Beyond physical fitness, dancing offers significant mental health benefits including stress reduction and improved cognitive function.",
+    ][index],
+    content: "",
+    featured_image: "",
+    category: [
+      "Tips & Techniques",
+      "Dance History",
+      "Competition",
+      "Equipment",
+      "Instructor Spotlight",
+      "Health & Wellness",
+    ][index],
+    published: true,
+    created_at: new Date(2025, 5, 15 - index * 5).toISOString(),
+    author_name: "Dance Instructor",
+    author_image: ""
+  }))
+
+  const placeholderCategories = [
+    { id: 1, name: "Tips & Techniques", post_count: 24, icon: "💡" },
+    { id: 2, name: "Dance History", post_count: 18, icon: "📚" },
+    { id: 3, name: "Instructor Spotlights", post_count: 15, icon: "🌟" },
+    { id: 4, name: "Health & Wellness", post_count: 12, icon: "🧘" },
+    { id: 5, name: "Event Recaps", post_count: 20, icon: "🎭" },
+    { id: 6, name: "Student Stories", post_count: 16, icon: "👥" },
+  ]
+
+  // Use actual data if available, or placeholder data if not
+  const displayPosts = posts.length > 0 ? posts : placeholderPosts
+  const displayCategories = categories.length > 0 ? categories : placeholderCategories
+  const displayFeaturedPost = featuredPost || placeholderPosts[0]
 
   return (
     <div className="flex flex-col">
@@ -75,16 +169,16 @@ export default function BlogPage() {
                 </SelectTrigger>
                 <SelectContent className="bg-white">
                   <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="tips">Tips & Techniques</SelectItem>
-                  <SelectItem value="instructor">Instructor Spotlights</SelectItem>
-                  <SelectItem value="history">Dance History</SelectItem>
-                  <SelectItem value="health">Health & Wellness</SelectItem>
-                  <SelectItem value="events">Event Recaps</SelectItem>
+                  {displayCategories.map((category) => (
+                    <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <Button onClick={handleSearch}>Search</Button>
+            <Button onClick={handleSearch} disabled={loading}>
+              {loading ? 'Searching...' : 'Search'}
+            </Button>
           </div>
         </div>
       </section>
@@ -96,33 +190,55 @@ export default function BlogPage() {
 
           <div className="grid gap-8 md:grid-cols-2 items-center">
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-400 text-lg">Featured Article Image</span>
+              {displayFeaturedPost.featured_image ? (
+                <Image
+                  src={displayFeaturedPost.featured_image}
+                  alt={displayFeaturedPost.title}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <span className="text-gray-400 text-lg">Featured Article Image</span>
+              )}
             </div>
             <div>
               <Badge className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">Featured</Badge>
               <h3 className="mt-2 text-3xl font-bold">
-                The Evolution of Contemporary Dance: Past, Present, and Future
+                {displayFeaturedPost.title}
               </h3>
               <div className="mt-4 flex items-center text-sm text-gray-500">
                 <Calendar className="mr-2 h-4 w-4" />
-                June 20, 2025
+                {displayFeaturedPost.created_at ? 
+                  format(new Date(displayFeaturedPost.created_at), 'MMMM d, yyyy') : 
+                  'No date'}
               </div>
               <p className="mt-4 text-gray-500">
-                Contemporary dance has undergone significant transformations since its inception in the mid-20th
-                century. This article explores its rich history, current trends, and where this dynamic art form is
-                headed in the future.
+                {displayFeaturedPost.excerpt}
               </p>
               <div className="mt-6 flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <div className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400 text-xs">ER</span>
+                    {displayFeaturedPost.author_image ? (
+                      <Image
+                        src={displayFeaturedPost.author_image}
+                        alt={displayFeaturedPost.author_name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="text-gray-400 text-xs">
+                        {displayFeaturedPost.author_name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    )}
                   </div>
-                  <span className="text-sm font-medium">Elena Rodriguez</span>
+                  <span className="text-sm font-medium">{displayFeaturedPost.author_name}</span>
                 </div>
-                <Button>
-                  Read Article
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link href={`/blog/${displayFeaturedPost.slug}`}>
+                  <Button>
+                    Read Article
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -134,69 +250,56 @@ export default function BlogPage() {
         <div className="container">
           <h2 className="text-3xl font-bold mb-8">Latest Articles</h2>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => {
-              // Generate some varied sample data
-              const titles = [
-                "10 Tips for Beginner Ballet Dancers",
-                "The History and Evolution of Hip Hop Dance",
-                "Preparing for Your First Dance Competition",
-                "How to Choose the Right Dance Shoes",
-                "Instructor Spotlight: Maria Chen's Journey from Student to Master",
-                "The Mental Health Benefits of Regular Dancing",
-              ]
-              const excerpts = [
-                "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
-                "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
-                "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
-                "Different dance styles require different footwear. Learn how to select the perfect shoes for your dance practice.",
-                "From taking her first dance class at age 5 to becoming one of our most sought-after instructors, Maria's story inspires.",
-                "Beyond physical fitness, dancing offers significant mental health benefits including stress reduction and improved cognitive function.",
-              ]
-              const categories = [
-                "Tips & Techniques",
-                "Dance History",
-                "Competition",
-                "Equipment",
-                "Instructor Spotlight",
-                "Health & Wellness",
-              ]
-              const dates = [
-                "June 15, 2025",
-                "June 10, 2025",
-                "June 5, 2025",
-                "May 28, 2025",
-                "May 20, 2025",
-                "May 15, 2025",
-              ]
-
-              return (
-                <Card key={index} className="overflow-hidden">
+          {loading ? (
+            <div className="text-center py-8">Loading posts...</div>
+          ) : displayPosts.length === 0 ? (
+            <div className="text-center py-8">No posts found. Try a different search.</div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {displayPosts.map((post) => (
+                <Card key={post.id} className="overflow-hidden">
                   <div className="aspect-[3/2] relative bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400 text-lg">{titles[index]}</span>
+                    {post.featured_image ? (
+                      <Image
+                        src={post.featured_image}
+                        alt={post.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="text-gray-400 text-lg">{post.title}</span>
+                    )}
                   </div>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline">{categories[index]}</Badge>
-                      <span className="text-xs text-gray-500">{dates[index]}</span>
+                      <Badge variant="outline">{post.category}</Badge>
+                      <span className="text-xs text-gray-500">
+                        {post.created_at ? 
+                          format(new Date(post.created_at), 'MMMM d, yyyy') : 
+                          'No date'}
+                      </span>
                     </div>
-                    <h3 className="mt-2 text-xl font-bold">{titles[index]}</h3>
-                    <p className="mt-2 text-gray-500 line-clamp-3">{excerpts[index]}</p>
-                    <Button variant="link" className="mt-4 p-0 h-auto">
-                      Read More
-                      <ArrowRight className="ml-1 h-4 w-4" />
-                    </Button>
+                    <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
+                    <p className="mt-2 text-gray-500 line-clamp-3">{post.excerpt}</p>
+                    <Link href={`/blog/${post.slug}`}>
+                      <Button variant="link" className="mt-4 p-0 h-auto">
+                        Read More
+                        <ArrowRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
-              )
-            })}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div className="mt-12 flex justify-center">
-            <Button variant="outline" size="lg">
-              View All Articles
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <Link href="/blog">
+              <Button variant="outline" size="lg">
+                View All Articles
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -207,27 +310,23 @@ export default function BlogPage() {
           <h2 className="text-3xl font-bold mb-8">Browse by Category</h2>
 
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {[
-              { name: "Tips & Techniques", count: 24, icon: "💡" },
-              { name: "Dance History", count: 18, icon: "📚" },
-              { name: "Instructor Spotlights", count: 15, icon: "🌟" },
-              { name: "Health & Wellness", count: 12, icon: "🧘" },
-              { name: "Event Recaps", count: 20, icon: "🎭" },
-              { name: "Student Stories", count: 16, icon: "👥" },
-            ].map((category) => (
-              <Link
-                key={category.name}
-                href="#"
-                className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50"
+            {displayCategories.map((category) => (
+              <div
+                key={category.id}
+                className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50 cursor-pointer"
+                onClick={() => {
+                  setSelectedCategory(category.name);
+                  handleSearch();
+                }}
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-gradient/10 text-2xl">
-                  {category.icon}
+                  {category.icon || '📝'}
                 </div>
                 <div>
                   <h3 className="font-medium">{category.name}</h3>
-                  <p className="text-sm text-gray-500">{category.count} articles</p>
+                  <p className="text-sm text-gray-500">{category.post_count} articles</p>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>

@@ -17,6 +17,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getDanceStyleImages } from "@/lib/supabase/imageUtils";
 import useEmblaCarousel from 'embla-carousel-react'
+import { getBlogPosts } from "@/lib/blog/blogUtils"
+import { BlogPost } from "@/types/blog"
+import { format } from 'date-fns'
 
 interface Instructor {
   id: string;
@@ -29,6 +32,8 @@ export default function Home() {
   const [selectedStyle, setSelectedStyle] = useState("");
   const [danceStyleImages, setDanceStyleImages] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogLoading, setBlogLoading] = useState(true);
   const router = useRouter();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -106,6 +111,23 @@ export default function Home() {
       });
     }
   }, [blogEmblaApi]);
+
+  useEffect(() => {
+    const loadBlogPosts = async () => {
+      setBlogLoading(true);
+      try {
+        const posts = await getBlogPosts();
+        const recentPosts = posts.slice(0, 3);
+        setBlogPosts(recentPosts);
+      } catch (error) {
+        console.error("Error loading blog posts:", error);
+      } finally {
+        setBlogLoading(false);
+      }
+    };
+
+    loadBlogPosts();
+  }, []);
 
   const scrollTo = useCallback((index: number) => {
     emblaApi && emblaApi.scrollTo(index);
@@ -736,48 +758,76 @@ export default function Home() {
           <div className="md:hidden">
             <div className="overflow-hidden" ref={blogEmblaRef}>
               <div className="flex">
-                {[
+                {(blogPosts.length > 0 ? blogPosts : [
                   {
+                    id: 1,
                     title: "10 Tips for Beginner Ballet Dancers",
-                    excerpt:
-                      "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
-                    image: "/placeholder.svg",
-                    date: "June 15, 2025",
+                    excerpt: "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
+                    featured_image: "",
+                    slug: "beginner-ballet-tips",
                     category: "Ballet",
+                    created_at: new Date(2025, 5, 15).toISOString(),
+                    content: "",
+                    published: true,
+                    author_name: "Dance Instructor",
+                    author_image: ""
                   },
                   {
+                    id: 2,
                     title: "The History and Evolution of Hip Hop Dance",
-                    excerpt:
-                      "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
-                    image: "/placeholder.svg",
-                    date: "June 10, 2025",
+                    excerpt: "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
+                    featured_image: "",
+                    slug: "history-of-hip-hop-dance",
                     category: "Hip Hop",
+                    created_at: new Date(2025, 5, 10).toISOString(),
+                    content: "",
+                    published: true,
+                    author_name: "Dance Instructor",
+                    author_image: ""
                   },
                   {
+                    id: 3,
                     title: "Preparing for Your First Dance Competition",
-                    excerpt:
-                      "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
-                    image: "/placeholder.svg",
-                    date: "June 5, 2025",
+                    excerpt: "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
+                    featured_image: "",
+                    slug: "first-dance-competition-prep",
                     category: "Competition",
-                  },
-                ].map((post, index) => (
-                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    created_at: new Date(2025, 5, 5).toISOString(),
+                    content: "",
+                    published: true,
+                    author_name: "Dance Instructor",
+                    author_image: ""
+                  }
+                ]).map((post, index) => (
+                  <div key={post.id} className="flex-[0_0_100%] min-w-0">
                     <Card className="mx-2 overflow-hidden">
                       <div className="aspect-[3/2] relative bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-400 text-lg">{post.title}</span>
+                        {post.featured_image ? (
+                          <Image
+                            src={post.featured_image}
+                            alt={post.title}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <span className="text-gray-400 text-lg">{post.title}</span>
+                        )}
                       </div>
                       <CardContent className="p-6 bg-white">
                         <div className="flex items-center gap-2">
                           <Badge variant="outline">{post.category}</Badge>
-                          <span className="text-xs text-gray-500">{post.date}</span>
+                          <span className="text-xs text-gray-500">
+                            {format(new Date(post.created_at), 'MMMM d, yyyy')}
+                          </span>
                         </div>
                         <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
                         <p className="mt-2 text-gray-500">{post.excerpt}</p>
-                        <Button variant="link" className="mt-4 p-0 h-auto">
-                          Read More
-                          <ArrowRight className="ml-1 h-4 w-4" />
-                        </Button>
+                        <Link href={`/blog/${post.slug}`}>
+                          <Button variant="link" className="mt-4 p-0 h-auto">
+                            Read More
+                            <ArrowRight className="ml-1 h-4 w-4" />
+                          </Button>
+                        </Link>
                       </CardContent>
                     </Card>
                   </div>
@@ -800,43 +850,73 @@ export default function Home() {
 
           {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
+            {blogLoading ? (
+              Array(3).fill(0).map((_, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-lg p-6">
+                  <div className="w-24 h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  <div className="w-full h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  <div className="w-2/3 h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
+                  <div className="w-full h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  <div className="w-full h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  <div className="w-1/2 h-4 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              ))
+            ) : (blogPosts.length > 0 ? blogPosts : [
               {
+                id: 1,
                 title: "10 Tips for Beginner Ballet Dancers",
-                excerpt:
-                  "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
-                image: "/placeholder.svg",
-                date: "June 15, 2025",
+                excerpt: "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
+                featured_image: "",
+                slug: "beginner-ballet-tips",
                 category: "Ballet",
+                created_at: new Date(2025, 5, 15).toISOString(),
+                content: "",
+                published: true,
+                author_name: "Dance Instructor",
+                author_image: ""
               },
               {
+                id: 2,
                 title: "The History and Evolution of Hip Hop Dance",
-                excerpt:
-                  "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
-                image: "/placeholder.svg",
-                date: "June 10, 2025",
+                excerpt: "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
+                featured_image: "",
+                slug: "history-of-hip-hop-dance",
                 category: "Hip Hop",
+                created_at: new Date(2025, 5, 10).toISOString(),
+                content: "",
+                published: true,
+                author_name: "Dance Instructor",
+                author_image: ""
               },
               {
+                id: 3,
                 title: "Preparing for Your First Dance Competition",
-                excerpt:
-                  "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
-                image: "/placeholder.svg",
-                date: "June 5, 2025",
+                excerpt: "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
+                featured_image: "",
+                slug: "first-dance-competition-prep",
                 category: "Competition",
-              },
-            ].map((post, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg p-6">
+                created_at: new Date(2025, 5, 5).toISOString(),
+                content: "",
+                published: true,
+                author_name: "Dance Instructor",
+                author_image: ""
+              }
+            ]).map((post) => (
+              <div key={post.id} className="bg-white rounded-lg shadow-lg p-6">
                 <div className="flex items-center gap-2">
                   <Badge variant="outline">{post.category}</Badge>
-                  <span className="text-xs text-gray-500">{post.date}</span>
+                  <span className="text-xs text-gray-500">
+                    {format(new Date(post.created_at), 'MMMM d, yyyy')}
+                  </span>
                 </div>
                 <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
                 <p className="mt-2 text-gray-500">{post.excerpt}</p>
-                <Button variant="link" className="mt-4 p-0 h-auto">
-                  Read More
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
+                <Link href={`/blog/${post.slug}`}>
+                  <Button variant="link" className="mt-4 p-0 h-auto">
+                    Read More
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             ))}
           </div>
