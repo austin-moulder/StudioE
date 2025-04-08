@@ -124,23 +124,37 @@ function EventsContent() {
       )
     }
 
-    // Sort events by date, keeping upcoming events first
+    // Sort events: Prioritize upcoming featured, then upcoming non-featured, then past.
     const now = new Date();
     filtered.sort((a, b) => {
       const dateA = new Date(a.event_date);
       const dateB = new Date(b.event_date);
-      
-      // If one is upcoming and one is past, upcoming comes first
-      if (dateA >= now && dateB < now) return -1;
-      if (dateA < now && dateB >= now) return 1;
-      
-      // If both are upcoming, closest first
-      if (dateA >= now && dateB >= now) {
-        return dateA.getTime() - dateB.getTime();
+      const isAUpcoming = dateA >= now;
+      const isBUpcoming = dateB >= now;
+      const isAFeatured = a.is_featured;
+      const isBFeatured = b.is_featured;
+
+      // Priority 1 & 2: Upcoming Featured vs. Others/Upcoming Featured
+      if (isAUpcoming && isAFeatured && (!isBUpcoming || !isBFeatured)) return -1;
+      if (isBUpcoming && isBFeatured && (!isAUpcoming || !isAFeatured)) return 1;
+      if (isAUpcoming && isAFeatured && isBUpcoming && isBFeatured) {
+        return dateA.getTime() - dateB.getTime(); // Closest date first
+      }
+
+      // Priority 3 & 4: Upcoming Non-Featured vs. Past/Upcoming Non-Featured
+      if (isAUpcoming && !isBUpcoming) return -1;
+      if (isBUpcoming && !isAUpcoming) return 1;
+      if (isAUpcoming && isBUpcoming) { // Both are upcoming, non-featured
+        return dateA.getTime() - dateB.getTime(); // Closest date first
+      }
+
+      // Priority 5: Both are past
+      if (!isAUpcoming && !isBUpcoming) {
+        return dateB.getTime() - dateA.getTime(); // Most recent first
       }
       
-      // If both are past, most recent first
-      return dateB.getTime() - dateA.getTime();
+      // Should not be reached, but return 0 as default
+      return 0; 
     });
     
     setFilteredEvents(filtered)
@@ -454,8 +468,8 @@ function EventsContent() {
                   .filter(event => {
                     const eventDate = new Date(event.event_date);
                     const now = new Date();
-                    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-                    return event.is_featured && (eventDate >= now || (eventDate < now && eventDate >= thirtyDaysAgo));
+                    // Only show featured events that are upcoming
+                    return event.is_featured && eventDate >= now;
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">

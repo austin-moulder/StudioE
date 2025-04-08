@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, FormEvent } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, ArrowRight, Search } from "lucide-react"
+import { Calendar, ArrowRight, Search, User, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -13,15 +13,21 @@ import { getBlogPosts, getBlogCategories, searchBlogPosts, getBlogPostsByCategor
 import { BlogPost, BlogCategory } from "@/types/blog"
 import { format } from 'date-fns'
 import { useRouter } from "next/navigation"
+import { addSubscriber, SubscribeState } from "@/lib/actions/subscribeActions"
 
 export default function BlogPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [categories, setCategories] = useState<BlogCategory[]>([])
   const [loading, setLoading] = useState(true)
   const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null)
   const router = useRouter()
+
+  // State for the subscription form
+  const initialState: SubscribeState = { message: null, errors: {}, success: false };
+  const [formState, setFormState] = useState<SubscribeState>(initialState);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -47,32 +53,48 @@ export default function BlogPage() {
     loadData()
   }, [])
 
-  const handleSearch = async () => {
-    setLoading(true)
-    try {
-      let filteredPosts: BlogPost[] = []
-      
-      if (searchTerm && selectedCategory !== "all") {
-        // Search with both term and category
-        const searched = await searchBlogPosts(searchTerm)
-        filteredPosts = searched.filter(post => post.category === selectedCategory)
-      } else if (searchTerm) {
-        // Search by term only
-        filteredPosts = await searchBlogPosts(searchTerm)
-      } else if (selectedCategory !== "all") {
-        // Filter by category only
-        filteredPosts = await getBlogPostsByCategory(selectedCategory)
-      } else {
-        // No filters, get all posts
-        filteredPosts = await getBlogPosts()
-      }
-      
-      setPosts(filteredPosts)
-    } catch (error) {
-      console.error("Error searching posts:", error)
-    } finally {
-      setLoading(false)
+  // Effect to clear form or show success message
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (formState.success) {
+      // Optionally reset form fields
+      formRef.current?.reset();
+      // Clear message after a few seconds
+      const timer = setTimeout(() => setFormState(initialState), 5000);
+      return () => clearTimeout(timer);
+    } else if (formState.message && !formState.errors) {
+      // Clear error message after a few seconds if no field errors
+      const timer = setTimeout(() => setFormState(initialState), 5000);
+      return () => clearTimeout(timer);
     }
+  }, [formState]);
+
+  // Handle form submission
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent default form submission
+    setIsSubmitting(true);
+    setFormState(initialState); // Clear previous state
+
+    const formData = new FormData(event.currentTarget);
+    const result = await addSubscriber(initialState, formData);
+    setFormState(result);
+    setIsSubmitting(false);
+  };
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+    const fetchedPosts = await searchBlogPosts(searchTerm)
+    setPosts(fetchedPosts)
+    setLoading(false)
+  }
+
+  const handleCategoryChange = async (category: string | null) => {
+    setSelectedCategory(category)
+    setLoading(true)
+    const fetchedPosts = category ? await getBlogPostsByCategory(category) : await getBlogPosts()
+    setPosts(fetchedPosts)
+    setLoading(false)
   }
 
   // Fallback data for when no posts are available
@@ -176,7 +198,7 @@ export default function BlogPage() {
               </Select>
             </div>
 
-            <Button onClick={handleSearch} disabled={loading}>
+            <Button type="submit" disabled={loading}>
               {loading ? 'Searching...' : 'Search'}
             </Button>
           </div>
@@ -314,10 +336,7 @@ export default function BlogPage() {
               <div
                 key={category.id}
                 className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50 cursor-pointer"
-                onClick={() => {
-                  setSelectedCategory(category.name);
-                  handleSearch();
-                }}
+                onClick={() => handleCategoryChange(category.name)}
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-gradient/10 text-2xl">
                   {category.icon || '📝'}
@@ -340,12 +359,32 @@ export default function BlogPage() {
             <p className="mt-4 text-lg text-gray-500">
               Stay updated with the latest articles, tips, and dance events.
             </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Input placeholder="Enter your email" className="h-12" />
-              <Button size="lg" className="h-12">
-                Subscribe
+            <form ref={formRef} onSubmit={handleSubmit} className="mt-8 space-y-4">
+               <div className="relative">
+                 <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                 <Input 
+                   name="email" 
+                   type="email" 
+                   placeholder="Enter your email" 
+                   required 
+                   className="h-12 pl-10" 
+                   aria-describedby="footer-email-error"
+                 />
+               </div>
+                {formState.errors?.email && (
+                  <p id="footer-email-error" className="mt-1 text-xs text-red-600">
+                    {formState.errors.email[0]}
+                  </p>
+                )}
+              <Button type="submit" size="lg" className="w-full h-12 bg-[#F94C8D] hover:bg-[#F94C8D]/90" disabled={isSubmitting}>
+                {isSubmitting ? 'Subscribing...' : 'Subscribe'}
               </Button>
-            </div>
+              {formState.message && (
+                <p className={`mt-2 text-sm ${formState.success ? 'text-green-600' : 'text-red-600'}`}>
+                  {formState.message}
+                </p>
+              )}
+            </form>
             <p className="mt-4 text-xs text-gray-500">
               By subscribing, you agree to our Privacy Policy and consent to receive updates from Studio E.
             </p>
