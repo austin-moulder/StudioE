@@ -30,6 +30,45 @@ interface InstructorInterface {
   }
 }
 
+// Replace the previous ComingSoonAlert with a tooltip version
+function ComingSoonTooltip({ x, y }: { x: number; y: number }) {
+  const [visible, setVisible] = useState(true);
+  const [opacity, setOpacity] = useState(0);
+  
+  useEffect(() => {
+    // Mount animation
+    requestAnimationFrame(() => {
+      setOpacity(1);
+    });
+    
+    // Unmount after delay
+    const timer = setTimeout(() => {
+      setOpacity(0);
+      setTimeout(() => setVisible(false), 200); // Duration of fade-out
+    }, 2300);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (!visible) return null;
+  
+  // Position the tooltip near the click position, with adjustments to center it
+  return (
+    <div 
+      className="fixed z-50 px-3 py-1.5 text-xs bg-gray-800/80 text-white rounded-md shadow-sm pointer-events-none
+                 transition-opacity duration-200 ease-in-out"
+      style={{ 
+        left: `${x}px`, 
+        top: `${y - 30}px`, 
+        transform: 'translateX(-50%)',
+        opacity: opacity,
+      }}
+    >
+      <span>Instructor profiles coming soon</span>
+    </div>
+  );
+}
+
 function InstructorsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -43,6 +82,11 @@ function InstructorsContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
   const [paginatedInstructors, setPaginatedInstructors] = useState<Instructor[]>([])
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number, show: boolean }>({ 
+    x: 0, 
+    y: 0, 
+    show: false 
+  });
   
   const ITEMS_PER_PAGE = 8
 
@@ -206,8 +250,35 @@ function InstructorsContent() {
     updateURL(page, selectedStyle, selectedLocation, selectedPrice, sortOrder)
   }
 
+  // Update profile click handler to use mouse position
+  const handleProfileClick = (e: React.MouseEvent<HTMLAnchorElement>, instructorName: string) => {
+    e.preventDefault();
+    
+    // Get click position - use getBoundingClientRect for better positioning
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+    
+    // Position tooltip above the link element rather than at exact mouse position
+    // This works better across devices (mobile, desktop)
+    const x = rect.left + (rect.width / 2);
+    const y = rect.top;
+    
+    // Show tooltip at this position
+    setTooltipPosition({ x, y, show: true });
+    
+    // Auto-hide after delay
+    setTimeout(() => {
+      setTooltipPosition(prev => ({ ...prev, show: false }));
+    }, 2500);
+  };
+
   return (
     <div className="flex flex-col">
+      {/* Show tooltip when needed */}
+      {tooltipPosition.show && (
+        <ComingSoonTooltip x={tooltipPosition.x} y={tooltipPosition.y} />
+      )}
+      
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A]/90 via-[#FF3366]/90 to-[#9933CC]/90 z-10" />
@@ -388,9 +459,13 @@ function InstructorsContent() {
                   </div>
                   <div className="mt-4 flex justify-between">
                     <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
-                    <Link href={`/instructors/${instructor.name.toLowerCase().replace(/\s+/g, '-')}`} className="text-[#F94C8D] hover:underline text-sm">
+                    <a 
+                      href="#" 
+                      onClick={(e) => handleProfileClick(e, instructor.name)} 
+                      className="text-[#F94C8D] hover:underline text-sm"
+                    >
                       View Profile
-                    </Link>
+                    </a>
                   </div>
                 </CardContent>
               </Card>
@@ -571,10 +646,11 @@ function InstructorsContent() {
   )
 }
 
+// Default export with Suspense
 export default function InstructorsPage() {
   return (
-    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading instructors...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <InstructorsContent />
     </Suspense>
-  )
+  );
 } 

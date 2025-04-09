@@ -107,7 +107,8 @@ export default function DanceStylesPage() {
             ].map((style) => (
               <Link key={style.name} href="/instructors" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="font-bold text-xl mb-2">{style.name}</h3>
-                <p className="text-sm text-gray-500">{style.count} Instructors</p>
+                {/* Remove the instructor count paragraph */}
+                {/* <p className="text-sm text-gray-500">{style.count} Instructors</p> */}
               </Link>
             ))}
           </div>

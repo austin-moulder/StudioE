@@ -125,12 +125,18 @@ function EventsContent() {
     }
 
     // Sort events: Prioritize upcoming featured, then upcoming non-featured, then past.
+    // Compare based on the start of the day to avoid timezone/time issues.
     const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
     filtered.sort((a, b) => {
       const dateA = new Date(a.event_date);
       const dateB = new Date(b.event_date);
-      const isAUpcoming = dateA >= now;
-      const isBUpcoming = dateB >= now;
+      const startOfADay = new Date(dateA.getFullYear(), dateA.getMonth(), dateA.getDate());
+      const startOfBDay = new Date(dateB.getFullYear(), dateB.getMonth(), dateB.getDate());
+
+      const isAUpcoming = startOfADay >= startOfToday;
+      const isBUpcoming = startOfBDay >= startOfToday;
       const isAFeatured = a.is_featured;
       const isBFeatured = b.is_featured;
 
@@ -138,22 +144,24 @@ function EventsContent() {
       if (isAUpcoming && isAFeatured && (!isBUpcoming || !isBFeatured)) return -1;
       if (isBUpcoming && isBFeatured && (!isAUpcoming || !isAFeatured)) return 1;
       if (isAUpcoming && isAFeatured && isBUpcoming && isBFeatured) {
-        return dateA.getTime() - dateB.getTime(); // Closest date first
+        // If dates are the same day, sort by actual time; otherwise by day
+        return startOfADay.getTime() === startOfBDay.getTime() ? dateA.getTime() - dateB.getTime() : startOfADay.getTime() - startOfBDay.getTime();
       }
 
       // Priority 3 & 4: Upcoming Non-Featured vs. Past/Upcoming Non-Featured
       if (isAUpcoming && !isBUpcoming) return -1;
       if (isBUpcoming && !isAUpcoming) return 1;
       if (isAUpcoming && isBUpcoming) { // Both are upcoming, non-featured
-        return dateA.getTime() - dateB.getTime(); // Closest date first
+        // If dates are the same day, sort by actual time; otherwise by day
+        return startOfADay.getTime() === startOfBDay.getTime() ? dateA.getTime() - dateB.getTime() : startOfADay.getTime() - startOfBDay.getTime();
       }
 
       // Priority 5: Both are past
       if (!isAUpcoming && !isBUpcoming) {
-        return dateB.getTime() - dateA.getTime(); // Most recent first
+        // Sort past events by most recent actual timestamp first
+        return dateB.getTime() - dateA.getTime(); 
       }
       
-      // Should not be reached, but return 0 as default
       return 0; 
     });
     
@@ -349,11 +357,14 @@ function EventsContent() {
 
             <TabsContent value="upcoming" className="space-y-8">
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {currentEvents
+                {filteredEvents
                   .filter(event => {
                     const eventDate = new Date(event.event_date);
+                    const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                     const now = new Date();
-                    return eventDate >= now; // Only show future events
+                    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    // Use start-of-day comparison
+                    return startOfEventDay >= startOfToday;
                   })
                   .map((event, index) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -467,12 +478,14 @@ function EventsContent() {
                 {filteredEvents
                   .filter(event => {
                     const eventDate = new Date(event.event_date);
+                    const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                     const now = new Date();
-                    // Only show featured events that are upcoming
-                    return event.is_featured && eventDate >= now;
+                    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    // Only show featured events that are on or after today
+                    return event.is_featured && startOfEventDay >= startOfToday;
                   })
                   .map((event) => (
-                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border-2 border-brand-gradient">
                       <div className="aspect-[3/4] relative">
                         <Image
                           src={event.image_url || "/placeholder.svg"}
@@ -533,12 +546,20 @@ function EventsContent() {
                 {filteredEvents
                   .filter(event => {
                     const eventDate = new Date(event.event_date);
+                    const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                     const now = new Date();
+                    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    // Check if event start day is before today
+                    const isPastDay = startOfEventDay < startOfToday;
+                    
+                    // Also check if the event occurred within the last 30 days (using exact time)
                     const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-                    return eventDate < now && eventDate >= thirtyDaysAgo;
+                    const isWithin30Days = eventDate >= thirtyDaysAgo;
+                    
+                    return isPastDay && isWithin30Days;
                   })
                   .map((event) => (
-                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow opacity-80">
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow opacity-70">
                       <div className="aspect-[3/4] relative">
                         <Image
                           src={event.image_url || "/placeholder.svg"}

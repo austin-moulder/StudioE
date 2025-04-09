@@ -12,140 +12,157 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { getBlogPosts, getBlogCategories, searchBlogPosts, getBlogPostsByCategory } from "@/lib/blog/blogUtils"
 import { BlogPost, BlogCategory } from "@/types/blog"
 import { format } from 'date-fns'
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { addSubscriber, SubscribeState } from "@/lib/actions/subscribeActions"
+import { Suspense } from "react"
 
-export default function BlogPage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+// Wrap the core content in a component to use Suspense
+function BlogContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Initialize state from URL search params
+  const initialSearchTerm = searchParams.get('q') || "";
+  const initialCategory = searchParams.get('category') || null;
+
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [categories, setCategories] = useState<BlogCategory[]>([])
-  const [loading, setLoading] = useState(true)
-  const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null)
-  const router = useRouter()
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory)
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm)
+  const [isLoading, setIsLoading] = useState(true)
 
   // State for the subscription form
   const initialState: SubscribeState = { message: null, errors: {}, success: false };
   const [formState, setFormState] = useState<SubscribeState>(initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Fetch categories only once on mount
   useEffect(() => {
-    async function loadData() {
-      setLoading(true)
+    async function loadCategories() {
       try {
-        const fetchedPosts = await getBlogPosts()
-        setPosts(fetchedPosts)
-
-        // Set the first post as featured for demo purposes
-        if (fetchedPosts.length > 0) {
-          setFeaturedPost(fetchedPosts[0])
-        }
-
         const fetchedCategories = await getBlogCategories()
         setCategories(fetchedCategories)
       } catch (error) {
-        console.error("Error loading blog data:", error)
-      } finally {
-        setLoading(false)
+        console.error("Error loading blog categories:", error)
       }
     }
-
-    loadData()
+    loadCategories()
   }, [])
 
-  // Effect to clear form or show success message
+  // Fetch posts based on searchTerm and selectedCategory (driven by URL)
+  useEffect(() => {
+    async function loadPosts() {
+      setIsLoading(true)
+      try {
+        let fetchedPosts: BlogPost[];
+        if (searchTerm && selectedCategory) {
+          // Search within a category (less common, might need specific API or client-side filter)
+          // For now, let's prioritize search term if both are present
+          fetchedPosts = await searchBlogPosts(searchTerm);
+          // Optionally filter further by category client-side if needed
+          fetchedPosts = fetchedPosts.filter(p => p.category === selectedCategory);
+        } else if (searchTerm) {
+          fetchedPosts = await searchBlogPosts(searchTerm);
+        } else if (selectedCategory) {
+          fetchedPosts = await getBlogPostsByCategory(selectedCategory);
+        } else {
+          fetchedPosts = await getBlogPosts();
+        }
+        setPosts(fetchedPosts)
+      } catch (error) {
+        console.error("Error loading blog posts:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadPosts()
+  // Depend on the state variables which reflect the URL params
+  }, [searchTerm, selectedCategory])
+
+  // Effect to clear subscription form message
   const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
     if (formState.success) {
-      // Optionally reset form fields
       formRef.current?.reset();
-      // Clear message after a few seconds
       const timer = setTimeout(() => setFormState(initialState), 5000);
       return () => clearTimeout(timer);
     } else if (formState.message && !formState.errors) {
-      // Clear error message after a few seconds if no field errors
       const timer = setTimeout(() => setFormState(initialState), 5000);
       return () => clearTimeout(timer);
     }
   }, [formState]);
 
-  // Handle form submission
+  // Handle subscription form submission
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
     setIsSubmitting(true);
-    setFormState(initialState); // Clear previous state
-
+    setFormState(initialState);
     const formData = new FormData(event.currentTarget);
     const result = await addSubscriber(initialState, formData);
     setFormState(result);
     setIsSubmitting(false);
   };
 
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Update URL on search form submission
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setLoading(true)
-    const fetchedPosts = await searchBlogPosts(searchTerm)
-    setPosts(fetchedPosts)
-    setLoading(false)
+    const params = new URLSearchParams(searchParams)
+    if (searchTerm) {
+      params.set('q', searchTerm)
+    } else {
+      params.delete('q')
+    }
+    // Keep existing category param if present
+    if (selectedCategory) {
+      params.set('category', selectedCategory)
+    } else {
+       params.delete('category')
+    }
+    router.push(`/blog?${params.toString()}`)
   }
 
-  const handleCategoryChange = async (category: string | null) => {
-    setSelectedCategory(category)
-    setLoading(true)
-    const fetchedPosts = category ? await getBlogPostsByCategory(category) : await getBlogPosts()
-    setPosts(fetchedPosts)
-    setLoading(false)
+  // Update URL on category change (from Select or Cards)
+  const handleCategoryChange = (category: string | null) => {
+    // Update state immediately for responsive UI feel
+    setSelectedCategory(category);
+    
+    const params = new URLSearchParams(searchParams)
+    if (category) {
+      params.set('category', category)
+    } else {
+      params.delete('category')
+    }
+    // Keep existing search term param
+    if (searchTerm) {
+      params.set('q', searchTerm)
+    } else {
+      params.delete('q')
+    }
+    router.push(`/blog?${params.toString()}`)
   }
 
-  // Fallback data for when no posts are available
-  const placeholderPosts = Array.from({ length: 6 }).map((_, index) => ({
-    id: index,
-    title: [
-      "10 Tips for Beginner Ballet Dancers",
-      "The History and Evolution of Hip Hop Dance",
-      "Preparing for Your First Dance Competition",
-      "How to Choose the Right Dance Shoes",
-      "Instructor Spotlight: Maria Chen's Journey",
-      "The Mental Health Benefits of Regular Dancing",
-    ][index],
-    slug: `post-${index}`,
-    excerpt: [
-      "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
-      "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
-      "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
-      "Different dance styles require different footwear. Learn how to select the perfect shoes for your dance practice.",
-      "From taking her first dance class at age 5 to becoming one of our most sought-after instructors, Maria's story inspires.",
-      "Beyond physical fitness, dancing offers significant mental health benefits including stress reduction and improved cognitive function.",
-    ][index],
-    content: "",
-    featured_image: "",
-    category: [
-      "Tips & Techniques",
-      "Dance History",
-      "Competition",
-      "Equipment",
-      "Instructor Spotlight",
-      "Health & Wellness",
-    ][index],
-    published: true,
-    created_at: new Date(2025, 5, 15 - index * 5).toISOString(),
-    author_name: "Dance Instructor",
-    author_image: ""
-  }))
+  // Derive featuredPost and otherPosts from the potentially filtered 'posts' state
+  const featuredPost = posts[0]
+  const otherPosts = posts.slice(1)
 
-  const placeholderCategories = [
-    { id: 1, name: "Tips & Techniques", post_count: 24, icon: "💡" },
-    { id: 2, name: "Dance History", post_count: 18, icon: "📚" },
-    { id: 3, name: "Instructor Spotlights", post_count: 15, icon: "🌟" },
-    { id: 4, name: "Health & Wellness", post_count: 12, icon: "🧘" },
-    { id: 5, name: "Event Recaps", post_count: 20, icon: "🎭" },
-    { id: 6, name: "Student Stories", post_count: 16, icon: "👥" },
-  ]
+  // Calculate post counts (based on the currently displayed posts)
+  const categoryCounts: { [key: string]: number } = {};
+  posts.forEach(post => {
+    if (post.category) { 
+      categoryCounts[post.category] = (categoryCounts[post.category] || 0) + 1;
+    }
+  });
 
-  // Use actual data if available, or placeholder data if not
-  const displayPosts = posts.length > 0 ? posts : placeholderPosts
-  const displayCategories = categories.length > 0 ? categories : placeholderCategories
-  const displayFeaturedPost = featuredPost || placeholderPosts[0]
+  // Map category names to icons
+  const categoryIcons: { [key: string]: string } = {
+    "Tips & Techniques": "💡",
+    "Dance History": "📚",
+    "Instructor Spotlights": "🌟",
+    "Health & Wellness": "🧘",
+    "Event Recaps": "🎭",
+    "Student Stories": "👥",
+  };
+  const defaultIcon = "📝";
 
   return (
     <div className="flex flex-col">
@@ -161,10 +178,10 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Search and Filter Section */}
+      {/* Search and Filter Section - Use form with onSubmit */}
       <section className="py-8 border-b">
         <div className="container">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end">
+          <form onSubmit={handleSearchSubmit} className="flex flex-col gap-4 md:flex-row md:items-end">
             <div className="flex-1 space-y-2">
               <label htmlFor="search" className="text-sm font-medium">
                 Search Articles
@@ -175,8 +192,8 @@ export default function BlogPage() {
                   id="search" 
                   placeholder="Search by keyword or topic" 
                   className="pl-10"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)} 
+                  value={searchTerm} // Controlled input
+                  onChange={(e) => setSearchTerm(e.target.value)} // Update state on change
                 />
               </div>
             </div>
@@ -185,108 +202,145 @@ export default function BlogPage() {
               <label htmlFor="category" className="text-sm font-medium">
                 Category
               </label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              {/* Use handleCategoryChange for Select */}
+              <Select 
+                value={selectedCategory || 'all'} // Use 'all' if null
+                onValueChange={(value) => handleCategoryChange(value === 'all' ? null : value)}
+              >
                 <SelectTrigger id="category" className="w-full md:w-[180px]">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
                   <SelectItem value="all">All Categories</SelectItem>
-                  {displayCategories.map((category) => (
+                  {/* Categories state is fetched separately */}
+                  {categories.map((category) => (
                     <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Searching...' : 'Search'}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Searching...' : 'Search'}
             </Button>
-          </div>
+          </form>
         </div>
       </section>
 
-      {/* Featured Post */}
+      {/* Featured Post - Rendering logic uses 'posts' which is updated by useEffect */}
       <section className="py-16">
         <div className="container">
           <h2 className="text-3xl font-bold mb-8">Featured Article</h2>
 
-          <div className="grid gap-8 md:grid-cols-2 items-center">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200 flex items-center justify-center">
-              {displayFeaturedPost.featured_image ? (
-                <Image
-                  src={displayFeaturedPost.featured_image}
-                  alt={displayFeaturedPost.title}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <span className="text-gray-400 text-lg">Featured Article Image</span>
-              )}
-            </div>
-            <div>
-              <Badge className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">Featured</Badge>
-              <h3 className="mt-2 text-3xl font-bold">
-                {displayFeaturedPost.title}
-              </h3>
-              <div className="mt-4 flex items-center text-sm text-gray-500">
-                <Calendar className="mr-2 h-4 w-4" />
-                {displayFeaturedPost.created_at ? 
-                  format(new Date(displayFeaturedPost.created_at), 'MMMM d, yyyy') : 
-                  'No date'}
-              </div>
-              <p className="mt-4 text-gray-500">
-                {displayFeaturedPost.excerpt}
-              </p>
-              <div className="mt-6 flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
-                    {displayFeaturedPost.author_image ? (
-                      <Image
-                        src={displayFeaturedPost.author_image}
-                        alt={displayFeaturedPost.author_name}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <span className="text-gray-400 text-xs">
-                        {displayFeaturedPost.author_name.split(' ').map(n => n[0]).join('')}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-sm font-medium">{displayFeaturedPost.author_name}</span>
+          {isLoading ? (
+            // Skeleton/Placeholder for Featured Article while loading
+            <div className="animate-pulse grid gap-8 md:grid-cols-2 items-center">
+              <div className="aspect-[4/3] rounded-lg bg-gray-200"></div>
+              <div className="space-y-4">
+                <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+                <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-5 bg-gray-200 rounded w-1/3"></div>
+                <div className="h-16 bg-gray-200 rounded w-full"></div>
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-full bg-gray-200"></div>
+                  <div className="h-5 bg-gray-200 rounded w-1/4"></div>
                 </div>
-                <Link href={`/blog/${displayFeaturedPost.slug}`}>
-                  <Button>
-                    Read Article
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
               </div>
             </div>
-          </div>
+          ) : featuredPost ? (
+            // Render the actual featured post content if it exists
+            <div className="grid gap-8 md:grid-cols-2 items-center">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200 flex items-center justify-center">
+                {featuredPost.featured_image ? (
+                  <Image
+                    src={featuredPost.featured_image}
+                    alt={featuredPost.title}
+                    fill
+                    className="object-cover"
+                    priority // Prioritize loading the featured image
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                ) : (
+                  <span className="text-gray-400 text-lg">Featured Article Image</span>
+                )}
+              </div>
+              <div>
+                <Badge className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">Featured</Badge>
+                <h3 className="mt-2 text-3xl font-bold">
+                  {featuredPost.title}
+                </h3>
+                <div className="mt-4 flex items-center text-sm text-gray-500">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {featuredPost.created_at ? 
+                    format(new Date(featuredPost.created_at), 'MMMM d, yyyy') : 
+                    'No date'}
+                </div>
+                <p className="mt-4 text-gray-500">
+                  {/* Display excerpt or beginning of content */}
+                  {featuredPost.excerpt || featuredPost.content?.substring(0, 150) || 'No description available.'}
+                </p>
+                <div className="mt-6 flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+                      {featuredPost.author_image ? (
+                        <Image
+                          src={featuredPost.author_image}
+                          // Ensure author_name exists before trying to split
+                          alt={featuredPost.author_name || 'Author'}
+                          fill
+                          className="object-cover"
+                          sizes="40px"
+                        />
+                      ) : (
+                        <span className="text-gray-400 text-xs">
+                          {/* Provide fallback if author_name is missing */}
+                          {featuredPost.author_name?.split(' ').map(n => n[0]).join('') || 'A'}
+                        </span>
+                      )}
+                    </div>
+                    {/* Display author name or fallback */}
+                    <span className="text-sm font-medium">{featuredPost.author_name || 'Unknown Author'}</span>
+                  </div>
+                  <Link href={`/blog/${featuredPost.slug}`}>
+                    <Button>
+                      Read Article
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // Optional: Message when no featured post exists after loading
+            <div className="text-center py-8 text-gray-500">No featured article available.</div>
+          )}
         </div>
       </section>
 
-      {/* Latest Posts */}
+      {/* Latest Posts - Rendering logic uses 'posts' which is updated by useEffect */}
       <section className="py-16 bg-gray-50">
         <div className="container">
           <h2 className="text-3xl font-bold mb-8">Latest Articles</h2>
 
-          {loading ? (
+          {isLoading ? (
             <div className="text-center py-8">Loading posts...</div>
-          ) : displayPosts.length === 0 ? (
-            <div className="text-center py-8">No posts found. Try a different search.</div>
+          ) : otherPosts.length === 0 ? (
+             // Adjusted check: if otherPosts is empty (after potentially removing the featured one)
+            <div className="text-center py-8">No other articles found.</div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {displayPosts.map((post) => (
+              {/* Map over otherPosts instead of posts */}
+              {otherPosts.map((post) => (
                 <Card key={post.id} className="overflow-hidden">
                   <div className="aspect-[3/2] relative bg-gray-200 flex items-center justify-center">
+                    {/* Correct property name */}
                     {post.featured_image ? (
                       <Image
                         src={post.featured_image}
                         alt={post.title}
                         fill
                         className="object-cover"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     ) : (
                       <span className="text-gray-400 text-lg">{post.title}</span>
@@ -294,15 +348,16 @@ export default function BlogPage() {
                   </div>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline">{post.category}</Badge>
+                      {/* Check if category exists before rendering badge */}
+                      {post.category && <Badge variant="outline">{post.category}</Badge>}
                       <span className="text-xs text-gray-500">
                         {post.created_at ? 
                           format(new Date(post.created_at), 'MMMM d, yyyy') : 
                           'No date'}
                       </span>
                     </div>
-                    <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
-                    <p className="mt-2 text-gray-500 line-clamp-3">{post.excerpt}</p>
+                    <h3 className="mt-2 text-xl font-bold line-clamp-2">{post.title}</h3>
+                    <p className="mt-2 text-gray-500 line-clamp-3">{post.excerpt || post.content?.substring(0, 100) || ''}</p>
                     <Link href={`/blog/${post.slug}`}>
                       <Button variant="link" className="mt-4 p-0 h-auto">
                         Read More
@@ -326,32 +381,46 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-16">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-8">Browse by Category</h2>
-
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {displayCategories.map((category) => (
-              <div
-                key={category.id}
-                className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50 cursor-pointer"
-                onClick={() => handleCategoryChange(category.name)}
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-gradient/10 text-2xl">
-                  {category.icon || '📝'}
+      {/* Browse by Category - onClick uses handleCategoryChange */}
+      <Card className="bg-white shadow-sm">
+        <CardContent className="p-6">
+          <h3 className="text-xl font-semibold mb-6">Browse by Category</h3>
+          {/* Check if categories are loaded before rendering */}
+          {!isLoading && categories.length > 0 ? (
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+              {/* Iterate over fetched categories */}
+              {categories.map((category) => (
+                <div
+                  key={category.id} // Use category.id from fetched data
+                  className="flex items-center gap-4 rounded-lg border p-4 transition-colors hover:bg-gray-50 cursor-pointer"
+                  onClick={() => handleCategoryChange(category.name)} // Use fetched category name
+                >
+                  {/* Use icon map */}
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#F94C8D]/10 to-[#9D4EDD]/10 text-[#F94C8D]">
+                    <span className="text-2xl">{categoryIcons[category.name] || defaultIcon}</span>
+                  </div>
+                  <div>
+                    <h4 className="font-medium line-clamp-1">{category.name}</h4>
+                    {/* Display dynamic post count */}
+                    <p className="text-sm text-gray-500">
+                      {categoryCounts[category.name] || 0} posts
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-medium">{category.name}</h3>
-                  <p className="text-sm text-gray-500">{category.post_count} articles</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              ))}
+            </div>
+          ) : isLoading ? (
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+               {/* Placeholder while loading */}
+              {[1, 2, 3].map(i => <div key={i} className="animate-pulse bg-gray-200 rounded-lg h-[88px]"></div>)}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">No categories found.</p>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Newsletter Section */}
+      {/* Newsletter Section - Uses handleSubmit for subscription */}
       <section className="py-16 bg-gray-50">
         <div className="container">
           <div className="mx-auto max-w-2xl text-center">
@@ -392,5 +461,14 @@ export default function BlogPage() {
         </div>
       </section>
     </div>
-  )
+  );
+}
+
+// Default export uses Suspense for searchParams
+export default function BlogPage() {
+  return (
+    <Suspense fallback={<div>Loading filters...</div>}> {/* Or a better skeleton */}
+      <BlogContent />
+    </Suspense>
+  );
 } 
