@@ -64,23 +64,35 @@ export default function DanceStylesPage() {
               >
                 <div className={index % 2 === 1 ? 'md:order-2' : ''}>
                   <h2 className="text-3xl font-bold tracking-tight mb-4">{style.name}</h2>
+                  
+                  <div className="md:hidden relative aspect-square rounded-lg overflow-hidden mb-4">
+                    <Image 
+                      src={style.image} 
+                      alt={`${style.name} Dancers`}
+                      fill
+                      className={`object-cover ${style.name === 'Heels' ? 'object-top' : ''} scale-[1.02]`}
+                      sizes="100vw"
+                    />
+                  </div>
+                  
                   <p className="text-gray-500">{style.description}</p>
                   <div className="mt-6">
                     <Link href="/instructors">
                       <Button className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">
-                        Find {style.name} Instructors ({style.instructors})
+                        Find {style.name} Instructors
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
                   </div>
                 </div>
-                <div className={`relative aspect-square rounded-lg overflow-hidden ${index % 2 === 1 ? 'md:order-1' : ''}`}>
+                
+                <div className={`relative aspect-square rounded-lg overflow-hidden hidden md:block ${index % 2 === 1 ? 'md:order-1' : ''}`}>
                   <Image 
                     src={style.image} 
                     alt={`${style.name} Dancers`}
                     fill
                     className={`object-cover ${style.name === 'Heels' ? 'object-top' : ''} scale-[1.02]`}
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="50vw"
                   />
                 </div>
               </div>

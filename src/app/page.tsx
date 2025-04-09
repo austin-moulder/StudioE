@@ -28,6 +28,44 @@ interface Instructor {
   specialty: string;
 }
 
+function ComingSoonTooltip({ x, y, message }: { x: number; y: number; message: string }) {
+  const [visible, setVisible] = useState(true);
+  const [opacity, setOpacity] = useState(0);
+  
+  useEffect(() => {
+    // Mount animation
+    requestAnimationFrame(() => {
+      setOpacity(1);
+    });
+    
+    // Unmount after delay
+    const timer = setTimeout(() => {
+      setOpacity(0);
+      setTimeout(() => setVisible(false), 200); // Duration of fade-out
+    }, 2300);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  if (!visible) return null;
+  
+  // Position the tooltip near the click position, with adjustments to center it
+  return (
+    <div 
+      className="fixed z-50 px-3 py-1.5 text-xs bg-gray-800/80 text-white rounded-md shadow-sm pointer-events-none
+                 transition-opacity duration-200 ease-in-out"
+      style={{ 
+        left: `${x}px`, 
+        top: `${y - 30}px`, 
+        transform: 'translateX(-50%)',
+        opacity: opacity,
+      }}
+    >
+      <span>{message}</span>
+    </div>
+  );
+}
+
 export default function Home() {
   const [selectedStyle, setSelectedStyle] = useState("");
   const [danceStyleImages, setDanceStyleImages] = useState<Record<string, string>>({});
@@ -43,6 +81,17 @@ export default function Home() {
   const [selectedInstructorIndex, setSelectedInstructorIndex] = useState(0);
   const [blogEmblaRef, blogEmblaApi] = useEmblaCarousel({ loop: true });
   const [selectedBlogIndex, setSelectedBlogIndex] = useState(0);
+  const [tooltipPosition, setTooltipPosition] = useState<{ 
+    x: number, 
+    y: number, 
+    show: boolean,
+    message: string 
+  }>({ 
+    x: 0, 
+    y: 0, 
+    show: false,
+    message: ""
+  });
 
   const instructors: Instructor[] = [
     {
@@ -153,8 +202,39 @@ export default function Home() {
     }
   };
 
+  // Function to handle button clicks and show tooltip
+  const handleInstructorAction = (e: React.MouseEvent<HTMLAnchorElement>, buttonType: 'profile' | 'booking') => {
+    e.preventDefault();
+    
+    // Get click position
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+    
+    // Position tooltip above the link element
+    const x = rect.left + (rect.width / 2);
+    const y = rect.top;
+    
+    // Set appropriate message based on button type
+    const message = buttonType === 'profile' 
+      ? "Instructor profiles coming soon"
+      : "Booking feature coming soon";
+    
+    // Show tooltip at this position
+    setTooltipPosition({ x, y, show: true, message });
+    
+    // Auto-hide after delay
+    setTimeout(() => {
+      setTooltipPosition(prev => ({ ...prev, show: false }));
+    }, 2500);
+  };
+
   return (
     <div className="flex flex-col">
+      {/* Show tooltip when needed */}
+      {tooltipPosition.show && (
+        <ComingSoonTooltip x={tooltipPosition.x} y={tooltipPosition.y} message={tooltipPosition.message} />
+      )}
+
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A]/90 via-[#FF3366]/90 to-[#9933CC]/90 z-10" />
@@ -351,14 +431,14 @@ export default function Home() {
                       <h3 className="mt-6 text-xl font-bold">{instructor.name}</h3>
                       <p className="text-[#FF3366]">{instructor.specialty}</p>
                       <div className="flex justify-center gap-2 mt-4">
-                        <Link href={`/instructors/${instructor.id}`}>
+                        <a href="#" onClick={(e) => handleInstructorAction(e, 'profile')}>
                           <Button size="sm" variant="outline">
                             View Profile
                           </Button>
-                        </Link>
-                        <Link href={`/instructors/${instructor.id}?tab=book`}>
+                        </a>
+                        <a href="#" onClick={(e) => handleInstructorAction(e, 'booking')}>
                           <Button size="sm">Book Now</Button>
-                        </Link>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -646,8 +726,22 @@ export default function Home() {
       {/* Podcast Section */}
       <section className="py-8 md:py-24">
         <div className="container">
+          {/* Mobile version - Image above title */}
+          <div className="md:hidden mb-8 flex justify-center">
+            <div className="relative aspect-square w-full max-w-[280px]">
+              <Image
+                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Main.png"
+                alt="Studio E Podcast Cover"
+                fill
+                className="object-cover rounded-lg"
+                unoptimized
+              />
+            </div>
+          </div>
+          
           <div className="grid gap-12 md:grid-cols-2 items-center">
-            <div className="relative aspect-square max-w-md mx-auto md:mx-0">
+            {/* Desktop version - Hide on mobile */}
+            <div className="relative aspect-square max-w-md mx-auto md:mx-0 hidden md:block">
               <Image
                 src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Main.png"
                 alt="Studio E Podcast Cover"

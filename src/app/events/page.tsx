@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase/client"
 
@@ -42,8 +42,33 @@ function EventsContent() {
   const [location, setLocation] = useState(searchParams.get("location") || "all")
   const [events, setEvents] = useState<Event[]>([])
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([])
+  const [isMobile, setIsMobile] = useState(false)
   
-  const ITEMS_PER_PAGE = 9 // 3x3 grid
+  // Add ref for the events section
+  const eventsTabsRef = useRef<HTMLDivElement>(null)
+  
+  // Set different items per page for mobile vs desktop
+  const MOBILE_ITEMS_PER_PAGE = 8 // Max 8 items for mobile
+  const DESKTOP_ITEMS_PER_PAGE = 8 // Show only 2 rows (4 columns x 2 rows) for desktop
+  
+  // Check if device is mobile on component mount and on window resize
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768); // Use standard breakpoint
+    };
+    
+    // Initial check
+    checkIsMobile();
+    
+    // Listen for window resize
+    window.addEventListener('resize', checkIsMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+  
+  // Calculate items per page based on device type
+  const ITEMS_PER_PAGE = isMobile ? MOBILE_ITEMS_PER_PAGE : DESKTOP_ITEMS_PER_PAGE
 
   // Fetch events from Supabase
   useEffect(() => {
@@ -170,6 +195,18 @@ function EventsContent() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
+    
+    // Scroll to the events section when changing pages
+    if (eventsTabsRef.current) {
+      // Scroll with a small offset to account for sticky header
+      const yOffset = -80; 
+      const y = eventsTabsRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      
+      window.scrollTo({
+        top: y,
+        behavior: 'smooth'
+      });
+    }
   }
 
   const handleSearch = () => {
@@ -270,7 +307,7 @@ function EventsContent() {
       </section>
 
       {/* Search and Filter Section */}
-      <section className="py-8 border-b">
+      <section className="py-8 border-b bg-white">
         <div className="container">
           <div className="flex flex-col gap-4 md:flex-row md:items-end">
             <div className="flex-1 space-y-2">
@@ -346,17 +383,32 @@ function EventsContent() {
       </section>
 
       {/* Events Tabs */}
-      <section className="py-16">
+      <section className="py-16 bg-gray-50">
         <div className="container">
-          <Tabs defaultValue="upcoming" className="w-full">
-            <TabsList className="mb-8 grid w-full grid-cols-3 bg-gray-100">
-              <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-              <TabsTrigger value="featured">Featured</TabsTrigger>
-              <TabsTrigger value="past">Past Events</TabsTrigger>
+          <Tabs defaultValue="upcoming" className="w-full" ref={eventsTabsRef}>
+            <TabsList className="mb-8 grid w-full grid-cols-3 bg-white border rounded-lg text-center overflow-hidden">
+              <TabsTrigger 
+                value="upcoming" 
+                className="data-[state=active]:font-semibold relative transition-all py-2.5 h-11 hover:bg-gray-100 flex justify-center items-center after:content-[''] after:absolute after:h-[2px] after:bg-gray-400 after:bottom-0 after:left-0 after:right-0 after:opacity-0 data-[state=active]:after:opacity-100"
+              >
+                Upcoming
+              </TabsTrigger>
+              <TabsTrigger 
+                value="featured" 
+                className="data-[state=active]:font-semibold relative transition-all py-2.5 h-11 hover:bg-gray-100 flex justify-center items-center after:content-[''] after:absolute after:h-[2px] after:bg-gray-400 after:bottom-0 after:left-0 after:right-0 after:opacity-0 data-[state=active]:after:opacity-100"
+              >
+                Featured
+              </TabsTrigger>
+              <TabsTrigger 
+                value="past" 
+                className="data-[state=active]:font-semibold relative transition-all py-2.5 h-11 hover:bg-gray-100 flex justify-center items-center after:content-[''] after:absolute after:h-[2px] after:bg-gray-400 after:bottom-0 after:left-0 after:right-0 after:opacity-0 data-[state=active]:after:opacity-100"
+              >
+                Past Events
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="upcoming" className="space-y-8">
-              <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {filteredEvents
                   .filter(event => {
                     const eventDate = new Date(event.event_date);
@@ -366,8 +418,9 @@ function EventsContent() {
                     // Use start-of-day comparison
                     return startOfEventDay >= startOfToday;
                   })
+                  .slice(indexOfFirstEvent, indexOfLastEvent) // Use pagination with current ITEMS_PER_PAGE
                   .map((event, index) => (
-                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow">
                       <div className="aspect-[3/4] relative">
                         <Image 
                           src={event.image_url || "/placeholder.svg"} 
@@ -375,7 +428,7 @@ function EventsContent() {
                           fill 
                           className="object-cover" 
                           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
-                          priority={index < 5}
+                          priority={index < 4}
                         />
                         {event.is_featured && (
                           <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-3 py-0.5 rounded-full text-xs font-medium">
@@ -423,12 +476,12 @@ function EventsContent() {
                   ))}
               </div>
 
-              {/* Pagination */}
+              {/* Mobile-optimized pagination display */}
               <div className="mt-12 flex justify-center">
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                    className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${
+                    className={`flex h-9 w-9 items-center justify-center rounded-md border shadow-sm bg-white text-sm ${
                       currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'
                     }`}
                     disabled={currentPage === 1}
@@ -437,19 +490,37 @@ function EventsContent() {
                   </button>
                   
                   {(() => {
-                    const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE)
+                    const totalFilteredEvents = filteredEvents.filter(event => {
+                      const eventDate = new Date(event.event_date);
+                      const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                      const now = new Date();
+                      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                      return startOfEventDay >= startOfToday;
+                    }).length;
                     
-                    return Array.from({ length: Math.min(totalPages, 7) }).map((_, i) => {
-                      const pageNum = i + 1
+                    const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
+                    
+                    // On mobile, show fewer page buttons
+                    const maxVisibleButtons = isMobile ? 3 : 7;
+                    let startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
+                    let endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+                    
+                    // Adjust start page if necessary
+                    if (endPage - startPage < maxVisibleButtons - 1) {
+                      startPage = Math.max(1, endPage - maxVisibleButtons + 1);
+                    }
+                    
+                    return Array.from({ length: endPage - startPage + 1 }).map((_, i) => {
+                      const pageNum = startPage + i;
                       
                       return (
                         <button
                           key={`page-${pageNum}`}
                           onClick={() => handlePageChange(pageNum)}
-                          className={`flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm ${
+                          className={`flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm shadow-sm ${
                             currentPage === pageNum
-                              ? 'border border-[#F94C8D] bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90'
-                              : 'border border-input bg-background hover:bg-gray-100'
+                              ? 'border-2 border-[#F94C8D] bg-[#F94C8D] text-white font-medium hover:bg-[#F94C8D]/90'
+                              : 'border bg-white hover:bg-gray-100'
                           }`}
                         >
                           {pageNum}
@@ -459,13 +530,51 @@ function EventsContent() {
                   })()}
                   
                   <button 
-                    onClick={() => currentPage < Math.ceil(filteredEvents.length / ITEMS_PER_PAGE) && handlePageChange(currentPage + 1)}
-                    className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${
-                      currentPage === Math.ceil(filteredEvents.length / ITEMS_PER_PAGE)
-                        ? 'opacity-50 cursor-not-allowed' 
-                        : 'cursor-pointer hover:bg-gray-100'
+                    onClick={() => {
+                      const totalFilteredEvents = filteredEvents.filter(event => {
+                        const eventDate = new Date(event.event_date);
+                        const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                        const now = new Date();
+                        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        return startOfEventDay >= startOfToday;
+                      }).length;
+                      
+                      const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
+                      
+                      if (currentPage < totalPages) {
+                        handlePageChange(currentPage + 1);
+                      }
+                    }}
+                    className={`flex h-9 w-9 items-center justify-center rounded-md border shadow-sm bg-white text-sm ${
+                      (() => {
+                        const totalFilteredEvents = filteredEvents.filter(event => {
+                          const eventDate = new Date(event.event_date);
+                          const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                          const now = new Date();
+                          const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                          return startOfEventDay >= startOfToday;
+                        }).length;
+                        
+                        const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
+                        
+                        return currentPage === totalPages
+                          ? 'opacity-50 cursor-not-allowed' 
+                          : 'cursor-pointer hover:bg-gray-100';
+                      })()
                     }`}
-                    disabled={currentPage === Math.ceil(filteredEvents.length / ITEMS_PER_PAGE)}
+                    disabled={(() => {
+                      const totalFilteredEvents = filteredEvents.filter(event => {
+                        const eventDate = new Date(event.event_date);
+                        const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                        const now = new Date();
+                        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        return startOfEventDay >= startOfToday;
+                      }).length;
+                      
+                      const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
+                      
+                      return currentPage === totalPages;
+                    })()}
                   >
                     &gt;
                   </button>
@@ -485,7 +594,7 @@ function EventsContent() {
                     return event.is_featured && startOfEventDay >= startOfToday;
                   })
                   .map((event) => (
-                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border-2 border-brand-gradient">
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow border-2 border-[#F94C8D]/20">
                       <div className="aspect-[3/4] relative">
                         <Image
                           src={event.image_url || "/placeholder.svg"}
@@ -559,7 +668,7 @@ function EventsContent() {
                     return isPastDay && isWithin30Days;
                   })
                   .map((event) => (
-                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow opacity-70">
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow opacity-70">
                       <div className="aspect-[3/4] relative">
                         <Image
                           src={event.image_url || "/placeholder.svg"}

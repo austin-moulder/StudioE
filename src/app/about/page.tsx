@@ -51,6 +51,8 @@ export default function AboutPage() {
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(0);
   const [ambassadorsEmblaRef, ambassadorsEmblaApi] = useEmblaCarousel({ loop: true });
   const [selectedAmbassadorIndex, setSelectedAmbassadorIndex] = useState(0);
+  const [testimonialsEmblaRef, testimonialsEmblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedTestimonialIndex, setSelectedTestimonialIndex] = useState(0);
 
   useEffect(() => {
     if (valuesEmblaApi) {
@@ -84,6 +86,14 @@ export default function AboutPage() {
     }
   }, [ambassadorsEmblaApi]);
 
+  useEffect(() => {
+    if (testimonialsEmblaApi) {
+      testimonialsEmblaApi.on('select', () => {
+        setSelectedTestimonialIndex(testimonialsEmblaApi.selectedScrollSnap());
+      });
+    }
+  }, [testimonialsEmblaApi]);
+
   const scrollToValue = useCallback((index: number) => {
     valuesEmblaApi && valuesEmblaApi.scrollTo(index);
   }, [valuesEmblaApi]);
@@ -99,6 +109,10 @@ export default function AboutPage() {
   const scrollToAmbassador = useCallback((index: number) => {
     ambassadorsEmblaApi && ambassadorsEmblaApi.scrollTo(index);
   }, [ambassadorsEmblaApi]);
+
+  const scrollToTestimonial = useCallback((index: number) => {
+    testimonialsEmblaApi && testimonialsEmblaApi.scrollTo(index);
+  }, [testimonialsEmblaApi]);
 
   const nextTestimonial = () => {
     setCurrentTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
@@ -689,38 +703,50 @@ export default function AboutPage() {
           </div>
 
           <div className="mx-auto max-w-3xl">
-            <div className="relative bg-white rounded-lg shadow-lg p-8">
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="relative h-24 w-24 overflow-hidden rounded-full flex-shrink-0 bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400 text-xs">{testimonials[currentTestimonial].name.charAt(0)}</span>
-                </div>
-                <div>
-                  <blockquote className="italic text-lg text-gray-500">
-                    "{testimonials[currentTestimonial].quote}"
-                  </blockquote>
-                  <footer className="mt-4 font-medium text-base not-italic">
-                    — {testimonials[currentTestimonial].name}
-                  </footer>
-                </div>
+            <div className="overflow-hidden" ref={testimonialsEmblaRef}>
+              <div className="flex">
+                {testimonials.map((testimonial, index) => (
+                  <div key={index} className="flex-[0_0_100%] min-w-0">
+                    <div className="relative bg-white rounded-lg shadow-lg p-8 mx-2">
+                      <div className="flex flex-col md:flex-row items-center gap-6">
+                        <div className="relative h-24 w-24 overflow-hidden rounded-full flex-shrink-0 bg-gray-200 flex items-center justify-center">
+                          {testimonial.image && testimonial.image !== "/placeholder.svg" ? (
+                            <Image 
+                              src={testimonial.image} 
+                              alt={testimonial.name}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <span className="text-gray-400 text-xs">{testimonial.name.charAt(0)}</span>
+                          )}
+                        </div>
+                        <div>
+                          <blockquote className="italic text-lg text-gray-500">
+                            "{testimonial.quote}"
+                          </blockquote>
+                          <footer className="mt-4 font-medium text-base not-italic">
+                            — {testimonial.name}
+                          </footer>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              <div className="flex justify-between mt-8">
-                <Button variant="outline" size="icon" onClick={prevTestimonial} className="rounded-full">
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <div className="flex gap-2">
-                  {testimonials.map((_, index) => (
-                    <button
-                      key={index}
-                      className={`h-2 w-2 rounded-full ${index === currentTestimonial ? "bg-[#FF3366]" : "bg-gray-300"}`}
-                      onClick={() => setCurrentTestimonial(index)}
-                    />
-                  ))}
-                </div>
-                <Button variant="outline" size="icon" onClick={nextTestimonial} className="rounded-full">
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
+            </div>
+            
+            <div className="flex justify-center mt-6 space-x-2">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToTestimonial(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedTestimonialIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
