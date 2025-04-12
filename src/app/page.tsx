@@ -199,11 +199,9 @@ export default function Home() {
 
   const handleSearch = () => {
     if (selectedStyle) {
-      router.push(`/instructors?style=${selectedStyle}`);
-    } else {
-      router.push("/instructors");
+      router.push(`/instructors?style=${selectedStyle}`)
     }
-  };
+  }
 
   // Function to handle button clicks and show tooltip
   const handleInstructorAction = (e: React.MouseEvent<HTMLAnchorElement>, buttonType: 'profile' | 'booking') => {
@@ -257,21 +255,17 @@ export default function Home() {
                 <SelectTrigger className="h-12 bg-white/90 text-gray-800 border-0 w-full">
                   <SelectValue placeholder="What dance style are you interested in?" />
                 </SelectTrigger>
-                <SelectContent className="bg-white/90 backdrop-blur-sm border-0">
-                  <SelectItem value="salsa" className="hover:bg-gray-100/80">Salsa</SelectItem>
-                  <SelectItem value="bachata" className="hover:bg-gray-100/80">Bachata</SelectItem>
-                  <SelectItem value="heels" className="hover:bg-gray-100/80">Heels</SelectItem>
-                  <SelectItem value="other" className="hover:bg-gray-100/80">Other Styles</SelectItem>
+                <SelectContent>
+                  <SelectItem value="ballet">Ballet</SelectItem>
+                  <SelectItem value="contemporary">Contemporary</SelectItem>
+                  <SelectItem value="hiphop">Hip Hop</SelectItem>
+                  <SelectItem value="jazz">Jazz</SelectItem>
+                  <SelectItem value="tap">Tap</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <Button 
-              size="lg" 
-              className="h-12 px-8 border-2 border-white shadow-lg"
-              onClick={handleSearch}
-            >
-              <Search className="mr-2 h-4 w-4" />
-              Search
+            <Button onClick={handleSearch} className="h-12 px-8 bg-primary hover:bg-primary/90">
+              Find Instructors
             </Button>
           </div>
         </div>

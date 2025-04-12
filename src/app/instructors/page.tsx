@@ -86,8 +86,8 @@ function InstructorsStructuredData({ instructors }: { instructors: Instructor[] 
       "item": {
         "@type": "Person",
         "name": instructor.name,
-        "description": instructor.style,
-        "image": instructor.image,
+        "description": instructor.danceStyles.join(", "),
+        "image": instructor.imageUrl,
         "jobTitle": "Dance Instructor",
         "address": {
           "@type": "PostalAddress",
@@ -147,14 +147,15 @@ function InstructorsContent() {
         if (data) {
           // Transform the data to match the Instructor type
           const transformedData = data.map(instructor => ({
+            id: instructor.id,
             name: instructor.name,
-            style: instructor.style,
+            bio: instructor.bio,
+            imageUrl: instructor.image_url,
+            danceStyles: instructor.dance_styles || [],
+            featured: instructor.is_featured || false,
             location: instructor.location,
             rating: instructor.rating,
             reviews: instructor.reviews_count,
-            alias: instructor.alias || '',
-            image: instructor.image_url,
-            featured: instructor.is_featured || false,
             price: {
               lower: instructor.price_lower,
               upper: instructor.price_upper
@@ -180,15 +181,19 @@ function InstructorsContent() {
     // Filter by style
     if (selectedStyle && selectedStyle !== "all") {
       filtered = filtered.filter(instructor => {
-        const styleText = instructor.style.toLowerCase()
         const searchStyle = selectedStyle.toLowerCase()
         
         // Special case for hip hop to handle variations
         if (searchStyle === "hiphop" || searchStyle === "hip hop") {
-          return styleText.includes("hip hop") || styleText.includes("hiphop")
+          return instructor.danceStyles.some(style => 
+            style.toLowerCase().includes("hip hop") || 
+            style.toLowerCase().includes("hiphop")
+          )
         }
         
-        return styleText.includes(searchStyle)
+        return instructor.danceStyles.some(style => 
+          style.toLowerCase().includes(searchStyle)
+        )
       })
     }
     
@@ -221,8 +226,7 @@ function InstructorsContent() {
     if (searchTerm) {
       filtered = filtered.filter(instructor => 
         instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        instructor.style.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (instructor.alias && instructor.alias.toLowerCase().includes(searchTerm.toLowerCase()))
+        instructor.bio.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
     
@@ -508,9 +512,9 @@ function InstructorsContent() {
               {paginatedInstructors.map((instructor, index) => (
                 <Card key={index} className="overflow-hidden flex flex-col">
                   <div className="aspect-[4/3] relative bg-gray-200 overflow-hidden">
-                    {instructor.image ? (
+                    {instructor.imageUrl ? (
                       <Image
-                        src={instructor.image}
+                        src={instructor.imageUrl}
                         alt={`${instructor.name} - Dance Instructor`}
                         fill
                         className="object-cover object-[50%_25%]"
@@ -535,18 +539,11 @@ function InstructorsContent() {
                     )}
                   </div>
                   <CardContent className="p-6 flex flex-col flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="text-xl font-bold">
-                          {instructor.name}
-                          {instructor.alias && <span className="text-sm font-normal text-gray-500 ml-2">({instructor.alias})</span>}
-                        </h3>
-                        <p className="text-sm text-gray-500">{instructor.style}</p>
-                      </div>
-                      <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
-                        <Star className="h-3 w-3 fill-current" />
-                        {instructor.rating}
-                      </div>
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {instructor.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">{instructor.bio}</p>
                     </div>
                     <div className="mt-4 flex items-center text-sm text-gray-500">
                       <MapPin className="mr-1 h-4 w-4" />
