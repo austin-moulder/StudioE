@@ -30,10 +30,16 @@ const Spotify = (props: any) => (
 
 export default function Footer() {
   const [mounted, setMounted] = useState(false);
-  const { user } = useSupabaseAuth();
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     setMounted(true);
+    try {
+      const { user } = useSupabaseAuth();
+      setUser(user);
+    } catch (error) {
+      console.error("Error accessing auth context:", error);
+    }
   }, []);
 
   return (
