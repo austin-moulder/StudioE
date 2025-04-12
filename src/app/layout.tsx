@@ -23,6 +23,12 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
   title: {
     default: 'Studio E - Dance Classes & Training',
@@ -41,21 +47,18 @@ export const metadata: Metadata = {
     siteName: 'Studio E',
     title: 'Studio E - Dance Classes & Training',
     description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
-    images: [
-      {
-        url: 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Studio_E_Logo_Main.png',
-        width: 1200,
-        height: 630,
-        alt: 'Studio E Logo'
-      }
-    ]
+    images: [{
+      url: 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Studio_E_Logo_Main.png',
+      width: 1200,
+      height: 1200,
+      alt: 'Studio E - Dance Classes & Training'
+    }]
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Studio E - Dance Classes & Training',
     description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
-    images: ['https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Studio_E_Logo_Main.png'],
-    creator: '@joinstudioe'
+    images: ['https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Studio_E_Logo_Main.png']
   },
   robots: {
     index: true,
@@ -74,11 +77,6 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
   verification: {
     google: 'your-google-site-verification',
   },
