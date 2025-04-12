@@ -323,12 +323,12 @@ function InstructorsContent() {
     updateURLWithParams(currentPage, selectedStyle, selectedLocation, selectedPrice, sort)
   }
 
-  // Update URL when page changes
+  // Update URL when filters change
   useEffect(() => {
     if (currentPage > 1) {
       updateURLWithParams(currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     }
-  }, [currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder, router]);
+  }, [currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder, updateURLWithParams]);
 
   // Handle page change
   const handlePageChange = (page: number) => {
