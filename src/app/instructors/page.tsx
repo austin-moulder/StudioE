@@ -13,6 +13,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { Suspense } from "react"
 import { Instructor } from "@/types/instructor"
 import { createClient } from '@supabase/supabase-js'
+import { generateInstructorSlug } from '@/lib/instructors/instructorUtils'
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -163,7 +164,7 @@ function InstructorsContent() {
           }))
           
           setAllInstructors(transformedData)
-        }
+    }
       } catch (error) {
         console.error('Error fetching instructors:', error)
       } finally {
@@ -505,8 +506,8 @@ function InstructorsContent() {
               ))}
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {paginatedInstructors.map((instructor, index) => (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {paginatedInstructors.map((instructor, index) => (
                 <Card key={index} className="overflow-hidden flex flex-col">
                   <div className="relative h-[400px] w-full">
                     <Image
@@ -515,42 +516,41 @@ function InstructorsContent() {
                       fill
                       className="object-cover"
                     />
-                  </div>
+                    </div>
                   <CardContent className="p-6 flex flex-col flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
+                  <div className="flex items-start justify-between">
+                    <div>
                         <h3 className="text-lg font-semibold">
-                          {instructor.name}
-                        </h3>
+                        {instructor.name}
+                      </h3>
                         <p className="text-sm text-gray-500">{instructor.danceStyles.join(" & ")}</p>
-                      </div>
-                      <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
-                        <Star className="h-3 w-3 fill-current" />
-                        {instructor.rating}
-                      </div>
                     </div>
-                    <div className="mt-4 flex items-center text-sm text-gray-500">
-                      <MapPin className="mr-1 h-4 w-4" />
-                      {instructor.location}
+                    <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
+                      <Star className="h-3 w-3 fill-current" />
+                      {instructor.rating}
                     </div>
-                    <div className="mt-2 text-sm">
-                      <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
-                      <span className="text-gray-500"> / hour</span>
-                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center text-sm text-gray-500">
+                    <MapPin className="mr-1 h-4 w-4" />
+                    {instructor.location}
+                  </div>
+                  <div className="mt-2 text-sm">
+                    <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
+                    <span className="text-gray-500"> / hour</span>
+                  </div>
                     <div className="mt-auto pt-4 flex justify-between items-center">
-                      <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
-                      <a 
-                        href="#" 
-                        onClick={(e) => handleProfileClick(e, instructor.name)} 
-                        className="text-[#F94C8D] hover:underline text-sm"
-                      >
-                        View Profile
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
+                      <Link 
+                        href={`/instructors/${generateInstructorSlug(instructor.name)}`}
+                      className="text-[#F94C8D] hover:underline text-sm"
+                    >
+                      View Profile
+                      </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
           )}
 
           {filteredInstructors.length > 0 && (

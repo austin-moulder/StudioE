@@ -15,15 +15,15 @@ export async function getUniqueDanceStyles(): Promise<string[]> {
       return [];
     }
 
-    const stylesSet = new Set<string>();
-    
+  const stylesSet = new Set<string>();
+  
     data?.forEach(instructor => {
-      // Split styles by comma or ampersand and trim whitespace
-      const styles = instructor.style.split(/[,&]/).map(style => style.trim());
-      styles.forEach(style => stylesSet.add(style));
-    });
-    
-    return Array.from(stylesSet).sort();
+    // Split styles by comma or ampersand and trim whitespace
+    const styles = instructor.style.split(/[,&]/).map(style => style.trim());
+    styles.forEach(style => stylesSet.add(style));
+  });
+  
+  return Array.from(stylesSet).sort();
   } catch (error) {
     console.error('Exception fetching instructor styles:', error);
     return [];
@@ -44,7 +44,7 @@ export async function getInstructorCount(): Promise<number> {
       return 0;
     }
 
-    // Round down to the nearest 10
+  // Round down to the nearest 10
     return Math.floor((count || 0) / 10) * 10;
   } catch (error) {
     console.error('Exception counting instructors:', error);
@@ -58,7 +58,7 @@ export async function getInstructorCount(): Promise<number> {
 export async function getDanceStyleCount(): Promise<number> {
   try {
     const styles = await getUniqueDanceStyles();
-    // Round down to the nearest 10
+  // Round down to the nearest 10
     return Math.floor(styles.length / 10) * 10;
   } catch (error) {
     console.error('Exception counting dance styles:', error);
@@ -102,4 +102,13 @@ export async function getFeaturedInstructors(limit = 3): Promise<Instructor[]> {
     console.error('Exception fetching featured instructors:', error);
     return [];
   }
+}
+
+/**
+ * Generates a URL-friendly slug from an instructor name
+ * @param name The instructor's name to convert to a slug
+ * @returns A lowercase slug with spaces replaced by hyphens
+ */
+export function generateInstructorSlug(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, '-');
 } 
