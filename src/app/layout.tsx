@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     title: 'Studio E - Dance Classes & Training',
     description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
     images: [{
-      url: 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Studio_E_Logo_Main.png',
+      url: 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Main.png',
       width: 1200,
       height: 1200,
       alt: 'Studio E - Dance Classes & Training'
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Studio E - Dance Classes & Training',
     description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
-    images: ['https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Studio_E_Logo_Main.png']
+    images: ['https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Main.png']
   },
   robots: {
     index: true,
