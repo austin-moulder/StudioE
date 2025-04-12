@@ -266,9 +266,11 @@ function BlogContent() {
               </div>
               <div>
                 <Badge className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">Featured</Badge>
-                <h3 className="mt-2 text-3xl font-bold">
-                  {featuredPost.title}
-                </h3>
+                <Link href={`/blog/${featuredPost.slug}`}>
+                  <h3 className="mt-2 text-3xl font-bold hover:text-[#F94C8D] transition-colors">
+                    {featuredPost.title}
+                  </h3>
+                </Link>
                 <div className="mt-4 flex items-center text-sm text-gray-500">
                   <Calendar className="mr-2 h-4 w-4" />
                   {featuredPost.created_at ? 
@@ -356,7 +358,9 @@ function BlogContent() {
                           'No date'}
                       </span>
                     </div>
-                    <h3 className="mt-2 text-xl font-bold line-clamp-2">{post.title}</h3>
+                    <Link href={`/blog/${post.slug}`}>
+                      <h3 className="mt-2 text-xl font-bold line-clamp-2 hover:text-[#F94C8D] transition-colors">{post.title}</h3>
+                    </Link>
                     <p className="mt-2 text-gray-500 line-clamp-3">{post.excerpt || post.content?.substring(0, 100) || ''}</p>
                     <Link href={`/blog/${post.slug}`}>
                       <Button variant="link" className="mt-4 p-0 h-auto">
