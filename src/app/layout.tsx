@@ -24,38 +24,63 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Studio E | Dance Instruction Marketplace",
-  description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
-  metadataBase: new URL('https://studioe.dance'),
+  title: {
+    default: 'Studio E - Dance Classes & Training',
+    template: '%s | Studio E'
+  },
+  description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
+  keywords: ['dance classes', 'dance training', 'dance studio', 'dance workshops', 'dance community'],
+  authors: [{ name: 'Studio E' }],
+  creator: 'Studio E',
+  publisher: 'Studio E',
+  metadataBase: new URL('https://joinstudioe.com'),
   openGraph: {
-    title: "Studio E | Dance Instruction Marketplace",
-    description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://joinstudioe.com',
+    siteName: 'Studio E',
+    title: 'Studio E - Dance Classes & Training',
+    description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
     images: [
       {
-        url: "/images/og-image.jpg",
+        url: 'https://joinstudioe.com/images/studio-e-logo.png',
         width: 1200,
-        height: 1200,
-        alt: "Studio E Logo"
+        height: 630,
+        alt: 'Studio E Logo'
       }
-    ],
-    type: "website",
+    ]
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Studio E | Dance Instruction Marketplace",
-    description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
-    images: ["/images/og-image.jpg"],
+    card: 'summary_large_image',
+    title: 'Studio E - Dance Classes & Training',
+    description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
+    images: ['https://joinstudioe.com/images/studio-e-logo.png'],
+    creator: '@joinstudioe'
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   icons: {
-    icon: [
-      { url: "/images/og-image.jpg", type: "image/jpeg" },
-    ],
-    apple: [
-      { url: "/images/og-image.jpg" }
-    ],
-    shortcut: [
-      { url: "/images/og-image.jpg" }
-    ],
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  verification: {
+    google: 'your-google-site-verification',
   },
 };
 
