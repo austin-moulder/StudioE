@@ -149,13 +149,13 @@ function InstructorsContent() {
           const transformedData = data.map(instructor => ({
             id: instructor.id,
             name: instructor.name,
-            bio: instructor.bio,
-            imageUrl: instructor.image_url,
-            danceStyles: instructor.dance_styles || [],
-            featured: instructor.is_featured || false,
+            danceStyles: [instructor.style], // Convert single style to array
             location: instructor.location,
             rating: instructor.rating,
             reviews: instructor.reviews_count,
+            bio: instructor.bio || '',
+            imageUrl: instructor.image_url,
+            featured: instructor.is_featured || false,
             price: {
               lower: instructor.price_lower,
               upper: instructor.price_upper
@@ -181,19 +181,15 @@ function InstructorsContent() {
     // Filter by style
     if (selectedStyle && selectedStyle !== "all") {
       filtered = filtered.filter(instructor => {
+        const styleText = instructor.danceStyles.join(", ").toLowerCase()
         const searchStyle = selectedStyle.toLowerCase()
         
         // Special case for hip hop to handle variations
         if (searchStyle === "hiphop" || searchStyle === "hip hop") {
-          return instructor.danceStyles.some(style => 
-            style.toLowerCase().includes("hip hop") || 
-            style.toLowerCase().includes("hiphop")
-          )
+          return styleText.includes("hip hop") || styleText.includes("hiphop")
         }
         
-        return instructor.danceStyles.some(style => 
-          style.toLowerCase().includes(searchStyle)
-        )
+        return styleText.includes(searchStyle)
       })
     }
     
@@ -226,6 +222,7 @@ function InstructorsContent() {
     if (searchTerm) {
       filtered = filtered.filter(instructor => 
         instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        instructor.danceStyles.join(", ").toLowerCase().includes(searchTerm.toLowerCase()) ||
         instructor.bio.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
@@ -511,39 +508,26 @@ function InstructorsContent() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {paginatedInstructors.map((instructor, index) => (
                 <Card key={index} className="overflow-hidden flex flex-col">
-                  <div className="aspect-[4/3] relative bg-gray-200 overflow-hidden">
-                    {instructor.imageUrl ? (
-                      <Image
-                        src={instructor.imageUrl}
-                        alt={`${instructor.name} - Dance Instructor`}
-                        fill
-                        className="object-cover object-[50%_25%]"
-                        onError={(e) => {
-                          const imgElement = e.target as HTMLImageElement;
-                          imgElement.style.display = 'none';
-                          const fallbackElement = imgElement.parentElement;
-                          if (fallbackElement) {
-                            fallbackElement.innerHTML = `<div class="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">${instructor.name}</div>`;
-                          }
-                        }}
-                      />
-                    ) : (
-                      <span className="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">
-                        {instructor.name}
-                      </span>
-                    )}
-                    {instructor.featured && (
-                      <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
-                        Featured
-                      </div>
-                    )}
+                  <div className="relative h-[400px] w-full">
+                    <Image
+                      src={instructor.imageUrl}
+                      alt={instructor.name}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <CardContent className="p-6 flex flex-col flex-1">
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        {instructor.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">{instructor.bio}</p>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold">
+                          {instructor.name}
+                        </h3>
+                        <p className="text-sm text-gray-500">{instructor.danceStyles.join(" & ")}</p>
+                      </div>
+                      <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
+                        <Star className="h-3 w-3 fill-current" />
+                        {instructor.rating}
+                      </div>
                     </div>
                     <div className="mt-4 flex items-center text-sm text-gray-500">
                       <MapPin className="mr-1 h-4 w-4" />

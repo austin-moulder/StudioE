@@ -94,8 +94,9 @@ export default function PodcastPage() {
       {/* About the Podcast */}
       <section className="py-16 md:py-24">
         <div className="container">
-          <div className="grid gap-12 md:grid-cols-2 items-center">
-            <div className="relative aspect-square max-w-md mx-auto md:mx-0">
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-12 items-center">
+            {/* Podcast Image - Shows on both mobile and desktop */}
+            <div className="relative aspect-square w-full max-w-md mx-auto">
               <Image
                 src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Main.png"
                 alt="The Studio E Podcast by Austin René"

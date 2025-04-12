@@ -103,6 +103,8 @@ export default function Home() {
     email: "",
     message: ""
   })
+  const [currentInstructorPage, setCurrentInstructorPage] = useState(0)
+  const [currentPostPage, setCurrentPostPage] = useState(0)
 
   useEffect(() => {
     const loadImages = async () => {
@@ -199,9 +201,11 @@ export default function Home() {
 
   const handleSearch = () => {
     if (selectedStyle) {
-      router.push(`/instructors?style=${selectedStyle}`)
+      router.push(`/instructors?style=${selectedStyle.toLowerCase()}`);
+    } else {
+      router.push("/instructors");
     }
-  }
+  };
 
   // Function to handle button clicks and show tooltip
   const handleInstructorAction = (e: React.MouseEvent<HTMLAnchorElement>, buttonType: 'profile' | 'booking') => {
@@ -255,17 +259,21 @@ export default function Home() {
                 <SelectTrigger className="h-12 bg-white/90 text-gray-800 border-0 w-full">
                   <SelectValue placeholder="What dance style are you interested in?" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ballet">Ballet</SelectItem>
-                  <SelectItem value="contemporary">Contemporary</SelectItem>
-                  <SelectItem value="hiphop">Hip Hop</SelectItem>
-                  <SelectItem value="jazz">Jazz</SelectItem>
-                  <SelectItem value="tap">Tap</SelectItem>
+                <SelectContent className="bg-white/90 backdrop-blur-sm border-0">
+                  <SelectItem value="salsa" className="hover:bg-gray-100/80">Salsa</SelectItem>
+                  <SelectItem value="bachata" className="hover:bg-gray-100/80">Bachata</SelectItem>
+                  <SelectItem value="heels" className="hover:bg-gray-100/80">Heels</SelectItem>
+                  <SelectItem value="other" className="hover:bg-gray-100/80">Other Styles</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={handleSearch} className="h-12 px-8 bg-primary hover:bg-primary/90">
-              Find Instructors
+            <Button 
+              size="lg" 
+              className="h-12 px-8 border-2 border-white shadow-lg"
+              onClick={handleSearch}
+            >
+              <Search className="mr-2 h-4 w-4" />
+              Search
             </Button>
           </div>
         </div>
@@ -435,14 +443,15 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="flex justify-center gap-2 mt-4">
-              {featuredInstructors.map((_, index) => (
+            <div className="flex justify-center gap-2 mt-6">
+              {[0, 1, 2].map((index) => (
                 <button
                   key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === selectedInstructorIndex ? "bg-primary" : "bg-gray-300"
-                  }`}
                   onClick={() => instructorsEmblaApi?.scrollTo(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedInstructorIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
             </div>
@@ -559,29 +568,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex justify-center mt-6 space-x-2">
-              {[
-                {
-                  name: "Sara Clark",
-                  quote:
-                    "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience. He is lovely, happy and very inspiring!",
-                  image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Sara_Clark.jpeg",
-                  style: "Zumba",
-                },
-                {
-                  name: "Brianna Hook",
-                  quote:
-                    "They broke down the steps so clearly and answered every question patiently. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
-                  image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Briana_Hall.jpeg",
-                  style: "Bachata",
-                },
-                {
-                  name: "Brandon Hampton",
-                  quote:
-                    "Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson.",
-                  image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Brandon_Hampton.png",
-                  style: "Latin Dance",
-                },
-              ].map((_, index) => (
+              {[0, 1, 2].map((index) => (
                 <button
                   key={index}
                   onClick={() => scrollTo(index)}
@@ -863,14 +850,15 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="flex justify-center gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-6">
               {[0, 1, 2].map((index) => (
                 <button
                   key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === selectedBlogIndex ? "bg-primary" : "bg-gray-300"
-                  }`}
                   onClick={() => blogEmblaApi?.scrollTo(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    selectedBlogIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
             </div>
