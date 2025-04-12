@@ -134,34 +134,6 @@ function InstructorsContent() {
   
   const ITEMS_PER_PAGE = 8
 
-  // Helper function to update URL
-  const updateURL = (page: number, style: string, location: string, price: string, sort: string) => {
-    const params = new URLSearchParams()
-    
-    if (style && style !== "all") {
-      params.set("style", style)
-    }
-    
-    if (location && location !== "all") {
-      params.set("location", location)
-    }
-    
-    if (price && price !== "any") {
-      params.set("price", price)
-    }
-    
-    if (sort && sort !== "recommended") {
-      params.set("sort", sort)
-    }
-    
-    if (page > 1) {
-      params.set("page", page.toString())
-    }
-    
-    const query = params.toString()
-    router.push(`/instructors${query ? `?${query}` : ""}`)
-  }
-
   // Fetch instructors from Supabase
   useEffect(() => {
     async function fetchInstructors() {
@@ -265,13 +237,41 @@ function InstructorsContent() {
     // If current page is now out of bounds, adjust it
     if (currentPage > newMaxPage) {
       setCurrentPage(1)
-      updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
+      updateURLWithParams(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     } else if (currentPage !== 1) {
       // Reset to page 1 if filters change
       setCurrentPage(1)
-      updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
+      updateURLWithParams(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     }
   }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, allInstructors])
+
+  // Helper function to update URL with parameters
+  const updateURLWithParams = (page: number, style: string, location: string, price: string, sort: string) => {
+    const params = new URLSearchParams()
+    
+    if (style && style !== "all") {
+      params.set("style", style)
+    }
+    
+    if (location && location !== "all") {
+      params.set("location", location)
+    }
+    
+    if (price && price !== "any") {
+      params.set("price", price)
+    }
+    
+    if (sort && sort !== "recommended") {
+      params.set("sort", sort)
+    }
+    
+    if (page > 1) {
+      params.set("page", page.toString())
+    }
+    
+    const query = params.toString()
+    router.push(`/instructors${query ? `?${query}` : ""}`)
+  }
 
   // Sort instructors based on selected order
   const sortInstructors = (instructors: Instructor[], order: string) => {
@@ -305,49 +305,28 @@ function InstructorsContent() {
   // Update URL when filters change
   const handleStyleChange = (style: string) => {
     setSelectedStyle(style)
-    updateURL(1, style, selectedLocation, selectedPrice, sortOrder)
+    updateURLWithParams(1, style, selectedLocation, selectedPrice, sortOrder)
   }
 
   const handleLocationChange = (location: string) => {
     setSelectedLocation(location)
-    updateURL(1, selectedStyle, location, selectedPrice, sortOrder)
+    updateURLWithParams(1, selectedStyle, location, selectedPrice, sortOrder)
   }
 
   const handlePriceChange = (price: string) => {
     setSelectedPrice(price)
-    updateURL(1, selectedStyle, selectedLocation, price, sortOrder)
+    updateURLWithParams(1, selectedStyle, selectedLocation, price, sortOrder)
   }
 
   const handleSortChange = (sort: string) => {
     setSortOrder(sort)
-    updateURL(currentPage, selectedStyle, selectedLocation, selectedPrice, sort)
+    updateURLWithParams(currentPage, selectedStyle, selectedLocation, selectedPrice, sort)
   }
 
   // Update URL when page changes
   useEffect(() => {
     if (currentPage > 1) {
-      const params = new URLSearchParams();
-      
-      if (selectedStyle && selectedStyle !== "all") {
-        params.set("style", selectedStyle);
-      }
-      
-      if (selectedLocation && selectedLocation !== "all") {
-        params.set("location", selectedLocation);
-      }
-      
-      if (selectedPrice && selectedPrice !== "any") {
-        params.set("price", selectedPrice);
-      }
-      
-      if (sortOrder && sortOrder !== "recommended") {
-        params.set("sort", sortOrder);
-      }
-      
-      params.set("page", currentPage.toString());
-      
-      const query = params.toString();
-      router.push(`/instructors${query ? `?${query}` : ""}`);
+      updateURLWithParams(currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     }
   }, [currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder, router]);
 
