@@ -324,10 +324,37 @@ function InstructorsContent() {
   }
 
   // Update URL when page changes
+  useEffect(() => {
+    if (currentPage > 1) {
+      const params = new URLSearchParams();
+      
+      if (selectedStyle && selectedStyle !== "all") {
+        params.set("style", selectedStyle);
+      }
+      
+      if (selectedLocation && selectedLocation !== "all") {
+        params.set("location", selectedLocation);
+      }
+      
+      if (selectedPrice && selectedPrice !== "any") {
+        params.set("price", selectedPrice);
+      }
+      
+      if (sortOrder && sortOrder !== "recommended") {
+        params.set("sort", sortOrder);
+      }
+      
+      params.set("page", currentPage.toString());
+      
+      const query = params.toString();
+      router.push(`/instructors${query ? `?${query}` : ""}`);
+    }
+  }, [currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder, router]);
+
+  // Handle page change
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-    updateURL(page, selectedStyle, selectedLocation, selectedPrice, sortOrder)
-  }
+    setCurrentPage(page);
+  };
 
   // Update profile click handler to use mouse position
   const handleProfileClick = (e: React.MouseEvent<HTMLAnchorElement>, instructorName: string) => {
@@ -350,12 +377,6 @@ function InstructorsContent() {
       setTooltipPosition(prev => ({ ...prev, show: false }));
     }, 2500);
   };
-
-  useEffect(() => {
-    if (currentPage > 1) {
-      updateURL(currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder);
-    }
-  }, [currentPage, updateURL, selectedStyle, selectedLocation, selectedPrice, sortOrder]);
 
   return (
     <div className="flex flex-col">
