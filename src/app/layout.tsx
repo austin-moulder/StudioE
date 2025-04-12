@@ -6,6 +6,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Providers } from "@/lib/providers";
 import { cn } from "@/lib/utils";
 import SchemaOrg from "@/components/SchemaOrg";
+import ScrollToTop from "@/components/ScrollToTop";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -31,9 +32,9 @@ export const metadata: Metadata = {
     description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
     images: [
       {
-        url: "/studio-e-logo.svg",
+        url: "/images/og-image.jpg",
         width: 1200,
-        height: 630,
+        height: 1200,
         alt: "Studio E Logo"
       }
     ],
@@ -43,17 +44,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Studio E | Dance Instruction Marketplace",
     description: "Connect with passionate dance instructors for private lessons tailored to your skill level and goals.",
-    images: ["/studio-e-logo.svg"],
+    images: ["/images/og-image.jpg"],
   },
   icons: {
     icon: [
-      { url: "/studio-e-logo.svg", type: "image/svg+xml" },
+      { url: "/images/og-image.jpg", type: "image/jpeg" },
     ],
     apple: [
-      { url: "/studio-e-logo.svg" }
+      { url: "/images/og-image.jpg" }
     ],
     shortcut: [
-      { url: "/studio-e-logo.svg" }
+      { url: "/images/og-image.jpg" }
     ],
   },
 };
@@ -72,6 +73,7 @@ export default function RootLayout({
       </head>
       <body className={cn(inter.variable, montserrat.variable, "min-h-screen flex flex-col bg-white text-black")}>
         <Providers>
+          <ScrollToTop />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />

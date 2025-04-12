@@ -1,12 +1,13 @@
 export interface Instructor {
+  id: string;
   name: string;
-  style: string;
+  bio: string;
+  imageUrl: string;
+  danceStyles: string[];
+  featured: boolean;
   location: string;
   rating: number;
   reviews: number;
-  alias: string;
-  image: string;
-  featured?: boolean;
   price: {
     lower: number;
     upper: number;

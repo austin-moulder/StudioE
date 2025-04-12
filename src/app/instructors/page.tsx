@@ -416,8 +416,6 @@ function InstructorsContent() {
                     <SelectItem value="bachata">Bachata</SelectItem>
                     <SelectItem value="heels">Heels</SelectItem>
                     <SelectItem value="choreo">Choreo</SelectItem>
-                    <SelectItem value="hiphop">Hip Hop</SelectItem>
-                    <SelectItem value="dj">DJ</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

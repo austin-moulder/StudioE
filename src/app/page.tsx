@@ -1,31 +1,36 @@
 "use client"
 
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, Star, MapPin, Search, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import "./globals.css"
+import { Inter } from "next/font/google"
+import Image from "next/image"
+import Link from "next/link"
+import { ArrowRight, Star, MapPin, Search, ChevronDown, Calendar } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { getDanceStyleImages } from "@/lib/supabase/imageUtils";
+} from "@/components/ui/select"
+import { useState, useEffect, useCallback } from "react"
+import { useRouter } from "next/navigation"
+import { getDanceStyleImages } from "@/lib/supabase/imageUtils"
 import useEmblaCarousel from 'embla-carousel-react'
 import { getBlogPosts } from "@/lib/blog/blogUtils"
 import { BlogPost } from "@/types/blog"
 import { format } from 'date-fns'
+import { getFeaturedInstructors } from '@/lib/instructors/instructorUtils';
+import { Instructor } from '@/types/instructor';
 
-interface Instructor {
-  id: string;
+const inter = Inter({ subsets: ["latin"] })
+
+interface ContactFormData {
   name: string;
-  image: string;
-  specialty: string;
+  email: string;
+  message: string;
 }
 
 function ComingSoonTooltip({ x, y, message }: { x: number; y: number; message: string }) {
@@ -67,20 +72,20 @@ function ComingSoonTooltip({ x, y, message }: { x: number; y: number; message: s
 }
 
 export default function Home() {
-  const [selectedStyle, setSelectedStyle] = useState("");
-  const [danceStyleImages, setDanceStyleImages] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [blogLoading, setBlogLoading] = useState(true);
-  const router = useRouter();
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [danceStyleEmblaRef, danceStyleEmblaApi] = useEmblaCarousel({ loop: true });
-  const [selectedDanceStyleIndex, setSelectedDanceStyleIndex] = useState(0);
-  const [instructorsEmblaRef, instructorsEmblaApi] = useEmblaCarousel({ loop: true });
-  const [selectedInstructorIndex, setSelectedInstructorIndex] = useState(0);
-  const [blogEmblaRef, blogEmblaApi] = useEmblaCarousel({ loop: true });
-  const [selectedBlogIndex, setSelectedBlogIndex] = useState(0);
+  const [selectedStyle, setSelectedStyle] = useState("")
+  const [danceStyleImages, setDanceStyleImages] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(true)
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [blogLoading, setBlogLoading] = useState(true)
+  const router = useRouter()
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [danceStyleEmblaRef, danceStyleEmblaApi] = useEmblaCarousel({ loop: true })
+  const [selectedDanceStyleIndex, setSelectedDanceStyleIndex] = useState(0)
+  const [instructorsEmblaRef, instructorsEmblaApi] = useEmblaCarousel({ loop: true })
+  const [selectedInstructorIndex, setSelectedInstructorIndex] = useState(0)
+  const [blogEmblaRef, blogEmblaApi] = useEmblaCarousel({ loop: true })
+  const [selectedBlogIndex, setSelectedBlogIndex] = useState(0)
   const [tooltipPosition, setTooltipPosition] = useState<{ 
     x: number, 
     y: number, 
@@ -91,28 +96,13 @@ export default function Home() {
     y: 0, 
     show: false,
     message: ""
-  });
-
-  const instructors: Instructor[] = [
-    {
-      id: "jocelyn-v",
-      name: "Jocelyn V.",
-      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Jocelyn.png",
-      specialty: "Heels & Reggaeton"
-    },
-    {
-      id: "del-d",
-      name: "Del D.",
-      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Del_1.png",
-      specialty: "Salsa & Social Dancing"
-    },
-    {
-      id: "brian-m",
-      name: "Brian M.",
-      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Brian.jpeg",
-      specialty: "Bachata & Sensual"
-    }
-  ];
+  })
+  const [featuredInstructors, setFeaturedInstructors] = useState<Instructor[]>([])
+  const [contactForm, setContactForm] = useState<ContactFormData>({
+    name: "",
+    email: "",
+    message: ""
+  })
 
   useEffect(() => {
     const loadImages = async () => {
@@ -176,6 +166,19 @@ export default function Home() {
     };
 
     loadBlogPosts();
+  }, []);
+
+  useEffect(() => {
+    async function fetchInstructors() {
+      try {
+        const instructors = await getFeaturedInstructors(3);
+        setFeaturedInstructors(instructors);
+      } catch (error) {
+        console.error('Error fetching featured instructors:', error);
+      }
+    }
+    
+    fetchInstructors();
   }, []);
 
   const scrollTo = useCallback((index: number) => {
@@ -416,125 +419,61 @@ export default function Home() {
           <div className="md:hidden">
             <div className="overflow-hidden" ref={instructorsEmblaRef}>
               <div className="flex">
-                {instructors.map((instructor, index) => (
-                  <div key={index} className="flex-[0_0_100%] min-w-0">
-                    <div className="flex flex-col items-center text-center mx-2">
-                      <div className="relative h-48 w-48 overflow-hidden rounded-full">
-                        <Image
-                          src={instructor.image}
-                          alt={instructor.name}
-                          fill
-                          className="object-cover"
-                          priority
-                        />
+                {featuredInstructors.map((instructor) => (
+                  <div key={instructor.id} className="flex-[0_0_100%] min-w-0 relative">
+                    <Link 
+                      href={`/instructors?style=${instructor.danceStyles[0].toLowerCase()}`}
+                      className="block relative h-[400px] w-full"
+                    >
+                      <Image
+                        src={instructor.imageUrl}
+                        alt={instructor.name}
+                        fill
+                        className="object-cover rounded-lg"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg" />
+                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                        <h3 className="text-xl font-bold mb-1">{instructor.name}</h3>
+                        <p className="text-sm opacity-90">{instructor.danceStyles.join(" & ")}</p>
                       </div>
-                      <h3 className="mt-6 text-xl font-bold">{instructor.name}</h3>
-                      <p className="text-[#FF3366]">{instructor.specialty}</p>
-                      <div className="flex justify-center gap-2 mt-4">
-                        <a href="#" onClick={(e) => handleInstructorAction(e, 'profile')}>
-                          <Button size="sm" variant="outline">
-                            View Profile
-                          </Button>
-                        </a>
-                        <a href="#" onClick={(e) => handleInstructorAction(e, 'booking')}>
-                          <Button size="sm">Book Now</Button>
-                        </a>
-                      </div>
-                    </div>
+                    </Link>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="flex justify-center mt-6 space-x-2">
-              {[0, 1, 2].map((index) => (
+            <div className="flex justify-center gap-2 mt-4">
+              {featuredInstructors.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => scrollToInstructor(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    selectedInstructorIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === selectedInstructorIndex ? "bg-primary" : "bg-gray-300"
                   }`}
-                  aria-label={`Go to instructor ${index + 1}`}
+                  onClick={() => instructorsEmblaApi?.scrollTo(index)}
                 />
               ))}
             </div>
           </div>
 
           {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Jocelyn V.",
-                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Jocelyn.png",
-                style: "Heels & Reggaeton",
-                rating: 4.9,
-                reviews: 127,
-                location: "Chicago, IL",
-                featured: true,
-                price: {
-                  lower: 50,
-                  upper: 70
-                }
-              },
-              {
-                name: "Del D.",
-                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Del_1.png",
-                style: "Salsa & Social Dancing",
-                rating: 4.7,
-                reviews: 82,
-                location: "Chicago, IL",
-                featured: true,
-                price: {
-                  lower: 65,
-                  upper: 85
-                }
-              },
-              {
-                name: "Brian M.",
-                image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Brian.jpeg",
-                style: "Bachata & Sensual",
-                rating: 5.0,
-                reviews: 156,
-                location: "Barcelona, Spain",
-                alias: "B-Mac",
-                price: {
-                  lower: 60,
-                  upper: 80
-                }
-              },
-            ].map((instructor) => (
+          <div className="hidden md:grid grid-cols-3 gap-6">
+            {featuredInstructors.map((instructor) => (
               <Link 
-                key={instructor.name} 
-                href={`/instructors?style=${instructor.style.toLowerCase()}`} 
-                className="group relative overflow-hidden rounded-lg hover:shadow-lg transition-shadow duration-300"
+                key={instructor.id} 
+                href={`/instructors?style=${instructor.danceStyles[0].toLowerCase()}`}
+                className="relative group overflow-hidden rounded-lg"
               >
-                <div className="aspect-square relative overflow-hidden rounded-lg">
-                  {instructor.image !== "/placeholder.svg" ? (
-                    <>
-                      <Image
-                        src={instructor.image}
-                        alt={`${instructor.name} profile photo`}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        unoptimized
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                      <div className="absolute bottom-0 left-0 p-4 text-white">
-                        <h3 className="text-xl font-bold">{instructor.name}</h3>
-                        <p className="text-sm">{instructor.style}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-300 flex items-center justify-center">
-                        <span className="text-gray-400 text-lg">{instructor.name}</span>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                      <div className="absolute bottom-0 left-0 p-4 text-white">
-                        <h3 className="text-xl font-bold">{instructor.name}</h3>
-                        <p className="text-sm">{instructor.style}</p>
-                      </div>
-                    </>
-                  )}
+                <div className="relative h-[400px] w-full">
+                  <Image
+                    src={instructor.imageUrl}
+                    alt={instructor.name}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="text-xl font-bold mb-1">{instructor.name}</h3>
+                    <p className="text-sm opacity-90">{instructor.danceStyles.join(" & ")}</p>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -894,8 +833,8 @@ export default function Home() {
                   }
                 ]).map((post, index) => (
                   <div key={post.id} className="flex-[0_0_100%] min-w-0">
-                    <Card className="mx-2 overflow-hidden">
-                      <div className="aspect-[3/2] relative bg-gray-200 flex items-center justify-center">
+                    <Card className="overflow-hidden">
+                      <div className="aspect-[3/2] relative bg-gray-200">
                         {post.featured_image ? (
                           <Image
                             src={post.featured_image}
@@ -904,7 +843,9 @@ export default function Home() {
                             className="object-cover"
                           />
                         ) : (
-                          <span className="text-gray-400 text-lg">{post.title}</span>
+                          <div className="h-full w-full flex items-center justify-center">
+                            <span className="text-gray-400 text-lg">{post.title}</span>
+                          </div>
                         )}
                       </div>
                       <CardContent className="p-6 bg-white">
@@ -928,15 +869,14 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="flex justify-center mt-6 space-x-2">
+            <div className="flex justify-center gap-2 mt-4">
               {[0, 1, 2].map((index) => (
                 <button
                   key={index}
-                  onClick={() => scrollToBlog(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    selectedBlogIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === selectedBlogIndex ? "bg-primary" : "bg-gray-300"
                   }`}
-                  aria-label={`Go to blog post ${index + 1}`}
+                  onClick={() => blogEmblaApi?.scrollTo(index)}
                 />
               ))}
             </div>
@@ -946,73 +886,94 @@ export default function Home() {
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogLoading ? (
               Array(3).fill(0).map((_, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-lg p-6">
-                  <div className="w-24 h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
-                  <div className="w-full h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
-                  <div className="w-2/3 h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
-                  <div className="w-full h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-                  <div className="w-full h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-                  <div className="w-1/2 h-4 bg-gray-200 rounded animate-pulse"></div>
-                </div>
+                <Card key={index} className="overflow-hidden">
+                  <div className="aspect-[3/2] bg-gray-200 animate-pulse" />
+                  <CardContent className="p-6">
+                    <div className="w-24 h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="w-full h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="w-2/3 h-6 bg-gray-200 rounded animate-pulse mb-4"></div>
+                    <div className="w-full h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="w-full h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="w-1/2 h-4 bg-gray-200 rounded animate-pulse"></div>
+                  </CardContent>
+                </Card>
               ))
-            ) : (blogPosts.length > 0 ? blogPosts : [
-              {
-                id: 1,
-                title: "10 Tips for Beginner Ballet Dancers",
-                excerpt: "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
-                featured_image: "",
-                slug: "beginner-ballet-tips",
-                category: "Ballet",
-                created_at: new Date(2025, 5, 15).toISOString(),
-                content: "",
-                published: true,
-                author_name: "Dance Instructor",
-                author_image: ""
-              },
-              {
-                id: 2,
-                title: "The History and Evolution of Hip Hop Dance",
-                excerpt: "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
-                featured_image: "",
-                slug: "history-of-hip-hop-dance",
-                category: "Hip Hop",
-                created_at: new Date(2025, 5, 10).toISOString(),
-                content: "",
-                published: true,
-                author_name: "Dance Instructor",
-                author_image: ""
-              },
-              {
-                id: 3,
-                title: "Preparing for Your First Dance Competition",
-                excerpt: "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
-                featured_image: "",
-                slug: "first-dance-competition-prep",
-                category: "Competition",
-                created_at: new Date(2025, 5, 5).toISOString(),
-                content: "",
-                published: true,
-                author_name: "Dance Instructor",
-                author_image: ""
-              }
-            ]).map((post) => (
-              <div key={post.id} className="bg-white rounded-lg shadow-lg p-6">
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{post.category}</Badge>
-                  <span className="text-xs text-gray-500">
-                    {format(new Date(post.created_at), 'MMMM d, yyyy')}
-                  </span>
-                </div>
-                <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
-                <p className="mt-2 text-gray-500">{post.excerpt}</p>
-                <Link href={`/blog/${post.slug}`}>
-                  <Button variant="link" className="mt-4 p-0 h-auto">
-                    Read More
-                    <ArrowRight className="ml-1 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            ))}
+            ) : (
+              (blogPosts.length > 0 ? blogPosts : [
+                {
+                  id: 1,
+                  title: "10 Tips for Beginner Ballet Dancers",
+                  excerpt: "Starting ballet as an adult can be intimidating. Here are some tips to help you get started on the right foot.",
+                  featured_image: "",
+                  slug: "beginner-ballet-tips",
+                  category: "Ballet",
+                  created_at: new Date(2025, 5, 15).toISOString(),
+                  content: "",
+                  published: true,
+                  author_name: "Dance Instructor",
+                  author_image: ""
+                },
+                {
+                  id: 2,
+                  title: "The History and Evolution of Hip Hop Dance",
+                  excerpt: "Explore the rich cultural history of hip hop dance, from its origins in the Bronx to its global influence today.",
+                  featured_image: "",
+                  slug: "history-of-hip-hop-dance",
+                  category: "Hip Hop",
+                  created_at: new Date(2025, 5, 10).toISOString(),
+                  content: "",
+                  published: true,
+                  author_name: "Dance Instructor",
+                  author_image: ""
+                },
+                {
+                  id: 3,
+                  title: "Preparing for Your First Dance Competition",
+                  excerpt: "Competition day can be nerve-wracking. Here's how to prepare mentally and physically for your first dance competition.",
+                  featured_image: "",
+                  slug: "first-dance-competition-prep",
+                  category: "Competition",
+                  created_at: new Date(2025, 5, 5).toISOString(),
+                  content: "",
+                  published: true,
+                  author_name: "Dance Instructor",
+                  author_image: ""
+                }
+              ]).map((post) => (
+                <Card key={post.id} className="overflow-hidden">
+                  <div className="aspect-[3/2] relative bg-gray-200">
+                    {post.featured_image ? (
+                      <Image
+                        src={post.featured_image}
+                        alt={post.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center">
+                        <span className="text-gray-400 text-lg">{post.title}</span>
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{post.category}</Badge>
+                      <span className="text-xs text-gray-500">
+                        {format(new Date(post.created_at), 'MMMM d, yyyy')}
+                      </span>
+                    </div>
+                    <h3 className="mt-2 text-xl font-bold">{post.title}</h3>
+                    <p className="mt-2 text-gray-500">{post.excerpt}</p>
+                    <Link href={`/blog/${post.slug}`}>
+                      <Button variant="link" className="mt-4 p-0 h-auto">
+                        Read More
+                        <ArrowRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
 
           <div className="mt-12 text-center">

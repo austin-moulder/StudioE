@@ -64,4 +64,42 @@ export async function getDanceStyleCount(): Promise<number> {
     console.error('Exception counting dance styles:', error);
     return 0;
   }
+}
+
+/**
+ * Get featured instructors
+ */
+export async function getFeaturedInstructors(limit = 3): Promise<Instructor[]> {
+  try {
+    const { data, error } = await supabase
+      .from('instructors')
+      .select('*')
+      .eq('is_featured', true)
+      .limit(limit);
+    
+    if (error) {
+      console.error('Error fetching featured instructors:', error);
+      return [];
+    }
+
+    // Transform the data to match our Instructor type
+    return (data || []).map(instructor => ({
+      id: instructor.id,
+      name: instructor.name,
+      bio: instructor.bio,
+      imageUrl: instructor.image_url,
+      danceStyles: instructor.style.split(/[,&]/).map(style => style.trim()),
+      featured: instructor.is_featured,
+      location: instructor.location,
+      rating: instructor.rating || 0,
+      reviews: instructor.reviews || 0,
+      price: {
+        lower: instructor.price_lower || 0,
+        upper: instructor.price_upper || 0
+      }
+    }));
+  } catch (error) {
+    console.error('Exception fetching featured instructors:', error);
+    return [];
+  }
 } 
