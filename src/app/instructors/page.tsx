@@ -12,7 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSearchParams, useRouter } from "next/navigation"
 import { Suspense } from "react"
 import { Instructor } from "@/types/instructor"
-import { instructorsData } from "@/lib/instructors/instructorsData"
+import { createClient } from '@supabase/supabase-js'
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 // Define the instructor type (keep this for backward compatibility)
 interface InstructorInterface {
@@ -69,6 +75,42 @@ function ComingSoonTooltip({ x, y }: { x: number; y: number }) {
   );
 }
 
+// Add JSON-LD structured data component
+function InstructorsStructuredData({ instructors }: { instructors: Instructor[] }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": instructors.map((instructor, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "Person",
+        "name": instructor.name,
+        "description": instructor.style,
+        "image": instructor.image,
+        "jobTitle": "Dance Instructor",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": instructor.location
+        },
+        "priceRange": `$${instructor.price.lower}-${instructor.price.upper}`,
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": instructor.rating,
+          "reviewCount": instructor.reviews
+        }
+      }
+    }))
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  );
+}
+
 function InstructorsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -82,6 +124,8 @@ function InstructorsContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
   const [paginatedInstructors, setPaginatedInstructors] = useState<Instructor[]>([])
+  const [allInstructors, setAllInstructors] = useState<Instructor[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number, show: boolean }>({ 
     x: 0, 
     y: 0, 
@@ -90,10 +134,6 @@ function InstructorsContent() {
   
   const ITEMS_PER_PAGE = 8
 
-  // No longer need to generate fake data
-  const allInstructors = instructorsData || [];
-  const totalPages = Math.ceil(allInstructors.length / ITEMS_PER_PAGE);
-  
   // Helper function to update URL
   const updateURL = (page: number, style: string, location: string, price: string, sort: string) => {
     const params = new URLSearchParams()
@@ -121,6 +161,45 @@ function InstructorsContent() {
     const query = params.toString()
     router.push(`/instructors${query ? `?${query}` : ""}`)
   }
+
+  // Fetch instructors from Supabase
+  useEffect(() => {
+    async function fetchInstructors() {
+      try {
+        const { data, error } = await supabase
+          .from('instructors')
+          .select('*')
+        
+        if (error) throw error
+        
+        if (data) {
+          // Transform the data to match the Instructor type
+          const transformedData = data.map(instructor => ({
+            name: instructor.name,
+            style: instructor.style,
+            location: instructor.location,
+            rating: instructor.rating,
+            reviews: instructor.reviews_count,
+            alias: instructor.alias || '',
+            image: instructor.image_url,
+            featured: instructor.is_featured || false,
+            price: {
+              lower: instructor.price_lower,
+              upper: instructor.price_upper
+            }
+          }))
+          
+          setAllInstructors(transformedData)
+        }
+      } catch (error) {
+        console.error('Error fetching instructors:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchInstructors()
+  }, [])
 
   // Filter instructors based on selected filters
   useEffect(() => {
@@ -192,7 +271,7 @@ function InstructorsContent() {
       setCurrentPage(1)
       updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     }
-  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm])
+  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, allInstructors])
 
   // Sort instructors based on selected order
   const sortInstructors = (instructors: Instructor[], order: string) => {
@@ -274,6 +353,7 @@ function InstructorsContent() {
 
   return (
     <div className="flex flex-col">
+      <InstructorsStructuredData instructors={paginatedInstructors} />
       {/* Show tooltip when needed */}
       {tooltipPosition.show && (
         <ComingSoonTooltip x={tooltipPosition.x} y={tooltipPosition.y} />
@@ -389,7 +469,9 @@ function InstructorsContent() {
       <section className="py-16">
         <div className="container">
           <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-2xl font-bold">{filteredInstructors.length} Instructors Found</h2>
+            <h2 className="text-2xl font-bold">
+              {isLoading ? 'Loading...' : `${filteredInstructors.length} Instructors Found`}
+            </h2>
             <Select value={sortOrder} onValueChange={handleSortChange}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Sort by" />
@@ -404,73 +486,87 @@ function InstructorsContent() {
             </Select>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {paginatedInstructors.map((instructor, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="aspect-[4/3] relative bg-gray-200 overflow-hidden">
-                  {instructor.image ? (
-                    <Image
-                      src={instructor.image}
-                      alt={`${instructor.name} - Dance Instructor`}
-                      fill
-                      className="object-cover object-[50%_25%]"
-                      onError={(e) => {
-                        const imgElement = e.target as HTMLImageElement;
-                        // If the image fails to load, show a fallback
-                        imgElement.style.display = 'none';
-                        const fallbackElement = imgElement.parentElement;
-                        if (fallbackElement) {
-                          fallbackElement.innerHTML = `<div class="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">${instructor.name}</div>`;
-                        }
-                      }}
-                    />
-                  ) : (
-                    <span className="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">
-                      {instructor.name}
-                    </span>
-                  )}
-                  {instructor.featured && (
-                    <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
-                      Featured
-                    </div>
-                  )}
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold">
+          {isLoading ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {[...Array(8)].map((_, index) => (
+                <Card key={index} className="overflow-hidden animate-pulse">
+                  <div className="aspect-[4/3] bg-gray-200" />
+                  <CardContent className="p-6">
+                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-2" />
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-4" />
+                    <div className="h-4 bg-gray-200 rounded w-1/4" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {paginatedInstructors.map((instructor, index) => (
+                <Card key={index} className="overflow-hidden flex flex-col">
+                  <div className="aspect-[4/3] relative bg-gray-200 overflow-hidden">
+                    {instructor.image ? (
+                      <Image
+                        src={instructor.image}
+                        alt={`${instructor.name} - Dance Instructor`}
+                        fill
+                        className="object-cover object-[50%_25%]"
+                        onError={(e) => {
+                          const imgElement = e.target as HTMLImageElement;
+                          imgElement.style.display = 'none';
+                          const fallbackElement = imgElement.parentElement;
+                          if (fallbackElement) {
+                            fallbackElement.innerHTML = `<div class="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">${instructor.name}</div>`;
+                          }
+                        }}
+                      />
+                    ) : (
+                      <span className="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">
                         {instructor.name}
-                        {instructor.alias && <span className="text-sm font-normal text-gray-500 ml-2">({instructor.alias})</span>}
-                      </h3>
-                      <p className="text-sm text-gray-500">{instructor.style}</p>
+                      </span>
+                    )}
+                    {instructor.featured && (
+                      <div className="absolute top-2 right-2 bg-[#FF3366] text-white px-4 py-1 rounded-full text-sm font-medium">
+                        Featured
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-6 flex flex-col flex-1">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-xl font-bold">
+                          {instructor.name}
+                          {instructor.alias && <span className="text-sm font-normal text-gray-500 ml-2">({instructor.alias})</span>}
+                        </h3>
+                        <p className="text-sm text-gray-500">{instructor.style}</p>
+                      </div>
+                      <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
+                        <Star className="h-3 w-3 fill-current" />
+                        {instructor.rating}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
-                      <Star className="h-3 w-3 fill-current" />
-                      {instructor.rating}
+                    <div className="mt-4 flex items-center text-sm text-gray-500">
+                      <MapPin className="mr-1 h-4 w-4" />
+                      {instructor.location}
                     </div>
-                  </div>
-                  <div className="mt-4 flex items-center text-sm text-gray-500">
-                    <MapPin className="mr-1 h-4 w-4" />
-                    {instructor.location}
-                  </div>
-                  <div className="mt-2 text-sm">
-                    <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
-                    <span className="text-gray-500"> / hour</span>
-                  </div>
-                  <div className="mt-4 flex justify-between">
-                    <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
-                    <a 
-                      href="#" 
-                      onClick={(e) => handleProfileClick(e, instructor.name)} 
-                      className="text-[#F94C8D] hover:underline text-sm"
-                    >
-                      View Profile
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <div className="mt-2 text-sm">
+                      <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
+                      <span className="text-gray-500"> / hour</span>
+                    </div>
+                    <div className="mt-auto pt-4 flex justify-between items-center">
+                      <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
+                      <a 
+                        href="#" 
+                        onClick={(e) => handleProfileClick(e, instructor.name)} 
+                        className="text-[#F94C8D] hover:underline text-sm"
+                      >
+                        View Profile
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
 
           {filteredInstructors.length > 0 && (
           <div className="mt-12 flex justify-center">

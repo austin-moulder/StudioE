@@ -1,0 +1,11 @@
+# https://www.joinstudioe.com/robots.txt
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://www.joinstudioe.com/sitemap.xml
+
+# Common crawl optimizations
+Disallow: /api/
+Disallow: /_next/
+Disallow: /*? 

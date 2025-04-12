@@ -10,11 +10,47 @@ import { getBlogPostBySlug } from "@/lib/blog/blogUtils"
 import { BlogPost } from "@/types/blog"
 import { format } from 'date-fns'
 import { notFound } from "next/navigation"
+import BlogContent from '../../components/BlogContent'
 
 interface TableOfContentsItem {
   id: string;
   title: string;
   level: number;
+}
+
+// Add JSON-LD structured data component
+function BlogPostStructuredData({ post }: { post: BlogPost }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "image": post.featured_image,
+    "datePublished": post.created_at,
+    "dateModified": post.updated_at || post.created_at,
+    "author": {
+      "@type": "Person",
+      "name": post.author_name,
+      "image": post.author_image
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Studio E",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.joinstudioe.com/studio-e-logo.svg"
+      }
+    },
+    "description": post.excerpt,
+    "articleBody": post.content,
+    "keywords": post.category
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  );
 }
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
@@ -82,64 +118,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   const displayPost = post || placeholderPost
 
-  // Function to format text content
-  const formatContent = (content: string) => {
-    if (!content) return [];
-    
-    const lines = content.split('\n');
-    
-    return lines.map((line, index) => {
-      // Handle secondary headers (##)
-      if (line.startsWith('##') && !line.startsWith('###')) {
-        const text = line.replace(/^##\s*/, '');
-        return (
-          <h2 
-            key={index} 
-            id={`header-${index}`} 
-            className="text-2xl font-bold mt-8 mb-4 scroll-mt-20"
-          >
-            {text}
-          </h2>
-        );
-      }
-      
-      // Handle tertiary headers (###)
-      if (line.startsWith('###')) {
-        const text = line.replace(/^###\s*/, '');
-        return (
-          <h3 
-            key={index} 
-            id={`header-${index}`} 
-            className="text-xl font-bold mt-6 mb-3 scroll-mt-20"
-          >
-            {text}
-          </h3>
-        );
-      }
-      
-      // Handle bold text (**text**)
-      if (line.includes('**')) {
-        const parts = line.split(/(\*\*[^*]+\*\*)/g);
-        return (
-          <p key={index} className="mb-4">
-            {parts.map((part, partIndex) => {
-              if (part.startsWith('**') && part.endsWith('**')) {
-                const boldText = part.slice(2, -2);
-                return <strong key={partIndex}>{boldText}</strong>;
-              }
-              return <span key={partIndex}>{part}</span>;
-            })}
-          </p>
-        );
-      }
-      
-      // Regular paragraph
-      return line.trim() !== '' ? <p key={index} className="mb-4">{line}</p> : <div key={index} className="mb-4"></div>;
-    });
-  };
-
   return (
     <div className="flex flex-col">
+      {!loading && post && <BlogPostStructuredData post={post} />}
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A]/90 via-[#FF3366]/90 to-[#9933CC]/90 z-10" />
@@ -241,9 +222,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 <div className="h-6 w-full bg-gray-200 rounded animate-pulse"></div>
               </div>
             ) : (
-              <div className="prose prose-lg max-w-none">
-                {formatContent(displayPost.content)}
-              </div>
+              <BlogContent content={displayPost.content} />
             )}
 
             {/* Tags and Sharing */}

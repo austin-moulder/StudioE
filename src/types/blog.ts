@@ -8,8 +8,9 @@ export interface BlogPost {
   category: string;
   published: boolean;
   created_at: string;
+  updated_at?: string;
   author_name: string;
-  author_image?: string;
+  author_image: string;
 }
 
 export interface BlogCategory {

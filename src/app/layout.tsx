@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Providers } from "@/lib/providers";
 import { cn } from "@/lib/utils";
+import SchemaOrg from "@/components/SchemaOrg";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -67,6 +68,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/studio-e-logo.svg" type="image/svg+xml" />
         <meta name="color-scheme" content="light only" />
+        <SchemaOrg />
       </head>
       <body className={cn(inter.variable, montserrat.variable, "min-h-screen flex flex-col bg-white text-black")}>
         <Providers>

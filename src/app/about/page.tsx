@@ -53,6 +53,8 @@ export default function AboutPage() {
   const [selectedAmbassadorIndex, setSelectedAmbassadorIndex] = useState(0);
   const [testimonialsEmblaRef, testimonialsEmblaApi] = useEmblaCarousel({ loop: true });
   const [selectedTestimonialIndex, setSelectedTestimonialIndex] = useState(0);
+  const [instructorCount, setInstructorCount] = useState(0)
+  const [danceStyleCount, setDanceStyleCount] = useState(0)
 
   useEffect(() => {
     if (valuesEmblaApi) {
@@ -94,6 +96,16 @@ export default function AboutPage() {
     }
   }, [testimonialsEmblaApi]);
 
+  useEffect(() => {
+    async function fetchCounts() {
+      const instructors = await getInstructorCount()
+      const styles = await getDanceStyleCount()
+      setInstructorCount(instructors)
+      setDanceStyleCount(styles)
+    }
+    fetchCounts()
+  }, [])
+
   const scrollToValue = useCallback((index: number) => {
     valuesEmblaApi && valuesEmblaApi.scrollTo(index);
   }, [valuesEmblaApi]);
@@ -121,10 +133,6 @@ export default function AboutPage() {
   const prevTestimonial = () => {
     setCurrentTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))
   }
-
-  // Calculate counts directly using the utility functions
-  const instructorCount = getInstructorCount()
-  const danceStyleCount = getDanceStyleCount()
 
   return (
     <div className="flex flex-col">
