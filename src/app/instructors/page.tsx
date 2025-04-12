@@ -271,7 +271,7 @@ function InstructorsContent() {
       setCurrentPage(1)
       updateURL(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
     }
-  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, allInstructors, currentPage, updateURL])
+  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, allInstructors])
 
   // Sort instructors based on selected order
   const sortInstructors = (instructors: Instructor[], order: string) => {
