@@ -90,7 +90,7 @@ function BlogContent() {
       const timer = setTimeout(() => setFormState(initialState), 5000);
       return () => clearTimeout(timer);
     }
-  }, [formState]);
+  }, [formState, initialState]);
 
   // Handle subscription form submission
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
