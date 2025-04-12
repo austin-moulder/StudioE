@@ -4,8 +4,12 @@ import Link from "next/link"
 import Image from "next/image"
 import { Facebook, Instagram, Youtube, Settings } from "lucide-react"
 import { useSupabaseAuth } from "@/lib/hooks/useSupabaseAuth"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, FormEvent } from "react"
 import StudioELogo from "./StudioELogo"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Mail } from "lucide-react"
+import { addSubscriber, SubscribeState } from "@/lib/actions/subscribeActions"
 
 // Custom Spotify icon component since it's not included in lucide-react
 const Spotify = (props: any) => (
@@ -29,18 +33,33 @@ const Spotify = (props: any) => (
 );
 
 export default function Footer() {
-  const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const { user } = useSupabaseAuth()
+  const [formState, setFormState] = useState<SubscribeState>({ message: null, errors: {}, success: false });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
+  // Effect to clear subscription form message
   useEffect(() => {
-    setMounted(true);
-    try {
-      const { user } = useSupabaseAuth();
-      setUser(user);
-    } catch (error) {
-      console.error("Error accessing auth context:", error);
+    if (formState.success) {
+      formRef.current?.reset();
+      const timer = setTimeout(() => setFormState({ message: null, errors: {}, success: false }), 5000);
+      return () => clearTimeout(timer);
+    } else if (formState.message && !formState.errors) {
+      const timer = setTimeout(() => setFormState({ message: null, errors: {}, success: false }), 5000);
+      return () => clearTimeout(timer);
     }
-  }, []);
+  }, [formState]);
+
+  // Handle subscription form submission
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setFormState({ message: null, errors: {}, success: false });
+    const formData = new FormData(event.currentTarget);
+    const result = await addSubscriber({ message: null, errors: {}, success: false }, formData);
+    setFormState(result);
+    setIsSubmitting(false);
+  };
 
   return (
     <footer className="border-t bg-background">
@@ -154,7 +173,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Studio E. All rights reserved.
           </p>
           <div className="flex gap-4 text-xs text-gray-500">
-            {mounted && user && (
+            {user && (
               <Link href="/admin/gallery" className="hover:text-gray-800 flex items-center gap-1">
                 <Settings className="h-3 w-3" />
                 Admin
@@ -170,6 +189,10 @@ export default function Footer() {
               Cookie Policy
             </Link>
           </div>
+        </div>
+
+        <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-400">
+          <p>&copy; {new Date().getFullYear()} Studio E. All rights reserved.</p>
         </div>
       </div>
     </footer>

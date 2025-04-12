@@ -351,6 +351,12 @@ function InstructorsContent() {
     }, 2500);
   };
 
+  useEffect(() => {
+    if (currentPage > 1) {
+      updateURL(currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder);
+    }
+  }, [currentPage, updateURL, selectedStyle, selectedLocation, selectedPrice, sortOrder]);
+
   return (
     <div className="flex flex-col">
       <InstructorsStructuredData instructors={paginatedInstructors} />
