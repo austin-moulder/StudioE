@@ -56,12 +56,13 @@ async function getInstructorBySlug(slug: string) {
       slug: generateInstructorSlug(instructor.name),
       imageUrl: instructor.image_url,
       imageUrl2: instructor.image_url2 || instructor.image_url, // Fallback to primary image if secondary not available
-      yearsExperience: instructor.years_experience || 0,
+      yearsExperience: profile?.experience || instructor.years_experience || 0,
       pricePerHour: instructor.price_lower || 0,
       location: instructor.location || '',
       locationDetails: instructor.location_details || '',
       rating: instructor.rating || 0,
       reviewCount: instructor.reviews || 0,
+      totalStudents: profile?.total_students || 0,
       danceStyles: instructor.style?.split(/[,&]/).map((style: string) => style.trim()) || [],
       
       // Profile data (may be null if no profile exists yet)
@@ -134,7 +135,6 @@ const InstructorStyleSlider = ({ label, value, leftLabel, rightLabel }: { label:
     <div className="mb-6">
       <div className="flex justify-between mb-2 text-gray-500">
         <span>{leftLabel}</span>
-        <span>{label}</span>
         <span>{rightLabel}</span>
       </div>
       <div className="relative w-full h-2 bg-gray-200 rounded-full">
@@ -192,10 +192,13 @@ export default async function InstructorProfilePage({ params }: { params: { slug
         Back to Instructors
       </Link>
       
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Left Column: Images and Quick Info */}
-        <div className="flex-1">
-          <div className="space-y-6">
+      <div className="flex flex-col gap-8">
+        {/* Instructor Name */}
+        <h1 className="text-3xl font-bold">{instructor.name}</h1>
+        
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Left Column: Image */}
+          <div className="flex-1">
             <div className="relative rounded-lg overflow-hidden aspect-square">
               <Image 
                 src={instructor.imageUrl} 
@@ -218,32 +221,67 @@ export default async function InstructorProfilePage({ params }: { params: { slug
                   ))}
                 </div>
                 
-                {/* Reviews Overlay */}
-                <div className="flex items-center">
-                  <div className="flex text-yellow-400">
-                    {[...Array(5)].map((_, i) => (
-                      <svg 
-                        key={i} 
-                        className={`w-5 h-5 ${i < Math.floor(instructor.rating) ? 'fill-current' : 'fill-gray-300'}`} 
-                        fill="currentColor" 
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
+                {/* Reviews and Students Overlay - Improved mobile layout */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                  <div className="flex items-center">
+                    <div className="flex text-yellow-400">
+                      {[...Array(5)].map((_, i) => (
+                        <svg 
+                          key={i} 
+                          className={`w-4 h-4 sm:w-5 sm:h-5 ${i < Math.floor(instructor.rating) ? 'fill-current' : 'fill-gray-300'}`} 
+                          fill="currentColor" 
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <span className="ml-1 text-sm sm:text-base text-white">
+                      {instructor.rating} ({instructor.reviewCount})
+                    </span>
                   </div>
-                  <span className="ml-2 text-white">{instructor.rating} ({instructor.reviewCount} reviews)</span>
+                  {instructor.totalStudents > 0 && (
+                    <div className="text-sm sm:text-base text-white">
+                      <span className="font-medium">{instructor.totalStudents}</span> students
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Right Column: Profile Info */}
-        <div className="flex-[1.5]">
-          <h1 className="text-3xl font-bold mb-6">{instructor.name}</h1>
-
-          <div className="grid grid-cols-3 gap-4 mb-8">
+          {/* Right Column: Quick Info Boxes - Now stacked vertically and aligned with image height */}
+          <div className="flex-1 aspect-square md:flex hidden">
+            <div className="flex flex-col justify-between h-full w-full">
+              <div className="text-center bg-gray-100 rounded-lg p-4 flex-1 flex flex-col justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-auto mb-2 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="font-semibold text-xl">{instructor.yearsExperience} Years</p>
+                <p className="text-sm text-gray-500">Experience</p>
+              </div>
+              
+              <div className="text-center bg-gray-100 rounded-lg p-4 flex-1 flex flex-col justify-center my-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-auto mb-2 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="font-semibold text-xl">${instructor.pricePerHour}</p>
+                <p className="text-sm text-gray-500">Per Hour</p>
+              </div>
+              
+              <div className="text-center bg-gray-100 rounded-lg p-4 flex-1 flex flex-col justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-auto mb-2 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <p className="font-semibold text-xl">{instructor.location}</p>
+                <p className="text-sm text-gray-500">{instructor.locationDetails}</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile view for info boxes - shown only on smaller screens */}
+          <div className="flex-1 md:hidden flex flex-col gap-4">
             <div className="text-center bg-gray-100 rounded-lg p-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-auto mb-2 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -267,7 +305,10 @@ export default async function InstructorProfilePage({ params }: { params: { slug
               <p className="text-sm text-gray-500">{instructor.locationDetails}</p>
             </div>
           </div>
+        </div>
 
+        {/* Main Content Area - Below the image/info section */}
+        <div>
           <section className="mb-8">
             <h2 className="text-xl font-bold mb-4">Teaching Philosophy</h2>
             <p className="text-gray-700">{instructor.teachingPhilosophy}</p>
@@ -279,7 +320,7 @@ export default async function InstructorProfilePage({ params }: { params: { slug
               <InstructorStyleSlider 
                 label="Conversational" 
                 value={instructor.teachingStyle.conversational} 
-                leftLabel="Calm" 
+                leftLabel="Conversational" 
                 rightLabel="Direct" 
               />
               <InstructorStyleSlider 
@@ -343,19 +384,16 @@ export default async function InstructorProfilePage({ params }: { params: { slug
             </div>
           </section>
 
-          <section className="mb-8">
-            <h2 className="text-xl font-bold mb-4">Certifications</h2>
-            <ul className="space-y-2">
-              {instructor.certifications.map((cert, index) => (
-                <li key={index} className="flex items-center">
-                  <svg className="w-5 h-5 text-pink-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {cert}
-                </li>
-              ))}
-            </ul>
-          </section>
+          {instructor.certifications.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Certifications</h2>
+              <ul className="list-disc pl-5 space-y-1">
+                {instructor.certifications.map((cert) => (
+                  <li key={cert} className="text-gray-700">{cert}</li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           <div className="flex flex-col sm:flex-row gap-4">
             {instructor.demoUrl && (
