@@ -242,7 +242,7 @@ export default async function InstructorProfilePage({ params }: { params: { slug
                   </div>
                   {instructor.totalStudents > 0 && (
                     <div className="text-sm sm:text-base text-white">
-                      <span className="font-medium">{instructor.totalStudents}</span> students
+                      <span className="font-medium">{instructor.totalStudents}+</span> students
                     </div>
                   )}
                 </div>
@@ -411,7 +411,7 @@ export default async function InstructorProfilePage({ params }: { params: { slug
               </a>
             )}
             <a 
-              href={`mailto:contact@studioe.dance?subject=Lessons with ${instructor.name}`} 
+              href={`mailto:studioelatindance@gmail.com?subject=Lessons with ${instructor.name}`} 
               className="border border-[#9333EA] text-[#9333EA] hover:bg-[#9333EA] hover:text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -707,7 +707,7 @@ function InstructorsContent() {
                   <Button size="lg" variant="outline">Grow Your Business</Button>
                 </Link>
                 <Link href="/dance-certifications">
-                  <Button size="lg" variant="secondary">Get Certified</Button>
+                  <Button size="lg" className="bg-[#9333EA] hover:bg-[#9333EA]/90 text-white">Get Certified</Button>
                 </Link>
               </div>
             </div>
