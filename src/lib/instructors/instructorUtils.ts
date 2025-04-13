@@ -107,8 +107,12 @@ export async function getFeaturedInstructors(limit = 3): Promise<Instructor[]> {
 /**
  * Generates a URL-friendly slug from an instructor name
  * @param name The instructor's name to convert to a slug
- * @returns A lowercase slug with spaces replaced by hyphens
+ * @returns A lowercase slug with spaces replaced by hyphens and special characters removed
  */
 export function generateInstructorSlug(name: string): string {
-  return name.toLowerCase().replace(/\s+/g, '-');
+  return name.toLowerCase()
+    .replace(/\./g, '') // Remove periods
+    .replace(/[^\w\s-]/g, '') // Remove other special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-'); // Replace multiple hyphens with a single hyphen
 } 
