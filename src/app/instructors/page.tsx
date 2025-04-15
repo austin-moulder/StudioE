@@ -709,6 +709,9 @@ function InstructorsContent() {
                 <Link href="/dance-certifications">
                   <Button size="lg" className="bg-[#9333EA] hover:bg-[#9333EA]/90 text-white">Get Certified</Button>
                 </Link>
+                <Link href="/find-dance-space">
+                  <Button size="lg" variant="outline">Find a Space</Button>
+                </Link>
               </div>
             </div>
             <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-200">
