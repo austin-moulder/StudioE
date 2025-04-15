@@ -8,7 +8,8 @@ export async function getUniqueDanceStyles(): Promise<string[]> {
   try {
     const { data, error } = await supabase
       .from('instructors')
-      .select('style');
+      .select('style')
+      .eq('active', true);
     
     if (error) {
       console.error('Error fetching instructor styles:', error);
@@ -37,7 +38,8 @@ export async function getInstructorCount(): Promise<number> {
   try {
     const { count, error } = await supabase
       .from('instructors')
-      .select('*', { count: 'exact', head: true });
+      .select('*', { count: 'exact', head: true })
+      .eq('active', true);
     
     if (error) {
       console.error('Error counting instructors:', error);
@@ -75,6 +77,7 @@ export async function getFeaturedInstructors(limit = 3): Promise<Instructor[]> {
       .from('instructors')
       .select('*')
       .eq('is_featured', true)
+      .eq('active', true)
       .limit(limit);
     
     if (error) {
@@ -115,4 +118,32 @@ export function generateInstructorSlug(name: string): string {
     .replace(/[^\w\s-]/g, '') // Remove other special characters
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-'); // Replace multiple hyphens with a single hyphen
+}
+
+/**
+ * Get the count of instructors for a specific dance style
+ */
+export async function getInstructorCountByStyle(style: string): Promise<number> {
+  try {
+    const { data, error } = await supabase
+      .from('instructors')
+      .select('*')
+      .eq('active', true);
+    
+    if (error) {
+      console.error(`Error fetching instructors for style ${style}:`, error);
+      return 0;
+    }
+
+    // Filter instructors whose style includes the requested style (case insensitive)
+    const stylePattern = new RegExp(style, 'i');
+    const matchingInstructors = data.filter(instructor => 
+      stylePattern.test(instructor.style)
+    );
+    
+    return matchingInstructors.length;
+  } catch (error) {
+    console.error(`Exception counting instructors for style ${style}:`, error);
+    return 0;
+  }
 } 

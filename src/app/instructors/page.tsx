@@ -142,6 +142,7 @@ function InstructorsContent() {
         const { data, error } = await supabase
           .from('instructors')
           .select('*')
+          .eq('active', true)
         
         if (error) throw error
         
