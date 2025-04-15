@@ -337,9 +337,9 @@ function EventsContent() {
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     <SelectItem value="all">All Events</SelectItem>
-                    <SelectItem value="social">Social Events</SelectItem>
+                    <SelectItem value="social">Socials</SelectItem>
                     <SelectItem value="workshop">Workshops</SelectItem>
-                    <SelectItem value="congress">Congress</SelectItem>
+                    <SelectItem value="showcase">Showcases</SelectItem>
                     <SelectItem value="festival">Festival</SelectItem>
                     <SelectItem value="competition">Competition</SelectItem>
                     <SelectItem value="community">Community</SelectItem>
@@ -421,7 +421,7 @@ function EventsContent() {
                   .slice(indexOfFirstEvent, indexOfLastEvent) // Use pagination with current ITEMS_PER_PAGE
                   .map((event, index) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow">
-                      <div className="aspect-[3/4] relative">
+                      <div className="aspect-square relative">
                         <Image 
                           src={event.image_url || "/placeholder.svg"} 
                           alt={event.title} 
@@ -595,7 +595,7 @@ function EventsContent() {
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow border-2 border-[#F94C8D]/20">
-                      <div className="aspect-[3/4] relative">
+                      <div className="aspect-square relative">
                         <Image
                           src={event.image_url || "/placeholder.svg"}
                           alt={event.title}
@@ -669,7 +669,7 @@ function EventsContent() {
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow opacity-70">
-                      <div className="aspect-[3/4] relative">
+                      <div className="aspect-square relative">
                         <Image
                           src={event.image_url || "/placeholder.svg"}
                           alt={event.title}
