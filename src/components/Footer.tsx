@@ -174,7 +174,7 @@ export default function Footer() {
           </p>
           <div className="flex gap-4 text-xs text-gray-500">
             {user && (
-              <Link href="/admin/gallery" className="hover:text-gray-800 flex items-center gap-1">
+              <Link href="/admin" className="hover:text-gray-800 flex items-center gap-1">
                 <Settings className="h-3 w-3" />
                 Admin
               </Link>

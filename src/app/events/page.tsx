@@ -13,6 +13,24 @@ import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase/client"
 
+// Function to get event type badge color
+const getEventTypeColor = (eventType: string | undefined) => {
+  switch(eventType?.toLowerCase()) {
+    case 'social':
+      return 'bg-[#9933CC]'; // Purple
+    case 'showcase':
+      return 'bg-[#FF3366]'; // Hot Pink
+    case 'festival':
+      return 'bg-[#FF7A5A]'; // Coral
+    case 'workshop':
+      return 'bg-[#333333]'; // Dark Gray
+    case 'community':
+      return 'bg-[#CC3399]'; // Magenta
+    default:
+      return 'bg-[#9933CC]'; // Default to Purple
+  }
+};
+
 // Types for our event data
 interface Event {
   id: number
@@ -437,7 +455,7 @@ function EventsContent() {
                         )}
                       </div>
                       <CardContent className="p-4 space-y-3">
-                        <Badge className="bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90 text-xs">
+                        <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
                           {event.event_type || "Event"}
                         </Badge>
                         <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
@@ -609,7 +627,7 @@ function EventsContent() {
                         </div>
                       </div>
                       <CardContent className="p-4 space-y-3">
-                        <Badge className="bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90 text-xs">
+                        <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
                           {event.event_type || "Special Event"}
                         </Badge>
                         <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
@@ -684,7 +702,7 @@ function EventsContent() {
                         </div>
                       </div>
                       <CardContent className="p-4 space-y-3">
-                        <Badge className="bg-[#9D4EDD] text-white hover:bg-[#9D4EDD]/90 text-xs">
+                        <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
                           {event.event_type || "Event"}
                         </Badge>
                         <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
