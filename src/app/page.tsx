@@ -22,7 +22,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { getBlogPosts } from "@/lib/blog/blogUtils"
 import { BlogPost } from "@/types/blog"
 import { format } from 'date-fns'
-import { getFeaturedInstructors } from '@/lib/instructors/instructorUtils';
+import { getFeaturedInstructors, getInstructorCountByStyle } from '@/lib/instructors/instructorUtils';
 import { Instructor } from '@/types/instructor';
 
 const inter = Inter({ subsets: ["latin"] })
@@ -77,6 +77,12 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
   const [blogLoading, setBlogLoading] = useState(true)
+  const [instructorCounts, setInstructorCounts] = useState<Record<string, number>>({
+    salsa: 0,
+    bachata: 0,
+    heels: 0,
+    choreo: 0
+  })
   const router = useRouter()
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -119,6 +125,26 @@ export default function Home() {
     };
 
     loadImages();
+  }, []);
+
+  useEffect(() => {
+    const fetchInstructorCounts = async () => {
+      try {
+        const styles = ["Salsa", "Bachata", "Heels", "Choreo"];
+        const counts: Record<string, number> = {};
+        
+        for (const style of styles) {
+          const count = await getInstructorCountByStyle(style);
+          counts[style.toLowerCase()] = count;
+        }
+        
+        setInstructorCounts(counts);
+      } catch (error) {
+        console.error("Error fetching instructor counts:", error);
+      }
+    };
+
+    fetchInstructorCounts();
   }, []);
 
   useEffect(() => {
@@ -294,10 +320,10 @@ export default function Home() {
             <div className="overflow-hidden" ref={danceStyleEmblaRef}>
               <div className="flex">
                 {[
-                  { name: "Salsa", count: 24 },
-                  { name: "Bachata", count: 18 },
-                  { name: "Heels", count: 15 },
-                  { name: "Choreo", count: 20 },
+                  { name: "Salsa", count: instructorCounts.salsa },
+                  { name: "Bachata", count: instructorCounts.bachata },
+                  { name: "Heels", count: instructorCounts.heels },
+                  { name: "Choreo", count: instructorCounts.choreo },
                 ].map((style, index) => (
                   <div key={index} className="flex-[0_0_100%] min-w-0">
                     <Link 
@@ -355,10 +381,10 @@ export default function Home() {
           {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { name: "Salsa", count: 24 },
-              { name: "Bachata", count: 18 },
-              { name: "Heels", count: 15 },
-              { name: "Choreo", count: 20 },
+              { name: "Salsa", count: instructorCounts.salsa },
+              { name: "Bachata", count: instructorCounts.bachata },
+              { name: "Heels", count: instructorCounts.heels },
+              { name: "Choreo", count: instructorCounts.choreo },
             ].map((style) => (
               <Link 
                 key={style.name} 
