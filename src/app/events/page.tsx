@@ -438,7 +438,7 @@ function EventsContent() {
                   })
                   .slice(indexOfFirstEvent, indexOfLastEvent) // Use pagination with current ITEMS_PER_PAGE
                   .map((event, index) => (
-                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow">
+                    <Card key={event.id} className={`overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow ${event.is_featured ? 'border-2 border-[#F94C8D]' : ''}`}>
                       <div className="aspect-square relative">
                         <Image 
                           src={event.image_url || "/placeholder.svg"} 
