@@ -143,61 +143,50 @@ export async function searchBlogPosts(searchTerm: string): Promise<BlogPost[]> {
 }
 
 /**
- * Create a sample blog post to demonstrate image use in content
- * This is for demonstration purposes only - should not be used in production
+ * Helper function to generate the correct markdown syntax for images
+ * @param altText Alternative text for the image (for accessibility)
+ * @param imageUrl Full URL to the image
+ * @param options Optional parameters (width, height, caption)
+ * @returns Formatted markdown for the image
  */
-export function createSampleBlogPostWithImages(): BlogPost {
-  return {
-    id: 999,
-    title: "How to Add Images to Your Blog Posts",
-    slug: "how-to-add-images-to-blog-posts",
-    excerpt: "Learn how to format and add beautiful images to your Studio E blog posts using our custom syntax.",
-    featured_image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Blog/dance_blog_header.jpg",
-    category: "Tips & Techniques",
-    published: true,
-    created_at: new Date().toISOString(),
-    author_name: "Studio E Admin",
-    author_image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Profile_Picture_Standing.jpeg",
-    content: `
-# Adding Images to Your Blog Posts
+export function generateImageMarkdown(
+  altText: string, 
+  imageUrl: string, 
+  options?: { 
+    width?: number; 
+    height?: number; 
+    caption?: string;
+  }
+): string {
+  // Set default options
+  const width = options?.width || 800;
+  const height = options?.height || 500;
+  
+  // Build metadata string
+  let metadata = `width=${width},height=${height}`;
+  
+  // Add caption if provided
+  if (options?.caption) {
+    metadata += `,caption=${options.caption}`;
+  }
+  
+  // Return the formatted markdown
+  return `!![${altText}](${imageUrl}|${metadata})`;
+}
 
-When creating content for your dance blog, images can help bring your stories to life. This guide shows you how to add images using our custom syntax.
-
-## Basic Image Syntax
-
-To add an image to your blog post, use our special double exclamation mark syntax followed by square brackets for alt text and parentheses for the image URL and optional parameters:
-
-\`\`\`
-!![Alt text for the image](https://example.com/your-image.jpg|width=800,height=500,caption=This is a caption for the image)
-\`\`\`
-
-## Example With Parameters
-
-Here's a live example with all parameters:
-
-!![Dancers performing on stage](https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Blog/dance_performance.jpg|width=800,height=500,caption=Professional dancers performing a contemporary routine at Studio E)
-
-## Example Without Caption
-
-You can also omit the caption if you prefer:
-
-!![Dance practice session](https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Blog/dance_practice.jpg|width=800,height=500)
-
-## Using Different Sizes
-
-You can customize the width and height:
-
-!![Close-up of dance shoes](https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Blog/dance_shoes.jpg|width=400,height=300,caption=Close-up of professional dance shoes)
-
-## Tips for Great Blog Images
-
-1. Use high-quality images that are relevant to your content
-2. Include descriptive alt text for accessibility
-3. Add helpful captions to provide context
-4. Consider image dimensions for proper display
-5. Optimize images for web to improve loading times
-
-That's it! Now you can add beautiful images to all your Studio E blog posts.
-`
-  };
+/**
+ * Get the public URL for a file in Supabase Storage
+ * @param bucket The storage bucket (e.g., 'assetsv1')
+ * @param path The path to the file (e.g., 'Blog/image.jpg')
+ * @returns The full public URL to the file
+ */
+export function getSupabaseStorageUrl(bucket: string, path: string): string {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  
+  if (!supabaseUrl) {
+    console.error('Supabase URL is not defined in environment variables');
+    return '';
+  }
+  
+  return `${supabaseUrl}/storage/v1/object/public/${bucket}/${path}`;
 } 

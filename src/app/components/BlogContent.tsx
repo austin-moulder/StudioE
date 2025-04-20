@@ -1,28 +1,42 @@
 import ReactMarkdown from 'react-markdown'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface BlogContentProps {
   content: string
 }
 
 export default function BlogContent({ content }: BlogContentProps) {
-  // Function to process content and extract image information
-  const processImageMarkdown = (content: string) => {
-    // Replace custom image notation with regular markdown image syntax
-    // Format: !![alt text](imageUrl|width=600,height=400,caption=Your caption text)
-    const processedContent = content.replace(
-      /!!\[(.*?)\]\((.*?)(?:\|(.*?))?\)/g,
-      (match, alt, src, metaString) => {
-        // Store the metadata in a data attribute to be used by the image component
-        return `![${alt}](${src}|${metaString || ''})`
+  const [processedContent, setProcessedContent] = useState(content)
+  
+  useEffect(() => {
+    // Process content when it changes
+    const processContent = (rawContent: string) => {
+      console.log('Processing content for images...')
+      
+      // Replace custom image notation with regular markdown image syntax
+      // Format: !![alt text](imageUrl|width=600,height=400,caption=Your caption text)
+      const processed = rawContent.replace(
+        /!!\[(.*?)\]\((.*?)(?:\|(.*?))?\)/g,
+        (match, alt, src, metaString) => {
+          console.log('Found image match:', { match, alt, src, metaString })
+          // Store the metadata in a data attribute to be used by the image component
+          return `![${alt}](${src}|${metaString || ''})`
+        }
+      )
+      
+      // If no replacements were made, log this for debugging
+      if (processed === rawContent) {
+        console.log('No custom image syntax found in content')
+      } else {
+        console.log('Content processed with image replacements')
       }
-    )
-    return processedContent
-  }
-
-  // Process the content
-  const processedContent = processImageMarkdown(content)
+      
+      return processed
+    }
+    
+    setProcessedContent(processContent(content))
+  }, [content])
 
   return (
     <div className="prose prose-lg max-w-none">
@@ -30,9 +44,19 @@ export default function BlogContent({ content }: BlogContentProps) {
         components={{
           // Handle custom image rendering
           img: ({ node, ...props }) => {
+            console.log('Rendering image:', props)
+            
             // Extract source and metadata from the src prop
             const srcParts = props.src?.split('|') || []
             const imageUrl = srcParts[0]
+            
+            // Ensure the URL is valid and handle Supabase URLs correctly
+            if (!imageUrl) {
+              console.error('Image URL is missing')
+              return <p className="text-red-500">Image URL is missing</p>
+            }
+            
+            console.log('Processing image with URL:', imageUrl)
             
             // Parse metadata (width=600,height=400,caption=Your caption text)
             const metaString = srcParts[1] || ''
@@ -51,24 +75,34 @@ export default function BlogContent({ content }: BlogContentProps) {
             const height = metadata.height ? parseInt(metadata.height, 10) : 500
             const caption = metadata.caption || ''
             
-            return (
-              <figure className="my-8">
-                <div className="relative w-full" style={{ height: `${height}px` }}>
-                  <Image 
-                    src={imageUrl}
-                    alt={props.alt || ''}
-                    fill
-                    className="object-cover rounded-lg"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
-                  />
+            try {
+              return (
+                <figure className="my-8">
+                  <div className="relative w-full" style={{ height: `${height}px` }}>
+                    <Image 
+                      src={imageUrl}
+                      alt={props.alt || ''}
+                      fill
+                      className="object-cover rounded-lg"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
+                      unoptimized={imageUrl.includes('supabase.co')} // Skip optimization for Supabase URLs
+                    />
+                  </div>
+                  {caption && (
+                    <figcaption className="text-sm text-gray-500 mt-2 text-center italic">
+                      {caption}
+                    </figcaption>
+                  )}
+                </figure>
+              )
+            } catch (error) {
+              console.error('Error rendering image:', error)
+              return (
+                <div className="p-4 border border-red-300 bg-red-50 rounded-lg">
+                  <p className="text-red-500">Error rendering image: {imageUrl}</p>
                 </div>
-                {caption && (
-                  <figcaption className="text-sm text-gray-500 mt-2 text-center italic">
-                    {caption}
-                  </figcaption>
-                )}
-              </figure>
-            )
+              )
+            }
           },
           // Customize link rendering with Studio E colors
           a: ({ node, ...props }) => (
