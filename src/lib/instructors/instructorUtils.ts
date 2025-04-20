@@ -75,7 +75,10 @@ export async function getFeaturedInstructors(limit = 3): Promise<Instructor[]> {
   try {
     const { data, error } = await supabase
       .from('instructors')
-      .select('*')
+      .select(`
+        *,
+        instructor_profiles(total_students)
+      `)
       .eq('is_featured', true)
       .eq('active', true)
       .limit(limit);
@@ -96,6 +99,7 @@ export async function getFeaturedInstructors(limit = 3): Promise<Instructor[]> {
       location: instructor.location,
       rating: instructor.rating || 0,
       reviews: instructor.reviews || 0,
+      totalStudents: instructor.instructor_profiles?.total_students || 0,
       price: {
         lower: instructor.price_lower || 0,
         upper: instructor.price_upper || 0

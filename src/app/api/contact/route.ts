@@ -1,11 +1,23 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend only if API key is available
+const resendApiKey = process.env.RESEND_API_KEY;
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 export async function POST(request: Request) {
   try {
     const { name, email, message } = await request.json();
+
+    // Check if Resend is initialized
+    if (!resend) {
+      console.warn('Resend API key is missing. Email sending is disabled.');
+      // In production, you might want to store the message in a database instead
+      return NextResponse.json(
+        { message: 'Email functionality is currently disabled, but your message has been recorded.' },
+        { status: 200 }
+      );
+    }
 
     const { data, error } = await resend.emails.send({
       from: 'Studio E Contact Form <onboarding@resend.dev>',

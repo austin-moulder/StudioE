@@ -116,8 +116,9 @@ function InstructorsContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   
-  // Get URL params
-  const [selectedStyle, setSelectedStyle] = useState(searchParams.get("style") || "all")
+  // Get URL params - ensure "all" is recognized as a valid style parameter
+  const styleParam = searchParams.get("style") || "all"
+  const [selectedStyle, setSelectedStyle] = useState(styleParam)
   const [selectedLocation, setSelectedLocation] = useState(searchParams.get("location") || "all")
   const [selectedPrice, setSelectedPrice] = useState(searchParams.get("price") || "any")
   const [sortOrder, setSortOrder] = useState(searchParams.get("sort") || "recommended")
@@ -139,9 +140,13 @@ function InstructorsContent() {
   useEffect(() => {
     async function fetchInstructors() {
       try {
+        // Fetch instructors with their profiles to get total_students
         const { data, error } = await supabase
           .from('instructors')
-          .select('*')
+          .select(`
+            *,
+            instructor_profiles(total_students)
+          `)
           .eq('active', true)
         
         if (error) throw error
@@ -154,7 +159,8 @@ function InstructorsContent() {
             danceStyles: [instructor.style], // Convert single style to array
             location: instructor.location,
             rating: instructor.rating,
-            reviews: instructor.reviews_count,
+            reviews: instructor.reviews_count || 0,
+            totalStudents: instructor.instructor_profiles?.total_students || 0,
             bio: instructor.bio || '',
             imageUrl: instructor.image_url,
             featured: instructor.is_featured || false,
@@ -526,10 +532,12 @@ function InstructorsContent() {
                       </h3>
                         <p className="text-sm text-gray-500">{instructor.danceStyles.join(" & ")}</p>
                     </div>
-                    <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
-                      <Star className="h-3 w-3 fill-current" />
-                      {instructor.rating}
-                    </div>
+                    {instructor.reviews > 0 && (
+                      <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
+                        <Star className="h-3 w-3 fill-current" />
+                        {instructor.rating}
+                      </div>
+                    )}
                   </div>
                   <div className="mt-4 flex items-center text-sm text-gray-500">
                     <MapPin className="mr-1 h-4 w-4" />
@@ -540,7 +548,13 @@ function InstructorsContent() {
                     <span className="text-gray-500"> / hour</span>
                   </div>
                     <div className="mt-auto pt-4 flex justify-between items-center">
-                    <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
+                      {instructor.reviews > 0 ? (
+                        <span className="text-sm text-gray-500">{instructor.reviews} reviews</span>
+                      ) : instructor.totalStudents > 0 ? (
+                        <span className="text-sm text-gray-500">{instructor.totalStudents}+ students</span>
+                      ) : (
+                        <span></span>  
+                      )}
                       <Link 
                         href={`/instructors/${generateInstructorSlug(instructor.name)}`}
                       className="text-[#F94C8D] hover:underline text-sm"

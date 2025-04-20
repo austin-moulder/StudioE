@@ -226,9 +226,14 @@ export default function Home() {
   }, [blogEmblaApi]);
 
   const handleSearch = () => {
-    if (selectedStyle) {
+    if (selectedStyle === "other") {
+      // For "Other Styles", go to instructors page with explicit "all" filter
+      router.push("/instructors?style=all");
+    } else if (selectedStyle) {
+      // For specific styles, filter by that style
       router.push(`/instructors?style=${selectedStyle.toLowerCase()}`);
     } else {
+      // No style selected, go to instructors page without filters
       router.push("/instructors");
     }
   };

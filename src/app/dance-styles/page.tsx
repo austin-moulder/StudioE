@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { getInstructorCountByStyle } from "@/lib/instructors/instructorUtils"
 
 export default function DanceStylesPage() {
@@ -46,37 +46,37 @@ export default function DanceStylesPage() {
     { name: "Afro-Latin", count: 0 },
   ]);
 
-  useEffect(() => {
-    const fetchInstructorCounts = async () => {
-      try {
-        // Fetch counts for main dance styles
-        const updatedDanceStyles = [...danceStyles];
-        for (let i = 0; i < updatedDanceStyles.length; i++) {
-          const count = await getInstructorCountByStyle(updatedDanceStyles[i].name);
-          updatedDanceStyles[i] = { 
-            ...updatedDanceStyles[i], 
-            instructors: count 
-          };
-        }
-        setDanceStyles(updatedDanceStyles);
-
-        // Fetch counts for other dance styles
-        const updatedOtherStyles = [...otherStyles];
-        for (let i = 0; i < updatedOtherStyles.length; i++) {
-          const count = await getInstructorCountByStyle(updatedOtherStyles[i].name);
-          updatedOtherStyles[i] = { 
-            ...updatedOtherStyles[i], 
-            count 
-          };
-        }
-        setOtherStyles(updatedOtherStyles);
-      } catch (error) {
-        console.error("Error fetching instructor counts:", error);
+  const fetchInstructorCounts = useCallback(async () => {
+    try {
+      // Fetch counts for main dance styles
+      const updatedDanceStyles = [...danceStyles];
+      for (let i = 0; i < updatedDanceStyles.length; i++) {
+        const count = await getInstructorCountByStyle(updatedDanceStyles[i].name);
+        updatedDanceStyles[i] = { 
+          ...updatedDanceStyles[i], 
+          instructors: count 
+        };
       }
-    };
+      setDanceStyles(updatedDanceStyles);
 
+      // Fetch counts for other dance styles
+      const updatedOtherStyles = [...otherStyles];
+      for (let i = 0; i < updatedOtherStyles.length; i++) {
+        const count = await getInstructorCountByStyle(updatedOtherStyles[i].name);
+        updatedOtherStyles[i] = { 
+          ...updatedOtherStyles[i], 
+          count 
+        };
+      }
+      setOtherStyles(updatedOtherStyles);
+    } catch (error) {
+      console.error("Error fetching instructor counts:", error);
+    }
+  }, [danceStyles, otherStyles]);
+
+  useEffect(() => {
     fetchInstructorCounts();
-  }, []);
+  }, [fetchInstructorCounts]);
 
   return (
     <div className="flex flex-col">
@@ -153,7 +153,7 @@ export default function DanceStylesPage() {
           
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {otherStyles.map((style) => (
-              <Link key={style.name} href="/instructors" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+              <Link key={style.name} href="/instructors?style=all" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="font-bold text-xl mb-2">{style.name}</h3>
                 <p className="text-sm text-gray-500">{style.count} Instructors</p>
               </Link>

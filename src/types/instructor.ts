@@ -8,6 +8,7 @@ export interface Instructor {
   location: string;
   rating: number;
   reviews: number;
+  totalStudents: number;
   price: {
     lower: number;
     upper: number;
