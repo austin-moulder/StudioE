@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Script from "next/script"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { getBusinessTestimonials } from "@/lib/testimonials/testimonialUtils"
+import { TestimonialCard } from "@/app/components/TestimonialCard"
+import { Testimonial } from "@/types/testimonial"
 
 export default function BusinessExpertsPage() {
   // Load Calendly widget when component mounts
@@ -20,6 +23,26 @@ export default function BusinessExpertsPage() {
       document.body.removeChild(script);
     };
   }, []);
+
+  // Add state for testimonials
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+  const [testimonialsLoading, setTestimonialsLoading] = useState(true)
+
+  // Add useEffect to fetch business testimonials
+  useEffect(() => {
+    const loadTestimonials = async () => {
+      try {
+        const data = await getBusinessTestimonials()
+        setTestimonials(data)
+      } catch (error) {
+        console.error("Error loading testimonials:", error)
+      } finally {
+        setTestimonialsLoading(false)
+      }
+    }
+
+    loadTestimonials()
+  }, [])
 
   return (
     <div className="flex flex-col">
@@ -170,42 +193,27 @@ export default function BusinessExpertsPage() {
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2">
-            {[
-              {
-                name: "Mitzi H.",
-                role: "Small Business Owner",
-                quote: "They have far exceeded any expectation for quantity and quality of solutions to solve the main set of problems our small business is facing. I am overjoyed, hopeful, inspired, refreshed, enthusiastic, and beyond excited.",
-              },
-              {
-                name: "Rittwik R.",
-                role: "Product Manager",
-                quote: "Studio E experts are able to drive really strong participation in the sessions. This speaks a lot about their teaching style and how practically helpful the concepts taught are. I would highly recommend this masterclass series.",
-              },
-              {
-                name: "Watunyu S.",
-                role: "Head of Technology",
-                quote: "Austin's direct and engaging teaching style made complex ideas easy to grasp. The course's real-world applications and personalized feedback significantly boosted my skills and confidence. A game-changer for anyone looking to excel.",
-              },
-              {
-                name: "Anthony K.",
-                role: "Real Estate Development Finance Manager",
-                quote: "There are some knowledge that one can only access from experts who have been through the process. If I would have tried navigating this journey alone, I would be have been lost and frustrated. These sessions provide much value than can be quantified.",
-              },
-            ].map((testimonial, index) => (
-              <Card key={index} className="p-6">
-                <div>
+          {testimonialsLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-2">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="p-6">
                   <div>
-                    <h3 className="font-semibold">{testimonial.name}</h3>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    <div>
+                      <h3 className="font-semibold">{testimonial.name}</h3>
+                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="mt-4">
-                  <p className="text-muted-foreground">"{testimonial.quote}"</p>
-                </div>
-              </Card>
-            ))}
-          </div>
+                  <div className="mt-4">
+                    <p className="text-muted-foreground">"{testimonial.quote}"</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

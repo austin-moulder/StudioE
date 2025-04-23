@@ -7,42 +7,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { getInstructorCount, getDanceStyleCount } from "@/lib/instructors/instructorUtils"
 import useEmblaCarousel from 'embla-carousel-react'
+import { getAllTestimonials } from "@/lib/testimonials/testimonialUtils"
+import { TestimonialCarousel } from "@/app/components/TestimonialCarousel"
+import { Testimonial } from "@/types/testimonial"
 
 export default function AboutPage() {
-  const testimonials = [
-    {
-      name: "Sara Clark",
-      quote:
-        "Austin is above and beyond! He is an amazing dancer and instructor! Such a FUN and positive experience, you get exercise and he also helps teach us different style of music, which keeps it so interesting, and also some spanish, and just general fun dance moves!! He is lovely, happy and very inspiring, always smiling and his class is very special and excellent!",
-      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Sara_Clark.jpeg",
-    },
-    {
-      name: "Laurencia O.",
-      quote:
-        "Austin is very passionate about Bachata and his enthusiasm is a great motivator in the class. He is very thorough with his lessons and patient with his students! I had a great time in Core 1 Bachata. Austin is very kind and encouraging. I learned a lot of tips and tricks over the 4 weeks and I can't wait to learn more!",
-      image: "/placeholder.svg",
-    },
-    {
-      name: "Brianna Hook",
-      quote:
-        "I have been wanting to learn to lead for a long time, but I don't get the chance to take dance classes very often. As a single parent, it's also hard to carve out the time to travel to dance, but I am SO glad I set aside this weekend and had the opportunity to take classes with Austin! They broke down the steps so clearly and answered every question patiently with as much repetition as we needed. I left feeling confident, for the first time, that I could implement the basics in leading on the dance floor!",
-      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Briana_Hall.jpeg",
-    },
-    {
-      name: "Becca Yang",
-      quote:
-        "Austin & Noushin are a dynamic duo that make an amazing team as instructors. Between teaching and taking workshops and hosting the evening socials, they never once complained about being tired. We appreciate the safe space for asking hard questions and facilitating important conversations within the dance scene and culture. Thank you so much for all the behind-the-scenes blood, sweat and tears to make this event come together!",
-      image: "/placeholder.svg",
-    },
-    {
-      name: "Brandon Hampton",
-      quote:
-        "Detailed, Fundamentals-Driven, Accessible to All, Inclusive, Passionate, Fun! Austin is a creative entrepreneur at his core because he utilizes both out-of-the-box and practical methods for teaching, so that everyone regardless of their learning preference will fully grasp the lesson. He has simplified an approach to Latin Dance that any level can utilize to improve their skills.",
-      image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Brandon_Hampton.png",
-    },
-  ]
-
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const [testimonialsData, setTestimonialsData] = useState<Testimonial[]>([])
+  const [testimonialsLoading, setTestimonialsLoading] = useState(true)
   const [valuesEmblaRef, valuesEmblaApi] = useEmblaCarousel({ loop: true });
   const [selectedValueIndex, setSelectedValueIndex] = useState(0);
   const [teamEmblaRef, teamEmblaApi] = useEmblaCarousel({ loop: true });
@@ -51,8 +22,6 @@ export default function AboutPage() {
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(0);
   const [ambassadorsEmblaRef, ambassadorsEmblaApi] = useEmblaCarousel({ loop: true });
   const [selectedAmbassadorIndex, setSelectedAmbassadorIndex] = useState(0);
-  const [testimonialsEmblaRef, testimonialsEmblaApi] = useEmblaCarousel({ loop: true });
-  const [selectedTestimonialIndex, setSelectedTestimonialIndex] = useState(0);
   const [instructorCount, setInstructorCount] = useState(0)
   const [danceStyleCount, setDanceStyleCount] = useState(0)
 
@@ -89,14 +58,6 @@ export default function AboutPage() {
   }, [ambassadorsEmblaApi]);
 
   useEffect(() => {
-    if (testimonialsEmblaApi) {
-      testimonialsEmblaApi.on('select', () => {
-        setSelectedTestimonialIndex(testimonialsEmblaApi.selectedScrollSnap());
-      });
-    }
-  }, [testimonialsEmblaApi]);
-
-  useEffect(() => {
     async function fetchCounts() {
       const instructors = await getInstructorCount()
       const styles = await getDanceStyleCount()
@@ -104,6 +65,21 @@ export default function AboutPage() {
       setDanceStyleCount(styles)
     }
     fetchCounts()
+  }, [])
+
+  useEffect(() => {
+    async function loadTestimonials() {
+      try {
+        const data = await getAllTestimonials()
+        setTestimonialsData(data)
+      } catch (error) {
+        console.error("Error loading testimonials:", error)
+      } finally {
+        setTestimonialsLoading(false)
+      }
+    }
+    
+    loadTestimonials()
   }, [])
 
   const scrollToValue = useCallback((index: number) => {
@@ -121,18 +97,6 @@ export default function AboutPage() {
   const scrollToAmbassador = useCallback((index: number) => {
     ambassadorsEmblaApi && ambassadorsEmblaApi.scrollTo(index);
   }, [ambassadorsEmblaApi]);
-
-  const scrollToTestimonial = useCallback((index: number) => {
-    testimonialsEmblaApi && testimonialsEmblaApi.scrollTo(index);
-  }, [testimonialsEmblaApi]);
-
-  const nextTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))
-  }
-
-  const prevTestimonial = () => {
-    setCurrentTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))
-  }
 
   return (
     <div className="flex flex-col">
@@ -671,9 +635,7 @@ export default function AboutPage() {
               Interested in becoming a Community Ambassador? Applications are open for our next term.
             </p>
             <Link 
-              href="https://forms.gle/1i18AQS9vyNea6A99" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="/become-ambassador" 
               className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#FF3366] hover:bg-[#FF3366]/90 transition-colors"
             >
               Apply Now
@@ -710,53 +672,61 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="mx-auto max-w-3xl">
-            <div className="overflow-hidden" ref={testimonialsEmblaRef}>
-              <div className="flex">
-                {testimonials.map((testimonial, index) => (
-                  <div key={index} className="flex-[0_0_100%] min-w-0">
-                    <div className="relative bg-white rounded-lg shadow-lg p-8 mx-2">
-                      <div className="flex flex-col md:flex-row items-center gap-6">
-                        <div className="relative h-24 w-24 overflow-hidden rounded-full flex-shrink-0 bg-gray-200 flex items-center justify-center">
-                          {testimonial.image && testimonial.image !== "/placeholder.svg" ? (
-                            <Image 
-                              src={testimonial.image} 
-                              alt={testimonial.name}
-                              fill
-                              className="object-cover"
-                            />
-                          ) : (
-                            <span className="text-gray-400 text-xs">{testimonial.name.charAt(0)}</span>
-                          )}
-                        </div>
-                        <div>
-                          <blockquote className="italic text-lg text-gray-500">
-                            "{testimonial.quote}"
-                          </blockquote>
-                          <footer className="mt-4 font-medium text-base not-italic">
-                            — {testimonial.name}
-                          </footer>
+          {testimonialsLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="mx-auto max-w-3xl">
+              <div className="overflow-hidden" ref={valuesEmblaRef}>
+                <div className="flex">
+                  {testimonialsData.map((testimonial, index) => (
+                    <div key={index} className="flex-[0_0_100%] min-w-0">
+                      <div className="relative bg-white rounded-lg shadow-lg p-8 mx-2">
+                        <div className="flex flex-col md:flex-row items-center gap-6">
+                          <div className="relative h-24 w-24 overflow-hidden rounded-full flex-shrink-0 bg-gray-200 flex items-center justify-center">
+                            {testimonial.image_url && testimonial.image_url !== "/placeholder.svg" ? (
+                              <Image 
+                                src={testimonial.image_url} 
+                                alt={testimonial.name}
+                                fill
+                                className="object-cover"
+                              />
+                            ) : (
+                              <span className="text-gray-400 text-xs">{testimonial.name.charAt(0)}</span>
+                            )}
+                          </div>
+                          <div>
+                            <blockquote className="italic text-lg text-gray-500">
+                              "{testimonial.quote}"
+                            </blockquote>
+                            <footer className="mt-4 font-medium text-base not-italic">
+                              — {testimonial.name}
+                              {testimonial.style && <span className="text-sm text-gray-500 ml-2">({testimonial.style} Student)</span>}
+                              {testimonial.role && <span className="text-sm text-gray-500 ml-2">({testimonial.role})</span>}
+                            </footer>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex justify-center mt-6 space-x-2">
+                {testimonialsData.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => scrollToValue(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      selectedValueIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
+                    }`}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                  />
                 ))}
               </div>
             </div>
-            
-            <div className="flex justify-center mt-6 space-x-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => scrollToTestimonial(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    selectedTestimonialIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
-                  }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -778,7 +748,7 @@ export default function AboutPage() {
                 Find an Instructor
               </Button>
             </Link>
-            <Link href="https://forms.gle/reV28gHLZ8zvobUZ6" target="_blank" rel="noopener noreferrer">
+            <Link href="/become-instructor">
               <Button
                 size="lg"
                 variant="outline"

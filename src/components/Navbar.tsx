@@ -175,7 +175,7 @@ export default function Navbar() {
             </>
           )}
           
-          <Link href="https://forms.gle/ENvPqjyLuEGHMpqi6" target="_blank" rel="noopener noreferrer">
+          <Link href="/get-started">
             <button className="hidden rounded-md bg-[#EC407A] px-3 py-1.5 text-sm font-medium text-white md:block">
               Get Started
             </button>
@@ -321,7 +321,7 @@ export default function Navbar() {
                   )}
                 </>
               )}
-              <Link href="https://forms.gle/ENvPqjyLuEGHMpqi6" target="_blank" rel="noopener noreferrer" className="block">
+              <Link href="/get-started" className="block">
                 <button className="w-full rounded-md bg-[#EC407A] px-4 py-3 text-sm font-bold text-white hover:bg-[#D03A6C] transition shadow-md">
                   Get Started
                 </button>

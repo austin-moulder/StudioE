@@ -294,7 +294,7 @@ export default function ContactPage() {
               {
                 question: "How do I become an instructor on Studio E?",
                 answer:
-                  "Instructors can apply through our 'Become an Instructor' page. We review applications based on experience, qualifications, and teaching style.",
+                  "Instructors can apply through our 'Become an Instructor' page on the website. We review applications based on experience, qualifications, and teaching style.",
               },
               {
                 question: "How are payments handled?",
