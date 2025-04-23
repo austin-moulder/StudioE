@@ -46,8 +46,10 @@ interface Event {
   is_featured: boolean
   status: string
   event_type: string
+  approved: boolean
   spots_left?: number
   cta_url?: string  // Make cta_url optional
+  gallery_url?: string // URL to the event gallery
 }
 
 function EventsContent() {
@@ -94,6 +96,7 @@ function EventsContent() {
       const { data, error } = await supabase
         .from('EVENT')
         .select('*')
+        .eq('approved', true) // Only fetch approved events
       
       if (error) {
         console.error('Error fetching events:', error)
@@ -389,7 +392,7 @@ function EventsContent() {
                 Filter
               </Button>
               
-              <Link href="https://forms.gle/2oaGTW52VBkpXa887" target="_blank" rel="noopener noreferrer">
+              <Link href="/submit-event">
                 <Button className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 ml-2">
                   <CalendarPlus className="h-4 w-4" />
                   Submit Your Event
@@ -717,9 +720,17 @@ function EventsContent() {
                           </div>
                         </div>
                         <div className="flex items-center justify-end pt-3">
-                          <Button size="sm" variant="outline" className="text-xs px-3 py-1 h-7">
-                            View Gallery
-                          </Button>
+                          {event.gallery_url && (
+                            <Link 
+                              href={event.gallery_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                            >
+                              <Button size="sm" variant="outline" className="text-xs px-3 py-1 h-7">
+                                View Gallery
+                              </Button>
+                            </Link>
+                          )}
                         </div>
                       </CardContent>
                     </Card>

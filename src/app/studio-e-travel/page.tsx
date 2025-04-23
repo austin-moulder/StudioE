@@ -93,7 +93,7 @@ export default function StudioETravel() {
             Join our annual international dance trip and explore the world through movement
           </p>
           <div className="mt-8">
-            <Link href="https://forms.gle/PNjEgVMQKoVWP2Rc9" target="_blank">
+            <Link href="/travel-vote">
               <Button size="lg" variant="secondary" className="font-semibold">
                 Vote for Our Next Destination
               </Button>
@@ -168,7 +168,7 @@ export default function StudioETravel() {
           <p className="text-gray-500 mb-8">
             Cast your vote by mid-May to help choose our next destination.
           </p>
-          <Link href="https://forms.gle/PNjEgVMQKoVWP2Rc9" target="_blank">
+          <Link href="/travel-vote">
             <Button size="lg" className="bg-[#FF3366] text-white hover:bg-[#FF3366]/90">
               Vote Now
             </Button>

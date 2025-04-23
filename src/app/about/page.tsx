@@ -155,7 +155,72 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Our Mission */}
+      {/* How Does it Work? */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-8">How Does it Work?</h2>
+          
+          <div className="max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 text-center mb-10">
+              Finding and booking a dance instructor has never been easier
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-xl font-bold mb-4 text-[#FF3366]">Current Process</h3>
+                <ol className="space-y-4">
+                  <li className="flex gap-3">
+                    <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF3366] text-white font-bold">1</div>
+                    <p>Find an instructor on Studio E and view their profile</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF3366] text-white font-bold">2</div>
+                    <p>Click "Contact Instructor" and send a message about what you're looking to achieve with private lessons</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF3366] text-white font-bold">3</div>
+                    <p>Studio E coordinates the details and puts you in direct contact with the instructor</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF3366] text-white font-bold">4</div>
+                    <p>Schedule your lessons and start dancing!</p>
+                  </li>
+                </ol>
+              </div>
+              
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-xl font-bold mb-4 text-[#9933CC]">Coming Soon</h3>
+                <p className="mb-4">As Studio E evolves, we're building a complete platform that will include:</p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="flex-shrink-0 text-[#9933CC] mt-1">✓</span>
+                    <span>Integrated scheduling with instructor availability</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="flex-shrink-0 text-[#9933CC] mt-1">✓</span>
+                    <span>Secure online payment processing</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="flex-shrink-0 text-[#9933CC] mt-1">✓</span>
+                    <span>Dance space recommendations and booking</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="flex-shrink-0 text-[#9933CC] mt-1">✓</span>
+                    <span>Automated cancellation policies</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="flex-shrink-0 text-[#9933CC] mt-1">✓</span>
+                    <span>Dispute resolution support</span>
+                  </li>
+                </ul>
+                <p className="mt-4 text-sm text-gray-500 italic">Just find who you like and book directly on the site!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Studio E */}
       <section className="bg-gray-50 py-16 md:py-24">
         <div className="container">
           <div className="mx-auto max-w-3xl text-center">

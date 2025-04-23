@@ -715,7 +715,7 @@ function InstructorsContent() {
                 </li>
               </ul>
               <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                <Link href="https://forms.gle/LX4zHkZ1uLurnW9q6" target="_blank" rel="noopener noreferrer">
+                <Link href="/become-instructor">
                   <Button size="lg" className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">Apply to Teach</Button>
                 </Link>
                 <Link href="/dance-business-consulting">

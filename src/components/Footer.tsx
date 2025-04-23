@@ -179,6 +179,9 @@ export default function Footer() {
                 Admin
               </Link>
             )}
+            <Link href="/code-of-conduct" className="hover:text-gray-800">
+              Code of Conduct
+            </Link>
             <Link href="#" className="hover:text-gray-800">
               Privacy Policy
             </Link>
@@ -189,10 +192,6 @@ export default function Footer() {
               Cookie Policy
             </Link>
           </div>
-        </div>
-
-        <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Studio E. All rights reserved.</p>
         </div>
       </div>
     </footer>
