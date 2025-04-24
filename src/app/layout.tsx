@@ -7,7 +7,7 @@ import { Providers } from "@/lib/providers";
 import { cn } from "@/lib/utils";
 import SchemaOrg from "@/components/SchemaOrg";
 import ScrollToTop from "@/components/ScrollToTop";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "sonner";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";

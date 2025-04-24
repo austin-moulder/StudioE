@@ -27,6 +27,7 @@ import { Instructor } from '@/types/instructor';
 import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { TestimonialCard } from "@/app/components/TestimonialCard"
 import { Testimonial } from "@/types/testimonial"
+import NewUserPopup from "@/app/components/NewUserPopup"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -290,6 +291,9 @@ export default function Home() {
       {tooltipPosition.show && (
         <ComingSoonTooltip x={tooltipPosition.x} y={tooltipPosition.y} message={tooltipPosition.message} />
       )}
+
+      {/* New User Popup Form */}
+      <NewUserPopup />
 
       {/* Hero Section */}
       <section className="relative">

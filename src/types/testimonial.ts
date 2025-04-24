@@ -1,14 +1,11 @@
 export interface Testimonial {
-  id: number;
+  id: string;
   name: string;
   quote: string;
-  style?: string;
-  role?: string;
-  image_url?: string;
-  rating?: number;
-  featured: boolean;
-  location?: string;
+  style: string;
   type?: string;
+  rating?: number;
+  image_url?: string;
+  featured: boolean;
   created_at: string;
-  updated_at: string;
 } 
