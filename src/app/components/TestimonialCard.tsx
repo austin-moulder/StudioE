@@ -16,7 +16,7 @@ export function TestimonialCard({
   variant = "default",
   showRating = true
 }: TestimonialCardProps) {
-  const { name, quote, style, role, image_url, rating = 5 } = testimonial
+  const { name, quote, style, type, image_url, rating = 5 } = testimonial
   
   // For business testimonials
   if (variant === "business") {
@@ -25,7 +25,7 @@ export function TestimonialCard({
         <div>
           <div>
             <h3 className="font-semibold">{name}</h3>
-            {role && <p className="text-sm text-muted-foreground">{role}</p>}
+            {type && <p className="text-sm text-muted-foreground">{type}</p>}
           </div>
         </div>
         <div className="mt-4">
@@ -56,7 +56,7 @@ export function TestimonialCard({
           <div>
             <h3 className="font-semibold text-gray-900">{name}</h3>
             {style && <p className="text-sm text-gray-500">{style} Student</p>}
-            {role && <p className="text-sm text-gray-500">{role}</p>}
+            {type && <p className="text-sm text-gray-500">{type}</p>}
           </div>
         </div>
         <p className="text-gray-600 italic mb-4">"{quote}"</p>
@@ -96,7 +96,7 @@ export function TestimonialCard({
           <footer className="mt-4 font-medium text-base not-italic">
             — {name}
             {style && <span className="text-sm text-gray-500 ml-2">({style} Student)</span>}
-            {role && <span className="text-sm text-gray-500 ml-2">({role})</span>}
+            {type && <span className="text-sm text-gray-500 ml-2">({type})</span>}
           </footer>
         </div>
       </div>

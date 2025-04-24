@@ -204,7 +204,7 @@ export default function BusinessExpertsPage() {
                   <div>
                     <div>
                       <h3 className="font-semibold">{testimonial.name}</h3>
-                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                      <p className="text-sm text-muted-foreground">{testimonial.type || 'Business'}</p>
                     </div>
                   </div>
                   <div className="mt-4">

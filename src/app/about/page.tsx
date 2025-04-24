@@ -768,7 +768,7 @@ export default function AboutPage() {
                             <footer className="mt-4 font-medium text-base not-italic">
                               — {testimonial.name}
                               {testimonial.style && <span className="text-sm text-gray-500 ml-2">({testimonial.style} Student)</span>}
-                              {testimonial.role && <span className="text-sm text-gray-500 ml-2">({testimonial.role})</span>}
+                              {testimonial.type && <span className="text-sm text-gray-500 ml-2">({testimonial.type})</span>}
                             </footer>
                           </div>
                         </div>

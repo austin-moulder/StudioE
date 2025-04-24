@@ -19,11 +19,9 @@ export default function TestimonialsAdminPage() {
     name: "",
     quote: "",
     style: "",
-    role: "",
     image_url: "",
     rating: 5,
     featured: false,
-    location: "",
     type: ""
   })
 
@@ -73,17 +71,15 @@ export default function TestimonialsAdminPage() {
       name: testimonial.name,
       quote: testimonial.quote,
       style: testimonial.style || "",
-      role: testimonial.role || "",
       image_url: testimonial.image_url || "",
       rating: testimonial.rating || 5,
       featured: testimonial.featured,
-      location: testimonial.location || "",
       type: testimonial.type || ""
     })
     setIsEditing(true)
   }
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this testimonial?")) return
 
     try {
@@ -114,13 +110,10 @@ export default function TestimonialsAdminPage() {
             name: formData.name,
             quote: formData.quote,
             style: formData.style || null,
-            role: formData.role || null,
             image_url: formData.image_url || null,
             rating: formData.rating,
             featured: formData.featured,
-            location: formData.location || null,
-            type: formData.type || null,
-            updated_at: new Date().toISOString()
+            type: formData.type || null
           })
           .eq('id', editingTestimonial.id)
 
@@ -129,7 +122,7 @@ export default function TestimonialsAdminPage() {
         setTestimonials(prev => 
           prev.map(item => 
             item.id === editingTestimonial.id 
-              ? { ...item, ...formData, updated_at: new Date().toISOString() } 
+              ? { ...item, ...formData } 
               : item
           )
         )
@@ -143,11 +136,9 @@ export default function TestimonialsAdminPage() {
             name: formData.name,
             quote: formData.quote,
             style: formData.style || null,
-            role: formData.role || null,
             image_url: formData.image_url || null,
             rating: formData.rating,
             featured: formData.featured,
-            location: formData.location || null,
             type: formData.type || null
           })
           .select()
@@ -164,11 +155,9 @@ export default function TestimonialsAdminPage() {
         name: "",
         quote: "",
         style: "",
-        role: "",
         image_url: "",
         rating: 5,
         featured: false,
-        location: "",
         type: ""
       })
       setEditingTestimonial(null)
@@ -185,11 +174,9 @@ export default function TestimonialsAdminPage() {
       name: "",
       quote: "",
       style: "",
-      role: "",
       image_url: "",
       rating: 5,
       featured: false,
-      location: "",
       type: ""
     })
     setIsEditing(true)
@@ -258,14 +245,18 @@ export default function TestimonialsAdminPage() {
                 </div>
                 
                 <div className="space-y-2">
-                  <label htmlFor="role" className="block font-medium">Role</label>
-                  <Input
-                    id="role"
-                    name="role"
-                    value={formData.role}
+                  <label htmlFor="type" className="block font-medium">Type</label>
+                  <select
+                    id="type"
+                    name="type"
+                    value={formData.type}
                     onChange={handleInputChange}
-                    placeholder="e.g., Dance Instructor"
-                  />
+                    className="w-full border rounded-md p-2"
+                  >
+                    <option value="">General Testimonial</option>
+                    <option value="dance">Dance Testimonial</option>
+                    <option value="business">Business Testimonial</option>
+                  </select>
                 </div>
               </div>
               
@@ -278,33 +269,6 @@ export default function TestimonialsAdminPage() {
                   onChange={handleInputChange}
                   placeholder="https://example.com/image.jpg"
                 />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="location" className="block font-medium">Location</label>
-                <Input
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  placeholder="e.g., Chicago, IL"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="type" className="block font-medium">Type</label>
-                <select
-                  id="type"
-                  name="type"
-                  value={formData.type}
-                  onChange={handleInputChange}
-                  className="w-full border rounded-md p-2"
-                >
-                  <option value="">General Testimonial</option>
-                  <option value="dance">Dance Testimonial</option>
-                  <option value="business">Business Testimonial</option>
-                </select>
-                <p className="text-xs text-gray-500">Select the appropriate type: General (blank), Dance (homepage/about), or Business (business consulting page only)</p>
               </div>
               
               <div className="space-y-2">
@@ -372,9 +336,9 @@ export default function TestimonialsAdminPage() {
                 <tr className="border-b">
                   <th className="text-left p-2">Name</th>
                   <th className="text-left p-2">Quote</th>
-                  <th className="text-left p-2">Style/Role</th>
-                  <th className="text-left p-2">Featured</th>
+                  <th className="text-left p-2">Style</th>
                   <th className="text-left p-2">Type</th>
+                  <th className="text-left p-2">Featured</th>
                   <th className="text-right p-2">Actions</th>
                 </tr>
               </thead>
@@ -383,19 +347,29 @@ export default function TestimonialsAdminPage() {
                   <tr key={testimonial.id} className="border-b">
                     <td className="p-2 font-medium">{testimonial.name}</td>
                     <td className="p-2 max-w-xs truncate">{testimonial.quote}</td>
-                    <td className="p-2">{testimonial.style || testimonial.role || "-"}</td>
-                    <td className="p-2">{testimonial.featured ? "Yes" : "No"}</td>
+                    <td className="p-2">{testimonial.style || "-"}</td>
                     <td className="p-2">
                       {testimonial.type === 'business' ? "Business" : 
                        testimonial.type === 'dance' ? "Dance" : "General"}
                     </td>
+                    <td className="p-2">{testimonial.featured ? "Yes" : "No"}</td>
                     <td className="p-2 text-right">
-                      <Button variant="outline" size="sm" onClick={() => handleEdit(testimonial)} className="mr-2">
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleDelete(testimonial.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={() => handleEdit(testimonial)}
+                          className="p-1 text-blue-600 hover:text-blue-800"
+                          title="Edit"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(testimonial.id)}
+                          className="p-1 text-red-600 hover:text-red-800"
+                          title="Delete"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
