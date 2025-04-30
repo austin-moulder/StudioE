@@ -10,6 +10,7 @@ export interface RentalSpace {
   rating: number;
   availableHours: string;
   isFeatured: boolean;
+  isActive?: boolean;
   amenities: string[];
   imageUrl: string; // Primary image
   additionalImages?: string[]; // Other images
@@ -26,6 +27,7 @@ export async function getFeaturedRentalSpace(): Promise<RentalSpace | null> {
       .from('rental_spaces')
       .select('*')
       .eq('is_featured', true)
+      .eq('is_active', true) // Only get active listings
       .single();
 
     if (spaceError || !spaceData) {
@@ -73,6 +75,7 @@ export async function getFeaturedRentalSpace(): Promise<RentalSpace | null> {
       rating: spaceData.rating,
       availableHours: spaceData.available_hours,
       isFeatured: spaceData.is_featured,
+      isActive: spaceData.is_active,
       amenities: amenitiesData.map(item => item.amenity),
       imageUrl: primaryImage,
       additionalImages
@@ -90,7 +93,8 @@ export async function getFeaturedRentalSpace(): Promise<RentalSpace | null> {
  */
 export async function getAllRentalSpaces(excludeFeatured = false): Promise<RentalSpace[]> {
   try {
-    let query = supabase.from('rental_spaces').select('*');
+    let query = supabase.from('rental_spaces').select('*')
+      .eq('is_active', true); // Only get active listings
     
     if (excludeFeatured) {
       query = query.eq('is_featured', false);
@@ -148,6 +152,7 @@ export async function getAllRentalSpaces(excludeFeatured = false): Promise<Renta
         rating: space.rating,
         availableHours: space.available_hours,
         isFeatured: space.is_featured,
+        isActive: space.is_active,
         amenities: amenitiesData.map(item => item.amenity),
         imageUrl: primaryImage,
         additionalImages
@@ -220,6 +225,7 @@ export async function getRentalSpaceById(id: number): Promise<RentalSpace | null
       rating: spaceData.rating,
       availableHours: spaceData.available_hours,
       isFeatured: spaceData.is_featured,
+      isActive: spaceData.is_active,
       amenities: amenitiesData.map(item => item.amenity),
       imageUrl: primaryImage,
       additionalImages

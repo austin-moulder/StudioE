@@ -719,18 +719,25 @@ function EventsContent() {
                             {formatLocation(event.location)}
                           </div>
                         </div>
-                        <div className="flex items-center justify-end pt-3">
+                        <div className="flex items-center justify-end pt-3 gap-2">
                           {event.gallery_url && (
                             <Link 
                               href={event.gallery_url} 
                               target="_blank" 
                               rel="noopener noreferrer"
                             >
-                              <Button size="sm" variant="outline" className="text-xs px-3 py-1 h-7">
+                              <Button size="sm" className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7">
                                 View Gallery
                               </Button>
                             </Link>
                           )}
+                          <Link 
+                            href={`/events/${event.id}/reviews`}
+                          >
+                            <Button size="sm" variant="outline" className="text-xs px-3 py-1 h-7">
+                              Submit Review
+                            </Button>
+                          </Link>
                         </div>
                       </CardContent>
                     </Card>

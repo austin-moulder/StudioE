@@ -57,42 +57,62 @@ export default function FindDanceSpacePage() {
     return path || placeholderImage
   }
 
+  // Function to handle email inquiry
+  const handleInquiry = (space: RentalSpace) => {
+    // Create email with pre-populated subject and body
+    const subject = `Inquiry about ${space.name} dance space rental`;
+    const body = `Hello,\n\nI'm interested in renting the ${space.name} dance space. I would like to inquire about availability for the following times:\n\n[Please specify your desired dates and times]\n\nSpace details:\n- Address: ${space.address}\n- Capacity: ${space.capacity}\n- Price: $${space.pricePerHour}/hour\n\nThank you!`;
+    
+    // Create the mailto URL
+    const mailtoUrl = `mailto:studioelatindance@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Open email client
+    window.location.href = mailtoUrl;
+  };
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC] py-16">
         <div className="container flex flex-col items-center justify-center text-center text-white">
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Find Your Perfect Dance Space</h1>
-          <p className="mt-6 max-w-2xl text-lg">
+          <p className="mt-6 max-w-2xl text-lg mb-8">
             Discover affordable studios and spaces to teach private lessons or group classes
           </p>
         </div>
       </section>
 
       {/* Featured Space Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="container">
           <div className="text-center mb-12">
-            <Badge className="bg-[#F94C8D] mb-2">Featured Space</Badge>
-            <h2 className="text-3xl font-bold">Our Top Recommended Space for Instructors</h2>
+            <h2 className="text-3xl font-bold">Featured Space</h2>
             <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
-              This instructor-friendly space offers special rates for Studio E community members and has all the amenities you need to teach successfully.
+              Our top pick for a high-quality dance teaching venue
             </p>
           </div>
-
+          
           {loading ? (
             <div className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="relative h-[300px] md:h-full bg-gray-200" />
+                <div className="h-[300px] md:h-auto bg-gray-200" />
                 <div className="p-6">
-                  <div className="h-8 bg-gray-200 rounded-md w-3/4 mb-4" />
-                  <div className="h-4 bg-gray-200 rounded-md w-1/2 mb-8" />
-                  <div className="h-4 bg-gray-200 rounded-md w-full mb-4" />
-                  <div className="h-4 bg-gray-200 rounded-md w-full mb-4" />
-                  <div className="h-4 bg-gray-200 rounded-md w-3/4 mb-8" />
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="h-8 bg-gray-200 rounded-md w-full" />
-                    <div className="h-8 bg-gray-200 rounded-md w-full" />
+                  <div className="h-8 bg-gray-200 rounded w-3/4 mb-4" />
+                  <div className="h-4 bg-gray-200 rounded w-2/3 mb-6" />
+                  <div className="h-24 bg-gray-200 rounded mb-6" />
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="h-6 bg-gray-200 rounded" />
+                    <div className="h-6 bg-gray-200 rounded" />
+                    <div className="h-6 bg-gray-200 rounded col-span-2" />
+                  </div>
+                  <div className="h-6 bg-gray-200 rounded w-1/2 mb-2" />
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    <div className="h-6 w-20 bg-gray-200 rounded-full" />
+                    <div className="h-6 w-16 bg-gray-200 rounded-full" />
+                    <div className="h-6 w-24 bg-gray-200 rounded-full" />
+                  </div>
+                  <div className="flex justify-end">
+                    <div className="h-10 w-32 bg-gray-200 rounded" />
                   </div>
                 </div>
               </div>
@@ -156,7 +176,7 @@ export default function FindDanceSpacePage() {
                   <div className="mt-8 flex justify-end">
                     <Button 
                       className="bg-[#F94C8D] hover:bg-[#F94C8D]/90"
-                      onClick={() => console.log(`Booking ${featuredSpace.name}`)}
+                      onClick={() => handleInquiry(featuredSpace)}
                     >
                       Book This Space
                     </Button>
@@ -249,7 +269,7 @@ export default function FindDanceSpacePage() {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => console.log(`Inquiring about ${space.name}`)}
+                        onClick={() => handleInquiry(space)}
                       >
                         Inquire
                       </Button>
@@ -266,7 +286,7 @@ export default function FindDanceSpacePage() {
         </div>
       </section>
 
-      {/* Out of Town Section */}
+      {/* Coming in from out of town section - RESTORED */}
       <section className="py-12 bg-[#9333EA]/10">
         <div className="container">
           <div className="text-center">
@@ -307,7 +327,7 @@ export default function FindDanceSpacePage() {
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Benefits Section - RESTORED */}
       <section className="py-16 bg-white">
         <div className="container">
           <div className="text-center mb-12">
@@ -346,6 +366,39 @@ export default function FindDanceSpacePage() {
               <p className="text-gray-600">
                 Book by the hour, day, or establish recurring reservations for your regular classes.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Owner CTA Section - MOVED TO BOTTOM */}
+      <section className="py-16 bg-[#9333EA]/10">
+        <div className="container">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-0">
+              <div className="relative h-[250px] md:h-auto overflow-hidden">
+                <Image 
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Studios/event_owner_photo.jpg" 
+                  alt="Dance studio owner"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+              </div>
+              <div className="p-8 md:p-12 flex flex-col justify-center">
+                <h2 className="text-3xl font-bold text-gray-900">Are You a Studio Owner?</h2>
+                <p className="mt-4 text-lg text-gray-600">
+                  List your dance space on our platform and connect with instructors looking for the perfect venue. 
+                  Increase your revenue by filling unused hours.
+                </p>
+                <div className="mt-8">
+                  <Link href="/submit-dance-space">
+                    <Button className="bg-[#F94C8D] hover:bg-[#F94C8D]/90 text-white px-8 py-2 text-lg">
+                      List Your Space
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
