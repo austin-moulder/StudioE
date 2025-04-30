@@ -157,38 +157,67 @@ export default function AboutPage() {
 
       {/* How Does it Work? */}
       <section className="py-16 md:py-24 bg-white">
-        <div className="container">
+        <div className="container px-4 md:px-8">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-8">How Does it Work?</h2>
           
-          <div className="max-w-3xl mx-auto">
+          <div className="w-full">
             <p className="text-lg text-gray-700 text-center mb-10">
               Finding and booking a dance instructor has never been easier
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-xl font-bold mb-4 text-[#FF3366]">Current Process</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+              <div className="bg-gray-50 p-6 md:p-8 rounded-lg">
+                <h3 className="text-xl font-bold mb-4 text-[#FF3366]">Single Instructor Experience</h3>
+                <p className="mb-4">Want to learn from a specific instructor? Our focused approach includes:</p>
                 <ol className="space-y-4">
                   <li className="flex gap-3">
                     <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF3366] text-white font-bold">1</div>
-                    <p>Find an instructor on Studio E and view their profile</p>
+                    <p>
+                      <Link href="/instructors" className="hover:underline text-[#FF3366]">
+                        Find an instructor on Studio E
+                      </Link> and view their profile
+                    </p>
                   </li>
                   <li className="flex gap-3">
                     <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF3366] text-white font-bold">2</div>
-                    <p>Click "Contact Instructor" and send a message about what you're looking to achieve with private lessons</p>
+                    <p>Click "Contact Instructor" and send a message about what you're looking to achieve</p>
                   </li>
                   <li className="flex gap-3">
                     <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF3366] text-white font-bold">3</div>
-                    <p>Studio E coordinates the details and puts you in direct contact with the instructor</p>
-                  </li>
-                  <li className="flex gap-3">
-                    <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF3366] text-white font-bold">4</div>
-                    <p>Schedule your lessons and start dancing!</p>
+                    <p>Studio E coordinates the details and we'll get you dancing with your instructor</p>
                   </li>
                 </ol>
+                <p className="mt-4 text-sm text-gray-500 italic">Perfect for those who want to develop a relationship with one instructor!</p>
               </div>
               
-              <div className="bg-gray-50 p-6 rounded-lg">
+              <div className="bg-gray-50 p-6 md:p-8 rounded-lg">
+                <h3 className="text-xl font-bold mb-4 text-[#FF7A5A]">Multi-Instructor Experience</h3>
+                <p className="mb-4">Want to try different teaching styles? Our curated experience includes:</p>
+                <ol className="space-y-4">
+                  <li className="flex gap-3">
+                    <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF7A5A] text-white font-bold">1</div>
+                    <p>
+                      <a 
+                        href="mailto:studioelatindance@gmail.com?subject=Multi-Instructor Experience Request&body=Hello Studio E,%0A%0AI'm interested in the Multi-Instructor Experience. My dance goals are...%0A%0AThank you!"
+                        className="hover:underline text-[#FF7A5A]"
+                      >
+                        Send a message to Studio E
+                      </a> with your specific dance goals
+                    </p>
+                  </li>
+                  <li className="flex gap-3">
+                    <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF7A5A] text-white font-bold">2</div>
+                    <p>Schedule a complementary intro session to build your curriculum and instructor lineup</p>
+                  </li>
+                  <li className="flex gap-3">
+                    <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-[#FF7A5A] text-white font-bold">3</div>
+                    <p>Studio E sets up 5 private lessons across several instructors tailored to your goals</p>
+                  </li>
+                </ol>
+                <p className="mt-4 text-sm text-gray-500 italic">Perfect for those who want exposure to different teaching styles!</p>
+              </div>
+              
+              <div className="bg-gray-50 p-6 md:p-8 rounded-lg">
                 <h3 className="text-xl font-bold mb-4 text-[#9933CC]">Coming Soon</h3>
                 <p className="mb-4">As Studio E evolves, we're building a complete platform that will include:</p>
                 <ul className="space-y-2">

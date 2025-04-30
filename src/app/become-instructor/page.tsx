@@ -21,6 +21,7 @@ export default function BecomeInstructorPage() {
     address: '',
     isInterested: 'yes',
     teachingStyles: [] as string[],
+    otherTeachingStyle: '',
     teachingInfo: '',
     goals: '',
     teachingLocations: [] as string[],
@@ -53,6 +54,12 @@ export default function BecomeInstructorPage() {
     setLoading(true)
 
     try {
+      // Combine selected teaching styles with "Other" option if provided
+      const finalTeachingStyles = [...formData.teachingStyles]
+      if (formData.otherTeachingStyle.trim()) {
+        finalTeachingStyles.push(`Other: ${formData.otherTeachingStyle.trim()}`)
+      }
+
       // Submit to Supabase
       const { data, error } = await supabase
         .from('instructor_applications')
@@ -63,7 +70,7 @@ export default function BecomeInstructorPage() {
           phone: formData.phone,
           address: formData.address,
           is_interested: formData.isInterested,
-          teaching_styles: formData.teachingStyles,
+          teaching_styles: finalTeachingStyles,
           teaching_info: formData.teachingInfo,
           goals: formData.goals,
           teaching_locations: formData.teachingLocations,
@@ -86,6 +93,7 @@ export default function BecomeInstructorPage() {
         address: '',
         isInterested: 'yes',
         teachingStyles: [],
+        otherTeachingStyle: '',
         teachingInfo: '',
         goals: '',
         teachingLocations: [],
@@ -267,6 +275,23 @@ export default function BecomeInstructorPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="otherTeachingStyle" className="font-medium">
+                  Other teaching style (optional)
+                </Label>
+                <Input 
+                  id="otherTeachingStyle"
+                  name="otherTeachingStyle"
+                  value={formData.otherTeachingStyle}
+                  onChange={handleInputChange}
+                  className="mt-1"
+                  placeholder="Enter any additional teaching styles not listed above"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  If you teach something that's not on our list, please specify it here
+                </p>
               </div>
 
               <div>

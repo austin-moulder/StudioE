@@ -174,12 +174,12 @@ export default function NewUserPopup() {
         </button>
         
         <div className="flex flex-col md:flex-row">
-          <div className="w-full md:w-1/2 relative h-48 md:h-auto">
+          <div className="w-full md:w-1/2 relative h-64 md:h-auto">
             <Image
               src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/popup_1.jpg"
               alt="Dance Community"
               fill
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent md:hidden"></div>

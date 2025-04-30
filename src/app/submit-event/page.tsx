@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase/client'
+import SupabaseImageUploader from '@/components/SupabaseImageUploader'
 
 export default function SubmitEventPage() {
   const router = useRouter()
@@ -41,7 +42,17 @@ export default function SubmitEventPage() {
   }
 
   const handleSelectChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    // For event_type field, capitalize the first letter
+    if (field === 'event_type') {
+      const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+      setFormData(prev => ({ ...prev, [field]: capitalizedValue }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
+  }
+
+  const handleImageUpload = (url: string) => {
+    setFormData(prev => ({ ...prev, image_url: url }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -208,7 +219,7 @@ export default function SubmitEventPage() {
                         </SelectTrigger>
                         <SelectContent className="bg-white">
                           {eventTypes.map(type => (
-                            <SelectItem key={type} value={type.toLowerCase()}>
+                            <SelectItem key={type} value={type}>
                               {type}
                             </SelectItem>
                           ))}
@@ -302,13 +313,13 @@ export default function SubmitEventPage() {
                         onChange={handleInputChange}
                         required
                         className="mt-1"
-                        placeholder="e.g. Dance Studio XYZ, 123 Main St, Chicago, IL"
+                        placeholder="e.g. Studio E, 123 Main St, Chicago, IL"
                       />
                     </div>
 
                     <div>
                       <Label htmlFor="price" className="font-medium">
-                        Price ($)
+                        Price (optional)
                       </Label>
                       <Input 
                         id="price"
@@ -317,26 +328,26 @@ export default function SubmitEventPage() {
                         value={formData.price}
                         onChange={handleInputChange}
                         className="mt-1"
-                        placeholder="e.g. 20 (enter 0 for free events)"
+                        placeholder="e.g. $20, $15-25, Free"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="image_url" className="font-medium">
-                        Event Image URL (optional)
+                      <Label className="font-medium">
+                        Event Image
                       </Label>
-                      <Input 
-                        id="image_url"
-                        name="image_url"
-                        type="url"
-                        value={formData.image_url}
-                        onChange={handleInputChange}
-                        className="mt-1"
-                        placeholder="e.g. https://your-image-url.com/image.jpg"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        If left blank, a default image will be used. For best results, use a square image.
-                      </p>
+                      <div className="mt-1">
+                        <SupabaseImageUploader 
+                          bucket="events"
+                          folder="images"
+                          onUploadComplete={handleImageUpload}
+                          acceptedFileTypes="image/jpeg, image/png, image/jpg, image/webp"
+                          maxFileSizeMB={5}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Upload an image for your event. For best results, use a square image.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -454,7 +465,7 @@ export default function SubmitEventPage() {
 
                     <div>
                       <Label htmlFor="business_planning" className="font-medium">
-                        Business Planning Notes (optional)
+                        Additional Comments (optional)
                       </Label>
                       <Textarea 
                         id="business_planning"
@@ -463,7 +474,7 @@ export default function SubmitEventPage() {
                         onChange={handleInputChange}
                         className="mt-1"
                         rows={3}
-                        placeholder="Any business planning notes for the event"
+                        placeholder="Any additional comments or information about the event"
                       />
                     </div>
                   </div>
