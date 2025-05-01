@@ -14,7 +14,10 @@ import {
   SearchIcon,
   ChevronDown,
   Check,
-  X
+  X,
+  Brain,
+  Activity,
+  ArrowRight
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -67,7 +70,7 @@ function ClassesHero() {
           Explore Dance Classes
         </h1>
         <p className="mt-6 max-w-2xl text-lg mb-8">
-          Discover dance classes from studios across Chicago for all levels and styles
+          Discover dance classes from studios across the nation for all levels and styles
         </p>
       </div>
     </section>
@@ -128,16 +131,52 @@ function ClassesContent() {
             else if (className.includes('bachata')) styles.add('Bachata')
             else if (className.includes('kizomba')) styles.add('Kizomba')
             else if (className.includes('zouk')) styles.add('Zouk')
-            else if (className.includes('afro')) styles.add('Afro')
+            else if (className.includes('afro') || className.includes('cuban')) styles.add('Afro Cuban')
+            else if (className.includes('heel')) styles.add('Heels')
+            else if (className.includes('choreo') || className.includes('choreography')) styles.add('Choreo')
             else styles.add('Other')
             
-            // Extract location
+            // Extract location - properly handling address formatting
             const address = classItem.company.address
-            const city = address.split(',')[1]?.trim() || 'Chicago'
+            // Split by comma and extract city (typically the second or third element)
+            const addressParts = address.split(',').map(part => part.trim())
+            
+            // If address has 3 or more parts, city is likely the second-to-last element
+            // Example: "123 Main St, 3rd Floor, Chicago, IL 60601" -> "Chicago"
+            let city = 'Chicago' // Default
+            if (addressParts.length >= 3) {
+              // City is typically before the state
+              city = addressParts[addressParts.length - 2]
+              
+              // Check if this looks like a proper city (not a floor number, suite, etc.)
+              if (city.toLowerCase().includes('floor') || 
+                  city.toLowerCase().includes('suite') || 
+                  city.toLowerCase().includes('apt') ||
+                  city.match(/^\d/) // Starts with number
+              ) {
+                // If not a proper city, use the default
+                city = 'Chicago'
+              }
+            } else if (addressParts.length === 2) {
+              // Simple address like "123 Main St, Chicago"
+              city = addressParts[1]
+            }
+            
             locationSet.add(city)
           })
           
-          setDanceStyles(Array.from(styles))
+          // Get sorted dance styles with 'Other' at the end
+          const styleArray = Array.from(styles)
+          const otherIndex = styleArray.indexOf('Other')
+          if (otherIndex !== -1) {
+            styleArray.splice(otherIndex, 1) // Remove "Other"
+            styleArray.sort()
+            styleArray.push('Other') // Add "Other" at the end
+          } else {
+            styleArray.sort()
+          }
+          
+          setDanceStyles(styleArray)
           setLocations(Array.from(locationSet))
         }
         
@@ -183,8 +222,26 @@ function ClassesContent() {
           return className.includes('kizomba')
         else if (danceStyle.toLowerCase() === 'zouk') 
           return className.includes('zouk')
-        else if (danceStyle.toLowerCase() === 'afro') 
-          return className.includes('afro')
+        else if (danceStyle.toLowerCase() === 'afro cuban') 
+          return className.includes('afro') || className.includes('cuban')
+        else if (danceStyle.toLowerCase() === 'heels') 
+          return className.includes('heel')
+        else if (danceStyle.toLowerCase() === 'choreo') 
+          return className.includes('choreo') || className.includes('choreography')
+        else if (danceStyle.toLowerCase() === 'other') {
+          // Return true if class doesn't match any of the above categories
+          return !(
+            className.includes('salsa') ||
+            className.includes('bachata') ||
+            className.includes('kizomba') ||
+            className.includes('zouk') ||
+            className.includes('afro') ||
+            className.includes('cuban') ||
+            className.includes('heel') ||
+            className.includes('choreo') ||
+            className.includes('choreography')
+          )
+        }
         
         return true
       })
@@ -204,11 +261,17 @@ function ClassesContent() {
     
     // Filter by class type
     if (showSeriesOnly) {
-      filtered = filtered.filter(classItem => classItem.is_series_start)
+      filtered = filtered.filter(classItem => 
+        classItem.is_series_start && 
+        classItem.series_length !== null && 
+        classItem.is_drop_in === false
+      )
     }
     
     if (showDropInOnly) {
-      filtered = filtered.filter(classItem => classItem.is_drop_in)
+      filtered = filtered.filter(classItem => 
+        classItem.is_drop_in === true || classItem.series_length === null
+      )
     }
     
     if (showOpenClassesOnly) {
@@ -307,10 +370,10 @@ function ClassesContent() {
                   Dance Style
                 </label>
                 <Select value={danceStyle} onValueChange={setDanceStyle}>
-                  <SelectTrigger id="dance-style">
+                  <SelectTrigger id="dance-style" className="bg-white !bg-opacity-100">
                     <SelectValue placeholder="All Styles" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white !bg-opacity-100">
                     <SelectItem value="all">All Styles</SelectItem>
                     {danceStyles.map(style => (
                       <SelectItem key={style} value={style}>{style}</SelectItem>
@@ -324,10 +387,10 @@ function ClassesContent() {
                   Location
                 </label>
                 <Select value={location} onValueChange={setLocation}>
-                  <SelectTrigger id="location">
+                  <SelectTrigger id="location" className="bg-white !bg-opacity-100">
                     <SelectValue placeholder="All Locations" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white !bg-opacity-100">
                     <SelectItem value="all">All Locations</SelectItem>
                     {locations.map(loc => (
                       <SelectItem key={loc} value={loc}>{loc}</SelectItem>
@@ -359,9 +422,14 @@ function ClassesContent() {
                 <Checkbox 
                   id="series-only" 
                   checked={showSeriesOnly} 
-                  onCheckedChange={(checked) => setShowSeriesOnly(checked as boolean)} 
+                  onCheckedChange={(checked) => {
+                    const isChecked = checked as boolean;
+                    setShowSeriesOnly(isChecked);
+                    if (isChecked) setShowDropInOnly(false);
+                  }}
+                  disabled={showDropInOnly}
                 />
-                <label htmlFor="series-only" className="text-sm">
+                <label htmlFor="series-only" className={`text-sm ${showDropInOnly ? 'text-gray-400' : ''}`}>
                   Series Classes Only
                 </label>
               </div>
@@ -370,9 +438,14 @@ function ClassesContent() {
                 <Checkbox 
                   id="drop-in-only" 
                   checked={showDropInOnly} 
-                  onCheckedChange={(checked) => setShowDropInOnly(checked as boolean)} 
+                  onCheckedChange={(checked) => {
+                    const isChecked = checked as boolean;
+                    setShowDropInOnly(isChecked);
+                    if (isChecked) setShowSeriesOnly(false);
+                  }}
+                  disabled={showSeriesOnly}
                 />
-                <label htmlFor="drop-in-only" className="text-sm">
+                <label htmlFor="drop-in-only" className={`text-sm ${showSeriesOnly ? 'text-gray-400' : ''}`}>
                   Drop-in Classes Only
                 </label>
               </div>
@@ -384,7 +457,7 @@ function ClassesContent() {
                   onCheckedChange={(checked) => setShowOpenClassesOnly(checked as boolean)} 
                 />
                 <label htmlFor="open-only" className="text-sm">
-                  Open Classes Only (No Approval Required)
+                  No Approval Required
                 </label>
               </div>
               
@@ -425,10 +498,10 @@ function ClassesContent() {
                 value={itemsPerPage.toString()} 
                 onValueChange={(value) => setItemsPerPage(Number(value))}
               >
-                <SelectTrigger className="w-[80px]">
+                <SelectTrigger className="w-[80px] bg-white !bg-opacity-100">
                   <SelectValue placeholder="20" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white !bg-opacity-100">
                   <SelectItem value="10">10</SelectItem>
                   <SelectItem value="20">20</SelectItem>
                   <SelectItem value="50">50</SelectItem>
@@ -454,6 +527,7 @@ function ClassesContent() {
                       <TableHead className="font-semibold">Instructor</TableHead>
                       <TableHead className="font-semibold text-center">Price</TableHead>
                       <TableHead className="font-semibold text-center">Type</TableHead>
+                      <TableHead className="font-semibold text-center w-20">Approval</TableHead>
                       <TableHead className="font-semibold text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -493,23 +567,28 @@ function ClassesContent() {
                             </span>
                           </TableCell>
                           <TableCell className="text-center">
-                            <div className="flex flex-wrap justify-center gap-1">
-                              {classItem.is_series_start && (
-                                <Badge variant="outline" className="border-blue-500 text-blue-600">
-                                  Series
-                                </Badge>
-                              )}
-                              {classItem.is_drop_in && (
-                                <Badge variant="outline" className="border-green-500 text-green-600">
-                                  Drop-in
-                                </Badge>
-                              )}
-                              {classItem.instructor_approval_required && (
-                                <Badge variant="outline" className="border-amber-500 text-amber-600">
-                                  Approval
-                                </Badge>
-                              )}
-                            </div>
+                            {classItem.is_series_start && classItem.series_length ? (
+                              <Badge variant="outline" className="border-blue-500 text-blue-600">
+                                Series {classItem.series_length > 0 ? `(${classItem.series_length})` : ''}
+                              </Badge>
+                            ) : classItem.is_drop_in === true || classItem.series_length === null ? (
+                              <Badge variant="outline" className="border-green-500 text-green-600">
+                                Drop-in
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="border-gray-500 text-gray-600">
+                                Class
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            {classItem.instructor_approval_required ? (
+                              <Badge variant="outline" className="border-amber-500 text-amber-600">
+                                Required
+                              </Badge>
+                            ) : (
+                              <span className="text-sm text-gray-500">-</span>
+                            )}
                           </TableCell>
                           <TableCell className="text-right">
                             <Button 
@@ -520,7 +599,7 @@ function ClassesContent() {
                                 const subject = `Inquiry about ${classItem.class_name} dance class`;
                                 const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
                                 
-                                window.location.href = `mailto:${classItem.company.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                                window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                               }}
                             >
                               Inquire
@@ -530,7 +609,7 @@ function ClassesContent() {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan={7} className="h-24 text-center">
+                        <TableCell colSpan={8} className="h-24 text-center">
                           No classes found matching your filters.
                         </TableCell>
                       </TableRow>
@@ -618,7 +697,7 @@ function ClassesContent() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold">Why Take Dance Classes</h2>
             <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
-              Discover the many benefits of learning to dance with our partner studios
+              Discover the many benefits of learning to dance and adopting a beginner's mindset
             </p>
           </div>
           
@@ -635,23 +714,34 @@ function ClassesContent() {
             
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="w-12 h-12 bg-[#9333EA]/10 text-[#9333EA] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Calendar className="h-6 w-6" />
+                <Brain className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-center">Consistent Progress</h3>
+              <h3 className="text-xl font-bold mb-2 text-center">Mental Health</h3>
               <p className="text-gray-600 text-center">
-                Regular classes help you build skills consistently with guidance from experienced instructors.
+                Improve your mood, reduce stress, and boost cognitive function through regular dance practice.
               </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <div className="w-12 h-12 bg-[#FF3366]/10 text-[#FF3366] rounded-full flex items-center justify-center mx-auto mb-4">
-                <DollarSign className="h-6 w-6" />
+              <div className="w-12 h-12 bg-[#06B6D4]/10 text-[#06B6D4] rounded-full flex items-center justify-center mx-auto mb-4">
+                <Activity className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold mb-2 text-center">Affordable Options</h3>
+              <h3 className="text-xl font-bold mb-2 text-center">Physical Fitness</h3>
               <p className="text-gray-600 text-center">
-                Find classes that fit your budget with both drop-in options and discounted series packages.
+                Enhance coordination, flexibility, and cardiovascular health while having fun.
               </p>
             </div>
+          </div>
+          
+          <div className="mt-10 text-center">
+            <Link 
+              href="https://www.joinstudioe.com/blog/salsa-dance-fundamentals" 
+              target="_blank"
+              className="inline-flex items-center text-[#F94C8D] hover:underline"
+            >
+              Learn more about the importance of taking classes and the beginner's mindset
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
