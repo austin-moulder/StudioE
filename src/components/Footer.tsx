@@ -182,10 +182,10 @@ export default function Footer() {
             <Link href="/code-of-conduct" className="hover:text-gray-800">
               Code of Conduct
             </Link>
-            <Link href="#" className="hover:text-gray-800">
+            <Link href="/privacy" className="hover:text-gray-800">
               Privacy Policy
             </Link>
-            <Link href="#" className="hover:text-gray-800">
+            <Link href="/terms" className="hover:text-gray-800">
               Terms of Service
             </Link>
             <Link href="#" className="hover:text-gray-800">

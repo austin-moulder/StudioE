@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase/client"
+import SubscribeToCalendar from "@/components/SubscribeToCalendar"
 
 // Function to get event type badge color
 const getEventTypeColor = (eventType: string | undefined) => {
@@ -320,10 +321,19 @@ function EventsContent() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A]/90 via-[#FF3366]/90 to-[#9933CC]/90 z-10" />
         <div className="relative h-[300px] w-full" />
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
-          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Upcoming Dance Events</h1>
-          <p className="mt-6 max-w-2xl text-lg">
-            Workshops, showcases, competitions, and social events for dancers of all levels.
-          </p>
+          <div>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Discover Dance Events</h1>
+            <p className="text-lg md:text-xl opacity-90 mb-6">
+              Workshops, showcases, competitions, and social events for dancers of all levels.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <SubscribeToCalendar 
+                feedType="events" 
+                buttonVariant="outline" 
+                className="bg-transparent text-white border-white hover:bg-white/20" 
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -347,57 +357,61 @@ function EventsContent() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 md:flex md:w-auto md:items-end">
-              <div className="space-y-2">
-                <label htmlFor="event-type" className="text-sm font-medium">
-                  Event Type
-                </label>
-                <Select value={eventType} onValueChange={setEventType}>
-                  <SelectTrigger id="event-type" className="w-full md:w-[180px]">
-                    <SelectValue placeholder="All Events" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="all">All Events</SelectItem>
-                    <SelectItem value="social">Socials</SelectItem>
-                    <SelectItem value="workshop">Workshops</SelectItem>
-                    <SelectItem value="showcase">Showcases</SelectItem>
-                    <SelectItem value="festival">Festival</SelectItem>
-                    <SelectItem value="competition">Competition</SelectItem>
-                    <SelectItem value="community">Community</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="grid grid-cols-2 gap-4 md:flex md:items-end">
+                <div className="space-y-2">
+                  <label htmlFor="event-type" className="text-sm font-medium">
+                    Event Type
+                  </label>
+                  <Select value={eventType} onValueChange={setEventType}>
+                    <SelectTrigger id="event-type" className="w-full md:w-[180px]">
+                      <SelectValue placeholder="All Events" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="all">All Events</SelectItem>
+                      <SelectItem value="social">Socials</SelectItem>
+                      <SelectItem value="workshop">Workshops</SelectItem>
+                      <SelectItem value="showcase">Showcases</SelectItem>
+                      <SelectItem value="festival">Festival</SelectItem>
+                      <SelectItem value="competition">Competition</SelectItem>
+                      <SelectItem value="community">Community</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="space-y-2">
-                <label htmlFor="location" className="text-sm font-medium">
-                  Location
-                </label>
-                <Select value={location} onValueChange={setLocation}>
-                  <SelectTrigger id="location" className="w-full md:w-[180px]">
-                    <SelectValue placeholder="All Locations" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    <SelectItem value="all">All Locations</SelectItem>
-                    <SelectItem value="chicago">Chicago</SelectItem>
-                    <SelectItem value="online">Online Only</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2">
+                  <label htmlFor="location" className="text-sm font-medium">
+                    Location
+                  </label>
+                  <Select value={location} onValueChange={setLocation}>
+                    <SelectTrigger id="location" className="w-full md:w-[180px]">
+                      <SelectValue placeholder="All Locations" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="all">All Locations</SelectItem>
+                      <SelectItem value="chicago">Chicago</SelectItem>
+                      <SelectItem value="online">Online Only</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-
-              <Button 
-                className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
-                onClick={handleSearch}
-              >
-                <Filter className="h-4 w-4" />
-                Filter
-              </Button>
               
-              <Link href="/submit-event">
-                <Button className="flex items-center gap-2 h-10 self-end bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 ml-2">
-                  <CalendarPlus className="h-4 w-4" />
-                  Submit Your Event
+              <div className="flex gap-2 self-end">
+                <Button 
+                  className="flex items-center gap-2 h-10 bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
+                  onClick={handleSearch}
+                >
+                  <Filter className="h-4 w-4" />
+                  Filter
                 </Button>
-              </Link>
+
+                <Link href="/submit-event">
+                  <Button className="flex items-center gap-2 h-10 bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">
+                    <CalendarPlus className="h-4 w-4" />
+                    Submit Event
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
