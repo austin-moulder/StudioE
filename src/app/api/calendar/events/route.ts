@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
       busyStatus: 'BUSY',
       organizer: { name: 'Studio E', email: 'studioelatindance@gmail.com' },
       productId: 'Studio-E/Events',
+      url: 'https://joinstudioe.com/events'
     };
 
     // Generate iCalendar data

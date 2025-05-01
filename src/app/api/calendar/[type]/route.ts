@@ -20,6 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { type: string
       busyStatus: 'BUSY',
       organizer: { name: 'Studio E', email: 'studioelatindance@gmail.com' },
       productId: `Studio-E/${type === 'events' ? 'Events' : 'Classes'}`,
+      url: 'https://joinstudioe.com/' + type
     };
 
     // Generate iCalendar data
