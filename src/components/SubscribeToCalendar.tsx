@@ -29,7 +29,7 @@ const SubscribeToCalendar = ({
   const [copied, setCopied] = useState(false);
 
   // Always use absolute URL for production to avoid issues with dynamic domains
-  const feedUrl = `https://joinstudioe.com/api/calendar/${feedType}`;
+  const feedUrl = `https://www.joinstudioe.com/api/calendar/${feedType}`;
 
   // URLs for direct subscription in different calendar applications
   const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(feedUrl)}`;
@@ -57,7 +57,7 @@ const SubscribeToCalendar = ({
             <ChevronDown className="ml-2 h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="bg-white shadow-md border border-gray-200">
           <DropdownMenuItem onClick={() => window.open(googleCalendarUrl, '_blank')}>
             Google Calendar
           </DropdownMenuItem>

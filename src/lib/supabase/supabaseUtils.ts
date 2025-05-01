@@ -60,7 +60,7 @@ export const signInWithMagicLink = async (email: string): Promise<AuthResponse> 
     return await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `https://www.joinstudioe.com/auth/callback`,
         shouldCreateUser: true
       }
     });
