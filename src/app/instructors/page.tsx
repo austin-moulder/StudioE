@@ -164,6 +164,7 @@ function InstructorsContent() {
             bio: instructor.bio || '',
             imageUrl: instructor.image_url,
             featured: instructor.is_featured || false,
+            instructor_profiles: instructor.instructor_profiles,
             price: {
               lower: instructor.price_lower,
               upper: instructor.price_upper
@@ -485,18 +486,29 @@ function InstructorsContent() {
             <h2 className="text-2xl font-bold">
               {isLoading ? 'Loading...' : `${filteredInstructors.length} Instructors Found`}
             </h2>
-            <Select value={sortOrder} onValueChange={handleSortChange}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectItem value="recommended">Recommended</SelectItem>
-                <SelectItem value="rating-high">Highest Rated</SelectItem>
-                <SelectItem value="price-low">Price: Low to High</SelectItem>
-                <SelectItem value="price-high">Price: High to Low</SelectItem>
-                <SelectItem value="experience">Most Experienced</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-4">
+              <Link 
+                href="/instructor-profile-form" 
+                className="text-white bg-[#9333EA] hover:bg-[#9333EA]/90 py-2 px-3 rounded-md text-sm font-medium flex items-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Create Profile
+              </Link>
+              <Select value={sortOrder} onValueChange={handleSortChange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="recommended">Recommended</SelectItem>
+                  <SelectItem value="rating-high">Highest Rated</SelectItem>
+                  <SelectItem value="price-low">Price: Low to High</SelectItem>
+                  <SelectItem value="price-high">Price: High to Low</SelectItem>
+                  <SelectItem value="experience">Most Experienced</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {isLoading ? (
@@ -555,12 +567,16 @@ function InstructorsContent() {
                       ) : (
                         <span></span>  
                       )}
-                      <Link 
-                        href={`/instructors/${generateInstructorSlug(instructor.name)}`}
-                      className="text-[#F94C8D] hover:underline text-sm"
-                    >
-                      View Profile
-                      </Link>
+                      {instructor.instructor_profiles ? (
+                        <Link 
+                          href={`/instructors/${generateInstructorSlug(instructor.name)}`}
+                          className="text-[#F94C8D] hover:underline text-sm"
+                        >
+                          View Profile
+                        </Link>
+                      ) : (
+                        <span className="text-sm text-gray-500">Profile coming soon</span>
+                      )}
                   </div>
                 </CardContent>
               </Card>

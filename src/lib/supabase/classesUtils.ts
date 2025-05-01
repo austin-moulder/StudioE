@@ -23,6 +23,7 @@ export interface Class {
   notes: string | null
   company_id: string
   company: Company
+  is_active: boolean
 }
 
 export interface Company {

@@ -15,7 +15,10 @@ import {
   ChevronDown,
   Check,
   X,
-  ArrowRight
+  ArrowRight,
+  SlidersHorizontal,
+  ChevronUp,
+  Plus
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -118,6 +121,9 @@ function ClassesContent() {
   // Refs
   const tableRef = useRef<HTMLDivElement>(null)
   
+  // Additional state
+  const [filtersExpanded, setFiltersExpanded] = useState(false)
+  
   // Fetch data
   useEffect(() => {
     async function fetchData() {
@@ -210,6 +216,23 @@ function ClassesContent() {
     if (!classes.length) return
     
     let filtered = [...classes]
+    
+    // Filter out inactive classes
+    filtered = filtered.filter(classItem => classItem.is_active !== false)
+    
+    // Filter out classes where the end time has passed
+    const currentDate = new Date()
+    filtered = filtered.filter(classItem => {
+      // Parse the class date and end time
+      const classDate = new Date(classItem.class_date)
+      const [hours, minutes] = classItem.end_time.split(':').map(Number)
+      
+      // Set the end time hours and minutes on the class date
+      classDate.setHours(hours, minutes, 0, 0)
+      
+      // Only keep classes where the end time is in the future
+      return classDate > currentDate
+    })
     
     // Filter by search term
     if (searchTerm) {
@@ -324,6 +347,15 @@ function ClassesContent() {
     router.push(`/classes?${params.toString()}`)
   }
   
+  // When any filter changes, automatically update the URL after a short delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      applyFilters();
+    }, 500); // 500ms delay to avoid too many URL updates while typing
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm, danceStyle, location]);
+  
   // Reset filters
   const resetFilters = () => {
     setSearchTerm('')
@@ -345,6 +377,15 @@ function ClassesContent() {
     
     return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`
   }
+
+  // Format date to ensure correct display regardless of timezone
+  const formatDate = (dateString: string) => {
+    // Create date as UTC (as it is in the database) and format in the local timezone
+    const date = new Date(dateString);
+    // Fix for timezone issues by setting the time to noon UTC to avoid date shifting
+    date.setUTCHours(12, 0, 0, 0);
+    return format(date, 'MMM d, yyyy');
+  }
   
   // Get current page data
   const indexOfLastItem = currentPage * itemsPerPage
@@ -358,138 +399,157 @@ function ClassesContent() {
       <section className="py-8 bg-gray-50">
         <div className="container">
           <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h2 className="mb-6 text-xl font-bold">Find Your Perfect Dance Class</h2>
-            
-            <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
-              <div>
-                <label htmlFor="search" className="mb-2 block text-sm font-medium">
-                  Search
-                </label>
-                <div className="relative">
-                  <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                  <Input
-                    id="search"
-                    placeholder="Class, instructor or studio..."
-                    className="pl-10"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">Find Your Perfect Dance Class</h2>
               
-              <div>
-                <label htmlFor="dance-style" className="mb-2 block text-sm font-medium">
-                  Dance Style
-                </label>
-                <Select value={danceStyle} onValueChange={setDanceStyle}>
-                  <SelectTrigger id="dance-style" className="bg-white !bg-opacity-100">
-                    <SelectValue placeholder="All Styles" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white !bg-opacity-100">
-                    <SelectItem value="all">All Styles</SelectItem>
-                    {danceStyles.map(style => (
-                      <SelectItem key={style} value={style}>{style}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Desktop Submit Button - Right aligned */}
+              <Link href="/submit-class" className="hidden md:block">
+                <Button className="bg-[#9933CC] text-white hover:bg-[#9933CC]/90 flex items-center gap-1">
+                  <Plus className="h-4 w-4" />
+                  Submit a Class
+                </Button>
+              </Link>
               
-              <div>
-                <label htmlFor="location" className="mb-2 block text-sm font-medium">
-                  Location
-                </label>
-                <Select value={location} onValueChange={setLocation}>
-                  <SelectTrigger id="location" className="bg-white !bg-opacity-100">
-                    <SelectValue placeholder="All Locations" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white !bg-opacity-100">
-                    <SelectItem value="all">All Locations</SelectItem>
-                    {locations.map(loc => (
-                      <SelectItem key={loc} value={loc}>{loc}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <label htmlFor="price-range" className="mb-2 block text-sm font-medium">
-                  Price Range: ${priceRange[0]} - ${priceRange[1]}
-                </label>
-                <div className="px-3 py-2">
-                  <Slider
-                    id="price-range"
-                    min={0}
-                    max={200}
-                    step={5}
-                    value={[priceRange[0], priceRange[1]]}
-                    onValueChange={(value: number[]) => setPriceRange([value[0], value[1]])}
-                    className="py-1"
-                  />
-                </div>
-              </div>
+              {/* Mobile Filter Toggle */}
+              <button 
+                onClick={() => setFiltersExpanded(!filtersExpanded)}
+                className="md:hidden flex items-center gap-1 text-sm font-medium text-gray-700"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                {filtersExpanded ? 'Hide Filters' : 'Show Filters'}
+                {filtersExpanded ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </button>
             </div>
             
-            <div className="mt-6 flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Checkbox 
-                  id="series-only" 
-                  checked={showSeriesOnly} 
-                  onCheckedChange={(checked) => {
-                    const isChecked = checked as boolean;
-                    setShowSeriesOnly(isChecked);
-                    if (isChecked) setShowDropInOnly(false);
-                  }}
-                  disabled={showDropInOnly}
-                />
-                <label htmlFor="series-only" className={`text-sm ${showDropInOnly ? 'text-gray-400' : ''}`}>
-                  Series Classes Only
-                </label>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Checkbox 
-                  id="drop-in-only" 
-                  checked={showDropInOnly} 
-                  onCheckedChange={(checked) => {
-                    const isChecked = checked as boolean;
-                    setShowDropInOnly(isChecked);
-                    if (isChecked) setShowSeriesOnly(false);
-                  }}
-                  disabled={showSeriesOnly}
-                />
-                <label htmlFor="drop-in-only" className={`text-sm ${showSeriesOnly ? 'text-gray-400' : ''}`}>
-                  Drop-in Classes Only
-                </label>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Checkbox 
-                  id="open-only" 
-                  checked={showOpenClassesOnly}
-                  onCheckedChange={(checked) => setShowOpenClassesOnly(checked as boolean)} 
-                />
-                <label htmlFor="open-only" className="text-sm">
-                  No Approval Required
-                </label>
-              </div>
-              
-              <div className="ml-auto flex gap-2">
-                <Button 
-                  variant="outline" 
-                  onClick={resetFilters}
-                  className="flex items-center gap-1"
-                >
-                  <X className="h-4 w-4" />
-                  Reset
-                </Button>
+            <div className={`${filtersExpanded ? 'block' : 'hidden'} md:block`}>
+              <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
+                <div>
+                  <label htmlFor="search" className="mb-2 block text-sm font-medium">
+                    Search
+                  </label>
+                  <div className="relative">
+                    <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="search"
+                      placeholder="Class, instructor or studio..."
+                      className="pl-10"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
                 
-                <Button 
-                  onClick={applyFilters}
-                  className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 flex items-center gap-1"
-                >
-                  <Filter className="h-4 w-4" />
-                  Apply Filters
-                </Button>
+                <div>
+                  <label htmlFor="dance-style" className="mb-2 block text-sm font-medium">
+                    Dance Style
+                  </label>
+                  <Select value={danceStyle} onValueChange={setDanceStyle}>
+                    <SelectTrigger id="dance-style" className="bg-white !bg-opacity-100">
+                      <SelectValue placeholder="All Styles" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white !bg-opacity-100">
+                      <SelectItem value="all">All Styles</SelectItem>
+                      {danceStyles.map(style => (
+                        <SelectItem key={style} value={style}>{style}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label htmlFor="location" className="mb-2 block text-sm font-medium">
+                    Location
+                  </label>
+                  <Select value={location} onValueChange={setLocation}>
+                    <SelectTrigger id="location" className="bg-white !bg-opacity-100">
+                      <SelectValue placeholder="All Locations" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white !bg-opacity-100">
+                      <SelectItem value="all">All Locations</SelectItem>
+                      {locations.map(loc => (
+                        <SelectItem key={loc} value={loc}>{loc}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label htmlFor="price-range" className="mb-2 block text-sm font-medium">
+                    Price Range: ${priceRange[0]} - ${priceRange[1]}
+                  </label>
+                  <div className="px-3 py-2">
+                    <Slider
+                      id="price-range"
+                      min={0}
+                      max={200}
+                      step={5}
+                      value={[priceRange[0], priceRange[1]]}
+                      onValueChange={(value: number[]) => setPriceRange([value[0], value[1]])}
+                      className="py-1"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-6">
+                <div className="flex items-center gap-2">
+                  <Checkbox 
+                    id="series-only" 
+                    checked={showSeriesOnly} 
+                    onCheckedChange={(checked) => {
+                      const isChecked = checked as boolean;
+                      setShowSeriesOnly(isChecked);
+                      if (isChecked) setShowDropInOnly(false);
+                    }}
+                    disabled={showDropInOnly}
+                  />
+                  <label htmlFor="series-only" className={`text-sm ${showDropInOnly ? 'text-gray-400' : ''}`}>
+                    Series Classes Only
+                  </label>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Checkbox 
+                    id="drop-in-only" 
+                    checked={showDropInOnly} 
+                    onCheckedChange={(checked) => {
+                      const isChecked = checked as boolean;
+                      setShowDropInOnly(isChecked);
+                      if (isChecked) setShowSeriesOnly(false);
+                    }}
+                    disabled={showSeriesOnly}
+                  />
+                  <label htmlFor="drop-in-only" className={`text-sm ${showSeriesOnly ? 'text-gray-400' : ''}`}>
+                    Drop-in Classes Only
+                  </label>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Checkbox 
+                    id="open-only" 
+                    checked={showOpenClassesOnly}
+                    onCheckedChange={(checked) => setShowOpenClassesOnly(checked as boolean)} 
+                  />
+                  <label htmlFor="open-only" className="text-sm">
+                    No Approval Required
+                  </label>
+                </div>
+              </div>
+              
+              {/* Mobile Submit Button */}
+              <div className="md:hidden flex justify-center mt-6">
+                <Link href="/submit-class" className="w-full">
+                  <Button 
+                    className="bg-[#9933CC] text-white hover:bg-[#9933CC]/90 flex items-center gap-1 w-full justify-center"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Submit a Class
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -530,104 +590,187 @@ function ClassesContent() {
           ) : (
             <>
               <div className="overflow-hidden rounded-lg border shadow">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-gray-50">
-                      <TableHead className="font-semibold">Class</TableHead>
-                      <TableHead className="font-semibold">Date & Time</TableHead>
-                      <TableHead className="font-semibold">Studio</TableHead>
-                      <TableHead className="font-semibold">Instructor</TableHead>
-                      <TableHead className="font-semibold text-center">Price</TableHead>
-                      <TableHead className="font-semibold text-center">Type</TableHead>
-                      <TableHead className="font-semibold text-center w-20">Approval</TableHead>
-                      <TableHead className="font-semibold text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {currentClasses.length ? (
-                      currentClasses.map((classItem) => (
-                        <TableRow key={classItem.id} className="hover:bg-gray-50">
-                          <TableCell className="font-medium">
-                            {classItem.class_name}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex flex-col">
-                              <span className="flex items-center">
-                                <Calendar className="mr-1 h-4 w-4 text-gray-500" />
-                                {format(new Date(classItem.class_date), 'MMM d, yyyy')}
+                <div className="md:block hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-gray-50">
+                        <TableHead className="font-semibold">Class</TableHead>
+                        <TableHead className="font-semibold">Date & Time</TableHead>
+                        <TableHead className="font-semibold">Studio</TableHead>
+                        <TableHead className="font-semibold">Instructor</TableHead>
+                        <TableHead className="font-semibold text-center">Price</TableHead>
+                        <TableHead className="font-semibold text-center">Type</TableHead>
+                        <TableHead className="font-semibold text-center w-20">Approval</TableHead>
+                        <TableHead className="font-semibold text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {currentClasses.length ? (
+                        currentClasses.map((classItem) => (
+                          <TableRow key={classItem.id} className="hover:bg-gray-50">
+                            <TableCell className="font-medium">
+                              {classItem.class_name}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-col">
+                                <span className="flex items-center">
+                                  <Calendar className="mr-1 h-4 w-4 text-gray-500" />
+                                  {formatDate(classItem.class_date)}
+                                </span>
+                                <span className="flex items-center text-sm text-gray-600">
+                                  <Clock className="mr-1 h-3 w-3" />
+                                  {formatTime(classItem.start_time)} - {formatTime(classItem.end_time)}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-col">
+                                <span>{classItem.company.name}</span>
+                                <span className="flex items-center text-sm text-gray-600">
+                                  <MapPin className="mr-1 h-3 w-3" />
+                                  {classItem.company.address.split(',')[0]}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell>{classItem.instructor}</TableCell>
+                            <TableCell className="text-center">
+                              <span className="flex items-center justify-center">
+                                <DollarSign className="mr-1 h-4 w-4 text-green-600" />
+                                {classItem.price}
                               </span>
-                              <span className="flex items-center text-sm text-gray-600">
-                                <Clock className="mr-1 h-3 w-3" />
-                                {formatTime(classItem.start_time)} - {formatTime(classItem.end_time)}
-                              </span>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex flex-col">
-                              <span>{classItem.company.name}</span>
-                              <span className="flex items-center text-sm text-gray-600">
-                                <MapPin className="mr-1 h-3 w-3" />
-                                {classItem.company.address.split(',')[0]}
-                              </span>
-                            </div>
-                          </TableCell>
-                          <TableCell>{classItem.instructor}</TableCell>
-                          <TableCell className="text-center">
-                            <span className="flex items-center justify-center">
-                              <DollarSign className="mr-1 h-4 w-4 text-green-600" />
-                              {classItem.price}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-center">
-                            {classItem.is_series_start && classItem.series_length ? (
-                              <Badge variant="outline" className="border-blue-500 text-blue-600">
-                                Series {classItem.series_length > 0 ? `(${classItem.series_length})` : ''}
-                              </Badge>
-                            ) : classItem.is_drop_in === true || classItem.series_length === null ? (
-                              <Badge variant="outline" className="border-green-500 text-green-600">
-                                Drop-in
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="border-gray-500 text-gray-600">
-                                Class
-                              </Badge>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-center">
-                            {classItem.instructor_approval_required ? (
-                              <Badge variant="outline" className="border-amber-500 text-amber-600">
-                                Required
-                              </Badge>
-                            ) : (
-                              <span className="text-sm text-gray-500">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button 
-                              size="sm"
-                              className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
-                              onClick={() => {
-                                // Create email inquiry
-                                const subject = `Inquiry about ${classItem.class_name} dance class`;
-                                const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
-                                
-                                window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                              }}
-                            >
-                              Inquire
-                            </Button>
+                            </TableCell>
+                            <TableCell className="text-center">
+                              {classItem.is_series_start && classItem.series_length ? (
+                                <Badge variant="outline" className="border-blue-500 text-blue-600">
+                                  Series {classItem.series_length > 0 ? `(${classItem.series_length})` : ''}
+                                </Badge>
+                              ) : classItem.is_drop_in === true || classItem.series_length === null ? (
+                                <Badge variant="outline" className="border-green-500 text-green-600">
+                                  Drop-in
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="border-gray-500 text-gray-600">
+                                  Class
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-center">
+                              {classItem.instructor_approval_required ? (
+                                <Badge variant="outline" className="border-amber-500 text-amber-600">
+                                  Required
+                                </Badge>
+                              ) : (
+                                <span className="text-sm text-gray-500">-</span>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button 
+                                size="sm"
+                                className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
+                                onClick={() => {
+                                  // Create email inquiry
+                                  const subject = `Inquiry about ${classItem.class_name} dance class`;
+                                  const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
+                                  
+                                  window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                                }}
+                              >
+                                Inquire
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={8} className="h-24 text-center">
+                            No classes found matching your filters.
                           </TableCell>
                         </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={8} className="h-24 text-center">
-                          No classes found matching your filters.
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+                
+                {/* Mobile Card View */}
+                <div className="md:hidden grid gap-4 p-4">
+                  {currentClasses.length ? (
+                    currentClasses.map((classItem) => (
+                      <div key={classItem.id} className="bg-white rounded-lg border shadow-sm p-4">
+                        <h3 className="font-semibold text-lg mb-2">{classItem.class_name}</h3>
+                        
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {classItem.is_series_start && classItem.series_length ? (
+                            <Badge variant="outline" className="border-blue-500 text-blue-600">
+                              Series {classItem.series_length > 0 ? `(${classItem.series_length})` : ''}
+                            </Badge>
+                          ) : classItem.is_drop_in === true || classItem.series_length === null ? (
+                            <Badge variant="outline" className="border-green-500 text-green-600">
+                              Drop-in
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="border-gray-500 text-gray-600">
+                              Class
+                            </Badge>
+                          )}
+                          
+                          {classItem.instructor_approval_required && (
+                            <Badge variant="outline" className="border-amber-500 text-amber-600">
+                              Approval Required
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center text-sm text-gray-600 mb-3 whitespace-nowrap overflow-hidden">
+                          <div className="flex items-center min-w-0">
+                            <Calendar className="shrink-0 mr-1 h-4 w-4" />
+                            <span className="truncate">{formatDate(classItem.class_date)}</span>
+                          </div>
+                          <span className="mx-2">•</span>
+                          <div className="flex items-center min-w-0">
+                            <Clock className="shrink-0 mr-1 h-4 w-4" />
+                            <span className="truncate">{formatTime(classItem.start_time)} - {formatTime(classItem.end_time)}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center text-gray-600">
+                            <Users className="mr-1 h-4 w-4" />
+                            <span>{classItem.instructor}</span>
+                          </div>
+                          <div className="flex items-center text-gray-600">
+                            <DollarSign className="mr-1 h-4 w-4 text-green-600" />
+                            <span>{classItem.price}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <div className="font-medium">{classItem.company.name}</div>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <MapPin className="mr-1 h-3 w-3" />
+                            {classItem.company.address.split(',')[0]}
+                          </div>
+                        </div>
+                        
+                        <Button 
+                          className="w-full bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
+                          onClick={() => {
+                            // Create email inquiry
+                            const subject = `Inquiry about ${classItem.class_name} dance class`;
+                            const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
+                            
+                            window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                          }}
+                        >
+                          Inquire About This Class
+                        </Button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      No classes found matching your filters.
+                    </div>
+                  )}
+                </div>
               </div>
               
               {/* Pagination */}

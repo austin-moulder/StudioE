@@ -9,6 +9,7 @@ export interface Instructor {
   rating: number;
   reviews: number;
   totalStudents: number;
+  instructor_profiles?: any;
   price: {
     lower: number;
     upper: number;
