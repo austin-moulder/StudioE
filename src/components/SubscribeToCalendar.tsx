@@ -28,13 +28,8 @@ const SubscribeToCalendar = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Base URL for the API endpoint that will generate the iCalendar feed
-  const baseUrl = typeof window !== 'undefined' 
-    ? process.env.NEXT_PUBLIC_VERCEL_URL 
-      ? `https://joinstudioe.com` 
-      : window.location.origin
-    : '';
-  const feedUrl = `${baseUrl}/api/calendar/${feedType}`;
+  // Always use absolute URL for production to avoid issues with dynamic domains
+  const feedUrl = `https://joinstudioe.com/api/calendar/${feedType}`;
 
   // URLs for direct subscription in different calendar applications
   const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(feedUrl)}`;
