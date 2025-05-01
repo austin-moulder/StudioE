@@ -487,15 +487,6 @@ function InstructorsContent() {
               {isLoading ? 'Loading...' : `${filteredInstructors.length} Instructors Found`}
             </h2>
             <div className="flex items-center gap-4">
-              <Link 
-                href="/instructor-profile-form" 
-                className="text-white bg-[#9333EA] hover:bg-[#9333EA]/90 py-2 px-3 rounded-md text-sm font-medium flex items-center"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Create Profile
-              </Link>
               <Select value={sortOrder} onValueChange={handleSortChange}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Sort by" />

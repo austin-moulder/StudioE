@@ -55,7 +55,7 @@ async function getInstructorBySlug(slug: string) {
       name: instructor.name,
       slug: generateInstructorSlug(instructor.name),
       imageUrl: instructor.image_url,
-      imageUrl2: instructor.image_url2 || instructor.image_url, // Fallback to primary image if secondary not available
+      imageUrl2: instructor.image_url, // Always use the same image to match the card
       yearsExperience: profile?.experience || instructor.years_experience || 0,
       pricePerHour: instructor.price_lower || 0,
       location: instructor.location || '',

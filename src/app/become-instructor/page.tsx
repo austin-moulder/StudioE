@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase/client'
+import Link from 'next/link'
 
 export default function BecomeInstructorPage() {
   const router = useRouter()
@@ -82,27 +83,35 @@ export default function BecomeInstructorPage() {
         throw error
       }
       
-      toast.success('Application submitted successfully!')
+      toast.success('Application submitted successfully! Redirecting to profile setup...')
       
-      // Reset form after successful submission
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        address: '',
-        isInterested: 'yes',
-        teachingStyles: [],
-        otherTeachingStyle: '',
-        teachingInfo: '',
-        goals: '',
-        teachingLocations: [],
-        referralSource: ''
-      })
+      // Create a new instructor record with basic information
+      const { data: instructorData, error: instructorError } = await supabase
+        .from('instructors')
+        .insert({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone,
+          style: finalTeachingStyles.join(', '),
+          active: true
+        })
+        .select('id')
+        .single()
       
-      // Redirect to thank you page or home page after 2 seconds
+      if (instructorError) {
+        console.error('Error creating instructor:', instructorError)
+        // Continue to redirect even if this fails
+      }
+      
+      // Redirect to instructor profile form
       setTimeout(() => {
-        router.push('/')
+        if (instructorData?.id) {
+          // If we have an ID, pass it to the form for auto-selection
+          router.push(`/instructor-profile-form?instructor=${instructorData.id}`)
+        } else {
+          // Otherwise just redirect to the form
+          router.push('/instructor-profile-form')
+        }
       }, 2000)
       
     } catch (error: any) {
@@ -366,6 +375,22 @@ export default function BecomeInstructorPage() {
           </form>
         </CardContent>
       </Card>
+
+      {/* New section for existing instructors */}
+      <div className="mt-12 bg-gray-50 rounded-lg p-8 border border-gray-200">
+        <h2 className="text-2xl font-bold mb-4">Already an approved instructor?</h2>
+        <p className="mb-6">
+          If you've already been approved as a Studio E instructor, you can create or update your instructor profile to showcase your teaching style, experience, and availability.
+        </p>
+        <Link href="/instructor-profile-form">
+          <Button className="bg-[#9333EA] hover:bg-[#9333EA]/90">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Create or Update Profile
+          </Button>
+        </Link>
+      </div>
     </div>
   )
 } 

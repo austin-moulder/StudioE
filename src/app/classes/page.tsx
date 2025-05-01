@@ -402,14 +402,6 @@ function ClassesContent() {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Find Your Perfect Dance Class</h2>
               
-              {/* Desktop Submit Button - Right aligned */}
-              <Link href="/submit-class" className="hidden md:block">
-                <Button className="bg-[#9933CC] text-white hover:bg-[#9933CC]/90 flex items-center gap-1">
-                  <Plus className="h-4 w-4" />
-                  Submit a Class
-                </Button>
-              </Link>
-              
               {/* Mobile Filter Toggle */}
               <button 
                 onClick={() => setFiltersExpanded(!filtersExpanded)}
@@ -481,7 +473,7 @@ function ClassesContent() {
                   <label htmlFor="price-range" className="mb-2 block text-sm font-medium">
                     Price Range: ${priceRange[0]} - ${priceRange[1]}
                   </label>
-                  <div className="px-3 py-2">
+                  <div className="py-2 pr-3">
                     <Slider
                       id="price-range"
                       min={0}
@@ -495,48 +487,60 @@ function ClassesContent() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-6">
-                <div className="flex items-center gap-2">
-                  <Checkbox 
-                    id="series-only" 
-                    checked={showSeriesOnly} 
-                    onCheckedChange={(checked) => {
-                      const isChecked = checked as boolean;
-                      setShowSeriesOnly(isChecked);
-                      if (isChecked) setShowDropInOnly(false);
-                    }}
-                    disabled={showDropInOnly}
-                  />
-                  <label htmlFor="series-only" className={`text-sm ${showDropInOnly ? 'text-gray-400' : ''}`}>
-                    Series Classes Only
-                  </label>
+              <div className="flex flex-wrap justify-between items-center mt-6">
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Checkbox 
+                      id="series-only" 
+                      checked={showSeriesOnly} 
+                      onCheckedChange={(checked) => {
+                        const isChecked = checked as boolean;
+                        setShowSeriesOnly(isChecked);
+                        if (isChecked) setShowDropInOnly(false);
+                      }}
+                      disabled={showDropInOnly}
+                    />
+                    <label htmlFor="series-only" className={`text-sm ${showDropInOnly ? 'text-gray-400' : ''}`}>
+                      Series Classes Only
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Checkbox 
+                      id="drop-in-only" 
+                      checked={showDropInOnly} 
+                      onCheckedChange={(checked) => {
+                        const isChecked = checked as boolean;
+                        setShowDropInOnly(isChecked);
+                        if (isChecked) setShowSeriesOnly(false);
+                      }}
+                      disabled={showSeriesOnly}
+                    />
+                    <label htmlFor="drop-in-only" className={`text-sm ${showSeriesOnly ? 'text-gray-400' : ''}`}>
+                      Drop-in Classes Only
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Checkbox 
+                      id="open-only" 
+                      checked={showOpenClassesOnly}
+                      onCheckedChange={(checked) => setShowOpenClassesOnly(checked as boolean)} 
+                    />
+                    <label htmlFor="open-only" className="text-sm">
+                      No Approval Required
+                    </label>
+                  </div>
                 </div>
                 
-                <div className="flex items-center gap-2">
-                  <Checkbox 
-                    id="drop-in-only" 
-                    checked={showDropInOnly} 
-                    onCheckedChange={(checked) => {
-                      const isChecked = checked as boolean;
-                      setShowDropInOnly(isChecked);
-                      if (isChecked) setShowSeriesOnly(false);
-                    }}
-                    disabled={showSeriesOnly}
-                  />
-                  <label htmlFor="drop-in-only" className={`text-sm ${showSeriesOnly ? 'text-gray-400' : ''}`}>
-                    Drop-in Classes Only
-                  </label>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Checkbox 
-                    id="open-only" 
-                    checked={showOpenClassesOnly}
-                    onCheckedChange={(checked) => setShowOpenClassesOnly(checked as boolean)} 
-                  />
-                  <label htmlFor="open-only" className="text-sm">
-                    No Approval Required
-                  </label>
+                {/* Desktop Submit Button */}
+                <div className="hidden md:block mt-2">
+                  <Link href="/submit-class">
+                    <Button className="bg-[#9933CC] text-white hover:bg-[#9933CC]/90 flex items-center gap-1">
+                      <Plus className="h-4 w-4" />
+                      Submit a Class
+                    </Button>
+                  </Link>
                 </div>
               </div>
               
