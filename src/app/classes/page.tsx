@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
@@ -54,7 +54,21 @@ export default function ClassesPage() {
   return (
     <div>
       <ClassesHero />
-      <ClassesContent />
+      <Suspense fallback={<ClassesLoading />}>
+        <ClassesContent />
+      </Suspense>
+    </div>
+  )
+}
+
+// Loading state component
+function ClassesLoading() {
+  return (
+    <div className="py-16 container">
+      <div className="flex flex-col items-center justify-center py-12">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#F94C8D] border-t-transparent"></div>
+        <p className="mt-4 text-lg text-gray-600">Loading classes...</p>
+      </div>
     </div>
   )
 }
