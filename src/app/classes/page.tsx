@@ -15,8 +15,6 @@ import {
   ChevronDown,
   Check,
   X,
-  Brain,
-  Activity,
   ArrowRight
 } from 'lucide-react'
 
@@ -714,7 +712,7 @@ function ClassesContent() {
             
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="w-12 h-12 bg-[#9333EA]/10 text-[#9333EA] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Brain className="h-6 w-6" />
+                <Calendar className="h-6 w-6" />
               </div>
               <h3 className="text-xl font-bold mb-2 text-center">Mental Health</h3>
               <p className="text-gray-600 text-center">
@@ -724,7 +722,7 @@ function ClassesContent() {
             
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="w-12 h-12 bg-[#06B6D4]/10 text-[#06B6D4] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Activity className="h-6 w-6" />
+                <DollarSign className="h-6 w-6" />
               </div>
               <h3 className="text-xl font-bold mb-2 text-center">Physical Fitness</h3>
               <p className="text-gray-600 text-center">
