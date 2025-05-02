@@ -19,15 +19,14 @@ import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { getDanceStyleImages } from "@/lib/supabase/imageUtils"
 import useEmblaCarousel from 'embla-carousel-react'
-import { getBlogPosts } from "@/lib/blog/blogUtils"
-import { BlogPost } from "@/types/blog"
+import { getBlogPosts, BlogPost } from "@/lib/blog/blogUtils"
+import { getFeaturedInstructors, getInstructorCountByStyle } from '@/lib/instructors/instructorUtils'
 import { format } from 'date-fns'
-import { getFeaturedInstructors, getInstructorCountByStyle } from '@/lib/instructors/instructorUtils';
-import { Instructor } from '@/types/instructor';
 import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { TestimonialCard } from "@/app/components/TestimonialCard"
 import { Testimonial } from "@/types/testimonial"
 import NewUserPopup from "@/app/components/NewUserPopup"
+import { Instructor } from '@/types/instructor'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -786,6 +785,15 @@ export default function Home() {
                   className="bg-transparent text-white hover:bg-white/10 hover:text-white"
                 >
                   Become an Instructor
+                </Button>
+              </Link>
+              <Link href="/wedding-dance">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-transparent text-white hover:bg-white/10 hover:text-white"
+                >
+                  I'm Getting Married!
                 </Button>
               </Link>
             </div>

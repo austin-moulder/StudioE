@@ -6,8 +6,7 @@ import Link from "next/link"
 import { ChevronLeft, Calendar, User, List } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { getBlogPostBySlug } from "@/lib/blog/blogUtils"
-import { BlogPost } from "@/types/blog"
+import { BlogPost, getBlogPostBySlug } from "@/lib/blog/blogUtils"
 import { format } from 'date-fns'
 import { notFound } from "next/navigation"
 import BlogContent from '../../components/BlogContent'
@@ -24,25 +23,27 @@ function BlogPostStructuredData({ post }: { post: BlogPost }) {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": post.title,
-    "image": post.featured_image,
+    "description": post.excerpt || "",
+    "image": post.featured_image || "",
     "datePublished": post.created_at,
     "dateModified": post.updated_at || post.created_at,
     "author": {
       "@type": "Person",
-      "name": post.author_name,
-      "image": post.author_image
+      "name": post.author?.name || "Unknown Author",
+      "image": post.author?.profile_image || ""
     },
     "publisher": {
       "@type": "Organization",
       "name": "Studio E",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.joinstudioe.com/studio-e-logo.svg"
+        "url": "https://studioe.vercel.app/logo.png"
       }
     },
-    "description": post.excerpt,
-    "articleBody": post.content,
-    "keywords": post.category
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://studioe.vercel.app/blog/${post.slug}`
+    }
   };
 
   return (
@@ -107,13 +108,20 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     title: "Loading...",
     slug: params.slug,
     content: "Loading content...",
-    excerpt: "Loading excerpt...",
+    excerpt: "",
     featured_image: "",
     category: "Loading...",
     published: true,
     created_at: new Date().toISOString(),
-    author_name: "Loading...",
-    author_image: ""
+    updated_at: new Date().toISOString(),
+    author_id: "",
+    author: { 
+      id: "", 
+      name: "Loading...", 
+      profile_image: "",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
   }
 
   const displayPost = post || placeholderPost
@@ -169,10 +177,10 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             {/* Author Info */}
             <div className="mb-8 flex items-center gap-4">
               <div className="relative h-12 w-12 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
-                {displayPost.author_image ? (
+                {displayPost.author?.profile_image ? (
                   <Image
-                    src={displayPost.author_image}
-                    alt={displayPost.author_name}
+                    src={displayPost.author.profile_image}
+                    alt={displayPost.author.name}
                     fill
                     className="object-cover"
                   />
@@ -181,7 +189,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 )}
               </div>
               <div>
-                <div className="font-medium">{displayPost.author_name}</div>
+                <div className="font-medium">{displayPost.author?.name || "Unknown Author"}</div>
                 <div className="text-sm text-gray-500">Author</div>
               </div>
             </div>

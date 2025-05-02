@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { format } from 'date-fns'
+import { format, isWithinInterval, parseISO, addDays, isToday, isFuture } from 'date-fns'
 import { 
   Calendar, 
   Filter, 
@@ -123,6 +123,8 @@ function ClassesContent() {
   
   // Additional state
   const [filtersExpanded, setFiltersExpanded] = useState(false)
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>('all')
+  const [selectedCompany, setSelectedCompany] = useState<string>('all')
   
   // Fetch data
   useEffect(() => {
@@ -244,6 +246,29 @@ function ClassesContent() {
       )
     }
     
+    // Filter by company
+    if (selectedCompany && selectedCompany !== 'all') {
+      filtered = filtered.filter(classItem => 
+        classItem.company.id.toString() === selectedCompany
+      )
+    }
+    
+    // Filter by date
+    if (dateFilter !== 'all') {
+      filtered = filtered.filter(classItem => {
+        const classDate = parseISO(classItem.class_date)
+        
+        if (dateFilter === 'today') {
+          return isToday(classDate)
+        } else if (dateFilter === 'week') {
+          const nextWeek = addDays(new Date(), 7)
+          return isFuture(classDate) && classDate <= nextWeek
+        }
+        
+        return true
+      })
+    }
+    
     // Filter by dance style
     if (danceStyle && danceStyle !== 'all') {
       filtered = filtered.filter(classItem => {
@@ -323,7 +348,9 @@ function ClassesContent() {
     priceRange, 
     showSeriesOnly, 
     showDropInOnly, 
-    showOpenClassesOnly
+    showOpenClassesOnly,
+    dateFilter,
+    selectedCompany
   ])
   
   // Handle page change
@@ -467,6 +494,70 @@ function ClassesContent() {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+                
+                <div>
+                  <label htmlFor="company" className="mb-2 block text-sm font-medium">
+                    Studio
+                  </label>
+                  <Select value={selectedCompany} onValueChange={setSelectedCompany}>
+                    <SelectTrigger id="company" className="bg-white !bg-opacity-100">
+                      <SelectValue placeholder="All Studios" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white !bg-opacity-100">
+                      <SelectItem value="all">All Studios</SelectItem>
+                      {companies.map(company => (
+                        <SelectItem key={company.id} value={company.id.toString()}>{company.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    Date
+                  </label>
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <input 
+                        type="radio" 
+                        id="date-all" 
+                        name="date-filter" 
+                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
+                        checked={dateFilter === 'all'}
+                        onChange={() => setDateFilter('all')}
+                      />
+                      <label htmlFor="date-all" className="text-sm">
+                        All Dates
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input 
+                        type="radio" 
+                        id="date-today" 
+                        name="date-filter" 
+                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
+                        checked={dateFilter === 'today'}
+                        onChange={() => setDateFilter('today')}
+                      />
+                      <label htmlFor="date-today" className="text-sm">
+                        Today
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input 
+                        type="radio" 
+                        id="date-week" 
+                        name="date-filter" 
+                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
+                        checked={dateFilter === 'week'}
+                        onChange={() => setDateFilter('week')}
+                      />
+                      <label htmlFor="date-week" className="text-sm">
+                        Next 7 Days
+                      </label>
+                    </div>
+                  </div>
                 </div>
                 
                 <div>

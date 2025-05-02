@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Music2 } from "lucide-react"
 import Link from "next/link"
 import { getInstructorCount, getDanceStyleCount } from "@/lib/instructors/instructorUtils"
 import useEmblaCarousel from 'embla-carousel-react'

@@ -53,7 +53,27 @@ export async function getAllClasses(): Promise<Class[]> {
       return []
     }
 
-    return data || []
+    // Further sort by date and start time for more precise ordering
+    const sortedData = data?.sort((a, b) => {
+      // First sort by date
+      const dateA = new Date(a.class_date);
+      const dateB = new Date(b.class_date);
+      
+      const dateDiff = dateA.getTime() - dateB.getTime();
+      if (dateDiff !== 0) return dateDiff;
+      
+      // If same date, sort by start time
+      const [hoursA, minutesA] = a.start_time.split(':').map(Number);
+      const [hoursB, minutesB] = b.start_time.split(':').map(Number);
+      
+      // Compare hours first
+      if (hoursA !== hoursB) return hoursA - hoursB;
+      
+      // If hours are the same, compare minutes
+      return minutesA - minutesB;
+    }) || [];
+
+    return sortedData;
   } catch (error) {
     console.error('Exception fetching classes:', error)
     return []
@@ -79,7 +99,27 @@ export async function getClassesByCompany(companyId: string): Promise<Class[]> {
       return []
     }
 
-    return data || []
+    // Further sort by date and start time for more precise ordering
+    const sortedData = data?.sort((a, b) => {
+      // First sort by date
+      const dateA = new Date(a.class_date);
+      const dateB = new Date(b.class_date);
+      
+      const dateDiff = dateA.getTime() - dateB.getTime();
+      if (dateDiff !== 0) return dateDiff;
+      
+      // If same date, sort by start time
+      const [hoursA, minutesA] = a.start_time.split(':').map(Number);
+      const [hoursB, minutesB] = b.start_time.split(':').map(Number);
+      
+      // Compare hours first
+      if (hoursA !== hoursB) return hoursA - hoursB;
+      
+      // If hours are the same, compare minutes
+      return minutesA - minutesB;
+    }) || [];
+
+    return sortedData;
   } catch (error) {
     console.error('Exception fetching classes by company:', error)
     return []
@@ -140,11 +180,33 @@ export async function getClassesByStyle(style: string): Promise<Class[]> {
 
     const keywords = styleMap[style.toLowerCase()]
     if (!keywords) return data
-
-    return data.filter(classItem => {
+    
+    const filteredData = data.filter(classItem => {
       const className = classItem.class_name.toLowerCase()
       return keywords.some(keyword => className.includes(keyword))
     })
+    
+    // Further sort by date and start time for more precise ordering
+    const sortedData = filteredData.sort((a, b) => {
+      // First sort by date
+      const dateA = new Date(a.class_date);
+      const dateB = new Date(b.class_date);
+      
+      const dateDiff = dateA.getTime() - dateB.getTime();
+      if (dateDiff !== 0) return dateDiff;
+      
+      // If same date, sort by start time
+      const [hoursA, minutesA] = a.start_time.split(':').map(Number);
+      const [hoursB, minutesB] = b.start_time.split(':').map(Number);
+      
+      // Compare hours first
+      if (hoursA !== hoursB) return hoursA - hoursB;
+      
+      // If hours are the same, compare minutes
+      return minutesA - minutesB;
+    });
+
+    return sortedData;
   } catch (error) {
     console.error('Exception fetching classes by style:', error)
     return []

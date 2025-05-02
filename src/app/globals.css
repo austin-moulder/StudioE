@@ -37,3 +37,167 @@ h1, h2, h3, h4, h5, h6 {
     rgb(var(--primary-gradient-to))
   );
 }
+
+/* React Day Picker Base Styles */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #EC407A;
+  --rdp-background-color: #FFF1F6;
+  --rdp-accent-color-dark: #EC407A;
+  --rdp-background-color-dark: #FFEBF2;
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  --rdp-outline-selected: 2px solid var(--rdp-accent-color);
+  margin: 0.5em;
+}
+
+/* Fixed calendar styles for proper alignment */
+.rdp-months {
+  display: flex;
+  justify-content: center;
+}
+
+.rdp-month {
+  width: 100% !important;
+  margin: 0;
+}
+
+.rdp-table {
+  width: 100% !important;
+  border-collapse: collapse;
+  margin: 0 auto !important;
+  table-layout: fixed;
+}
+
+.rdp-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 0.5rem 0;
+  text-align: left;
+}
+
+.rdp-caption_label {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.rdp-nav {
+  position: relative;
+  z-index: 1;
+  display: flex;
+}
+
+.rdp-nav_button {
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Hide the day of week headings */
+.rdp-head_row {
+  display: none !important;
+}
+
+.rdp-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.rdp-cell {
+  text-align: center;
+  padding: 0;
+  height: var(--rdp-cell-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rdp-day {
+  width: 38px;
+  height: 38px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0 auto;
+  border: 2px solid transparent;
+  color: #333;
+  font-size: 0.875rem;
+  font-weight: normal;
+  transition: all 0.2s;
+  position: relative;
+}
+
+/* Enhanced selected day styles */
+.rdp-day_selected {
+  background-color: #EC407A !important;
+  color: white !important;
+  box-shadow: 0 0 0 2px rgba(236, 64, 122, 0.5);
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+.rdp-day_selected:hover {
+  background-color: #EC407A !important;
+  opacity: 0.9;
+}
+
+/* Style for range start date - add a visual marker */
+.rdp-day_range_start::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.rdp-day_today {
+  background-color: rgba(255, 51, 102, 0.1) !important;
+  color: #FF3366 !important;
+  font-weight: bold;
+}
+
+.rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_disabled) {
+  background-color: rgba(236, 64, 122, 0.1) !important;
+  transform: scale(1.05);
+}
+
+.rdp-day_disabled {
+  opacity: 0.25;
+}
+
+.rdp-day_outside {
+  opacity: 0.5;
+}
+
+/* Hide elements when JS is disabled */
+.no-js:where([href="#"], button, input[type="submit"], input[type="button"], input[type="reset"], [tabindex]:not([tabindex="-1"])) {
+  display: none !important;
+}
+
+/* Badge styling for date range */
+.badge-date-range {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.badge-date-range[data-variant="default"] {
+  background-color: #EC407A;
+  color: white;
+}
+
+.badge-date-range[data-variant="outline"] {
+  border-color: #EC407A;
+  color: #EC407A;
+}

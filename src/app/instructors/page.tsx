@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Suspense } from "react"
 import { Instructor } from "@/types/instructor"
@@ -133,6 +134,7 @@ function InstructorsContent() {
     y: 0, 
     show: false 
   });
+  const [showGroupPricing, setShowGroupPricing] = useState(false);
   
   const ITEMS_PER_PAGE = 8
 
@@ -482,23 +484,42 @@ function InstructorsContent() {
       {/* Instructors Grid */}
       <section className="py-16">
         <div className="container">
-          <div className="mb-8 flex items-center justify-between">
+          <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <h2 className="text-2xl font-bold">
               {isLoading ? 'Loading...' : `${filteredInstructors.length} Instructors Found`}
             </h2>
-            <div className="flex items-center gap-4">
-              <Select value={sortOrder} onValueChange={handleSortChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="recommended">Recommended</SelectItem>
-                  <SelectItem value="rating-high">Highest Rated</SelectItem>
-                  <SelectItem value="price-low">Price: Low to High</SelectItem>
-                  <SelectItem value="price-high">Price: High to Low</SelectItem>
-                  <SelectItem value="experience">Most Experienced</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+              <div className="flex items-center space-x-2 border border-[#F94C8D] rounded px-3 py-2 bg-white shadow-sm">
+                <Checkbox 
+                  id="group-pricing" 
+                  checked={showGroupPricing} 
+                  onCheckedChange={(checked) => setShowGroupPricing(checked as boolean)}
+                  className="text-[#F94C8D] border-[#F94C8D]"
+                />
+                <label
+                  htmlFor="group-pricing"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap"
+                >
+                  Show prices for couples/small groups
+                </label>
+                <span className="bg-[#F94C8D] text-white text-xs font-bold px-2 py-1 rounded-full ml-2 whitespace-nowrap inline-flex flex-shrink-0">
+                  SAVE 30%
+                </span>
+              </div>
+              <div className="flex items-center gap-4">
+                <Select value={sortOrder} onValueChange={handleSortChange}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="recommended">Recommended</SelectItem>
+                    <SelectItem value="rating-high">Highest Rated</SelectItem>
+                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                    <SelectItem value="experience">Most Experienced</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -547,8 +568,17 @@ function InstructorsContent() {
                     {instructor.location}
                   </div>
                   <div className="mt-2 text-sm">
-                    <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
-                    <span className="text-gray-500"> / hour</span>
+                    {showGroupPricing ? (
+                      <>
+                        <span className="font-medium">${Math.round(instructor.price.lower * 0.7)}-{Math.round(instructor.price.upper * 0.7)}</span>
+                        <span className="text-gray-500"> / hour per person</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="font-medium">${instructor.price.lower}-{instructor.price.upper}</span>
+                        <span className="text-gray-500"> / hour</span>
+                      </>
+                    )}
                   </div>
                     <div className="mt-auto pt-4 flex justify-between items-center">
                       {instructor.reviews > 0 ? (
