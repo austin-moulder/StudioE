@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { format, isWithinInterval, parseISO, addDays, isToday, isFuture } from 'date-fns'
+import { format, isWithinInterval, parseISO, addDays, isToday, isFuture, endOfDay, startOfDay, isAfter, isBefore, isEqual } from 'date-fns'
 import { 
   Calendar, 
   Filter, 
@@ -225,15 +225,21 @@ function ClassesContent() {
     // Filter out classes where the end time has passed
     const currentDate = new Date()
     filtered = filtered.filter(classItem => {
-      // Parse the class date and end time
-      const classDate = new Date(classItem.class_date)
+      // Parse the class date string
+      const classDateStr = classItem.class_date
+      // Create a new date object with the class date
+      const classDate = new Date(classDateStr)
+      
+      // Get hours and minutes from the end time
       const [hours, minutes] = classItem.end_time.split(':').map(Number)
       
-      // Set the end time hours and minutes on the class date
+      // First ensure we're working with a UTC-normalized date to avoid timezone issues
+      classDate.setUTCHours(0, 0, 0, 0)
+      // Then add the class end time hours and minutes
       classDate.setHours(hours, minutes, 0, 0)
       
-      // Only keep classes where the end time is in the future
-      return classDate > currentDate
+      // Include the class if its end time is in the future or is exactly now
+      return isAfter(classDate, currentDate) || isEqual(classDate, currentDate)
     })
     
     // Filter by search term
@@ -259,10 +265,18 @@ function ClassesContent() {
         const classDate = parseISO(classItem.class_date)
         
         if (dateFilter === 'today') {
-          return isToday(classDate)
+          // Use startOfDay and endOfDay to include all classes happening today
+          return isWithinInterval(classDate, {
+            start: startOfDay(new Date()),
+            end: endOfDay(new Date())
+          })
         } else if (dateFilter === 'week') {
           const nextWeek = addDays(new Date(), 7)
-          return isFuture(classDate) && classDate <= nextWeek
+          // Make sure to include all classes within the next 7 days
+          return isWithinInterval(classDate, {
+            start: startOfDay(new Date()),
+            end: endOfDay(nextWeek)
+          })
         }
         
         return true
