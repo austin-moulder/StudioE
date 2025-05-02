@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getBlogPosts, getBlogCategories, searchBlogPosts, getBlogPostsByCategory } from "@/lib/blog/blogUtils"
-import { BlogPost, BlogCategory } from "@/types/blog"
+import { getBlogPosts, getBlogCategories, searchBlogPosts, getBlogPostsByCategory, BlogPost } from "@/lib/blog/blogUtils"
+import { BlogCategory } from "@/types/blog"
 import { format } from 'date-fns'
 import { useRouter, useSearchParams } from "next/navigation"
 import { addSubscriber, SubscribeState } from "@/lib/actions/subscribeActions"
@@ -223,6 +223,12 @@ function BlogContent() {
             <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Searching...' : 'Search'}
             </Button>
+            
+            <Link href="/submit-blog">
+              <Button type="button" variant="secondary" className="hover:bg-gray-100">
+                Submit Blog
+              </Button>
+            </Link>
           </form>
         </div>
       </section>
@@ -281,35 +287,45 @@ function BlogContent() {
                   {/* Display excerpt or beginning of content */}
                   {featuredPost.excerpt || featuredPost.content?.substring(0, 150) || 'No description available.'}
                 </p>
-                <div className="mt-6 flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
-                      {featuredPost.author_image ? (
-                        <Image
-                          src={featuredPost.author_image}
-                          // Ensure author_name exists before trying to split
-                          alt={featuredPost.author_name || 'Author'}
-                          fill
-                          className="object-cover"
-                          sizes="40px"
-                        />
-                      ) : (
-                        <span className="text-gray-400 text-xs">
-                          {/* Provide fallback if author_name is missing */}
-                          {featuredPost.author_name?.split(' ').map(n => n[0]).join('') || 'A'}
-                        </span>
-                      )}
+                {featuredPost.author ? (
+                  <div className="mt-6 flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <div className="relative h-10 w-10 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+                        {featuredPost.author.profile_image ? (
+                          <Image
+                            src={featuredPost.author.profile_image}
+                            alt={featuredPost.author.name || 'Author'}
+                            fill
+                            className="object-cover"
+                            sizes="40px"
+                          />
+                        ) : (
+                          <span className="text-gray-400 text-xs">
+                            {/* Provide fallback if author_name is missing */}
+                            {featuredPost.author.name?.split(' ').map(n => n[0]).join('') || 'A'}
+                          </span>
+                        )}
+                      </div>
+                      {/* Display author name or fallback */}
+                      <span className="text-sm font-medium">{featuredPost.author.name || 'Unknown Author'}</span>
                     </div>
-                    {/* Display author name or fallback */}
-                    <span className="text-sm font-medium">{featuredPost.author_name || 'Unknown Author'}</span>
+                    <Link href={`/blog/${featuredPost.slug}`}>
+                      <Button>
+                        Read Article
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
                   </div>
-                  <Link href={`/blog/${featuredPost.slug}`}>
-                    <Button>
-                      Read Article
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
+                ) : (
+                  <div className="mt-6">
+                    <Link href={`/blog/${featuredPost.slug}`}>
+                      <Button>
+                        Read Article
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
@@ -362,6 +378,27 @@ function BlogContent() {
                       <h3 className="mt-2 text-xl font-bold line-clamp-2 hover:text-[#F94C8D] transition-colors">{post.title}</h3>
                     </Link>
                     <p className="mt-2 text-gray-500 line-clamp-3">{post.excerpt || post.content?.substring(0, 100) || ''}</p>
+                    {/* Display author icon and name from author field */}
+                    {post.author && (
+                      <div className="mt-3 flex items-center gap-2">
+                        <div className="relative h-6 w-6 overflow-hidden rounded-full bg-gray-200 flex items-center justify-center">
+                          {post.author.profile_image ? (
+                            <Image
+                              src={post.author.profile_image}
+                              alt={post.author.name || 'Author'}
+                              fill
+                              className="object-cover"
+                              sizes="24px"
+                            />
+                          ) : (
+                            <span className="text-gray-400 text-xs">
+                              {post.author.name?.charAt(0) || 'A'}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs text-gray-500">{post.author.name}</span>
+                      </div>
+                    )}
                     <Link href={`/blog/${post.slug}`}>
                       <Button variant="link" className="mt-4 p-0 h-auto">
                         Read More
@@ -375,12 +412,22 @@ function BlogContent() {
           )}
 
           <div className="mt-12 flex justify-center">
-            <Link href="/blog">
-              <Button variant="outline" size="lg">
-                View All Articles
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              onClick={() => {
+                // Clear all filters
+                setSearchTerm("");
+                setSelectedCategory(null);
+                
+                // Update URL to remove filters
+                const params = new URLSearchParams();
+                router.push(`/blog${params.toString() ? `?${params.toString()}` : ""}`);
+              }}
+            >
+              View All Articles
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         </div>
       </section>
