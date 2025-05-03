@@ -225,21 +225,36 @@ function ClassesContent() {
     // Filter out classes where the end time has passed
     const currentDate = new Date()
     filtered = filtered.filter(classItem => {
-      // Parse the class date string
-      const classDateStr = classItem.class_date
-      // Create a new date object with the class date
-      const classDate = new Date(classDateStr)
+      // First, normalize the class date to avoid timezone issues
+      const classDateOnly = new Date(classItem.class_date)
+      classDateOnly.setUTCHours(0, 0, 0, 0) // Reset to beginning of the day in UTC
       
-      // Get hours and minutes from the end time
-      const [hours, minutes] = classItem.end_time.split(':').map(Number)
+      const today = new Date()
+      today.setUTCHours(0, 0, 0, 0) // Reset to beginning of today in UTC
       
-      // First ensure we're working with a UTC-normalized date to avoid timezone issues
-      classDate.setUTCHours(0, 0, 0, 0)
-      // Then add the class end time hours and minutes
-      classDate.setHours(hours, minutes, 0, 0)
+      // If the class date is in the future (tomorrow or later), always include it
+      if (classDateOnly > today) {
+        return true
+      }
       
-      // Include the class if its end time is in the future or is exactly now
-      return isAfter(classDate, currentDate) || isEqual(classDate, currentDate)
+      // If the class is today, check if its end time has passed
+      if (isEqual(classDateOnly, today)) {
+        // Get hours and minutes from the end time
+        const [endHours, endMinutes] = classItem.end_time.split(':').map(Number)
+        
+        // Get current hours and minutes
+        const currentHours = currentDate.getHours()
+        const currentMinutes = currentDate.getMinutes()
+        
+        // Compare end time with current time
+        if (endHours > currentHours || (endHours === currentHours && endMinutes >= currentMinutes)) {
+          return true // End time hasn't passed yet
+        }
+        return false // End time has passed
+      }
+      
+      // Class date is in the past
+      return false
     })
     
     // Filter by search term

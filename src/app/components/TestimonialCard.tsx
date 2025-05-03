@@ -11,6 +11,44 @@ interface TestimonialCardProps {
   showRating?: boolean
 }
 
+// Helper function to determine if a name is likely male or female
+function getDefaultImageByName(name: string): string {
+  // Common male names that start with these letters are more likely to be male
+  const maleFirstLetters = ['j', 'r', 'd', 'm', 'b', 'c', 'p', 'g', 'a', 't', 'k', 'w', 'n', 'h', 'f'];
+  
+  // Get first name (in case of full names)
+  const firstName = name.split(' ')[0].toLowerCase();
+  
+  // Default male image
+  const maleImage = "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/John_Doe.png";
+  
+  // Default female image
+  const femaleImage = "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Testimonials/Briana_Hall.jpeg";
+  
+  // Names ending with these are more likely to be female
+  if (firstName.endsWith('a') || 
+      firstName.endsWith('e') || 
+      firstName.endsWith('i') || 
+      firstName.endsWith('y') ||
+      firstName.includes('ann') ||
+      firstName.includes('mary') ||
+      firstName.includes('elle') ||
+      firstName.includes('lisa') ||
+      firstName.includes('sara') ||
+      firstName.includes('emma')) {
+    return femaleImage;
+  }
+  
+  // Check first letter against common male first letters
+  const firstLetter = firstName.charAt(0);
+  if (maleFirstLetters.includes(firstLetter)) {
+    return maleImage;
+  }
+  
+  // Default to male if unsure
+  return maleImage;
+}
+
 export function TestimonialCard({ 
   testimonial, 
   variant = "default",
@@ -35,12 +73,15 @@ export function TestimonialCard({
     )
   }
 
+  // Get default image based on name if no image_url is provided
+  const defaultImage = getDefaultImageByName(name);
+
   // For compact view
   if (variant === "compact") {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6 mx-2">
         <div className="flex items-center mb-4">
-          <div className="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden">
+          <div className="w-12 h-12 rounded-full overflow-hidden">
             {image_url && image_url !== "/placeholder.svg" ? (
               <Image
                 src={image_url}
@@ -50,7 +91,13 @@ export function TestimonialCard({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="flex items-center justify-center w-full h-full text-gray-400 text-xs">{name.charAt(0)}</span>
+              <Image
+                src={defaultImage}
+                alt={name}
+                width={48}
+                height={48}
+                className="w-full h-full object-cover"
+              />
             )}
           </div>
           <div>
@@ -77,7 +124,7 @@ export function TestimonialCard({
   return (
     <div className="relative bg-white rounded-lg shadow-lg p-8 mx-2">
       <div className="flex flex-col md:flex-row items-center gap-6">
-        <div className="relative h-24 w-24 overflow-hidden rounded-full flex-shrink-0 bg-gray-200 flex items-center justify-center">
+        <div className="relative h-24 w-24 overflow-hidden rounded-full flex-shrink-0">
           {image_url && image_url !== "/placeholder.svg" ? (
             <Image 
               src={image_url} 
@@ -86,7 +133,12 @@ export function TestimonialCard({
               className="object-cover"
             />
           ) : (
-            <span className="text-gray-400 text-xs">{name.charAt(0)}</span>
+            <Image 
+              src={defaultImage} 
+              alt={name}
+              fill
+              className="object-cover"
+            />
           )}
         </div>
         <div>
