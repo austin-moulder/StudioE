@@ -447,11 +447,26 @@ function EventsContent() {
                 {filteredEvents
                   .filter(event => {
                     const eventDate = new Date(event.event_date);
-                    const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                     const now = new Date();
-                    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                    // Use start-of-day comparison
-                    return startOfEventDay >= startOfToday;
+                    // Check if the event is today
+                    const isToday = eventDate.getFullYear() === now.getFullYear() &&
+                                   eventDate.getMonth() === now.getMonth() &&
+                                   eventDate.getDate() === now.getDate();
+
+                    if (isToday) {
+                      // If the event is today, check if it has ended based on end_time
+                      const [endHours, endMinutes] = event.end_time.split(':').map(Number);
+                      const endTimeToday = new Date();
+                      endTimeToday.setHours(endHours, endMinutes, 0, 0);
+                      
+                      // Event is upcoming if end time is later than current time
+                      return endTimeToday > now;
+                    } else {
+                      // For events on other days, simply check if the date is today or later
+                      const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                      return startOfEventDay >= startOfToday;
+                    }
                   })
                   .slice(indexOfFirstEvent, indexOfLastEvent) // Use pagination with current ITEMS_PER_PAGE
                   .map((event, index) => (
@@ -527,10 +542,27 @@ function EventsContent() {
                   {(() => {
                     const totalFilteredEvents = filteredEvents.filter(event => {
                       const eventDate = new Date(event.event_date);
-                      const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                       const now = new Date();
-                      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                      return startOfEventDay >= startOfToday;
+                      
+                      // Check if the event is today
+                      const isToday = eventDate.getFullYear() === now.getFullYear() &&
+                                     eventDate.getMonth() === now.getMonth() &&
+                                     eventDate.getDate() === now.getDate();
+
+                      if (isToday) {
+                        // If the event is today, check if it has ended based on end_time
+                        const [endHours, endMinutes] = event.end_time.split(':').map(Number);
+                        const endTimeToday = new Date();
+                        endTimeToday.setHours(endHours, endMinutes, 0, 0);
+                        
+                        // Event is upcoming if end time is later than current time
+                        return endTimeToday > now;
+                      } else {
+                        // For events on other days, simply check if the date is today or later
+                        const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        return startOfEventDay >= startOfToday;
+                      }
                     }).length;
                     
                     const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -568,10 +600,27 @@ function EventsContent() {
                     onClick={() => {
                       const totalFilteredEvents = filteredEvents.filter(event => {
                         const eventDate = new Date(event.event_date);
-                        const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                         const now = new Date();
-                        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                        return startOfEventDay >= startOfToday;
+                        
+                        // Check if the event is today
+                        const isToday = eventDate.getFullYear() === now.getFullYear() &&
+                                      eventDate.getMonth() === now.getMonth() &&
+                                      eventDate.getDate() === now.getDate();
+
+                        if (isToday) {
+                          // If the event is today, check if it has ended based on end_time
+                          const [endHours, endMinutes] = event.end_time.split(':').map(Number);
+                          const endTimeToday = new Date();
+                          endTimeToday.setHours(endHours, endMinutes, 0, 0);
+                          
+                          // Event is upcoming if end time is later than current time
+                          return endTimeToday > now;
+                        } else {
+                          // For events on other days, simply check if the date is today or later
+                          const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                          const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                          return startOfEventDay >= startOfToday;
+                        }
                       }).length;
                       
                       const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -584,10 +633,27 @@ function EventsContent() {
                       (() => {
                         const totalFilteredEvents = filteredEvents.filter(event => {
                           const eventDate = new Date(event.event_date);
-                          const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                           const now = new Date();
-                          const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                          return startOfEventDay >= startOfToday;
+                          
+                          // Check if the event is today
+                          const isToday = eventDate.getFullYear() === now.getFullYear() &&
+                                        eventDate.getMonth() === now.getMonth() &&
+                                        eventDate.getDate() === now.getDate();
+
+                          if (isToday) {
+                            // If the event is today, check if it has ended based on end_time
+                            const [endHours, endMinutes] = event.end_time.split(':').map(Number);
+                            const endTimeToday = new Date();
+                            endTimeToday.setHours(endHours, endMinutes, 0, 0);
+                            
+                            // Event is upcoming if end time is later than current time
+                            return endTimeToday > now;
+                          } else {
+                            // For events on other days, simply check if the date is today or later
+                            const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                            return startOfEventDay >= startOfToday;
+                          }
                         }).length;
                         
                         const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -600,10 +666,27 @@ function EventsContent() {
                     disabled={(() => {
                       const totalFilteredEvents = filteredEvents.filter(event => {
                         const eventDate = new Date(event.event_date);
-                        const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                         const now = new Date();
-                        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                        return startOfEventDay >= startOfToday;
+                        
+                        // Check if the event is today
+                        const isToday = eventDate.getFullYear() === now.getFullYear() &&
+                                      eventDate.getMonth() === now.getMonth() &&
+                                      eventDate.getDate() === now.getDate();
+
+                        if (isToday) {
+                          // If the event is today, check if it has ended based on end_time
+                          const [endHours, endMinutes] = event.end_time.split(':').map(Number);
+                          const endTimeToday = new Date();
+                          endTimeToday.setHours(endHours, endMinutes, 0, 0);
+                          
+                          // Event is upcoming if end time is later than current time
+                          return endTimeToday > now;
+                        } else {
+                          // For events on other days, simply check if the date is today or later
+                          const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                          const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                          return startOfEventDay >= startOfToday;
+                        }
                       }).length;
                       
                       const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -622,11 +705,32 @@ function EventsContent() {
                 {filteredEvents
                   .filter(event => {
                     const eventDate = new Date(event.event_date);
-                    const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                     const now = new Date();
-                    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                    // Only show featured events that are on or after today
-                    return event.is_featured && startOfEventDay >= startOfToday;
+                    
+                    // Check if the event is today
+                    const isToday = eventDate.getFullYear() === now.getFullYear() &&
+                                  eventDate.getMonth() === now.getMonth() &&
+                                  eventDate.getDate() === now.getDate();
+
+                    let isUpcoming = false;
+                    
+                    if (isToday) {
+                      // If the event is today, check if it has ended based on end_time
+                      const [endHours, endMinutes] = event.end_time.split(':').map(Number);
+                      const endTimeToday = new Date();
+                      endTimeToday.setHours(endHours, endMinutes, 0, 0);
+                      
+                      // Event is upcoming if end time is later than current time
+                      isUpcoming = endTimeToday > now;
+                    } else {
+                      // For events on other days, simply check if the date is today or later
+                      const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                      isUpcoming = startOfEventDay >= startOfToday;
+                    }
+                    
+                    // Only show featured events that are upcoming
+                    return event.is_featured && isUpcoming;
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow border-2 border-[#F94C8D]/20">
@@ -690,17 +794,35 @@ function EventsContent() {
                 {filteredEvents
                   .filter(event => {
                     const eventDate = new Date(event.event_date);
-                    const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
                     const now = new Date();
-                    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                    // Check if event start day is before today
-                    const isPastDay = startOfEventDay < startOfToday;
+                    
+                    // Check if the event is today
+                    const isToday = eventDate.getFullYear() === now.getFullYear() &&
+                                   eventDate.getMonth() === now.getMonth() &&
+                                   eventDate.getDate() === now.getDate();
+
+                    let isPastEvent = false;
+                    
+                    if (isToday) {
+                      // If the event is today, check if it has ended based on end_time
+                      const [endHours, endMinutes] = event.end_time.split(':').map(Number);
+                      const endTimeToday = new Date();
+                      endTimeToday.setHours(endHours, endMinutes, 0, 0);
+                      
+                      // Event is past if end time is earlier than current time
+                      isPastEvent = endTimeToday <= now;
+                    } else {
+                      // For events on other days, simply check if the date is before today
+                      const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+                      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                      isPastEvent = startOfEventDay < startOfToday;
+                    }
                     
                     // Also check if the event occurred within the last 30 days (using exact time)
                     const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
                     const isWithin30Days = eventDate >= thirtyDaysAgo;
                     
-                    return isPastDay && isWithin30Days;
+                    return isPastEvent && isWithin30Days;
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow opacity-70">
