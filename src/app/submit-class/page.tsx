@@ -32,6 +32,7 @@ export default function SubmitClassPage() {
     end_time: '',
     is_drop_in: false,
     is_weekly: false,
+    is_biweekly: false,
     instructor_approval_required: false,
     notes: '',
     company_id: '',
@@ -142,6 +143,7 @@ export default function SubmitClassPage() {
           end_time: formData.end_time,
           is_drop_in: formData.is_drop_in,
           is_weekly: formData.is_weekly,
+          is_biweekly: formData.is_biweekly,
           instructor_approval_required: formData.instructor_approval_required,
           notes: formData.notes || null,
           company_id: companyId,
@@ -168,6 +170,7 @@ export default function SubmitClassPage() {
         end_time: '',
         is_drop_in: false,
         is_weekly: false,
+        is_biweekly: false,
         instructor_approval_required: false,
         notes: '',
         company_id: '',
@@ -448,6 +451,15 @@ export default function SubmitClassPage() {
                           onCheckedChange={(checked) => handleCheckboxChange('is_weekly', !!checked)}
                         />
                         <Label htmlFor="is_weekly">This is a weekly class</Label>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Checkbox 
+                          id="is_biweekly" 
+                          checked={formData.is_biweekly}
+                          onCheckedChange={(checked) => handleCheckboxChange('is_biweekly', !!checked)}
+                        />
+                        <Label htmlFor="is_biweekly">This is a biweekly class (every two weeks)</Label>
                       </div>
                       
                       <div className="flex items-center gap-2">
