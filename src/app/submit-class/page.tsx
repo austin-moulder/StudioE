@@ -57,7 +57,16 @@ export default function SubmitClassPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     
-    if (name === 'price' || name === 'series_length') {
+    if (name === 'price') {
+      // For price field, handle differently to prevent floating point issues
+      // Convert to integer cents, round, then convert back to dollars
+      const numericValue = value === '' ? 0 : parseFloat(value);
+      if (!isNaN(numericValue)) {
+        // Round to nearest dollar
+        const roundedValue = Math.round(numericValue);
+        setFormData(prev => ({ ...prev, [name]: roundedValue }));
+      }
+    } else if (name === 'series_length') {
       setFormData(prev => ({ ...prev, [name]: parseFloat(value) || 0 }))
     } else {
       setFormData(prev => ({ ...prev, [name]: value }))
@@ -386,9 +395,11 @@ export default function SubmitClassPage() {
                         className="mt-1"
                         placeholder="e.g. 20"
                         min="0"
-                        step="0.01"
+                        step="1"
                       />
-                      <p className="text-xs text-gray-500 mt-1">Price per class in USD</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Price per class in USD (whole dollars only)
+                      </p>
                     </div>
                     
                     <div className="flex flex-col gap-2">
