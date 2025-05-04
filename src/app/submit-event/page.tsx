@@ -33,7 +33,9 @@ export default function SubmitEventPage() {
     phone_number: '',
     business_planning: '',
     is_weekly: false,
-    gallery_url: ''
+    gallery_url: '',
+    start_datetime: '',
+    end_datetime: ''
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -73,6 +75,26 @@ export default function SubmitEventPage() {
         throw new Error('Please enter a valid event date')
       }
 
+      // Auto-fill start_datetime and end_datetime from the regular date and time fields if not provided
+      let startDatetime = formData.start_datetime;
+      let endDatetime = formData.end_datetime;
+
+      // If start_datetime isn't provided, generate it from event_date and start_time
+      if (!startDatetime && formData.event_date && formData.start_time) {
+        // Create a date object from the event date
+        const startDate = new Date(formData.event_date + 'T' + formData.start_time + ':00');
+        // Convert to ISO string for database - without timezone conversion
+        startDatetime = startDate.toISOString();
+      }
+
+      // If end_datetime isn't provided, generate it from event_date_end (or event_date) and end_time
+      if (!endDatetime && formData.end_time) {
+        // Use event_date_end if available, otherwise use event_date
+        const endDate = new Date((formData.event_date_end || formData.event_date) + 'T' + formData.end_time + ':00');
+        // Convert to ISO string for database - without timezone conversion
+        endDatetime = endDate.toISOString();
+      }
+
       // Submit to Supabase EVENT table
       const { data, error } = await supabase
         .from('EVENT')
@@ -97,7 +119,9 @@ export default function SubmitEventPage() {
           phone_number: formData.phone_number || null,
           business_planning: formData.business_planning || null,
           is_weekly: formData.is_weekly,
-          gallery_url: formData.gallery_url || null
+          gallery_url: formData.gallery_url || null,
+          start_datetime: startDatetime || null,
+          end_datetime: endDatetime || null
         })
 
       if (error) {
@@ -126,7 +150,9 @@ export default function SubmitEventPage() {
         phone_number: '',
         business_planning: '',
         is_weekly: false,
-        gallery_url: ''
+        gallery_url: '',
+        start_datetime: '',
+        end_datetime: ''
       })
       
       // Redirect to events page after 2 seconds
@@ -235,65 +261,160 @@ export default function SubmitEventPage() {
                   
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="event_date" className="font-medium">
-                        Event Date <span className="text-red-500">*</span>
+                      <Label htmlFor="start_datetime_date" className="font-medium">
+                        Start Date and Time <span className="text-red-500">*</span>
                       </Label>
-                      <Input 
-                        id="event_date"
-                        name="event_date"
-                        type="date"
-                        value={formData.event_date}
-                        onChange={handleInputChange}
-                        required
-                        className="mt-1"
-                      />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+                        <div>
+                          <Label htmlFor="start_datetime_date" className="text-sm text-gray-500">Date</Label>
+                          <Input 
+                            id="start_datetime_date"
+                            type="date"
+                            className="mt-1"
+                            required
+                            onChange={(e) => {
+                              // Combine date with existing time or default to midnight
+                              const date = e.target.value;
+                              if (!date) return;
+                              
+                              try {
+                                // Parse existing datetime or create new one
+                                const existingDate = formData.start_datetime ? new Date(formData.start_datetime) : new Date();
+                                
+                                // Get time components from existing date
+                                const hours = existingDate.getHours();
+                                const minutes = existingDate.getMinutes();
+                                
+                                // Create new date from selected date and existing time
+                                const [year, month, day] = date.split('-').map(Number);
+                                const newDate = new Date(year, month - 1, day, hours, minutes);
+                                
+                                // Update the state with ISO string
+                                setFormData({
+                                  ...formData,
+                                  start_datetime: newDate.toISOString(),
+                                  event_date: date // Keep legacy field in sync
+                                });
+                              } catch (error) {
+                                console.error('Error setting date:', error);
+                              }
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="start_datetime_time" className="text-sm text-gray-500">Time</Label>
+                          <Input 
+                            id="start_datetime_time"
+                            type="time"
+                            className="mt-1"
+                            required
+                            onChange={(e) => {
+                              // Combine time with existing date or default to today
+                              const time = e.target.value;
+                              if (!time) return;
+                              
+                              try {
+                                // Parse existing datetime or create new one
+                                const existingDate = formData.start_datetime ? new Date(formData.start_datetime) : new Date();
+                                
+                                // Set the time part while keeping the date
+                                const [hours, minutes] = time.split(':').map(Number);
+                                existingDate.setHours(hours, minutes, 0, 0);
+                                
+                                // Update the state with ISO string
+                                setFormData({
+                                  ...formData,
+                                  start_datetime: existingDate.toISOString(),
+                                  start_time: time // Keep legacy field in sync
+                                });
+                              } catch (error) {
+                                console.error('Error setting time:', error);
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="event_date_end" className="font-medium">
-                        End Date (if multi-day event)
+                      <Label htmlFor="end_datetime_date" className="font-medium">
+                        End Date and Time <span className="text-red-500">*</span>
                       </Label>
-                      <Input 
-                        id="event_date_end"
-                        name="event_date_end"
-                        type="date"
-                        value={formData.event_date_end}
-                        onChange={handleInputChange}
-                        className="mt-1"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="start_time" className="font-medium">
-                          Start Time <span className="text-red-500">*</span>
-                        </Label>
-                        <Input 
-                          id="start_time"
-                          name="start_time"
-                          type="time"
-                          value={formData.start_time}
-                          onChange={handleInputChange}
-                          required
-                          className="mt-1"
-                        />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+                        <div>
+                          <Label htmlFor="end_datetime_date" className="text-sm text-gray-500">Date</Label>
+                          <Input 
+                            id="end_datetime_date"
+                            type="date"
+                            className="mt-1"
+                            required
+                            onChange={(e) => {
+                              // Combine date with existing time or default to midnight
+                              const date = e.target.value;
+                              if (!date) return;
+                              
+                              try {
+                                // Parse existing datetime or create new one
+                                const existingDate = formData.end_datetime ? new Date(formData.end_datetime) : new Date();
+                                
+                                // Get time components from existing date
+                                const hours = existingDate.getHours();
+                                const minutes = existingDate.getMinutes();
+                                
+                                // Create new date from selected date and existing time
+                                const [year, month, day] = date.split('-').map(Number);
+                                const newDate = new Date(year, month - 1, day, hours, minutes);
+                                
+                                // Update the state with ISO string
+                                setFormData({
+                                  ...formData,
+                                  end_datetime: newDate.toISOString(),
+                                  event_date_end: date // Keep legacy field in sync
+                                });
+                              } catch (error) {
+                                console.error('Error setting date:', error);
+                              }
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="end_datetime_time" className="text-sm text-gray-500">Time</Label>
+                          <Input 
+                            id="end_datetime_time"
+                            type="time"
+                            className="mt-1"
+                            required
+                            onChange={(e) => {
+                              // Combine time with existing date or default to today
+                              const time = e.target.value;
+                              if (!time) return;
+                              
+                              try {
+                                // Parse existing datetime or create new one
+                                const existingDate = formData.end_datetime ? new Date(formData.end_datetime) : new Date();
+                                
+                                // Set the time part while keeping the date
+                                const [hours, minutes] = time.split(':').map(Number);
+                                existingDate.setHours(hours, minutes, 0, 0);
+                                
+                                // Update the state with ISO string
+                                setFormData({
+                                  ...formData,
+                                  end_datetime: existingDate.toISOString(),
+                                  end_time: time // Keep legacy field in sync
+                                });
+                              } catch (error) {
+                                console.error('Error setting time:', error);
+                              }
+                            }}
+                          />
+                        </div>
                       </div>
-
-                      <div>
-                        <Label htmlFor="end_time" className="font-medium">
-                          End Time <span className="text-red-500">*</span>
-                        </Label>
-                        <Input 
-                          id="end_time"
-                          name="end_time"
-                          type="time"
-                          value={formData.end_time}
-                          onChange={handleInputChange}
-                          required
-                          className="mt-1"
-                        />
-                      </div>
                     </div>
+                    
+                    <p className="text-xs text-gray-500 mt-2">
+                      <strong>Note:</strong> For events ending after midnight, select the following day as the end date.
+                    </p>
                   </div>
                 </div>
 

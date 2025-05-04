@@ -51,6 +51,8 @@ interface Event {
   spots_left?: number
   cta_url?: string  // Make cta_url optional
   gallery_url?: string // URL to the event gallery
+  start_datetime?: string // New combined datetime field
+  end_datetime?: string // New combined datetime field
 }
 
 function EventsContent() {
@@ -172,18 +174,34 @@ function EventsContent() {
     }
 
     // Sort events: Prioritize upcoming featured, then upcoming non-featured, then past.
-    // Compare based on the start of the day to avoid timezone/time issues.
     const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     filtered.sort((a, b) => {
-      const dateA = new Date(a.event_date);
-      const dateB = new Date(b.event_date);
-      const startOfADay = new Date(dateA.getFullYear(), dateA.getMonth(), dateA.getDate());
-      const startOfBDay = new Date(dateB.getFullYear(), dateB.getMonth(), dateB.getDate());
-
-      const isAUpcoming = startOfADay >= startOfToday;
-      const isBUpcoming = startOfBDay >= startOfToday;
+      // Get start and end datetimes
+      let aStartDateTime, bStartDateTime, aEndDateTime, bEndDateTime;
+      
+      // Use new datetime columns if available
+      if (a.start_datetime && a.end_datetime && b.start_datetime && b.end_datetime) {
+        aStartDateTime = new Date(a.start_datetime);
+        bStartDateTime = new Date(b.start_datetime);
+        aEndDateTime = new Date(a.end_datetime);
+        bEndDateTime = new Date(b.end_datetime);
+      } else {
+        // Fallback to old logic
+        aStartDateTime = createDateTime(a.event_date, a.start_time);
+        bStartDateTime = createDateTime(b.event_date, b.start_time);
+        
+        aEndDateTime = a.event_date_end 
+          ? createDateTime(a.event_date_end, a.end_time) 
+          : createDateTime(a.event_date, a.end_time);
+        
+        bEndDateTime = b.event_date_end 
+          ? createDateTime(b.event_date_end, b.end_time) 
+          : createDateTime(b.event_date, b.end_time);
+      }
+      
+      const isAUpcoming = isEventUpcoming(a, now);
+      const isBUpcoming = isEventUpcoming(b, now);
       const isAFeatured = a.is_featured;
       const isBFeatured = b.is_featured;
 
@@ -191,22 +209,22 @@ function EventsContent() {
       if (isAUpcoming && isAFeatured && (!isBUpcoming || !isBFeatured)) return -1;
       if (isBUpcoming && isBFeatured && (!isAUpcoming || !isAFeatured)) return 1;
       if (isAUpcoming && isAFeatured && isBUpcoming && isBFeatured) {
-        // If dates are the same day, sort by actual time; otherwise by day
-        return startOfADay.getTime() === startOfBDay.getTime() ? dateA.getTime() - dateB.getTime() : startOfADay.getTime() - startOfBDay.getTime();
+        // Both are featured and upcoming - sort by start date first
+        return aStartDateTime.getTime() - bStartDateTime.getTime();
       }
 
       // Priority 3 & 4: Upcoming Non-Featured vs. Past/Upcoming Non-Featured
       if (isAUpcoming && !isBUpcoming) return -1;
       if (isBUpcoming && !isAUpcoming) return 1;
       if (isAUpcoming && isBUpcoming) { // Both are upcoming, non-featured
-        // If dates are the same day, sort by actual time; otherwise by day
-        return startOfADay.getTime() === startOfBDay.getTime() ? dateA.getTime() - dateB.getTime() : startOfADay.getTime() - startOfBDay.getTime();
+        // Sort by start date
+        return aStartDateTime.getTime() - bStartDateTime.getTime();
       }
 
       // Priority 5: Both are past
       if (!isAUpcoming && !isBUpcoming) {
-        // Sort past events by most recent actual timestamp first
-        return dateB.getTime() - dateA.getTime(); 
+        // Sort past events by most recent end date first
+        return bEndDateTime.getTime() - aEndDateTime.getTime(); 
       }
       
       return 0; 
@@ -312,6 +330,138 @@ function EventsContent() {
       console.error('Error formatting date:', error, 'for date string:', dateString);
       return 'Date unavailable';
     }
+  };
+
+  // Helper function to create a proper date-time object from separate date and time strings
+  function createDateTime(dateString: string, timeString: string): Date {
+    const date = new Date(dateString);
+    const [hours, minutes] = timeString.split(':').map(Number);
+    
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  }
+
+  // Simple function to determine if an event is upcoming
+  function isEventUpcoming(event: Event, now: Date) {
+    // Use the new datetime columns if available
+    if (event.start_datetime && event.end_datetime) {
+      const startDateTime = new Date(event.start_datetime);
+      const endDateTime = new Date(event.end_datetime);
+      
+      // Event is upcoming if:
+      // 1. Start time hasn't passed yet, OR
+      // 2. End time hasn't passed yet (event is ongoing)
+      return startDateTime > now || endDateTime > now;
+    }
+    
+    // Fallback to old logic if new columns aren't available
+    const startDateTime = createDateTime(event.event_date, event.start_time);
+    const endDateTime = event.event_date_end 
+      ? createDateTime(event.event_date_end, event.end_time) 
+      : createDateTime(event.event_date, event.end_time);
+    
+    return startDateTime > now || endDateTime > now;
+  }
+
+  // Simple function to determine if an event is past
+  function isEventPast(event: Event, now: Date) {
+    // Use the new datetime columns if available
+    if (event.end_datetime) {
+      const endDateTime = new Date(event.end_datetime);
+      return endDateTime <= now;
+    }
+    
+    // Fallback to old logic
+    const endDateTime = event.event_date_end 
+      ? createDateTime(event.event_date_end, event.end_time) 
+      : createDateTime(event.event_date, event.end_time);
+    
+    return endDateTime <= now;
+  }
+
+  // Add new function to format datetime strings from the database
+  const formatDateTime = (datetimeString: string) => {
+    if (!datetimeString) return null;
+    
+    try {
+      // Parse the ISO date string without timezone adjustments
+      const date = new Date(datetimeString);
+      
+      // Check if the date is valid
+      if (isNaN(date.getTime())) return null;
+      
+      // Format the date - use toLocaleDateString to get local date format
+      const formattedDate = date.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric'
+      });
+      
+      // Format the time with hours and minutes
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const hour = hours % 12 || 12; // Convert to 12-hour format
+      const formattedTime = `${hour}:${minutes.toString().padStart(2, '0')} ${period}`;
+      
+      return { date: formattedDate, time: formattedTime };
+    } catch (error) {
+      console.error('Error formatting datetime:', error, 'for datetime string:', datetimeString);
+      return null;
+    }
+  };
+
+  // Format both date and time from the new datetime fields
+  const formatEventDateTime = (event: Event) => {
+    // Use new datetime fields if available
+    if (event.start_datetime && event.end_datetime) {
+      const start = formatDateTime(event.start_datetime);
+      const end = formatDateTime(event.end_datetime);
+      
+      if (start && end) {
+        // Check if start and end are on the same day
+        if (start.date === end.date) {
+          return {
+            date: start.date,
+            time: `${start.time} - ${end.time}`
+          };
+        } else {
+          // Different days - now we need to determine if it's just a few hours past midnight
+          // or a genuinely multi-day event
+          
+          // Parse the dates to check time difference
+          const startDate = new Date(event.start_datetime);
+          const endDate = new Date(event.end_datetime);
+          
+          // Get the midnight after the start date
+          const nextMidnight = new Date(startDate);
+          nextMidnight.setDate(nextMidnight.getDate() + 1);
+          nextMidnight.setUTCHours(0, 0, 0, 0);
+          
+          // Calculate hours past midnight
+          const hoursPastMidnight = (endDate.getTime() - nextMidnight.getTime()) / (1000 * 60 * 60);
+          
+          // If it's just a few hours past midnight (e.g., ends before 6 AM), just show the start date
+          if (hoursPastMidnight <= 6) {
+            return {
+              date: start.date,  // Only show start date
+              time: `${start.time} - ${end.time}`
+            };
+          } else {
+            // Genuinely multi-day event - show both dates
+            return {
+              date: `${start.date} - ${end.date}`,
+              time: `${start.time} - ${end.time}`
+            };
+          }
+        }
+      }
+    }
+    
+    // Fallback to old format
+    return {
+      date: formatDate(event.event_date),
+      time: formatEventTime(event.start_time, event.end_time)
+    };
   };
 
   return (
@@ -446,27 +596,8 @@ function EventsContent() {
               <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {filteredEvents
                   .filter(event => {
-                    const eventDate = new Date(event.event_date);
                     const now = new Date();
-                    // Check if the event is today
-                    const isToday = eventDate.getFullYear() === now.getFullYear() &&
-                                   eventDate.getMonth() === now.getMonth() &&
-                                   eventDate.getDate() === now.getDate();
-
-                    if (isToday) {
-                      // If the event is today, check if it has ended based on end_time
-                      const [endHours, endMinutes] = event.end_time.split(':').map(Number);
-                      const endTimeToday = new Date();
-                      endTimeToday.setHours(endHours, endMinutes, 0, 0);
-                      
-                      // Event is upcoming if end time is later than current time
-                      return endTimeToday > now;
-                    } else {
-                      // For events on other days, simply check if the date is today or later
-                      const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-                      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                      return startOfEventDay >= startOfToday;
-                    }
+                    return isEventUpcoming(event, now);
                   })
                   .slice(indexOfFirstEvent, indexOfLastEvent) // Use pagination with current ITEMS_PER_PAGE
                   .map((event, index) => (
@@ -494,11 +625,11 @@ function EventsContent() {
                         <div className="space-y-2">
                           <div className="flex items-center text-xs text-muted-foreground">
                             <Calendar className="mr-1.5 h-3 w-3" />
-                            {formatDate(event.event_date)}
+                            {formatEventDateTime(event).date}
                           </div>
                           <div className="flex items-center text-xs text-muted-foreground">
                             <Clock className="mr-1.5 h-3 w-3" />
-                            {formatEventTime(event.start_time, event.end_time)}
+                            {formatEventDateTime(event).time}
                           </div>
                           <div className="flex items-center text-xs text-muted-foreground">
                             <MapPin className="mr-1.5 h-4 w-4" />
@@ -541,28 +672,8 @@ function EventsContent() {
                   
                   {(() => {
                     const totalFilteredEvents = filteredEvents.filter(event => {
-                      const eventDate = new Date(event.event_date);
                       const now = new Date();
-                      
-                      // Check if the event is today
-                      const isToday = eventDate.getFullYear() === now.getFullYear() &&
-                                     eventDate.getMonth() === now.getMonth() &&
-                                     eventDate.getDate() === now.getDate();
-
-                      if (isToday) {
-                        // If the event is today, check if it has ended based on end_time
-                        const [endHours, endMinutes] = event.end_time.split(':').map(Number);
-                        const endTimeToday = new Date();
-                        endTimeToday.setHours(endHours, endMinutes, 0, 0);
-                        
-                        // Event is upcoming if end time is later than current time
-                        return endTimeToday > now;
-                      } else {
-                        // For events on other days, simply check if the date is today or later
-                        const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-                        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                        return startOfEventDay >= startOfToday;
-                      }
+                      return isEventUpcoming(event, now);
                     }).length;
                     
                     const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -599,28 +710,8 @@ function EventsContent() {
                   <button 
                     onClick={() => {
                       const totalFilteredEvents = filteredEvents.filter(event => {
-                        const eventDate = new Date(event.event_date);
                         const now = new Date();
-                        
-                        // Check if the event is today
-                        const isToday = eventDate.getFullYear() === now.getFullYear() &&
-                                      eventDate.getMonth() === now.getMonth() &&
-                                      eventDate.getDate() === now.getDate();
-
-                        if (isToday) {
-                          // If the event is today, check if it has ended based on end_time
-                          const [endHours, endMinutes] = event.end_time.split(':').map(Number);
-                          const endTimeToday = new Date();
-                          endTimeToday.setHours(endHours, endMinutes, 0, 0);
-                          
-                          // Event is upcoming if end time is later than current time
-                          return endTimeToday > now;
-                        } else {
-                          // For events on other days, simply check if the date is today or later
-                          const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-                          const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                          return startOfEventDay >= startOfToday;
-                        }
+                        return isEventUpcoming(event, now);
                       }).length;
                       
                       const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -632,28 +723,8 @@ function EventsContent() {
                     className={`flex h-9 w-9 items-center justify-center rounded-md border shadow-sm bg-white text-sm ${
                       (() => {
                         const totalFilteredEvents = filteredEvents.filter(event => {
-                          const eventDate = new Date(event.event_date);
                           const now = new Date();
-                          
-                          // Check if the event is today
-                          const isToday = eventDate.getFullYear() === now.getFullYear() &&
-                                        eventDate.getMonth() === now.getMonth() &&
-                                        eventDate.getDate() === now.getDate();
-
-                          if (isToday) {
-                            // If the event is today, check if it has ended based on end_time
-                            const [endHours, endMinutes] = event.end_time.split(':').map(Number);
-                            const endTimeToday = new Date();
-                            endTimeToday.setHours(endHours, endMinutes, 0, 0);
-                            
-                            // Event is upcoming if end time is later than current time
-                            return endTimeToday > now;
-                          } else {
-                            // For events on other days, simply check if the date is today or later
-                            const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-                            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                            return startOfEventDay >= startOfToday;
-                          }
+                          return isEventUpcoming(event, now);
                         }).length;
                         
                         const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -665,28 +736,8 @@ function EventsContent() {
                     }`}
                     disabled={(() => {
                       const totalFilteredEvents = filteredEvents.filter(event => {
-                        const eventDate = new Date(event.event_date);
                         const now = new Date();
-                        
-                        // Check if the event is today
-                        const isToday = eventDate.getFullYear() === now.getFullYear() &&
-                                      eventDate.getMonth() === now.getMonth() &&
-                                      eventDate.getDate() === now.getDate();
-
-                        if (isToday) {
-                          // If the event is today, check if it has ended based on end_time
-                          const [endHours, endMinutes] = event.end_time.split(':').map(Number);
-                          const endTimeToday = new Date();
-                          endTimeToday.setHours(endHours, endMinutes, 0, 0);
-                          
-                          // Event is upcoming if end time is later than current time
-                          return endTimeToday > now;
-                        } else {
-                          // For events on other days, simply check if the date is today or later
-                          const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-                          const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                          return startOfEventDay >= startOfToday;
-                        }
+                        return isEventUpcoming(event, now);
                       }).length;
                       
                       const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -704,33 +755,8 @@ function EventsContent() {
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {filteredEvents
                   .filter(event => {
-                    const eventDate = new Date(event.event_date);
                     const now = new Date();
-                    
-                    // Check if the event is today
-                    const isToday = eventDate.getFullYear() === now.getFullYear() &&
-                                  eventDate.getMonth() === now.getMonth() &&
-                                  eventDate.getDate() === now.getDate();
-
-                    let isUpcoming = false;
-                    
-                    if (isToday) {
-                      // If the event is today, check if it has ended based on end_time
-                      const [endHours, endMinutes] = event.end_time.split(':').map(Number);
-                      const endTimeToday = new Date();
-                      endTimeToday.setHours(endHours, endMinutes, 0, 0);
-                      
-                      // Event is upcoming if end time is later than current time
-                      isUpcoming = endTimeToday > now;
-                    } else {
-                      // For events on other days, simply check if the date is today or later
-                      const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-                      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                      isUpcoming = startOfEventDay >= startOfToday;
-                    }
-                    
-                    // Only show featured events that are upcoming
-                    return event.is_featured && isUpcoming;
+                    return event.is_featured && isEventUpcoming(event, now);
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow border-2 border-[#F94C8D]/20">
@@ -756,11 +782,11 @@ function EventsContent() {
                         <div className="space-y-2">
                           <div className="flex items-center text-xs text-muted-foreground">
                             <Calendar className="mr-1.5 h-3 w-3" />
-                            {formatDate(event.event_date)}
+                            {formatEventDateTime(event).date}
                           </div>
                           <div className="flex items-center text-xs text-muted-foreground">
                             <Clock className="mr-1.5 h-3 w-3" />
-                            {formatEventTime(event.start_time, event.end_time)}
+                            {formatEventDateTime(event).time}
                           </div>
                           <div className="flex items-center text-xs text-muted-foreground">
                             <MapPin className="mr-1.5 h-4 w-4" />
@@ -793,36 +819,15 @@ function EventsContent() {
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {filteredEvents
                   .filter(event => {
-                    const eventDate = new Date(event.event_date);
                     const now = new Date();
-                    
-                    // Check if the event is today
-                    const isToday = eventDate.getFullYear() === now.getFullYear() &&
-                                   eventDate.getMonth() === now.getMonth() &&
-                                   eventDate.getDate() === now.getDate();
-
-                    let isPastEvent = false;
-                    
-                    if (isToday) {
-                      // If the event is today, check if it has ended based on end_time
-                      const [endHours, endMinutes] = event.end_time.split(':').map(Number);
-                      const endTimeToday = new Date();
-                      endTimeToday.setHours(endHours, endMinutes, 0, 0);
-                      
-                      // Event is past if end time is earlier than current time
-                      isPastEvent = endTimeToday <= now;
-                    } else {
-                      // For events on other days, simply check if the date is before today
-                      const startOfEventDay = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
-                      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                      isPastEvent = startOfEventDay < startOfToday;
-                    }
-                    
-                    // Also check if the event occurred within the last 30 days (using exact time)
                     const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-                    const isWithin30Days = eventDate >= thirtyDaysAgo;
                     
-                    return isPastEvent && isWithin30Days;
+                    // Only show past events from the last 30 days
+                    const eventDate = new Date(event.event_date);
+                    const eventEndDate = new Date(event.event_date_end || event.event_date);
+                    const eventDateToCheck = event.event_date_end ? eventEndDate : eventDate;
+                    
+                    return isEventPast(event, now) && eventDateToCheck >= thirtyDaysAgo;
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow opacity-70">
@@ -848,7 +853,11 @@ function EventsContent() {
                         <div className="space-y-2">
                           <div className="flex items-center text-xs text-muted-foreground">
                             <Calendar className="mr-1.5 h-4 w-4" />
-                            {formatDate(event.event_date)}
+                            {formatEventDateTime(event).date}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Clock className="mr-1.5 h-4 w-4" />
+                            {formatEventDateTime(event).time}
                           </div>
                           <div className="flex items-center text-xs text-muted-foreground">
                             <MapPin className="mr-1.5 h-4 w-4" />
