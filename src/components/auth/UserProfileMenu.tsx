@@ -1,9 +1,8 @@
 "use client";
 
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { User, LogOut } from 'lucide-react';
-import Image from 'next/image';
+import { LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 
 function classNames(...classes: string[]) {
@@ -12,45 +11,19 @@ function classNames(...classes: string[]) {
 
 export default function UserProfileMenu() {
   const { user, signOut } = useAuth();
-  const [imageError, setImageError] = useState(false);
 
   if (!user) return null;
 
   // Get user display name - full name or email username
   const displayName = user.user_metadata?.full_name || 
                       (user.email ? user.email.split('@')[0] : 'User');
-  
-  // Get avatar URL if available
-  const avatarUrl = user.user_metadata?.avatar_url;
-  
-  // Handle image loading issues that might be caused by redirects
-  const handleImageError = () => {
-    console.log('Profile image failed to load:', avatarUrl);
-    setImageError(true);
-  };
 
   return (
     <Menu as="div" className="relative ml-3">
       <div>
-        <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2">
-          <span className="sr-only">Open user menu</span>
-          {avatarUrl && !imageError ? (
-            <div className="h-8 w-8 rounded-full overflow-hidden">
-              <Image
-                className="h-8 w-8 rounded-full"
-                src={avatarUrl}
-                alt={displayName}
-                width={32}
-                height={32}
-                onError={handleImageError}
-                unoptimized={true} // Skip Next.js image optimization for Google avatar URLs
-              />
-            </div>
-          ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
-              <User className="h-5 w-5 text-gray-500" />
-            </div>
-          )}
+        <Menu.Button className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2">
+          <span>{displayName}</span>
+          <ChevronDown className="h-4 w-4" />
         </Menu.Button>
       </div>
       <Transition

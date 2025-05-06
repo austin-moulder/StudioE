@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { CalendarPlus, Copy, Check, Calendar, ChevronDown } from "lucide-react";
+import { CalendarPlus, Copy, Check, ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,16 +28,22 @@ const SubscribeToCalendar = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Always use absolute URL for production to avoid issues with dynamic domains
-  const feedUrl = `https://www.joinstudioe.com/api/calendar/${feedType}`;
+  // Always use production URL regardless of environment to avoid localhost issues
+  const baseUrl = "https://www.joinstudioe.com";
+  const feedUrl = `${baseUrl}/api/calendar/${feedType}`;
 
+  // Add timestamp to ensure uniqueness and prevent caching issues with calendar providers
+  const timestamp = new Date().getTime();
+  
   // URLs for direct subscription in different calendar applications
-  const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(feedUrl)}`;
-  const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(feedUrl)}&name=${encodeURIComponent(`Studio E ${feedType === 'events' ? 'Events' : 'Classes'}`)}`;
+  const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(`${feedUrl}?t=${timestamp}`)}`;
+  const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(`${feedUrl}?t=${timestamp}`)}&name=${encodeURIComponent(`Studio E ${feedType === 'events' ? 'Events' : 'Classes'}`)}`;
+  
   // Apple Calendar doesn't have a direct web URL for subscription - users need to use the feed URL
+  const appleFeedUrl = `${feedUrl}?t=${timestamp}`; // Add timestamp to this URL as well
 
   const copyFeedUrl = () => {
-    navigator.clipboard.writeText(feedUrl);
+    navigator.clipboard.writeText(appleFeedUrl);
     setCopied(true);
     toast.success("Calendar feed URL copied to clipboard");
     setTimeout(() => setCopied(false), 2000);
@@ -80,7 +86,7 @@ const SubscribeToCalendar = ({
           </DialogHeader>
           <div className="flex items-center space-x-2 mt-4">
             <div className="flex-1 p-3 bg-gray-100 rounded text-sm break-all">
-              {feedUrl}
+              {appleFeedUrl}
             </div>
             <Button size="icon" onClick={copyFeedUrl}>
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
