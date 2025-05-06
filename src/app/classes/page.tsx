@@ -156,33 +156,38 @@ function ClassesContent() {
             else if (className.includes('choreo') || className.includes('choreography')) styles.add('Choreo')
             else styles.add('Other')
             
-            // Extract location - properly handling address formatting
-            const address = classItem.company.address
-            // Split by comma and extract city (typically the second or third element)
-            const addressParts = address.split(',').map(part => part.trim())
-            
-            // If address has 3 or more parts, city is likely the second-to-last element
-            // Example: "123 Main St, 3rd Floor, Chicago, IL 60601" -> "Chicago"
-            let city = 'Chicago' // Default
-            if (addressParts.length >= 3) {
-              // City is typically before the state
-              city = addressParts[addressParts.length - 2]
+            // Use the location column if available, otherwise fallback to address extraction
+            if (classItem.location) {
+              locationSet.add(classItem.location)
+            } else {
+              // Extract location from address (fallback method)
+              const address = classItem.company.address
+              // Split by comma and extract city (typically the second or third element)
+              const addressParts = address.split(',').map(part => part.trim())
               
-              // Check if this looks like a proper city (not a floor number, suite, etc.)
-              if (city.toLowerCase().includes('floor') || 
-                  city.toLowerCase().includes('suite') || 
-                  city.toLowerCase().includes('apt') ||
-                  city.match(/^\d/) // Starts with number
-              ) {
-                // If not a proper city, use the default
-                city = 'Chicago'
+              // If address has 3 or more parts, city is likely the second-to-last element
+              // Example: "123 Main St, 3rd Floor, Chicago, IL 60601" -> "Chicago"
+              let city = 'Chicago' // Default
+              if (addressParts.length >= 3) {
+                // City is typically before the state
+                city = addressParts[addressParts.length - 2]
+                
+                // Check if this looks like a proper city (not a floor number, suite, etc.)
+                if (city.toLowerCase().includes('floor') || 
+                    city.toLowerCase().includes('suite') || 
+                    city.toLowerCase().includes('apt') ||
+                    city.match(/^\d/) // Starts with number
+                ) {
+                  // If not a proper city, use the default
+                  city = 'Chicago'
+                }
+              } else if (addressParts.length === 2) {
+                // Simple address like "123 Main St, Chicago"
+                city = addressParts[1]
               }
-            } else if (addressParts.length === 2) {
-              // Simple address like "123 Main St, Chicago"
-              city = addressParts[1]
+              
+              locationSet.add(city)
             }
-            
-            locationSet.add(city)
           })
           
           // Get sorted dance styles with 'Other' at the end
@@ -338,9 +343,14 @@ function ClassesContent() {
     
     // Filter by location
     if (location && location !== 'all') {
-      filtered = filtered.filter(classItem => 
-        classItem.company.address.toLowerCase().includes(location.toLowerCase())
-      )
+      filtered = filtered.filter(classItem => {
+        // Use the location column if available
+        if (classItem.location) {
+          return classItem.location.toLowerCase() === location.toLowerCase()
+        }
+        // Fallback to address checking if location column is not available
+        return classItem.company.address.toLowerCase().includes(location.toLowerCase())
+      })
     }
     
     // Filter by price range

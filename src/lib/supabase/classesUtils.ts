@@ -24,6 +24,7 @@ export interface Class {
   company_id: string
   company: Company
   is_active: boolean
+  location: string | null
 }
 
 export interface Company {
