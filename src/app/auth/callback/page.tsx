@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/supabase";
 
+// Production site URL - hardcoded to ensure consistency
+const PRODUCTION_URL = 'https://www.joinstudioe.com';
+
 export default function AuthCallbackPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -11,6 +14,22 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        console.log("Auth callback page loaded, processing authentication...");
+        
+        // Check if we're on localhost but should redirect to production
+        if (typeof window !== 'undefined' && 
+            window.location.hostname === 'localhost' && 
+            !window.location.search.includes('no_redirect')) {
+          // Get the current URL parameters
+          const params = new URLSearchParams(window.location.search);
+          const fullUrl = `${PRODUCTION_URL}${window.location.pathname}${window.location.search ? 
+            `${window.location.search}&no_redirect=true` : '?no_redirect=true'}`;
+          
+          console.log(`Redirecting from localhost to production: ${fullUrl}`);
+          window.location.href = fullUrl;
+          return;
+        }
+        
         // Check for auth code in URL (magic link authentication)
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');

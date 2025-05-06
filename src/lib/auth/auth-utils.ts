@@ -1,7 +1,7 @@
 import { supabase } from '../supabase/supabase';
 
-// Production site URL for authentication redirects
-const SITE_URL = 'https://www.joinstudioe.com';
+// Always use production URL - hardcoded to ensure it's never overridden by environment
+const PRODUCTION_URL = 'https://www.joinstudioe.com';
 
 /**
  * Signs in with Google OAuth
@@ -11,7 +11,11 @@ export async function signInWithGoogle() {
   return supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${SITE_URL}/auth/callback`,
+      redirectTo: `${PRODUCTION_URL}/auth/callback`,
+      queryParams: {
+        // Add a timestamp to prevent caching issues
+        _t: new Date().getTime().toString()
+      }
     }
   });
 }
@@ -25,7 +29,7 @@ export async function signInWithMagicLink(email: string) {
   return supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${SITE_URL}/auth/callback`,
+      emailRedirectTo: `${PRODUCTION_URL}/auth/callback?_t=${new Date().getTime()}`,
       shouldCreateUser: true,
     }
   });
