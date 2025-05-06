@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { User, LogOut } from 'lucide-react';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ function classNames(...classes: string[]) {
 
 export default function UserProfileMenu() {
   const { user, signOut } = useAuth();
+  const [imageError, setImageError] = useState(false);
 
   if (!user) return null;
 
@@ -21,20 +22,30 @@ export default function UserProfileMenu() {
   
   // Get avatar URL if available
   const avatarUrl = user.user_metadata?.avatar_url;
+  
+  // Handle image loading issues that might be caused by redirects
+  const handleImageError = () => {
+    console.log('Profile image failed to load:', avatarUrl);
+    setImageError(true);
+  };
 
   return (
     <Menu as="div" className="relative ml-3">
       <div>
         <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2">
           <span className="sr-only">Open user menu</span>
-          {avatarUrl ? (
-            <Image
-              className="h-8 w-8 rounded-full"
-              src={avatarUrl}
-              alt={displayName}
-              width={32}
-              height={32}
-            />
+          {avatarUrl && !imageError ? (
+            <div className="h-8 w-8 rounded-full overflow-hidden">
+              <Image
+                className="h-8 w-8 rounded-full"
+                src={avatarUrl}
+                alt={displayName}
+                width={32}
+                height={32}
+                onError={handleImageError}
+                unoptimized={true} // Skip Next.js image optimization for Google avatar URLs
+              />
+            </div>
           ) : (
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
               <User className="h-5 w-5 text-gray-500" />
