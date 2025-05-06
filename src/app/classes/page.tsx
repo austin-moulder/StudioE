@@ -123,7 +123,7 @@ function ClassesContent() {
   
   // Additional state
   const [filtersExpanded, setFiltersExpanded] = useState(false)
-  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>('all')
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>(searchParams ? searchParams.get('date') as any ?? 'week' : 'week')
   const [selectedCompany, setSelectedCompany] = useState<string>('all')
   
   // Fetch data
@@ -258,7 +258,18 @@ function ClassesContent() {
     const today = startOfDay(new Date());
     filtered = filtered.filter(classItem => {
       const classDate = startOfDay(new Date(classItem.class_date));
-      return isEqual(classDate, today) || isAfter(classDate, today);
+      // Force the date to be interpreted without timezone issues
+      const classDateLocal = new Date(
+        classDate.getUTCFullYear(),
+        classDate.getUTCMonth(),
+        classDate.getUTCDate()
+      );
+      const todayLocal = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      return isEqual(classDateLocal, todayLocal) || isAfter(classDateLocal, todayLocal);
     });
     
     // Apply search filter
@@ -339,15 +350,42 @@ function ClassesContent() {
       const today = startOfDay(new Date());
       filtered = filtered.filter(classItem => {
         const classDate = startOfDay(new Date(classItem.class_date));
-        return isEqual(classDate, today);
+        // Force the date to be interpreted without timezone issues
+        const classDateLocal = new Date(
+          classDate.getUTCFullYear(),
+          classDate.getUTCMonth(),
+          classDate.getUTCDate()
+        );
+        const todayLocal = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        return isEqual(classDateLocal, todayLocal);
       });
     } else if (dateFilter === 'week') {
       const today = startOfDay(new Date());
       const endDate = addDays(today, 7);
       filtered = filtered.filter(classItem => {
         const classDate = startOfDay(new Date(classItem.class_date));
-        return (isEqual(classDate, today) || isAfter(classDate, today)) && 
-               (isBefore(classDate, endDate) || isEqual(classDate, endDate));
+        // Force the date to be interpreted without timezone issues
+        const classDateLocal = new Date(
+          classDate.getUTCFullYear(),
+          classDate.getUTCMonth(),
+          classDate.getUTCDate()
+        );
+        const todayLocal = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        const endDateLocal = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate()
+        );
+        return (isEqual(classDateLocal, todayLocal) || isAfter(classDateLocal, todayLocal)) && 
+               (isBefore(classDateLocal, endDateLocal) || isEqual(classDateLocal, endDateLocal));
       });
     }
     
@@ -366,6 +404,7 @@ function ClassesContent() {
     if (searchTerm) params.set('q', searchTerm);
     if (danceStyle && danceStyle !== 'all') params.set('style', danceStyle);
     if (location && location !== 'all') params.set('location', location);
+    if (dateFilter && dateFilter !== 'all') params.set('date', dateFilter);
     
     // Reset to first page when filters change
     setCurrentPage(1);
@@ -412,17 +451,22 @@ function ClassesContent() {
 
   // Format date to ensure correct display regardless of timezone
   const formatDate = (dateString: string) => {
-    // Create date object without timezone issues
-    const date = new Date(dateString);
-    
-    // Fix for timezone shifts by forcing the date to be interpreted as in UTC
-    // and then formatted in local time.
-    const year = date.getUTCFullYear();
-    const month = date.getUTCMonth();
-    const day = date.getUTCDate();
-    
-    const localDate = new Date(year, month, day);
-    return format(localDate, 'MMM d, yyyy');
+    try {
+      // Create date object from the UTC date string
+      const date = new Date(dateString);
+      
+      // Extract the year, month, and day from the UTC date
+      const year = date.getUTCFullYear();
+      const month = date.getUTCMonth();
+      const day = date.getUTCDate();
+      
+      // Create a new date object with local interpretation of those values
+      const localDate = new Date(year, month, day);
+      return format(localDate, 'MMM d, yyyy');
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString;
+    }
   }
   
   // Get current page data
