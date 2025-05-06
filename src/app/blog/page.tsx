@@ -21,9 +21,9 @@ function BlogContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  // Initialize state from URL search params
-  const initialSearchTerm = searchParams.get('q') || "";
-  const initialCategory = searchParams.get('category') || null;
+  // Initialize state from URL search params - fixed to handle null searchParams
+  const initialSearchTerm = searchParams ? searchParams.get('q') ?? "" : "";
+  const initialCategory = searchParams ? searchParams.get('category') ?? null : null;
 
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [categories, setCategories] = useState<BlogCategory[]>([])
@@ -32,7 +32,7 @@ function BlogContent() {
   const [isLoading, setIsLoading] = useState(true)
 
   // State for the subscription form
-  const initialState: SubscribeState = { message: null, errors: {}, success: false };
+  const initialState = { message: null, errors: {}, success: false } as SubscribeState;
   const [formState, setFormState] = useState<SubscribeState>(initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -90,7 +90,8 @@ function BlogContent() {
       const timer = setTimeout(() => setFormState(initialState), 5000);
       return () => clearTimeout(timer);
     }
-  }, [formState, initialState]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formState]);
 
   // Handle subscription form submission
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -106,18 +107,19 @@ function BlogContent() {
   // Update URL on search form submission
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const params = new URLSearchParams(searchParams)
+    // Create a new URLSearchParams object without passing the searchParams
+    const params = new URLSearchParams()
+    
+    // Manually add the search parameters we want to keep
     if (searchTerm) {
       params.set('q', searchTerm)
-    } else {
-      params.delete('q')
     }
+    
     // Keep existing category param if present
     if (selectedCategory) {
       params.set('category', selectedCategory)
-    } else {
-       params.delete('category')
     }
+    
     router.push(`/blog?${params.toString()}`)
   }
 
@@ -126,18 +128,19 @@ function BlogContent() {
     // Update state immediately for responsive UI feel
     setSelectedCategory(category);
     
-    const params = new URLSearchParams(searchParams)
+    // Create a new URLSearchParams object without passing the searchParams
+    const params = new URLSearchParams()
+    
+    // Add parameters we want to keep
     if (category) {
       params.set('category', category)
-    } else {
-      params.delete('category')
     }
+    
     // Keep existing search term param
     if (searchTerm) {
       params.set('q', searchTerm)
-    } else {
-      params.delete('q')
     }
+    
     router.push(`/blog?${params.toString()}`)
   }
 
