@@ -251,13 +251,121 @@ function ClassesContent() {
   
   // Apply filters and update URL
   const applyFilters = () => {
-    const params = new URLSearchParams()
+    // First, let's filter the classes
+    let filtered = [...classes];
     
-    if (searchTerm) params.set('q', searchTerm)
-    if (danceStyle && danceStyle !== 'all') params.set('style', danceStyle)
-    if (location && location !== 'all') params.set('location', location)
+    // Apply search filter
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(classItem => 
+        classItem.class_name.toLowerCase().includes(term) ||
+        classItem.instructor.toLowerCase().includes(term) ||
+        classItem.company.name.toLowerCase().includes(term)
+      );
+    }
     
-    router.push(`/classes?${params.toString()}`)
+    // Apply dance style filter
+    if (danceStyle && danceStyle !== 'all') {
+      filtered = filtered.filter(classItem => {
+        const className = classItem.class_name.toLowerCase();
+        if (danceStyle === 'Salsa') return className.includes('salsa');
+        if (danceStyle === 'Bachata') return className.includes('bachata');
+        if (danceStyle === 'Kizomba') return className.includes('kizomba');
+        if (danceStyle === 'Zouk') return className.includes('zouk');
+        if (danceStyle === 'Afro Cuban') return className.includes('afro') || className.includes('cuban');
+        if (danceStyle === 'Heels') return className.includes('heel');
+        if (danceStyle === 'Choreo') return className.includes('choreo') || className.includes('choreography');
+        return true;
+      });
+    }
+    
+    // Apply location filter
+    if (location && location !== 'all') {
+      filtered = filtered.filter(classItem => {
+        if (classItem.location) return classItem.location === location;
+        
+        // Extract city from address
+        const address = classItem.company.address;
+        const addressParts = address.split(',').map(part => part.trim());
+        let city = 'Chicago';
+        
+        if (addressParts.length >= 3) {
+          city = addressParts[addressParts.length - 2];
+        } else if (addressParts.length === 2) {
+          city = addressParts[1];
+        }
+        
+        return city === location;
+      });
+    }
+    
+    // Apply price range filter
+    filtered = filtered.filter(classItem => {
+      // Handle price as a number or as a string with $ prefix
+      let price: number;
+      if (typeof classItem.price === 'number') {
+        price = classItem.price;
+      } else {
+        // If price is stored as a string for some reason, convert it
+        const priceStr = String(classItem.price).replace('$', '');
+        price = parseFloat(priceStr) || 0;
+      }
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+    
+    // Apply class type filters
+    if (showSeriesOnly) {
+      filtered = filtered.filter(classItem => !classItem.is_drop_in);
+    }
+    
+    if (showDropInOnly) {
+      filtered = filtered.filter(classItem => classItem.is_drop_in);
+    }
+    
+    // Apply open classes filter
+    if (showOpenClassesOnly) {
+      filtered = filtered.filter(classItem => !classItem.instructor_approval_required);
+    }
+    
+    // Apply date filter
+    if (dateFilter !== 'all') {
+      const today = startOfDay(new Date());
+      
+      if (dateFilter === 'today') {
+        filtered = filtered.filter(classItem => {
+          const classDate = startOfDay(new Date(classItem.class_date));
+          return isEqual(classDate, today);
+        });
+      } else if (dateFilter === 'week') {
+        const endDate = addDays(today, 7);
+        filtered = filtered.filter(classItem => {
+          const classDate = startOfDay(new Date(classItem.class_date));
+          return (isEqual(classDate, today) || isAfter(classDate, today)) && 
+                 (isBefore(classDate, endDate) || isEqual(classDate, endDate));
+        });
+      }
+    }
+    
+    // Apply company filter
+    if (selectedCompany && selectedCompany !== 'all') {
+      filtered = filtered.filter(classItem => 
+        classItem.company.id.toString() === selectedCompany
+      );
+    }
+    
+    // Update filtered classes state
+    setFilteredClasses(filtered);
+    
+    // Update URL params
+    const params = new URLSearchParams();
+    if (searchTerm) params.set('q', searchTerm);
+    if (danceStyle && danceStyle !== 'all') params.set('style', danceStyle);
+    if (location && location !== 'all') params.set('location', location);
+    
+    // Reset to first page when filters change
+    setCurrentPage(1);
+    
+    router.push(`/classes?${params.toString()}`);
   }
   
   // When any filter changes, automatically update the URL after a short delay
