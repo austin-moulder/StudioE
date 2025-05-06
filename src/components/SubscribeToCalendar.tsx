@@ -23,23 +23,22 @@ const SubscribeToCalendar = ({
   
   // Always use production URL regardless of environment
   const baseUrl = "https://www.joinstudioe.com";
-  const feedUrl = `${baseUrl}/api/calendar/${feedType}`;
-  
-  // Add timestamp to prevent caching issues
-  const timestamp = new Date().getTime();
   
   // Get proper calendar name
   const calendarName = feedType === 'events' ? 'Studio E Dance Events' : 'Studio E Dance Classes';
   
-  // Format URLs for different calendar services
-  // Google Calendar uses normal HTTP URL
-  const googleCalendarUrl = `https://www.google.com/calendar/render?cid=${encodeURIComponent(`${feedUrl}?t=${timestamp}`)}&name=${encodeURIComponent(calendarName)}`;
+  // For Google Calendar, we need to use https:// protocol
+  const httpFeedUrl = `https://www.joinstudioe.com/api/calendar/${feedType}`;
   
-  // Outlook uses normal HTTP URL
-  const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(`${feedUrl}?t=${timestamp}`)}&name=${encodeURIComponent(calendarName)}`;
+  // For Apple Calendar and general .ics downloads, webcal:// protocol is preferred
+  const webcalFeedUrl = `webcal://www.joinstudioe.com/api/calendar/${feedType}`;
   
-  // Apple Calendar can use webcal:// protocol (will be converted to https:// by macOS)
-  const icalUrl = `webcal://www.joinstudioe.com/api/calendar/${feedType}?t=${timestamp}`;
+  // Google Calendar requires a specific URL format for subscription
+  // Use a properly encoded feed URL with the cid parameter
+  const googleCalendarUrl = `https://calendar.google.com/calendar/r/settings/addbyurl?url=${encodeURIComponent(httpFeedUrl)}`;
+  
+  // Outlook Web uses normal HTTP URL
+  const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(httpFeedUrl)}&name=${encodeURIComponent(calendarName)}`;
   
   // Toggle dropdown visibility
   const toggleDropdown = () => {
@@ -59,7 +58,7 @@ const SubscribeToCalendar = ({
   
   // Copy the calendar URL to clipboard
   const copyFeedUrl = () => {
-    navigator.clipboard.writeText(icalUrl);
+    navigator.clipboard.writeText(webcalFeedUrl);
     setCopied(true);
     
     // Show copied status for 2 seconds
@@ -141,7 +140,7 @@ const SubscribeToCalendar = ({
             
             <div className="flex items-center space-x-2 mb-4">
               <div className="flex-1 p-3 bg-gray-100 rounded text-sm break-all">
-                {icalUrl}
+                {webcalFeedUrl}
               </div>
               <button
                 onClick={copyFeedUrl}
@@ -156,6 +155,7 @@ const SubscribeToCalendar = ({
               <div className="space-y-2">
                 <p className="text-sm"><strong>Apple Calendar:</strong> Go to File → New Calendar Subscription, paste the URL above, and follow the prompts.</p>
                 <p className="text-sm"><strong>Other Calendar Apps:</strong> Look for an option like "Subscribe to Calendar" or "Add Calendar" and enter the URL above when prompted.</p>
+                <p className="text-sm"><strong>Direct Download:</strong> You can also <a href={httpFeedUrl} className="text-blue-500 hover:underline">download the calendar file</a> and import it manually.</p>
               </div>
             </div>
             
