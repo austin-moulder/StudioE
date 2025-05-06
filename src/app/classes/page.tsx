@@ -99,8 +99,8 @@ function ClassesContent() {
   
   // Filter state
   const [searchTerm, setSearchTerm] = useState('')
-  const [danceStyle, setDanceStyle] = useState(searchParams.get('style') || 'all')
-  const [location, setLocation] = useState(searchParams.get('location') || 'all')
+  const [danceStyle, setDanceStyle] = useState(searchParams ? searchParams.get('style') ?? 'all' : 'all')
+  const [location, setLocation] = useState(searchParams ? searchParams.get('location') ?? 'all' : 'all')
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 200])
   const [showSeriesOnly, setShowSeriesOnly] = useState(false)
   const [showDropInOnly, setShowDropInOnly] = useState(false)
@@ -222,171 +222,18 @@ function ClassesContent() {
   useEffect(() => {
     if (!classes.length) return
     
-    let filtered = [...classes]
+    // Function to apply filters to the class list
+    applyFilters();
     
-    // Filter out inactive classes
-    filtered = filtered.filter(classItem => classItem.is_active !== false)
-    
-    // Filter out classes where the end time has passed
-    const currentDate = new Date()
-    filtered = filtered.filter(classItem => {
-      // First, normalize the class date to avoid timezone issues
-      const classDateOnly = new Date(classItem.class_date)
-      classDateOnly.setUTCHours(0, 0, 0, 0) // Reset to beginning of the day in UTC
-      
-      const today = new Date()
-      today.setUTCHours(0, 0, 0, 0) // Reset to beginning of today in UTC
-      
-      // If the class date is in the future (tomorrow or later), always include it
-      if (classDateOnly > today) {
-        return true
-      }
-      
-      // If the class is today, check if its end time has passed
-      if (isEqual(classDateOnly, today)) {
-        // Get hours and minutes from the end time
-        const [endHours, endMinutes] = classItem.end_time.split(':').map(Number)
-        
-        // Get current hours and minutes
-        const currentHours = currentDate.getHours()
-        const currentMinutes = currentDate.getMinutes()
-        
-        // Compare end time with current time
-        if (endHours > currentHours || (endHours === currentHours && endMinutes >= currentMinutes)) {
-          return true // End time hasn't passed yet
-        }
-        return false // End time has passed
-      }
-      
-      // Class date is in the past
-      return false
-    })
-    
-    // Filter by search term
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase()
-      filtered = filtered.filter(classItem => 
-        classItem.class_name.toLowerCase().includes(term) ||
-        classItem.instructor.toLowerCase().includes(term) ||
-        classItem.company.name.toLowerCase().includes(term)
-      )
-    }
-    
-    // Filter by company
-    if (selectedCompany && selectedCompany !== 'all') {
-      filtered = filtered.filter(classItem => 
-        classItem.company.id.toString() === selectedCompany
-      )
-    }
-    
-    // Filter by date
-    if (dateFilter !== 'all') {
-      filtered = filtered.filter(classItem => {
-        const classDate = parseISO(classItem.class_date)
-        
-        if (dateFilter === 'today') {
-          // Use startOfDay and endOfDay to include all classes happening today
-          return isWithinInterval(classDate, {
-            start: startOfDay(new Date()),
-            end: endOfDay(new Date())
-          })
-        } else if (dateFilter === 'week') {
-          const nextWeek = addDays(new Date(), 7)
-          // Make sure to include all classes within the next 7 days
-          return isWithinInterval(classDate, {
-            start: startOfDay(new Date()),
-            end: endOfDay(nextWeek)
-          })
-        }
-        
-        return true
-      })
-    }
-    
-    // Filter by dance style
-    if (danceStyle && danceStyle !== 'all') {
-      filtered = filtered.filter(classItem => {
-        const className = classItem.class_name.toLowerCase()
-        
-        if (danceStyle.toLowerCase() === 'salsa') 
-          return className.includes('salsa')
-        else if (danceStyle.toLowerCase() === 'bachata') 
-          return className.includes('bachata')
-        else if (danceStyle.toLowerCase() === 'kizomba') 
-          return className.includes('kizomba')
-        else if (danceStyle.toLowerCase() === 'zouk') 
-          return className.includes('zouk')
-        else if (danceStyle.toLowerCase() === 'afro cuban') 
-          return className.includes('afro') || className.includes('cuban')
-        else if (danceStyle.toLowerCase() === 'heels') 
-          return className.includes('heel')
-        else if (danceStyle.toLowerCase() === 'choreo') 
-          return className.includes('choreo') || className.includes('choreography')
-        else if (danceStyle.toLowerCase() === 'other') {
-          // Return true if class doesn't match any of the above categories
-          return !(
-            className.includes('salsa') ||
-            className.includes('bachata') ||
-            className.includes('kizomba') ||
-            className.includes('zouk') ||
-            className.includes('afro') ||
-            className.includes('cuban') ||
-            className.includes('heel') ||
-            className.includes('choreo') ||
-            className.includes('choreography')
-          )
-        }
-        
-        return true
-      })
-    }
-    
-    // Filter by location
-    if (location && location !== 'all') {
-      filtered = filtered.filter(classItem => {
-        // Use the location column if available
-        if (classItem.location) {
-          return classItem.location.toLowerCase() === location.toLowerCase()
-        }
-        // Fallback to address checking if location column is not available
-        return classItem.company.address.toLowerCase().includes(location.toLowerCase())
-      })
-    }
-    
-    // Filter by price range
-    filtered = filtered.filter(classItem => 
-      classItem.price >= priceRange[0] && classItem.price <= priceRange[1]
-    )
-    
-    // Filter by class type
-    if (showSeriesOnly) {
-      filtered = filtered.filter(classItem => 
-        classItem.is_series_start && 
-        classItem.series_length !== null && 
-        classItem.is_drop_in === false
-      )
-    }
-    
-    if (showDropInOnly) {
-      filtered = filtered.filter(classItem => 
-        classItem.is_drop_in === true || classItem.series_length === null
-      )
-    }
-    
-    if (showOpenClassesOnly) {
-      filtered = filtered.filter(classItem => !classItem.instructor_approval_required)
-    }
-    
-    setFilteredClasses(filtered)
-    setCurrentPage(1) // Reset to first page when filters change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    classes, 
-    searchTerm, 
-    danceStyle, 
-    location, 
-    priceRange, 
-    showSeriesOnly, 
-    showDropInOnly, 
+    classes,
+    searchTerm,
+    danceStyle,
+    location,
+    priceRange,
+    showSeriesOnly,
+    showDropInOnly,
     showOpenClassesOnly,
     dateFilter,
     selectedCompany
