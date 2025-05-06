@@ -57,11 +57,8 @@ export const signInWithGoogle = async (): Promise<OAuthResponse> => {
 // Magic link sign in (alternative when OAuth is not available)
 export const signInWithMagicLink = async (email: string): Promise<AuthResponse> => {
   try {
-    // Determine the redirect URL based on environment
-    const isProduction = process.env.NODE_ENV === 'production';
-    const redirectUrl = isProduction 
-      ? `https://www.joinstudioe.com/auth/callback`
-      : `${window.location.origin}/auth/callback`;
+    // Always redirect to the production URL for magic links
+    const redirectUrl = `https://www.joinstudioe.com/auth/callback`;
       
     return await supabase.auth.signInWithOtp({
       email,
