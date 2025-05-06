@@ -88,7 +88,7 @@ export default function Home() {
   })
   const router = useRouter()
   
-  // Add auth redirect handling
+  // Improved auth redirect handling
   useEffect(() => {
     // Check if we're on localhost with a code parameter
     if (typeof window !== 'undefined') {
@@ -109,6 +109,7 @@ export default function Home() {
         const redirectParams = new URLSearchParams();
         redirectParams.append('code', code);
         
+        // Use window.location.replace for a full page reload/redirect
         const redirectURL = `https://www.joinstudioe.com/?${redirectParams.toString()}`;
         window.location.replace(redirectURL);
         return;
