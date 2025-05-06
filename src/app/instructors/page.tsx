@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Star, MapPin, Filter, Search } from "lucide-react"
@@ -118,13 +118,13 @@ function InstructorsContent() {
   const router = useRouter()
   
   // Get URL params - ensure "all" is recognized as a valid style parameter
-  const styleParam = searchParams.get("style") || "all"
+  const styleParam = searchParams ? searchParams.get("style") ?? "all" : "all"
   const [selectedStyle, setSelectedStyle] = useState(styleParam)
-  const [selectedLocation, setSelectedLocation] = useState(searchParams.get("location") || "all")
-  const [selectedPrice, setSelectedPrice] = useState(searchParams.get("price") || "any")
+  const [selectedLocation, setSelectedLocation] = useState(searchParams ? searchParams.get("location") ?? "all" : "all")
+  const [selectedPrice, setSelectedPrice] = useState(searchParams ? searchParams.get("price") ?? "any" : "any")
   const [sortOrder, setSortOrder] = useState(searchParams.get("sort") || "recommended")
   const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page") || 1))
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState(searchParams ? searchParams.get("q") ?? "" : "")
   const [filteredInstructors, setFilteredInstructors] = useState<Instructor[]>([])
   const [paginatedInstructors, setPaginatedInstructors] = useState<Instructor[]>([])
   const [allInstructors, setAllInstructors] = useState<Instructor[]>([])
@@ -184,6 +184,38 @@ function InstructorsContent() {
 
     fetchInstructors()
   }, [])
+
+  // Use useCallback to memoize this function
+  const updateURLWithParams = useCallback((newParams: {
+    style?: string;
+    location?: string;
+    price?: string;
+    q?: string;
+    page?: number;
+    sort?: string;
+  }) => {
+    const params = new URLSearchParams();
+    
+    // Merge current selected filters with new parameters
+    const style = newParams.style ?? selectedStyle;
+    const location = newParams.location ?? selectedLocation;
+    const price = newParams.price ?? selectedPrice;
+    const q = newParams.q ?? searchTerm;
+    const page = newParams.page ?? currentPage;
+    const sort = newParams.sort ?? sortOrder;
+    
+    // Only add parameters that have non-default values
+    if (style && style !== "all") params.set("style", style);
+    if (location && location !== "all") params.set("location", location);
+    if (price && price !== "any") params.set("price", price);
+    if (q) params.set("q", q);
+    if (page && page > 1) params.set("page", page.toString());
+    if (sort && sort !== "recommended") params.set("sort", sort);
+    
+    // Update URL without reloading the page
+    const url = `/instructors${params.toString() ? `?${params.toString()}` : ""}`;
+    router.push(url);
+  }, [router, selectedStyle, selectedLocation, selectedPrice, searchTerm, currentPage, sortOrder]);
 
   // Filter instructors based on selected filters
   useEffect(() => {
@@ -249,41 +281,13 @@ function InstructorsContent() {
     // If current page is now out of bounds, adjust it
     if (currentPage > newMaxPage) {
       setCurrentPage(1)
-      updateURLWithParams(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
+      updateURLWithParams({ page: 1 })
     } else if (currentPage !== 1) {
       // Reset to page 1 if filters change
       setCurrentPage(1)
-      updateURLWithParams(1, selectedStyle, selectedLocation, selectedPrice, sortOrder)
+      updateURLWithParams({ page: 1 })
     }
-  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, allInstructors])
-
-  // Helper function to update URL with parameters
-  const updateURLWithParams = (page: number, style: string, location: string, price: string, sort: string) => {
-    const params = new URLSearchParams()
-    
-    if (style && style !== "all") {
-      params.set("style", style)
-    }
-    
-    if (location && location !== "all") {
-      params.set("location", location)
-    }
-    
-    if (price && price !== "any") {
-      params.set("price", price)
-    }
-    
-    if (sort && sort !== "recommended") {
-      params.set("sort", sort)
-    }
-    
-    if (page > 1) {
-      params.set("page", page.toString())
-    }
-    
-    const query = params.toString()
-    router.push(`/instructors${query ? `?${query}` : ""}`)
-  }
+  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, allInstructors, updateURLWithParams])
 
   // Sort instructors based on selected order
   const sortInstructors = (instructors: Instructor[], order: string) => {
@@ -317,28 +321,28 @@ function InstructorsContent() {
   // Update URL when filters change
   const handleStyleChange = (style: string) => {
     setSelectedStyle(style)
-    updateURLWithParams(1, style, selectedLocation, selectedPrice, sortOrder)
+    updateURLWithParams({ style })
   }
 
   const handleLocationChange = (location: string) => {
     setSelectedLocation(location)
-    updateURLWithParams(1, selectedStyle, location, selectedPrice, sortOrder)
+    updateURLWithParams({ location })
   }
 
   const handlePriceChange = (price: string) => {
     setSelectedPrice(price)
-    updateURLWithParams(1, selectedStyle, selectedLocation, price, sortOrder)
+    updateURLWithParams({ price })
   }
 
   const handleSortChange = (sort: string) => {
     setSortOrder(sort)
-    updateURLWithParams(currentPage, selectedStyle, selectedLocation, selectedPrice, sort)
+    updateURLWithParams({ sort })
   }
 
   // Update URL when filters change
   useEffect(() => {
     if (currentPage > 1) {
-      updateURLWithParams(currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder)
+      updateURLWithParams({ page: currentPage })
     }
   }, [currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder, updateURLWithParams]);
 
