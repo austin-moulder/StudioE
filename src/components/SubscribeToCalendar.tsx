@@ -33,9 +33,9 @@ const SubscribeToCalendar = ({
   // For Apple Calendar and general .ics downloads, webcal:// protocol is preferred
   const webcalFeedUrl = `webcal://www.joinstudioe.com/api/calendar/${feedType}`;
   
-  // Google Calendar requires a specific URL format for subscription
-  // Use a properly encoded feed URL with the cid parameter
-  const googleCalendarUrl = `https://calendar.google.com/calendar/r/settings/addbyurl?url=${encodeURIComponent(httpFeedUrl)}`;
+  // Google Calendar direct integration URL - uses the calendar/render endpoint
+  // This will directly prompt to add the calendar instead of going to settings
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcalFeedUrl)}`;
   
   // Outlook Web uses normal HTTP URL
   const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(httpFeedUrl)}&name=${encodeURIComponent(calendarName)}`;
