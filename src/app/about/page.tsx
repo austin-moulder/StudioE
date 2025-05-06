@@ -656,7 +656,7 @@ export default function AboutPage() {
               Community Ambassadors
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Our Community Ambassadors are selected for 3-month terms and play a vital role in fostering a safe, inclusive, and engaging dance community.
+              Our Community Ambassadors are accepted on a rolling basis and play a vital role in fostering a safe, inclusive, and engaging dance community.
             </p>
           </div>
 
@@ -664,49 +664,171 @@ export default function AboutPage() {
           <div className="md:hidden">
             <div className="overflow-hidden" ref={ambassadorsEmblaRef}>
               <div className="flex">
-                {[1, 2, 3, 4, 5].map((index) => (
-                  <div key={index} className="flex-[0_0_100%] min-w-0">
-                    <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 mx-2">
-                      <div className="aspect-w-1 aspect-h-1 bg-gray-50 flex items-center justify-center">
-                        <span className="text-gray-400 text-lg">Accepting Applications</span>
-                      </div>
-                      <div className="p-6">
+                {/* Content Contributor 1 */}
+                <div className="flex-[0_0_100%] min-w-0">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 mx-2 flex flex-col h-full">
+                    <div className="relative pt-[100%] bg-gray-50">
+                      <Image 
+                        src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/profile_images/authors/1746489558337_cv1ar3bs6fg.png"
+                        alt="Fait Accompli"
+                        fill
+                        className="object-cover absolute top-0 left-0 w-full h-full"
+                      />
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col">
+                      <div>
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                          Ambassador {index}
+                          Content Contributor 1
                         </h3>
-                        <p className="text-gray-600 mb-4">
-                          Term: {new Date().toLocaleDateString()} - {new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                        <p className="text-[#FF3366] font-medium mb-4">
+                          Fait Accompli
                         </p>
-                        <div className="space-y-2">
-                          <p className="text-sm text-gray-600 flex items-center">
-                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                            Blog Content Contributor
-                          </p>
-                          <p className="text-sm text-gray-600 flex items-center">
-                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                            Monthly Social Safe Person
-                          </p>
-                          <p className="text-sm text-gray-600 flex items-center">
-                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                            24/7 Hotline Operator
-                          </p>
-                          <p className="text-sm text-gray-600 flex items-center">
-                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                            Social Media Manager
-                          </p>
-                          <p className="text-sm text-gray-600 flex items-center">
-                            <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                            Community Event Coordinator
-                          </p>
-                        </div>
+                      </div>
+                      <div className="mt-auto">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          Creates compelling blog content and collaborates on podcast planning, bringing diverse perspectives and creative ideas to Studio E's digital platforms.
+                        </p>
                       </div>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Content Contributor 2 */}
+                <div className="flex-[0_0_100%] min-w-0">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 mx-2 flex flex-col h-full">
+                    <div className="relative pt-[100%] bg-gray-50">
+                      <Image 
+                        src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Brandon_H.png"
+                        alt="Brandon Hampton"
+                        fill
+                        className="object-cover absolute top-0 left-0 w-full h-full"
+                      />
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Content Contributor 2
+                        </h3>
+                        <p className="text-[#FF3366] font-medium mb-4">
+                          Brandon Hampton
+                        </p>
+                      </div>
+                      <div className="mt-auto">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          Creates compelling blog content and collaborates on podcast planning, bringing diverse perspectives and creative ideas to Studio E's digital platforms.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Community Playmaker */}
+                <div className="flex-[0_0_100%] min-w-0">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 mx-2 flex flex-col h-full">
+                    <div className="relative pt-[100%] bg-gray-50">
+                      <Image 
+                        src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png"
+                        alt="Community Playmaker"
+                        fill
+                        className="object-contain absolute top-0 left-0 w-full h-full p-6"
+                      />
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Community Playmaker
+                        </h3>
+                      </div>
+                      <div className="mt-auto">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          Serves as our designated safety advocate at dance socials, attending at least 4 events monthly to ensure an inclusive environment. Remains on-call for dance scene emergencies, providing crucial support during challenging situations.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social Media Manager */}
+                <div className="flex-[0_0_100%] min-w-0">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 mx-2 flex flex-col h-full">
+                    <div className="relative pt-[100%] bg-gray-50">
+                      <Image 
+                        src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png"
+                        alt="Social Media Manager"
+                        fill
+                        className="object-contain absolute top-0 left-0 w-full h-full p-6"
+                      />
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Social Media Manager
+                        </h3>
+                      </div>
+                      <div className="mt-auto">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          Curates and manages Studio E's Instagram and TikTok presence, developing engaging content that showcases our diverse community. Creates consistent posting schedules and responds to community engagement while tracking analytics to optimize reach.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Community Organizer */}
+                <div className="flex-[0_0_100%] min-w-0">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 mx-2 flex flex-col h-full">
+                    <div className="relative pt-[100%] bg-gray-50">
+                      <Image 
+                        src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png"
+                        alt="Community Organizer"
+                        fill
+                        className="object-contain absolute top-0 left-0 w-full h-full p-6"
+                      />
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Community Organizer
+                        </h3>
+                      </div>
+                      <div className="mt-auto">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          Coordinates vibrant community gatherings including Studio E pre-game events, facilitates engaging online forums, and develops innovative activities that strengthen connections among our diverse dance community.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Business Development Specialist */}
+                <div className="flex-[0_0_100%] min-w-0">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 mx-2 flex flex-col h-full">
+                    <div className="relative pt-[100%] bg-gray-50">
+                      <Image 
+                        src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png"
+                        alt="Business Development Specialist"
+                        fill
+                        className="object-contain absolute top-0 left-0 w-full h-full p-6"
+                      />
+                    </div>
+                    <div className="p-6 flex-grow flex flex-col">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Business Development Specialist
+                        </h3>
+                      </div>
+                      <div className="mt-auto">
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          Researches and implements expansion strategies into new cities, optimizes our growing instructor and student network, and helps develop innovative products and services that enhance the Studio E experience.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="flex justify-center mt-6 space-x-2">
-              {[0, 1, 2, 3, 4].map((index) => (
+              {[0, 1, 2, 3, 4, 5].map((index) => (
                 <button
                   key={index}
                   onClick={() => scrollToAmbassador(index)}
@@ -721,51 +843,160 @@ export default function AboutPage() {
 
           {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {[1, 2, 3, 4, 5].map((index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200"
-              >
-                <div className="aspect-w-1 aspect-h-1 bg-gray-50 flex items-center justify-center">
-                  <span className="text-gray-400 text-lg">Accepting Applications</span>
-                </div>
-                <div className="p-6">
+            {/* Content Contributor 1 */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 flex flex-col h-full">
+              <div className="relative pt-[100%] bg-gray-50">
+                <Image 
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/profile_images/authors/1746489558337_cv1ar3bs6fg.png"
+                  alt="Fait Accompli"
+                  fill
+                  className="object-cover absolute top-0 left-0 w-full h-full"
+                />
+              </div>
+              <div className="p-6 flex-grow flex flex-col">
+                <div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Ambassador {index}
+                    Content Contributor 1
                   </h3>
-                  <p className="text-gray-600 mb-4">
-                    Term: {new Date().toLocaleDateString()} - {new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                  <p className="text-[#FF3366] font-medium mb-4">
+                    Fait Accompli
                   </p>
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                      Blog Content Contributor
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                      Monthly Social Safe Person
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                      24/7 Hotline Operator
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                      Social Media Manager
-                    </p>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <span className="w-2 h-2 bg-[#FF3366] rounded-full mr-2"></span>
-                      Community Event Coordinator
-                    </p>
-                  </div>
+                </div>
+                <div className="mt-auto">
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Creates compelling blog content and collaborates on podcast planning, bringing diverse perspectives and creative ideas to Studio E's digital platforms.
+                  </p>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Content Contributor 2 */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 flex flex-col h-full">
+              <div className="relative pt-[100%] bg-gray-50">
+                <Image 
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors_v2/Brandon_H.png"
+                  alt="Brandon Hampton"
+                  fill
+                  className="object-cover absolute top-0 left-0 w-full h-full"
+                />
+              </div>
+              <div className="p-6 flex-grow flex flex-col">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Content Contributor 2
+                  </h3>
+                  <p className="text-[#FF3366] font-medium mb-4">
+                    Brandon Hampton
+                  </p>
+                </div>
+                <div className="mt-auto">
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Creates compelling blog content and collaborates on podcast planning, bringing diverse perspectives and creative ideas to Studio E's digital platforms.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Community Playmaker */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 flex flex-col h-full">
+              <div className="relative pt-[100%] bg-gray-50">
+                <Image 
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png"
+                  alt="Community Playmaker"
+                  fill
+                  className="object-contain absolute top-0 left-0 w-full h-full p-6"
+                />
+              </div>
+              <div className="p-6 flex-grow flex flex-col">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Community Playmaker
+                  </h3>
+                </div>
+                <div className="mt-auto">
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Serves as our designated safety advocate at dance socials, attending at least 4 events monthly to ensure an inclusive environment. Remains on-call for dance scene emergencies, providing crucial support during challenging situations.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Media Manager */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 flex flex-col h-full">
+              <div className="relative pt-[100%] bg-gray-50">
+                <Image 
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png"
+                  alt="Social Media Manager"
+                  fill
+                  className="object-contain absolute top-0 left-0 w-full h-full p-6"
+                />
+              </div>
+              <div className="p-6 flex-grow flex flex-col">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Social Media Manager
+                  </h3>
+                </div>
+                <div className="mt-auto">
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Curates and manages Studio E's Instagram and TikTok presence, developing engaging content that showcases our diverse community. Creates consistent posting schedules and responds to community engagement while tracking analytics to optimize reach.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Community Organizer */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 flex flex-col h-full">
+              <div className="relative pt-[100%] bg-gray-50">
+                <Image 
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png"
+                  alt="Community Organizer"
+                  fill
+                  className="object-contain absolute top-0 left-0 w-full h-full p-6"
+                />
+              </div>
+              <div className="p-6 flex-grow flex flex-col">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Community Organizer
+                  </h3>
+                </div>
+                <div className="mt-auto">
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Coordinates vibrant community gatherings including Studio E pre-game events, facilitates engaging online forums, and develops innovative activities that strengthen connections among our diverse dance community.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Business Development Specialist */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 flex flex-col h-full">
+              <div className="relative pt-[100%] bg-gray-50">
+                <Image 
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png"
+                  alt="Business Development Specialist"
+                  fill
+                  className="object-contain absolute top-0 left-0 w-full h-full p-6"
+                />
+              </div>
+              <div className="p-6 flex-grow flex flex-col">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Business Development Specialist
+                  </h3>
+                </div>
+                <div className="mt-auto">
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Researches and implements expansion strategies into new cities, optimizes our growing instructor and student network, and helps develop innovative products and services that enhance the Studio E experience.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="text-center">
             <p className="text-gray-600 mb-6">
-              Interested in becoming a Community Ambassador? Applications are open for our next term.
+              Interested in becoming a Community Ambassador? Applications are accepted on a rolling basis.
             </p>
             <Link 
               href="/become-ambassador" 
