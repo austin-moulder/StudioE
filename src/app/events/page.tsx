@@ -240,8 +240,29 @@ function EventsContent() {
     });
     
     setFilteredEvents(filtered)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events, eventType, location, searchTerm])
+  }, [events, searchTerm, eventType, location])
+  
+  // When any filter changes, automatically update the URL after a short delay
+  useEffect(() => {
+    if (!events.length) return;
+    
+    const timer = setTimeout(() => {
+      // Build URL parameters
+      const params = new URLSearchParams()
+      if (searchTerm) params.set('q', searchTerm)
+      if (eventType && eventType !== "all") params.set('type', eventType)
+      if (location && location !== "all") params.set('location', location)
+      
+      // Use replaceState instead of router.push to avoid scrolling to top
+      window.history.replaceState(
+        {}, 
+        '', 
+        `${window.location.pathname}?${params.toString()}`
+      );
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm, eventType, location, events.length]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)

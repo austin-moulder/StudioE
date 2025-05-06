@@ -254,6 +254,13 @@ function ClassesContent() {
     // First, let's filter the classes
     let filtered = [...classes];
     
+    // Always filter out past classes (for all filter options)
+    const today = startOfDay(new Date());
+    filtered = filtered.filter(classItem => {
+      const classDate = startOfDay(new Date(classItem.class_date));
+      return isEqual(classDate, today) || isAfter(classDate, today);
+    });
+    
     // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
@@ -327,23 +334,21 @@ function ClassesContent() {
       filtered = filtered.filter(classItem => !classItem.instructor_approval_required);
     }
     
-    // Apply date filter
-    if (dateFilter !== 'all') {
+    // Apply specific date filters
+    if (dateFilter === 'today') {
       const today = startOfDay(new Date());
-      
-      if (dateFilter === 'today') {
-        filtered = filtered.filter(classItem => {
-          const classDate = startOfDay(new Date(classItem.class_date));
-          return isEqual(classDate, today);
-        });
-      } else if (dateFilter === 'week') {
-        const endDate = addDays(today, 7);
-        filtered = filtered.filter(classItem => {
-          const classDate = startOfDay(new Date(classItem.class_date));
-          return (isEqual(classDate, today) || isAfter(classDate, today)) && 
-                 (isBefore(classDate, endDate) || isEqual(classDate, endDate));
-        });
-      }
+      filtered = filtered.filter(classItem => {
+        const classDate = startOfDay(new Date(classItem.class_date));
+        return isEqual(classDate, today);
+      });
+    } else if (dateFilter === 'week') {
+      const today = startOfDay(new Date());
+      const endDate = addDays(today, 7);
+      filtered = filtered.filter(classItem => {
+        const classDate = startOfDay(new Date(classItem.class_date));
+        return (isEqual(classDate, today) || isAfter(classDate, today)) && 
+               (isBefore(classDate, endDate) || isEqual(classDate, endDate));
+      });
     }
     
     // Apply company filter
@@ -356,7 +361,7 @@ function ClassesContent() {
     // Update filtered classes state
     setFilteredClasses(filtered);
     
-    // Update URL params
+    // Update URL params without pushing to history (avoids scroll reset)
     const params = new URLSearchParams();
     if (searchTerm) params.set('q', searchTerm);
     if (danceStyle && danceStyle !== 'all') params.set('style', danceStyle);
@@ -365,7 +370,12 @@ function ClassesContent() {
     // Reset to first page when filters change
     setCurrentPage(1);
     
-    router.push(`/classes?${params.toString()}`);
+    // Use replaceState instead of router.push to avoid scrolling to top
+    window.history.replaceState(
+      {}, 
+      '', 
+      `${window.location.pathname}?${params.toString()}`
+    );
   }
   
   // When any filter changes, automatically update the URL after a short delay
@@ -387,7 +397,8 @@ function ClassesContent() {
     setShowDropInOnly(false)
     setShowOpenClassesOnly(false)
     
-    router.push('/classes')
+    // Use replaceState instead of router.push to avoid scrolling to top
+    window.history.replaceState({}, '', '/classes');
   }
   
   // Format time
@@ -401,11 +412,17 @@ function ClassesContent() {
 
   // Format date to ensure correct display regardless of timezone
   const formatDate = (dateString: string) => {
-    // Create date as UTC (as it is in the database) and format in the local timezone
+    // Create date object without timezone issues
     const date = new Date(dateString);
-    // Fix for timezone issues by setting the time to noon UTC to avoid date shifting
-    date.setUTCHours(12, 0, 0, 0);
-    return format(date, 'MMM d, yyyy');
+    
+    // Fix for timezone shifts by forcing the date to be interpreted as in UTC
+    // and then formatted in local time.
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth();
+    const day = date.getUTCDate();
+    
+    const localDate = new Date(year, month, day);
+    return format(localDate, 'MMM d, yyyy');
   }
   
   // Get current page data
