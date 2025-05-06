@@ -28,9 +28,17 @@ const SubscribeToCalendar = ({
   // Add timestamp to prevent caching issues
   const timestamp = new Date().getTime();
   
+  // Get proper calendar name
+  const calendarName = feedType === 'events' ? 'Studio E Dance Events' : 'Studio E Dance Classes';
+  
   // Format URLs for different calendar services
-  const googleCalendarUrl = `https://www.google.com/calendar/render?cid=${encodeURIComponent(`webcal://www.joinstudioe.com/api/calendar/${feedType}?t=${timestamp}`)}`;
-  const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(`https://www.joinstudioe.com/api/calendar/${feedType}?t=${timestamp}`)}&name=${encodeURIComponent(`Studio E ${feedType === 'events' ? 'Events' : 'Classes'}`)}`;
+  // Google Calendar uses normal HTTP URL
+  const googleCalendarUrl = `https://www.google.com/calendar/render?cid=${encodeURIComponent(`${feedUrl}?t=${timestamp}`)}&name=${encodeURIComponent(calendarName)}`;
+  
+  // Outlook uses normal HTTP URL
+  const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(`${feedUrl}?t=${timestamp}`)}&name=${encodeURIComponent(calendarName)}`;
+  
+  // Apple Calendar can use webcal:// protocol (will be converted to https:// by macOS)
   const icalUrl = `webcal://www.joinstudioe.com/api/calendar/${feedType}?t=${timestamp}`;
   
   // Toggle dropdown visibility
@@ -125,7 +133,7 @@ const SubscribeToCalendar = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
             <div className="mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Subscribe to Calendar</h3>
+              <h3 className="text-lg font-medium text-gray-900">Subscribe to {calendarName}</h3>
               <p className="text-sm text-gray-500 mt-1">
                 Copy this URL to subscribe in your calendar application.
               </p>
