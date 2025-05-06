@@ -4,32 +4,59 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/supabase";
 
-// Production site URL - hardcoded to ensure consistency
+// Production URL - hardcoded to ensure consistency
 const PRODUCTION_URL = 'https://www.joinstudioe.com';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("Processing your sign-in...");
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
         console.log("Auth callback page loaded, processing authentication...");
         
-        // Check if we're on localhost but should redirect to production
-        if (typeof window !== 'undefined' && 
-            window.location.hostname === 'localhost' && 
-            !window.location.search.includes('no_redirect')) {
-          // Get the current URL parameters
-          const params = new URLSearchParams(window.location.search);
-          const fullUrl = `${PRODUCTION_URL}${window.location.pathname}${window.location.search ? 
-            `${window.location.search}&no_redirect=true` : '?no_redirect=true'}`;
+        // STEP 1: Force redirect to production if on localhost
+        if (typeof window !== 'undefined') {
+          const isLocalhost = 
+            window.location.hostname === 'localhost' || 
+            window.location.hostname === '127.0.0.1';
+            
+          const isProduction = window.location.hostname === 'www.joinstudioe.com' || 
+                              window.location.hostname.includes('vercel.app');
+                              
+          if (isLocalhost) {
+            // Get the current path and search params
+            const currentPath = window.location.pathname;
+            const searchParams = new URLSearchParams(window.location.search);
+            
+            // If we're not already in a redirect loop
+            if (!searchParams.has('redirected')) {
+              searchParams.append('redirected', 'true');
+              const redirectURL = `${PRODUCTION_URL}${currentPath}?${searchParams.toString()}`;
+              console.log(`Redirecting from localhost to production: ${redirectURL}`);
+              
+              // Set a message before redirect
+              setMessage("Redirecting to production environment...");
+              
+              // Perform an immediate redirect
+              window.location.replace(redirectURL);
+              return;
+            }
+          }
           
-          console.log(`Redirecting from localhost to production: ${fullUrl}`);
-          window.location.href = fullUrl;
-          return;
+          // STEP 2: Check if we have a stored redirect URL from the auth utils
+          const storedRedirect = localStorage.getItem('redirectAfterAuth');
+          if (storedRedirect && !isProduction) {
+            console.log(`Using stored redirect: ${storedRedirect}`);
+            localStorage.removeItem('redirectAfterAuth');
+            window.location.replace(storedRedirect);
+            return;
+          }
         }
         
+        // STEP 3: Process auth callback
         // Check for auth code in URL (magic link authentication)
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
@@ -51,11 +78,10 @@ export default function AuthCallbackPage() {
           }
         }
         
-        // Check for hash fragments (OAuth providers like Google)
+        // STEP 4: Check for hash fragments (OAuth providers like Google)
         const hash = window.location.hash;
         if (hash) {
           console.log("OAuth redirect detected");
-          // The auth state change listener in AuthProvider will handle this
           const { data } = await supabase.auth.getSession();
           if (data?.session) {
             router.push("/");
@@ -63,7 +89,7 @@ export default function AuthCallbackPage() {
           }
         }
         
-        // If we get here, try a fallback session check
+        // STEP 5: Fallback session check
         const { data } = await supabase.auth.getSession();
         if (data?.session) {
           router.push("/");
@@ -103,7 +129,7 @@ export default function AuthCallbackPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
         <h2 className="mb-4 text-2xl font-bold text-center">Signing you in...</h2>
-        <p className="mb-6 text-center text-gray-700">Please wait while we complete the authentication process.</p>
+        <p className="mb-6 text-center text-gray-700">{message}</p>
         <div className="flex justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#EC407A] border-t-transparent"></div>
         </div>

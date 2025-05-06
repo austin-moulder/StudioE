@@ -1,6 +1,6 @@
 import { supabase } from '../supabase/supabase';
 
-// Always use production URL - hardcoded to ensure it's never overridden by environment
+// PRODUCTION URL - Hard-coded and final
 const PRODUCTION_URL = 'https://www.joinstudioe.com';
 
 /**
@@ -8,13 +8,19 @@ const PRODUCTION_URL = 'https://www.joinstudioe.com';
  * @returns Promise that resolves when the sign-in process has started
  */
 export async function signInWithGoogle() {
+  // Override URL handling
+  if (typeof window !== 'undefined') {
+    const loginURL = `${PRODUCTION_URL}/auth/callback?from=google&t=${Date.now()}`;
+    localStorage.setItem('redirectAfterAuth', loginURL);
+  }
+
   return supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${PRODUCTION_URL}/auth/callback`,
+      redirectTo: `${PRODUCTION_URL}/auth/callback?provider=google&t=${Date.now()}`,
       queryParams: {
-        // Add a timestamp to prevent caching issues
-        _t: new Date().getTime().toString()
+        prompt: 'select_account',
+        access_type: 'offline'
       }
     }
   });
@@ -26,10 +32,16 @@ export async function signInWithGoogle() {
  * @returns Promise that resolves when the magic link has been sent
  */
 export async function signInWithMagicLink(email: string) {
+  // Override URL handling
+  if (typeof window !== 'undefined') {
+    const loginURL = `${PRODUCTION_URL}/auth/callback?from=email&t=${Date.now()}`;
+    localStorage.setItem('redirectAfterAuth', loginURL);
+  }
+
   return supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${PRODUCTION_URL}/auth/callback?_t=${new Date().getTime()}`,
+      emailRedirectTo: `${PRODUCTION_URL}/auth/callback?provider=email&t=${Date.now()}`,
       shouldCreateUser: true,
     }
   });
@@ -40,6 +52,11 @@ export async function signInWithMagicLink(email: string) {
  * @returns Promise that resolves when sign-out is complete
  */
 export async function signOut() {
+  // Clear any auth-related localStorage
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('redirectAfterAuth');
+  }
+  
   return supabase.auth.signOut();
 }
 
