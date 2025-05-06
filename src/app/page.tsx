@@ -87,6 +87,35 @@ export default function Home() {
     choreo: 0
   })
   const router = useRouter()
+  
+  // Add auth redirect handling
+  useEffect(() => {
+    // Check if we're on localhost with a code parameter
+    if (typeof window !== 'undefined') {
+      const currentHostname = window.location.hostname;
+      const isLocalhost = 
+        currentHostname === 'localhost' || 
+        currentHostname.includes('127.0.0.1');
+        
+      // Check if we have an auth code
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      
+      // If we're on localhost and have a code, redirect to production
+      if (isLocalhost && code) {
+        console.log("Auth code detected on homepage, redirecting to production");
+        
+        // Create the redirect URL with the auth code
+        const redirectParams = new URLSearchParams();
+        redirectParams.append('code', code);
+        
+        const redirectURL = `https://www.joinstudioe.com/?${redirectParams.toString()}`;
+        window.location.replace(redirectURL);
+        return;
+      }
+    }
+  }, []);
+  
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [danceStyleEmblaRef, danceStyleEmblaApi] = useEmblaCarousel({ loop: true })

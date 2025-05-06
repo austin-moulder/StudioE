@@ -17,25 +17,31 @@ export default function AuthCallbackPage() {
       try {
         console.log("Auth callback page loaded, processing authentication...");
         
-        // STEP 1: Force redirect to production if on localhost
+        // STEP 1: Force redirect to production if we're not already there
         if (typeof window !== 'undefined') {
-          const isLocalhost = 
-            window.location.hostname === 'localhost' || 
-            window.location.hostname === '127.0.0.1';
-            
-          const isProduction = window.location.hostname === 'www.joinstudioe.com' || 
-                              window.location.hostname.includes('vercel.app');
+          const currentHostname = window.location.hostname;
+          const isProduction = 
+            currentHostname === 'www.joinstudioe.com' || 
+            currentHostname.includes('joinstudioe.com') ||
+            currentHostname.includes('vercel.app');
                               
-          if (isLocalhost) {
+          if (!isProduction) {
             // Get the current path and search params
             const currentPath = window.location.pathname;
             const searchParams = new URLSearchParams(window.location.search);
             
-            // If we're not already in a redirect loop
-            if (!searchParams.has('redirected')) {
-              searchParams.append('redirected', 'true');
-              const redirectURL = `${PRODUCTION_URL}${currentPath}?${searchParams.toString()}`;
-              console.log(`Redirecting from localhost to production: ${redirectURL}`);
+            // The code parameter is what we need to preserve for authentication
+            const code = searchParams.get('code');
+            
+            // If we have a code and we're not already in a redirect loop
+            if (code && !searchParams.has('redirected')) {
+              // Create a new search params object with just the code
+              const redirectParams = new URLSearchParams();
+              redirectParams.append('code', code);
+              redirectParams.append('redirected', 'true');
+              
+              const redirectURL = `${PRODUCTION_URL}${currentPath}?${redirectParams.toString()}`;
+              console.log(`Redirecting to production domain: ${redirectURL}`);
               
               // Set a message before redirect
               setMessage("Redirecting to production environment...");
