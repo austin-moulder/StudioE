@@ -1,113 +1,168 @@
+"use client";
+
 import React, { useState } from 'react';
-import { CalendarPlus, Copy, Check, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle
-} from "@/components/ui/dialog";
-import { toast } from "sonner";
+import { CalendarPlus, ChevronDown, Check, Copy } from "lucide-react";
 
 type SubscribeToCalendarProps = {
-  feedType: 'events' | 'classes'; // Type of calendar feed
-  buttonVariant?: 'default' | 'outline' | 'subtle'; // Button style
-  buttonSize?: 'default' | 'sm' | 'lg'; // Button size
-  showIcon?: boolean; // Whether to show the calendar icon
-  className?: string; // Additional CSS classes
+  feedType: 'events' | 'classes';
+  buttonVariant?: string;
+  buttonSize?: string;
+  showIcon?: boolean;
+  className?: string;
 };
 
 const SubscribeToCalendar = ({
   feedType = 'events',
   buttonVariant = 'default',
-  buttonSize = 'default',
   showIcon = true,
   className = '',
 }: SubscribeToCalendarProps) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  // Always use production URL regardless of environment to avoid localhost issues
+  
+  // Always use production URL regardless of environment
   const baseUrl = "https://www.joinstudioe.com";
   const feedUrl = `${baseUrl}/api/calendar/${feedType}`;
-
-  // Add timestamp to ensure uniqueness and prevent caching issues with calendar providers
+  
+  // Add timestamp to prevent caching issues
   const timestamp = new Date().getTime();
   
-  // URLs for direct subscription in different calendar applications
-  const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(`${feedUrl}?t=${timestamp}`)}`;
-  const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(`${feedUrl}?t=${timestamp}`)}&name=${encodeURIComponent(`Studio E ${feedType === 'events' ? 'Events' : 'Classes'}`)}`;
+  // Format URLs for different calendar services
+  const googleCalendarUrl = `https://www.google.com/calendar/render?cid=${encodeURIComponent(`webcal://www.joinstudioe.com/api/calendar/${feedType}?t=${timestamp}`)}`;
+  const outlookCalendarUrl = `https://outlook.office.com/calendar/0/addfromweb?url=${encodeURIComponent(`https://www.joinstudioe.com/api/calendar/${feedType}?t=${timestamp}`)}&name=${encodeURIComponent(`Studio E ${feedType === 'events' ? 'Events' : 'Classes'}`)}`;
+  const icalUrl = `webcal://www.joinstudioe.com/api/calendar/${feedType}?t=${timestamp}`;
   
-  // Apple Calendar doesn't have a direct web URL for subscription - users need to use the feed URL
-  const appleFeedUrl = `${feedUrl}?t=${timestamp}`; // Add timestamp to this URL as well
-
+  // Toggle dropdown visibility
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+  
+  // Close dropdown when clicking outside
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+  
+  // Open calendar-specific instructional modal for Apple/other calendars
+  const openModal = () => {
+    setIsModalOpen(true);
+    setIsDropdownOpen(false);
+  };
+  
+  // Copy the calendar URL to clipboard
   const copyFeedUrl = () => {
-    navigator.clipboard.writeText(appleFeedUrl);
+    navigator.clipboard.writeText(icalUrl);
     setCopied(true);
-    toast.success("Calendar feed URL copied to clipboard");
-    setTimeout(() => setCopied(false), 2000);
+    
+    // Show copied status for 2 seconds
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  };
+
+  const getButtonClass = () => {
+    let baseClass = "inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium";
+    
+    if (buttonVariant === 'outline') {
+      baseClass += " border border-white text-white hover:bg-white/20";
+    } else if (buttonVariant === 'subtle') {
+      baseClass += " bg-gray-100 text-gray-900 hover:bg-gray-200";
+    } else {
+      baseClass += " bg-primary text-white hover:bg-primary/90";
+    }
+    
+    return `${baseClass} ${className}`;
   };
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button 
-            variant={buttonVariant as any} 
-            size={buttonSize as any}
-            className={className}
-          >
-            {showIcon && <CalendarPlus className="mr-2 h-4 w-4" />}
-            Subscribe to Calendar
-            <ChevronDown className="ml-2 h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="bg-white shadow-md border border-gray-200">
-          <DropdownMenuItem onClick={() => window.open(googleCalendarUrl, '_blank')}>
-            Google Calendar
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => window.open(outlookCalendarUrl, '_blank')}>
-            Outlook Calendar
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsDialogOpen(true)}>
-            Apple Calendar / Other
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div className="relative">
+      {/* Main Button */}
+      <button
+        type="button"
+        onClick={toggleDropdown}
+        className={getButtonClass()}
+        onBlur={() => setTimeout(closeDropdown, 100)}
+      >
+        {showIcon && <CalendarPlus className="mr-2 h-4 w-4" />}
+        Subscribe to Calendar
+        <ChevronDown className="ml-2 h-4 w-4" />
+      </button>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Subscribe to Calendar</DialogTitle>
-            <DialogDescription>
-              Copy this URL to subscribe in your calendar application.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center space-x-2 mt-4">
-            <div className="flex-1 p-3 bg-gray-100 rounded text-sm break-all">
-              {appleFeedUrl}
-            </div>
-            <Button size="icon" onClick={copyFeedUrl}>
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            </Button>
+      {/* Dropdown Menu */}
+      {isDropdownOpen && (
+        <div className="absolute z-10 mt-2 right-0 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="py-1">
+            <a
+              href={googleCalendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={closeDropdown}
+            >
+              Google Calendar
+            </a>
+            <a
+              href={outlookCalendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={closeDropdown}
+            >
+              Outlook Calendar
+            </a>
+            <button
+              onClick={openModal}
+              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              Apple Calendar / Other
+            </button>
           </div>
-          <div className="mt-6 space-y-4">
-            <h4 className="font-medium">Instructions:</h4>
-            <div className="space-y-2">
-              <p className="text-sm"><strong>Apple Calendar:</strong> Go to File → New Calendar Subscription, paste the URL above, and follow the prompts.</p>
-              <p className="text-sm"><strong>Other Calendar Apps:</strong> Look for an option like "Subscribe to Calendar" or "Add Calendar" and enter the URL above when prompted.</p>
+        </div>
+      )}
+
+      {/* Modal for Apple Calendar instructions */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <div className="mb-4">
+              <h3 className="text-lg font-medium text-gray-900">Subscribe to Calendar</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Copy this URL to subscribe in your calendar application.
+              </p>
+            </div>
+            
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="flex-1 p-3 bg-gray-100 rounded text-sm break-all">
+                {icalUrl}
+              </div>
+              <button
+                onClick={copyFeedUrl}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 bg-white"
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-medium">Instructions:</h4>
+              <div className="space-y-2">
+                <p className="text-sm"><strong>Apple Calendar:</strong> Go to File → New Calendar Subscription, paste the URL above, and follow the prompts.</p>
+                <p className="text-sm"><strong>Other Calendar Apps:</strong> Look for an option like "Subscribe to Calendar" or "Add Calendar" and enter the URL above when prompted.</p>
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+              >
+                Close
+              </button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
-    </>
+        </div>
+      )}
+    </div>
   );
 };
 
