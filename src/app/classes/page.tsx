@@ -138,7 +138,6 @@ function ClassesContent() {
         
         if (classesData) {
           setClasses(classesData)
-          setFilteredClasses(classesData)
           
           // Extract unique dance styles and locations
           const styles = new Set<string>()
@@ -203,6 +202,9 @@ function ClassesContent() {
           
           setDanceStyles(styleArray)
           setLocations(Array.from(locationSet))
+          
+          // Apply initial filters after loading data
+          applyInitialFilters(classesData);
         }
         
         if (companiesData) {
@@ -217,6 +219,122 @@ function ClassesContent() {
     
     fetchData()
   }, [])
+  
+  // Apply initial filters on first load
+  const applyInitialFilters = (classData: Class[]) => {
+    if (!classData.length) return;
+    
+    let filtered = [...classData];
+    
+    // Filter out past classes
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    filtered = filtered.filter(classItem => {
+      const classDate = new Date(classItem.class_date);
+      
+      // Create date-only version of the date to avoid timezone issues
+      const classLocalDate = new Date(
+        classDate.getUTCFullYear(), 
+        classDate.getUTCMonth(), 
+        classDate.getUTCDate()
+      );
+      
+      const todayLocalDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      
+      return classLocalDate >= todayLocalDate;
+    });
+    
+    // Apply date filter - week is default
+    if (dateFilter === 'today') {
+      filtered = filtered.filter(classItem => {
+        const classDate = new Date(classItem.class_date);
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        return classLocalDate.getTime() === todayLocalDate.getTime();
+      });
+    } else if (dateFilter === 'week') {
+      const endDate = new Date(today);
+      endDate.setDate(today.getDate() + 7);
+      
+      filtered = filtered.filter(classItem => {
+        const classDate = new Date(classItem.class_date);
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        const endLocalDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate()
+        );
+        
+        return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
+      });
+    }
+    
+    // Apply other active filters if any
+    if (danceStyle !== 'all') {
+      filtered = filtered.filter(classItem => {
+        const className = classItem.class_name.toLowerCase();
+        if (danceStyle === 'Salsa') return className.includes('salsa');
+        if (danceStyle === 'Bachata') return className.includes('bachata');
+        if (danceStyle === 'Kizomba') return className.includes('kizomba');
+        if (danceStyle === 'Zouk') return className.includes('zouk');
+        if (danceStyle === 'Afro Cuban') return className.includes('afro') || className.includes('cuban');
+        if (danceStyle === 'Heels') return className.includes('heel');
+        if (danceStyle === 'Choreo') return className.includes('choreo') || className.includes('choreography');
+        return true;
+      });
+    }
+    
+    if (location !== 'all') {
+      filtered = filtered.filter(classItem => {
+        if (classItem.location) return classItem.location === location;
+        
+        // Extract city from address
+        const address = classItem.company.address;
+        const addressParts = address.split(',').map(part => part.trim());
+        let city = 'Chicago';
+        
+        if (addressParts.length >= 3) {
+          city = addressParts[addressParts.length - 2];
+        } else if (addressParts.length === 2) {
+          city = addressParts[1];
+        }
+        
+        return city === location;
+      });
+    }
+    
+    setFilteredClasses(filtered);
+  }
   
   // Apply filters
   useEffect(() => {
@@ -255,21 +373,26 @@ function ClassesContent() {
     let filtered = [...classes];
     
     // Always filter out past classes (for all filter options)
-    const today = startOfDay(new Date());
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
     filtered = filtered.filter(classItem => {
-      const classDate = startOfDay(new Date(classItem.class_date));
-      // Force the date to be interpreted without timezone issues
-      const classDateLocal = new Date(
-        classDate.getUTCFullYear(),
-        classDate.getUTCMonth(),
+      const classDate = new Date(classItem.class_date);
+      
+      // Create date-only version of the date to avoid timezone issues
+      const classLocalDate = new Date(
+        classDate.getUTCFullYear(), 
+        classDate.getUTCMonth(), 
         classDate.getUTCDate()
       );
-      const todayLocal = new Date(
+      
+      const todayLocalDate = new Date(
         today.getFullYear(),
         today.getMonth(),
         today.getDate()
       );
-      return isEqual(classDateLocal, todayLocal) || isAfter(classDateLocal, todayLocal);
+      
+      return classLocalDate >= todayLocalDate;
     });
     
     // Apply search filter
@@ -347,45 +470,51 @@ function ClassesContent() {
     
     // Apply specific date filters
     if (dateFilter === 'today') {
-      const today = startOfDay(new Date());
       filtered = filtered.filter(classItem => {
-        const classDate = startOfDay(new Date(classItem.class_date));
-        // Force the date to be interpreted without timezone issues
-        const classDateLocal = new Date(
-          classDate.getUTCFullYear(),
-          classDate.getUTCMonth(),
+        const classDate = new Date(classItem.class_date);
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
           classDate.getUTCDate()
         );
-        const todayLocal = new Date(
+        
+        const todayLocalDate = new Date(
           today.getFullYear(),
           today.getMonth(),
           today.getDate()
         );
-        return isEqual(classDateLocal, todayLocal);
+        
+        return classLocalDate.getTime() === todayLocalDate.getTime();
       });
     } else if (dateFilter === 'week') {
-      const today = startOfDay(new Date());
-      const endDate = addDays(today, 7);
+      const endDate = new Date(today);
+      endDate.setDate(today.getDate() + 7);
+      
       filtered = filtered.filter(classItem => {
-        const classDate = startOfDay(new Date(classItem.class_date));
-        // Force the date to be interpreted without timezone issues
-        const classDateLocal = new Date(
-          classDate.getUTCFullYear(),
-          classDate.getUTCMonth(),
+        const classDate = new Date(classItem.class_date);
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
           classDate.getUTCDate()
         );
-        const todayLocal = new Date(
+        
+        const todayLocalDate = new Date(
           today.getFullYear(),
           today.getMonth(),
           today.getDate()
         );
-        const endDateLocal = new Date(
+        
+        const endLocalDate = new Date(
           endDate.getFullYear(),
           endDate.getMonth(),
           endDate.getDate()
         );
-        return (isEqual(classDateLocal, todayLocal) || isAfter(classDateLocal, todayLocal)) && 
-               (isBefore(classDateLocal, endDateLocal) || isEqual(classDateLocal, endDateLocal));
+        
+        return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
       });
     }
     
@@ -452,17 +581,15 @@ function ClassesContent() {
   // Format date to ensure correct display regardless of timezone
   const formatDate = (dateString: string) => {
     try {
-      // Create date object from the UTC date string
+      // Create date object from the date string
       const date = new Date(dateString);
       
-      // Extract the year, month, and day from the UTC date
-      const year = date.getUTCFullYear();
-      const month = date.getUTCMonth();
-      const day = date.getUTCDate();
-      
-      // Create a new date object with local interpretation of those values
-      const localDate = new Date(year, month, day);
-      return format(localDate, 'MMM d, yyyy');
+      // Format using UTC timezone to avoid any shifting
+      return date.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric',
+        timeZone: 'UTC' // Use UTC to avoid timezone issues
+      });
     } catch (error) {
       console.error('Error formatting date:', error);
       return dateString;
