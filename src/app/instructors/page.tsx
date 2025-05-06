@@ -281,13 +281,11 @@ function InstructorsContent() {
     // If current page is now out of bounds, adjust it
     if (currentPage > newMaxPage) {
       setCurrentPage(1)
-      updateURLWithParams({ page: 1 })
-    } else if (currentPage !== 1) {
-      // Reset to page 1 if filters change
-      setCurrentPage(1)
-      updateURLWithParams({ page: 1 })
     }
-  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, allInstructors, updateURLWithParams])
+
+    // Don't automatically set to page 1 when filters change if there are enough results
+    // This creates a better UX for users who are browsing and applying filters
+  }, [selectedStyle, selectedLocation, selectedPrice, sortOrder, searchTerm, allInstructors, currentPage])
 
   // Sort instructors based on selected order
   const sortInstructors = (instructors: Instructor[], order: string) => {
@@ -311,12 +309,31 @@ function InstructorsContent() {
     }
   }
 
-  // Apply pagination
+  // Apply pagination - separated from the filter effect
   useEffect(() => {
+    // Ensure we stay within bounds of available pages
+    const maxPage = Math.max(1, Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE))
+    
+    // If current page is out of bounds, adjust it
+    if (currentPage > maxPage) {
+      setCurrentPage(1)
+      // Update URL with the corrected page
+      updateURLWithParams({ page: 1 })
+      return // Early return to avoid double-rendering
+    }
+    
+    // Calculate start and end indices
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-    const endIndex = startIndex + ITEMS_PER_PAGE
+    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredInstructors.length)
+    
+    // Slice the filtered instructors
     setPaginatedInstructors(filteredInstructors.slice(startIndex, endIndex))
-  }, [filteredInstructors, currentPage])
+    
+    // Update URL if page has changed manually
+    if (searchParams && Number(searchParams.get("page") ?? "1") !== currentPage) {
+      updateURLWithParams({ page: currentPage })
+    }
+  }, [filteredInstructors, currentPage, updateURLWithParams, searchParams])
 
   // Update URL when filters change
   const handleStyleChange = (style: string) => {
@@ -338,13 +355,6 @@ function InstructorsContent() {
     setSortOrder(sort)
     updateURLWithParams({ sort })
   }
-
-  // Update URL when filters change
-  useEffect(() => {
-    if (currentPage > 1) {
-      updateURLWithParams({ page: currentPage })
-    }
-  }, [currentPage, selectedStyle, selectedLocation, selectedPrice, sortOrder, updateURLWithParams]);
 
   // Handle page change
   const handlePageChange = (page: number) => {
@@ -542,7 +552,13 @@ function InstructorsContent() {
             </div>
           ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {paginatedInstructors.map((instructor, index) => (
+            {filteredInstructors.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-xl text-gray-600">No instructors found matching your filters.</p>
+                <p className="mt-2 text-gray-500">Try adjusting your search criteria.</p>
+              </div>
+            ) : (
+              paginatedInstructors.map((instructor, index) => (
                 <Card key={index} className="overflow-hidden flex flex-col">
                   <div className="relative h-[400px] w-full">
                     <Image
@@ -602,10 +618,11 @@ function InstructorsContent() {
                       ) : (
                         <span className="text-sm text-gray-500">Profile coming soon</span>
                       )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
           )}
 
@@ -624,6 +641,9 @@ function InstructorsContent() {
                   // Calculate pages based on filtered results
                   const filteredTotalPages = Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE)
                   
+                  // If no pages, don't render pagination
+                  if (filteredTotalPages === 0) return null;
+
                   return Array.from({ length: Math.min(filteredTotalPages, 7) }).map((_, i) => {
                     // Create a sliding window of page numbers
                     let pageNum;
