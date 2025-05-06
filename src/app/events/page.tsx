@@ -60,9 +60,9 @@ function EventsContent() {
   const router = useRouter()
   
   const [currentPage, setCurrentPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "")
-  const [eventType, setEventType] = useState(searchParams.get("type") || "all")
-  const [location, setLocation] = useState(searchParams.get("location") || "all")
+  const [searchTerm, setSearchTerm] = useState(searchParams ? searchParams.get("q") ?? "" : "")
+  const [eventType, setEventType] = useState(searchParams ? searchParams.get("type") ?? "all" : "all")
+  const [location, setLocation] = useState(searchParams ? searchParams.get("location") ?? "all" : "all")
   const [events, setEvents] = useState<Event[]>([])
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([])
   const [isMobile, setIsMobile] = useState(false)
@@ -146,55 +146,64 @@ function EventsContent() {
     fetchEvents()
   }, [])
 
-  // Filter events based on search criteria
+  // Filter events based on search parameters
   useEffect(() => {
-    let filtered = [...events]
-    
-    // Filter by type
-    if (eventType && eventType !== "all") {
-      filtered = filtered.filter(event => 
-        event.event_type?.toLowerCase() === eventType.toLowerCase()
-      )
-    }
-    
-    // Filter by location
-    if (location && location !== "all") {
-      filtered = filtered.filter(event => 
-        event.location.toLowerCase().includes(location.toLowerCase())
-      )
-    }
-    
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(event => 
-        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.location.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    }
+    if (!events.length) return
 
-    // Sort events: Prioritize upcoming featured, then upcoming non-featured, then past.
-    const now = new Date();
-
-    filtered.sort((a, b) => {
-      // Get start and end datetimes
-      let aStartDateTime, bStartDateTime, aEndDateTime, bEndDateTime;
+    const now = new Date()
+    const filtered = [...events].filter(event => {
+      // Always check if it's upcoming first (basic filtering)
+      const upcoming = isEventUpcoming(event, now)
       
-      // Use new datetime columns if available
-      if (a.start_datetime && a.end_datetime && b.start_datetime && b.end_datetime) {
-        aStartDateTime = new Date(a.start_datetime);
-        bStartDateTime = new Date(b.start_datetime);
-        aEndDateTime = new Date(a.end_datetime);
-        bEndDateTime = new Date(b.end_datetime);
+      // Then apply other filters
+      let matchesSearch = true
+      let matchesType = true
+      let matchesLocation = true
+      
+      // Search filter
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase()
+        matchesSearch = 
+          event.title.toLowerCase().includes(term) || 
+          event.description.toLowerCase().includes(term) ||
+          event.location.toLowerCase().includes(term)
+      }
+      
+      // Event type filter
+      if (eventType && eventType !== "all") {
+        matchesType = event.event_type?.toLowerCase() === eventType.toLowerCase()
+      }
+      
+      // Location filter
+      if (location && location !== "all") {
+        matchesLocation = event.location.toLowerCase().includes(location.toLowerCase())
+      }
+      
+      return upcoming && matchesSearch && matchesType && matchesLocation
+    })
+    
+    // Sort events
+    filtered.sort((a, b) => {
+      const now = new Date()
+      
+      // Create proper date-time objects for comparison
+      let aStartDateTime, bStartDateTime, aEndDateTime, bEndDateTime
+      
+      if (a.start_datetime && b.start_datetime) {
+        aStartDateTime = new Date(a.start_datetime)
+        bStartDateTime = new Date(b.start_datetime)
       } else {
-        // Fallback to old logic
-        aStartDateTime = createDateTime(a.event_date, a.start_time);
-        bStartDateTime = createDateTime(b.event_date, b.start_time);
-        
+        aStartDateTime = createDateTime(a.event_date, a.start_time)
+        bStartDateTime = createDateTime(b.event_date, b.start_time)
+      }
+      
+      if (a.end_datetime && b.end_datetime) {
+        aEndDateTime = new Date(a.end_datetime)
+        bEndDateTime = new Date(b.end_datetime)
+      } else {
         aEndDateTime = a.event_date_end 
           ? createDateTime(a.event_date_end, a.end_time) 
           : createDateTime(a.event_date, a.end_time);
-        
         bEndDateTime = b.event_date_end 
           ? createDateTime(b.event_date_end, b.end_time) 
           : createDateTime(b.event_date, b.end_time);
@@ -231,6 +240,7 @@ function EventsContent() {
     });
     
     setFilteredEvents(filtered)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events, eventType, location, searchTerm])
 
   const handlePageChange = (page: number) => {
