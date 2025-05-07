@@ -81,6 +81,12 @@ export default function SupabaseImageUploader({
         .from(bucket)
         .getPublicUrl(filePath);
 
+      console.log('Image upload successful:', {
+        bucket,
+        filePath,
+        publicUrl: urlData.publicUrl
+      });
+
       setProgress(100);
 
       // Trigger the callback with the public URL

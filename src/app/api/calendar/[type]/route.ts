@@ -60,7 +60,8 @@ export async function GET(req: NextRequest, { params }: { params: { type: string
             status: 'CONFIRMED',
             busyStatus: 'BUSY',
             organizer: { name: 'Studio E', email: 'studioelatindance@gmail.com' },
-            url: `https://joinstudioe.com/events/${event.id}`
+            url: `https://joinstudioe.com/events/${event.id}`,
+            productId: '-//Studio E//Dance Events//EN'
           } as EventAttributes;
         });
       }
@@ -76,7 +77,8 @@ export async function GET(req: NextRequest, { params }: { params: { type: string
         status: 'CONFIRMED',
         busyStatus: 'BUSY',
         organizer: { name: 'Studio E', email: 'studioelatindance@gmail.com' },
-        url: 'https://joinstudioe.com/classes'
+        url: 'https://joinstudioe.com/classes',
+        productId: '-//Studio E//Dance Classes//EN'
       }];
     }
 
@@ -90,19 +92,32 @@ export async function GET(req: NextRequest, { params }: { params: { type: string
       icsData = value || '';
     });
 
-    // Update the calendar name (X-WR-CALNAME property)
+    // Ensure we have proper calendar properties for all calendar applications
+    // Get the name for the calendar (used in X-WR-CALNAME)
     const calendarName = type === 'events' ? 'Studio E Dance Events' : 'Studio E Dance Classes';
-    icsData = icsData.replace(
-      'BEGIN:VCALENDAR', 
-      'BEGIN:VCALENDAR\r\nX-WR-CALNAME:' + calendarName
-    );
+    
+    // Ensure the calendar has a proper header with all required fields
+    if (icsData.includes('BEGIN:VCALENDAR')) {
+      icsData = icsData.replace(
+        'BEGIN:VCALENDAR',
+        'BEGIN:VCALENDAR\r\n' +
+        'PRODID:-//Studio E//Dance Events Calendar//EN\r\n' +
+        'VERSION:2.0\r\n' +
+        'CALSCALE:GREGORIAN\r\n' +
+        'METHOD:PUBLISH\r\n' +
+        `X-WR-CALNAME:${calendarName}\r\n` +
+        'X-WR-CALDESC:Calendar for Studio E dance events and classes\r\n' +
+        'X-WR-TIMEZONE:America/Chicago'
+      );
+    }
 
     // Return iCalendar feed with appropriate headers
     return new NextResponse(icsData, {
       headers: {
-        'Content-Type': 'text/calendar',
+        'Content-Type': 'text/calendar; charset=utf-8',
         'Content-Disposition': `attachment; filename="studio-e-${type}.ics"`,
-        'X-PUBLISHED-TTL': '3600' // Cache TTL of 1 hour
+        'Cache-Control': 'public, max-age=3600',
+        'Access-Control-Allow-Origin': '*' // Allow all domains to access this calendar
       }
     });
   } catch (error) {

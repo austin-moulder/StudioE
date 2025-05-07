@@ -114,7 +114,11 @@ function EventsContent() {
         
         const filteredData = data.filter(event => {
           const eventDate = new Date(event.event_date);
-          console.log('Processing event:', event.title, 'with date:', event.event_date, 'parsed as:', eventDate);
+          console.log('Processing event:', {
+            title: event.title,
+            date: event.event_date,
+            imageUrl: event.image_url
+          });
           return eventDate >= thirtyDaysAgo;
         });
 
@@ -641,6 +645,12 @@ function EventsContent() {
                           className="object-cover" 
                           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
                           priority={index < 4}
+                          onError={(e) => {
+                            console.error('Error loading image:', event.image_url);
+                            // Set the src to the fallback image
+                            const imgElement = e.target as HTMLImageElement;
+                            imgElement.src = "/placeholder.svg";
+                          }}
                         />
                         {event.is_featured && (
                           <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-3 py-0.5 rounded-full text-xs font-medium">
@@ -799,6 +809,12 @@ function EventsContent() {
                           className="object-cover"
                           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
                           priority
+                          onError={(e) => {
+                            console.error('Error loading image:', event.image_url);
+                            // Set the src to the fallback image
+                            const imgElement = e.target as HTMLImageElement;
+                            imgElement.src = "/placeholder.svg";
+                          }}
                         />
                         <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-3 py-0.5 rounded-full text-xs font-medium">
                           Featured
