@@ -109,24 +109,11 @@ function EventsContent() {
       if (data) {
         console.log('Raw event data from Supabase:', data);
         const now = new Date();
-        // Filter out events older than 14 days
-        const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
         
-        const filteredData = data.filter(event => {
-          const eventDate = new Date(event.event_date);
-          console.log('Processing event:', {
-            title: event.title,
-            date: event.event_date,
-            imageUrl: event.image_url
-          });
-          return eventDate >= fourteenDaysAgo;
-        });
-
         // Sort events by date
-        const sortedEvents = filteredData.sort((a, b) => {
+        const sortedEvents = data.sort((a, b) => {
           const dateA = new Date(a.event_date);
           const dateB = new Date(b.event_date);
-          const now = new Date();
           
           // If both dates are in the past, show most recent first
           if (dateA < now && dateB < now) {
@@ -632,9 +619,10 @@ function EventsContent() {
                 {filteredEvents
                   .filter(event => {
                     const now = new Date();
-                    return isEventUpcoming(event, now);
+                    const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
+                    return isEventUpcoming(event, now) && new Date(event.event_date) >= fourteenDaysAgo;
                   })
-                  .slice(indexOfFirstEvent, indexOfLastEvent) // Use pagination with current ITEMS_PER_PAGE
+                  .slice(indexOfFirstEvent, indexOfLastEvent)
                   .map((event, index) => (
                     <Card key={event.id} className={`overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow ${event.is_featured ? 'border-2 border-[#F94C8D]' : ''}`}>
                       <div className="aspect-square relative">
@@ -714,7 +702,8 @@ function EventsContent() {
                   {(() => {
                     const totalFilteredEvents = filteredEvents.filter(event => {
                       const now = new Date();
-                      return isEventUpcoming(event, now);
+                      const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
+                      return isEventUpcoming(event, now) && new Date(event.event_date) >= fourteenDaysAgo;
                     }).length;
                     
                     const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -752,7 +741,8 @@ function EventsContent() {
                     onClick={() => {
                       const totalFilteredEvents = filteredEvents.filter(event => {
                         const now = new Date();
-                        return isEventUpcoming(event, now);
+                        const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
+                        return isEventUpcoming(event, now) && new Date(event.event_date) >= fourteenDaysAgo;
                       }).length;
                       
                       const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -765,7 +755,8 @@ function EventsContent() {
                       (() => {
                         const totalFilteredEvents = filteredEvents.filter(event => {
                           const now = new Date();
-                          return isEventUpcoming(event, now);
+                          const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
+                          return isEventUpcoming(event, now) && new Date(event.event_date) >= fourteenDaysAgo;
                         }).length;
                         
                         const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -778,7 +769,8 @@ function EventsContent() {
                     disabled={(() => {
                       const totalFilteredEvents = filteredEvents.filter(event => {
                         const now = new Date();
-                        return isEventUpcoming(event, now);
+                        const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
+                        return isEventUpcoming(event, now) && new Date(event.event_date) >= fourteenDaysAgo;
                       }).length;
                       
                       const totalPages = Math.ceil(totalFilteredEvents / ITEMS_PER_PAGE);
@@ -797,7 +789,8 @@ function EventsContent() {
                 {filteredEvents
                   .filter(event => {
                     const now = new Date();
-                    return event.is_featured && isEventUpcoming(event, now);
+                    const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
+                    return event.is_featured && isEventUpcoming(event, now) && new Date(event.event_date) >= fourteenDaysAgo;
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow border-2 border-[#F94C8D]/20">
