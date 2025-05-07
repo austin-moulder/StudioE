@@ -109,8 +109,8 @@ function EventsContent() {
       if (data) {
         console.log('Raw event data from Supabase:', data);
         const now = new Date();
-        // Filter out events older than 30 days
-        const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+        // Filter out events older than 14 days
+        const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
         
         const filteredData = data.filter(event => {
           const eventDate = new Date(event.event_date);
@@ -119,7 +119,7 @@ function EventsContent() {
             date: event.event_date,
             imageUrl: event.image_url
           });
-          return eventDate >= thirtyDaysAgo;
+          return eventDate >= fourteenDaysAgo;
         });
 
         // Sort events by date
@@ -867,14 +867,14 @@ function EventsContent() {
                 {filteredEvents
                   .filter(event => {
                     const now = new Date();
-                    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+                    const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
                     
-                    // Only show past events from the last 30 days
+                    // Only show past events from the last 14 days
                     const eventDate = new Date(event.event_date);
                     const eventEndDate = new Date(event.event_date_end || event.event_date);
                     const eventDateToCheck = event.event_date_end ? eventEndDate : eventDate;
                     
-                    return isEventPast(event, now) && eventDateToCheck >= thirtyDaysAgo;
+                    return isEventPast(event, now) && eventDateToCheck >= fourteenDaysAgo;
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow opacity-70">
