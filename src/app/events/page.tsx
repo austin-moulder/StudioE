@@ -53,6 +53,7 @@ interface Event {
   gallery_url?: string // URL to the event gallery
   start_datetime?: string // New combined datetime field
   end_datetime?: string // New combined datetime field
+  is_active: boolean
 }
 
 function EventsContent() {
@@ -141,16 +142,11 @@ function EventsContent() {
   useEffect(() => {
     if (!events.length) return
 
-    const now = new Date()
     const filtered = [...events].filter(event => {
-      // Always check if it's upcoming first (basic filtering)
-      const upcoming = isEventUpcoming(event, now)
-      
-      // Then apply other filters
       let matchesSearch = true
       let matchesType = true
       let matchesLocation = true
-      
+
       // Search filter
       if (searchTerm) {
         const term = searchTerm.toLowerCase()
@@ -159,27 +155,25 @@ function EventsContent() {
           event.description.toLowerCase().includes(term) ||
           event.location.toLowerCase().includes(term)
       }
-      
+
       // Event type filter
       if (eventType && eventType !== "all") {
         matchesType = event.event_type?.toLowerCase() === eventType.toLowerCase()
       }
-      
+
       // Location filter
       if (location && location !== "all") {
         matchesLocation = event.location.toLowerCase().includes(location.toLowerCase())
       }
-      
-      return upcoming && matchesSearch && matchesType && matchesLocation
+
+      return matchesSearch && matchesType && matchesLocation
     })
     
     // Sort events
     filtered.sort((a, b) => {
       const now = new Date()
-      
       // Create proper date-time objects for comparison
       let aStartDateTime, bStartDateTime, aEndDateTime, bEndDateTime
-      
       if (a.start_datetime && b.start_datetime) {
         aStartDateTime = new Date(a.start_datetime)
         bStartDateTime = new Date(b.start_datetime)
@@ -187,7 +181,6 @@ function EventsContent() {
         aStartDateTime = createDateTime(a.event_date, a.start_time)
         bStartDateTime = createDateTime(b.event_date, b.start_time)
       }
-      
       if (a.end_datetime && b.end_datetime) {
         aEndDateTime = new Date(a.end_datetime)
         bEndDateTime = new Date(b.end_datetime)
@@ -199,12 +192,10 @@ function EventsContent() {
           ? createDateTime(b.event_date_end, b.end_time) 
           : createDateTime(b.event_date, b.end_time);
       }
-      
       const isAUpcoming = isEventUpcoming(a, now);
       const isBUpcoming = isEventUpcoming(b, now);
       const isAFeatured = a.is_featured;
       const isBFeatured = b.is_featured;
-
       // Priority 1 & 2: Upcoming Featured vs. Others/Upcoming Featured
       if (isAUpcoming && isAFeatured && (!isBUpcoming || !isBFeatured)) return -1;
       if (isBUpcoming && isBFeatured && (!isAUpcoming || !isAFeatured)) return 1;
@@ -212,7 +203,6 @@ function EventsContent() {
         // Both are featured and upcoming - sort by start date first
         return aStartDateTime.getTime() - bStartDateTime.getTime();
       }
-
       // Priority 3 & 4: Upcoming Non-Featured vs. Past/Upcoming Non-Featured
       if (isAUpcoming && !isBUpcoming) return -1;
       if (isBUpcoming && !isAUpcoming) return 1;
@@ -220,16 +210,13 @@ function EventsContent() {
         // Sort by start date
         return aStartDateTime.getTime() - bStartDateTime.getTime();
       }
-
       // Priority 5: Both are past
       if (!isAUpcoming && !isBUpcoming) {
         // Sort past events by most recent end date first
         return bEndDateTime.getTime() - aEndDateTime.getTime(); 
       }
-      
       return 0; 
     });
-    
     setFilteredEvents(filtered)
   }, [events, searchTerm, eventType, location])
   
@@ -862,12 +849,12 @@ function EventsContent() {
                     const now = new Date();
                     const fourteenDaysAgo = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
                     
-                    // Only show past events from the last 14 days
+                    // Only show past events from the last 14 days and exclude those where approved === false
                     const eventDate = new Date(event.event_date);
                     const eventEndDate = new Date(event.event_date_end || event.event_date);
                     const eventDateToCheck = event.event_date_end ? eventEndDate : eventDate;
                     
-                    return isEventPast(event, now) && eventDateToCheck >= fourteenDaysAgo;
+                    return isEventPast(event, now) && eventDateToCheck >= fourteenDaysAgo && event.approved !== false;
                   })
                   .map((event) => (
                     <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow opacity-70">
