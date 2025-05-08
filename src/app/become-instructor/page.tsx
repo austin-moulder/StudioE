@@ -83,35 +83,11 @@ export default function BecomeInstructorPage() {
         throw error
       }
       
-      toast.success('Application submitted successfully! Redirecting to profile setup...')
+      toast.success('Application submitted successfully! We will review your application and get back to you soon.')
       
-      // Create a new instructor record with basic information
-      const { data: instructorData, error: instructorError } = await supabase
-        .from('instructors')
-        .insert({
-          name: `${formData.firstName} ${formData.lastName}`,
-          email: formData.email,
-          phone: formData.phone,
-          style: finalTeachingStyles.join(', '),
-          active: true
-        })
-        .select('id')
-        .single()
-      
-      if (instructorError) {
-        console.error('Error creating instructor:', instructorError)
-        // Continue to redirect even if this fails
-      }
-      
-      // Redirect to instructor profile form
+      // Redirect to home page
       setTimeout(() => {
-        if (instructorData?.id) {
-          // If we have an ID, pass it to the form for auto-selection
-          router.push(`/instructor-profile-form?instructor=${instructorData.id}`)
-        } else {
-          // Otherwise just redirect to the form
-          router.push('/instructor-profile-form')
-        }
+        router.push('/')
       }, 2000)
       
     } catch (error: any) {

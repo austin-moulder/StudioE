@@ -127,7 +127,6 @@ export default function InstructorProfileForm() {
         const { data, error } = await supabase
           .from('instructors')
           .select('id, name, image_url')
-          .eq('active', true)
           
         if (error) throw error
         
@@ -238,6 +237,18 @@ export default function InstructorProfileForm() {
     setIsLoading(true)
     
     try {
+      // Validate that the instructor exists
+      const selectedInstructor = instructors.find(inst => inst.id === data.instructor_id);
+      if (!selectedInstructor) {
+        toast({
+          title: "Error",
+          description: "Please select a valid instructor from the list.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       // If demo_url is empty, ensure it's undefined to avoid URL validation issues
       if (data.demo_url === '') {
         data.demo_url = undefined;
@@ -426,87 +437,79 @@ export default function InstructorProfileForm() {
               <FormField
                 control={form.control}
                 name="instructor_id"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Select Instructor</FormLabel>
-                    <FormControl>
-                      <select
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e)
+                render={({ field }) => {
+                  const [searchTerm, setSearchTerm] = useState('');
+                  
+                  // Sort instructors alphabetically and filter based on search term
+                  const filteredInstructors = React.useMemo(() => {
+                    return instructors
+                      .slice() // Create a copy to avoid modifying the original array
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .filter(instructor => 
+                        instructor.name.toLowerCase().includes(searchTerm.toLowerCase())
+                      );
+                  }, [instructors, searchTerm]);
+                  
+                  return (
+                    <FormItem className="space-y-3">
+                      <FormLabel>Search Instructors</FormLabel>
+                      <div className="space-y-3">
+                        <FormControl>
+                          <Input
+                            type="text" 
+                            placeholder="Type name to filter..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                          />
+                        </FormControl>
+                        
+                        <div className="space-y-2">
+                          <div className="text-sm font-medium">
+                            Available instructors 
+                            {filteredInstructors.length !== instructors.length && 
+                              ` (${filteredInstructors.length} of ${instructors.length})`
+                            }:
+                          </div>
                           
-                          // Fetch existing profile data when instructor changes
-                          const instructorId = e.target.value
-                          if (instructorId) {
-                            // First fetch instructor data to get pricing
-                            supabase
-                              .from('instructors')
-                              .select('price_lower, price_upper')
-                              .eq('id', instructorId)
-                              .single()
-                              .then(({ data: instructorData, error: instructorError }) => {
-                                if (!instructorError && instructorData) {
-                                  // Set pricing fields
-                                  if (instructorData.price_lower !== null) {
-                                    form.setValue('price_lower', instructorData.price_lower);
-                                  } else {
-                                    form.setValue('price_lower', defaultValues.price_lower || 60);
-                                  }
-                                  
-                                  if (instructorData.price_upper !== null) {
-                                    form.setValue('price_upper', instructorData.price_upper);
-                                  } else {
-                                    form.setValue('price_upper', defaultValues.price_upper || 50);
-                                  }
-                                }
-                              });
-                            
-                            // Then fetch profile data
-                            supabase
-                              .from('instructor_profiles')
-                              .select('*')
-                              .eq('instructor_id', instructorId)
-                              .single()
-                              .then(({ data, error }) => {
-                                if (!error && data) {
-                                  // Populate form with existing data
-                                  Object.entries(data).forEach(([key, value]) => {
-                                    if (key !== 'id' && key !== 'created_at' && key !== 'updated_at' && 
-                                        key !== 'price_lower' && key !== 'price_upper') {
-                                      // Handle numeric values correctly, including 0
-                                      if (typeof value === 'number' || value === 0) {
-                                        form.setValue(key as any, value);
-                                      } else if (value !== null) {
-                                        form.setValue(key as any, value as any);
-                                      }
-                                    }
-                                  })
-                                } else {
-                                  // Reset form to defaults for new profile
-                                  form.reset({
-                                    ...defaultValues,
-                                    instructor_id: instructorId,
-                                    // Preserve pricing from the instructor data
-                                    price_lower: form.getValues('price_lower'),
-                                    price_upper: form.getValues('price_upper')
-                                  })
-                                }
-                              })
-                          }
-                        }}
-                      >
-                        <option value="">Select an instructor</option>
-                        {instructors.map(instructor => (
-                          <option key={instructor.id} value={instructor.id}>
-                            {instructor.name}
-                          </option>
-                        ))}
-                      </select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                          <div className="flex flex-wrap gap-2">
+                            {filteredInstructors.map(instructor => {
+                              const isSelected = field.value === instructor.id;
+                              return (
+                                <button
+                                  key={instructor.id}
+                                  type="button"
+                                  className={`px-3 py-1 text-sm rounded-md ${
+                                    isSelected 
+                                      ? 'bg-purple-600 text-white' 
+                                      : 'bg-gray-100 hover:bg-gray-200'
+                                  }`}
+                                  onClick={() => {
+                                    field.onChange(instructor.id);
+                                    fetchInstructorData(instructor.id);
+                                  }}
+                                >
+                                  {instructor.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          
+                          {filteredInstructors.length === 0 && (
+                            <p className="text-sm text-amber-600">
+                              No instructors match your search. Try a different name.
+                            </p>
+                          )}
+                        </div>
+                        
+                        <p className="text-sm text-gray-500">
+                          If your name doesn't appear in the list above, your application is still under review. 
+                          Please contact us if you believe this is an error.
+                        </p>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
               
               {/* Show selected instructor image or preview of new image */}
