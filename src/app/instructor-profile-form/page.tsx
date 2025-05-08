@@ -97,6 +97,7 @@ export default function InstructorProfileForm() {
   const [selectedInstructorImage, setSelectedInstructorImage] = useState<string | null>(null)
   const [image, setImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast()
   const router = useRouter()
   const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams()
@@ -119,6 +120,16 @@ export default function InstructorProfileForm() {
     resolver: zodResolver(formSchema),
     defaultValues,
   })
+  
+  // Sort instructors alphabetically and filter based on search term
+  const filteredInstructors = React.useMemo(() => {
+    return instructors
+      .slice() // Create a copy to avoid modifying the original array
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter(instructor => 
+        instructor.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+  }, [instructors, searchTerm]);
   
   // Fetch instructors when component mounts
   useEffect(() => {
@@ -437,79 +448,65 @@ export default function InstructorProfileForm() {
               <FormField
                 control={form.control}
                 name="instructor_id"
-                render={({ field }) => {
-                  const [searchTerm, setSearchTerm] = useState('');
-                  
-                  // Sort instructors alphabetically and filter based on search term
-                  const filteredInstructors = React.useMemo(() => {
-                    return instructors
-                      .slice() // Create a copy to avoid modifying the original array
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .filter(instructor => 
-                        instructor.name.toLowerCase().includes(searchTerm.toLowerCase())
-                      );
-                  }, [instructors, searchTerm]);
-                  
-                  return (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Search Instructors</FormLabel>
-                      <div className="space-y-3">
-                        <FormControl>
-                          <Input
-                            type="text" 
-                            placeholder="Type name to filter..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                          />
-                        </FormControl>
-                        
-                        <div className="space-y-2">
-                          <div className="text-sm font-medium">
-                            Available instructors 
-                            {filteredInstructors.length !== instructors.length && 
-                              ` (${filteredInstructors.length} of ${instructors.length})`
-                            }:
-                          </div>
-                          
-                          <div className="flex flex-wrap gap-2">
-                            {filteredInstructors.map(instructor => {
-                              const isSelected = field.value === instructor.id;
-                              return (
-                                <button
-                                  key={instructor.id}
-                                  type="button"
-                                  className={`px-3 py-1 text-sm rounded-md ${
-                                    isSelected 
-                                      ? 'bg-purple-600 text-white' 
-                                      : 'bg-gray-100 hover:bg-gray-200'
-                                  }`}
-                                  onClick={() => {
-                                    field.onChange(instructor.id);
-                                    fetchInstructorData(instructor.id);
-                                  }}
-                                >
-                                  {instructor.name}
-                                </button>
-                              );
-                            })}
-                          </div>
-                          
-                          {filteredInstructors.length === 0 && (
-                            <p className="text-sm text-amber-600">
-                              No instructors match your search. Try a different name.
-                            </p>
-                          )}
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Search Instructors</FormLabel>
+                    <div className="space-y-3">
+                      <FormControl>
+                        <Input
+                          type="text" 
+                          placeholder="Type name to filter..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                      </FormControl>
+                      
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium">
+                          Available instructors 
+                          {filteredInstructors.length !== instructors.length && 
+                            ` (${filteredInstructors.length} of ${instructors.length})`
+                          }:
                         </div>
                         
-                        <p className="text-sm text-gray-500">
-                          If your name doesn't appear in the list above, your application is still under review. 
-                          Please contact us if you believe this is an error.
-                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {filteredInstructors.map(instructor => {
+                            const isSelected = field.value === instructor.id;
+                            return (
+                              <button
+                                key={instructor.id}
+                                type="button"
+                                className={`px-3 py-1 text-sm rounded-md ${
+                                  isSelected 
+                                    ? 'bg-purple-600 text-white' 
+                                    : 'bg-gray-100 hover:bg-gray-200'
+                                }`}
+                                onClick={() => {
+                                  field.onChange(instructor.id);
+                                  fetchInstructorData(instructor.id);
+                                }}
+                              >
+                                {instructor.name}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        
+                        {filteredInstructors.length === 0 && (
+                          <p className="text-sm text-amber-600">
+                            No instructors match your search. Try a different name.
+                          </p>
+                        )}
                       </div>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
+                      
+                      <p className="text-sm text-gray-500">
+                        If your name doesn't appear in the list above, your application is still under review. 
+                        Please contact us if you believe this is an error.
+                      </p>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
               
               {/* Show selected instructor image or preview of new image */}
