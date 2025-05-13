@@ -8,12 +8,6 @@ const PRODUCTION_URL = 'https://www.joinstudioe.com';
  * @returns Promise that resolves when the sign-in process has started
  */
 export async function signInWithGoogle() {
-  // Override URL handling
-  if (typeof window !== 'undefined') {
-    const loginURL = `${PRODUCTION_URL}/auth/callback?from=google&t=${Date.now()}`;
-    localStorage.setItem('redirectAfterAuth', loginURL);
-  }
-
   return supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
@@ -32,12 +26,6 @@ export async function signInWithGoogle() {
  * @returns Promise that resolves when the magic link has been sent
  */
 export async function signInWithMagicLink(email: string) {
-  // Override URL handling
-  if (typeof window !== 'undefined') {
-    const loginURL = `${PRODUCTION_URL}/auth/callback?from=email&t=${Date.now()}`;
-    localStorage.setItem('redirectAfterAuth', loginURL);
-  }
-
   return supabase.auth.signInWithOtp({
     email,
     options: {
@@ -48,15 +36,10 @@ export async function signInWithMagicLink(email: string) {
 }
 
 /**
- * Signs the user out
- * @returns Promise that resolves when sign-out is complete
+ * Signs out the current user
+ * @returns Promise that resolves when the sign-out process is complete
  */
 export async function signOut() {
-  // Clear any auth-related localStorage
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('redirectAfterAuth');
-  }
-  
   return supabase.auth.signOut();
 }
 

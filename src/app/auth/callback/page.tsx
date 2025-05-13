@@ -17,56 +17,26 @@ export default function AuthCallbackPage() {
       try {
         console.log("Auth callback page loaded, processing authentication...");
         
-        // STEP 1: Force redirect to production if we're not already there
-        if (typeof window !== 'undefined') {
-          const currentHostname = window.location.hostname;
-          const isProduction = 
-            currentHostname === 'www.joinstudioe.com' || 
-            currentHostname.includes('joinstudioe.com') ||
-            currentHostname.includes('vercel.app');
-                              
-          if (!isProduction) {
-            // Get the current path and search params
-            const currentPath = window.location.pathname;
-            const searchParams = new URLSearchParams(window.location.search);
-            
-            // The code parameter is what we need to preserve for authentication
-            const code = searchParams.get('code');
-            
-            // If we have a code and we're not already in a redirect loop
-            if (code && !searchParams.has('redirected')) {
-              // Create a new search params object with just the code
-              const redirectParams = new URLSearchParams();
-              redirectParams.append('code', code);
-              redirectParams.append('redirected', 'true');
-              
-              const redirectURL = `${PRODUCTION_URL}${currentPath}?${redirectParams.toString()}`;
-              console.log(`Redirecting to production domain: ${redirectURL}`);
-              
-              // Set a message before redirect
-              setMessage("Redirecting to production environment...");
-              
-              // Perform an immediate redirect
-              window.location.replace(redirectURL);
-              return;
-            }
-          }
-          
-          // STEP 2: Check if we have a stored redirect URL from the auth utils
-          const storedRedirect = localStorage.getItem('redirectAfterAuth');
-          if (storedRedirect && !isProduction) {
-            console.log(`Using stored redirect: ${storedRedirect}`);
-            localStorage.removeItem('redirectAfterAuth');
-            window.location.replace(storedRedirect);
-            return;
-          }
-        }
-        
-        // STEP 3: Process auth callback
-        // Check for auth code in URL (magic link authentication)
+        // Get the current URL parameters
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
         
+        // If we're not on the production domain and we have a code, redirect to production
+        if (typeof window !== 'undefined') {
+          const currentHostname = window.location.hostname;
+          const isProduction = currentHostname === 'www.joinstudioe.com' || 
+                             currentHostname.includes('joinstudioe.com') ||
+                             currentHostname.includes('vercel.app');
+          
+          if (!isProduction && code) {
+            // Redirect to production with the auth code
+            const redirectURL = `${PRODUCTION_URL}/auth/callback?code=${code}`;
+            window.location.replace(redirectURL);
+            return;
+          }
+        }
+
+        // Process the auth code
         if (code) {
           console.log("Processing auth code from URL");
           const { data, error } = await supabase.auth.exchangeCodeForSession(code);
@@ -79,26 +49,27 @@ export default function AuthCallbackPage() {
           
           if (data?.session) {
             console.log("Session established successfully");
-            router.push("/"); // Redirect to home page
+            // Redirect to home page on the production domain
+            window.location.href = `${PRODUCTION_URL}/`;
             return;
           }
         }
         
-        // STEP 4: Check for hash fragments (OAuth providers like Google)
+        // Check for hash fragments (OAuth providers like Google)
         const hash = window.location.hash;
         if (hash) {
           console.log("OAuth redirect detected");
           const { data } = await supabase.auth.getSession();
           if (data?.session) {
-            router.push("/");
+            window.location.href = `${PRODUCTION_URL}/`;
             return;
           }
         }
         
-        // STEP 5: Fallback session check
+        // Fallback session check
         const { data } = await supabase.auth.getSession();
         if (data?.session) {
-          router.push("/");
+          window.location.href = `${PRODUCTION_URL}/`;
           return;
         }
         
@@ -112,7 +83,7 @@ export default function AuthCallbackPage() {
     };
 
     handleAuthCallback();
-  }, [router]);
+  }, []);
 
   if (error) {
     return (
@@ -121,7 +92,7 @@ export default function AuthCallbackPage() {
           <h2 className="mb-4 text-2xl font-bold text-red-600">Authentication Error</h2>
           <p className="mb-6 text-gray-700">{error}</p>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => window.location.href = `${PRODUCTION_URL}/`}
             className="w-full rounded-md bg-[#EC407A] py-2 px-4 font-medium text-white hover:bg-[#EC407A]/90"
           >
             Return to Home
