@@ -36,13 +36,10 @@ export const signInWithEmail = async (
 
 // Sign in with OAuth provider (Google, etc.)
 export const signInWithOAuth = async (provider: Provider): Promise<OAuthResponse> => {
-  // Always use the production URL for redirects
-  const PRODUCTION_URL = 'https://www.joinstudioe.com';
-  
   return await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${PRODUCTION_URL}/auth/callback`
+      redirectTo: `${window.location.origin}/auth/callback`
     }
   });
 };
@@ -60,13 +57,10 @@ export const signInWithGoogle = async (): Promise<OAuthResponse> => {
 // Magic link sign in (alternative when OAuth is not available)
 export const signInWithMagicLink = async (email: string): Promise<AuthResponse> => {
   try {
-    // Always redirect to the production URL for magic links
-    const redirectUrl = `https://www.joinstudioe.com/auth/callback`;
-      
     return await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: redirectUrl,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
         shouldCreateUser: true
       }
     });

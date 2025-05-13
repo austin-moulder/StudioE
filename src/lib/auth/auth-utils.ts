@@ -11,7 +11,7 @@ export async function signInWithGoogle() {
   return supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${PRODUCTION_URL}/auth/callback?provider=google&t=${Date.now()}`,
+      redirectTo: `${window.location.origin}/auth/callback`,
       queryParams: {
         prompt: 'select_account',
         access_type: 'offline'
@@ -29,7 +29,7 @@ export async function signInWithMagicLink(email: string) {
   return supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${PRODUCTION_URL}/auth/callback?provider=email&t=${Date.now()}`,
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
       shouldCreateUser: true,
     }
   });

@@ -17,28 +17,26 @@ export default function AuthCallbackPage() {
       try {
         console.log("Auth callback page loaded, processing authentication...");
         
-        // Get the current URL parameters
+        // For PKCE auth flow, code verifier is stored in sessionStorage by Supabase
+        // Don't redirect if we're processing a callback as it would lose the code verifier
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
+        const error = params.get('error');
+        const errorDescription = params.get('error_description');
         
-        // If we're not on the production domain and we have a code, redirect to production
-        if (typeof window !== 'undefined') {
-          const currentHostname = window.location.hostname;
-          const isProduction = currentHostname === 'www.joinstudioe.com' || 
-                             currentHostname.includes('joinstudioe.com') ||
-                             currentHostname.includes('vercel.app');
-          
-          if (!isProduction && code) {
-            // Redirect to production with the auth code
-            const redirectURL = `${PRODUCTION_URL}/auth/callback?code=${code}`;
-            window.location.replace(redirectURL);
-            return;
-          }
+        // Handle returned errors first
+        if (error) {
+          console.error(`Auth error: ${error}`, errorDescription);
+          setError(`Authentication error: ${errorDescription || error}`);
+          return;
         }
-
-        // Process the auth code
+        
+        // Process the auth code if present
         if (code) {
           console.log("Processing auth code from URL");
+          
+          // Don't redirect mid-auth as it would lose the code verifier 
+          // stored in browser sessionStorage
           const { data, error } = await supabase.auth.exchangeCodeForSession(code);
           
           if (error) {
@@ -49,27 +47,41 @@ export default function AuthCallbackPage() {
           
           if (data?.session) {
             console.log("Session established successfully");
-            // Redirect to home page on the production domain
-            window.location.href = `${PRODUCTION_URL}/`;
+            
+            // Store the successful login
+            localStorage.setItem('auth_success', 'true');
+            
+            // Safe to redirect to home now that we have a session
+            router.push("/");
             return;
           }
         }
         
         // Check for hash fragments (OAuth providers like Google)
         const hash = window.location.hash;
-        if (hash) {
-          console.log("OAuth redirect detected");
-          const { data } = await supabase.auth.getSession();
-          if (data?.session) {
-            window.location.href = `${PRODUCTION_URL}/`;
-            return;
+        if (hash && hash.includes('access_token')) {
+          console.log("OAuth redirect with hash detected");
+          
+          try {
+            // Handle the hash fragment - Supabase should automatically process this
+            await new Promise(resolve => setTimeout(resolve, 500)); // Small delay to let Supabase process
+            
+            const { data } = await supabase.auth.getSession();
+            if (data?.session) {
+              console.log("Session obtained from hash");
+              router.push("/");
+              return;
+            }
+          } catch (hashError) {
+            console.error("Error processing hash:", hashError);
           }
         }
         
         // Fallback session check
         const { data } = await supabase.auth.getSession();
         if (data?.session) {
-          window.location.href = `${PRODUCTION_URL}/`;
+          console.log("Session found");
+          router.push("/");
           return;
         }
         
@@ -83,7 +95,7 @@ export default function AuthCallbackPage() {
     };
 
     handleAuthCallback();
-  }, []);
+  }, [router]);
 
   if (error) {
     return (
@@ -92,7 +104,7 @@ export default function AuthCallbackPage() {
           <h2 className="mb-4 text-2xl font-bold text-red-600">Authentication Error</h2>
           <p className="mb-6 text-gray-700">{error}</p>
           <button
-            onClick={() => window.location.href = `${PRODUCTION_URL}/`}
+            onClick={() => router.push("/")}
             className="w-full rounded-md bg-[#EC407A] py-2 px-4 font-medium text-white hover:bg-[#EC407A]/90"
           >
             Return to Home
