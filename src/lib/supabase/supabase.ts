@@ -30,28 +30,5 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Override auth redirect methods in browser
-if (isBrowser) {
-  // Patch the supabase client to always use SITE_URL for redirects
-  const originalSignInWithOAuth = supabase.auth.signInWithOAuth;
-  // @ts-ignore - Monkey patching the supabase client
-  supabase.auth.signInWithOAuth = function(options: any) {
-    if (!options.options) options.options = {};
-    options.options.redirectTo = `${SITE_URL}/auth/callback?t=${Date.now()}`;
-    return originalSignInWithOAuth.call(this, options);
-  };
-  
-  const originalSignInWithOtp = supabase.auth.signInWithOtp;
-  // @ts-ignore - Monkey patching the supabase client
-  supabase.auth.signInWithOtp = function(options: any) {
-    if (!options.options) options.options = {};
-    if (options.email) {
-      // Handle email OTP
-      options.options.emailRedirectTo = `${SITE_URL}/auth/callback?t=${Date.now()}`;
-    }
-    return originalSignInWithOtp.call(this, options);
-  };
-}
-
 // Export site URL for use in other files
 export { SITE_URL }; 

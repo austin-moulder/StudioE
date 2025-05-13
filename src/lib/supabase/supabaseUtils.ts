@@ -36,10 +36,13 @@ export const signInWithEmail = async (
 
 // Sign in with OAuth provider (Google, etc.)
 export const signInWithOAuth = async (provider: Provider): Promise<OAuthResponse> => {
+  // Always use the production URL for redirects
+  const PRODUCTION_URL = 'https://www.joinstudioe.com';
+  
   return await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`
+      redirectTo: `${PRODUCTION_URL}/auth/callback`
     }
   });
 };
