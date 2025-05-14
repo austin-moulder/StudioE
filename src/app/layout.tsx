@@ -9,6 +9,7 @@ import SchemaOrg from "@/components/SchemaOrg";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Toaster } from "sonner";
 import { AnalyticsDebugger } from "@/components/analytics/AnalyticsDebugger";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -117,6 +118,7 @@ export default function RootLayout({
           <SpeedInsights />
           <Toaster />
           <AnalyticsDebugger />
+          <PageViewTracker />
         </Providers>
       </body>
     </html>
