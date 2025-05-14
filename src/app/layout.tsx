@@ -30,6 +30,9 @@ export const viewport = {
   maximumScale: 1,
 };
 
+// Define the Studio E logo URL
+const STUDIO_E_LOGO = 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Main.png';
+
 export const metadata: Metadata = {
   title: {
     default: 'Studio E - Dance Classes & Training',
@@ -49,7 +52,7 @@ export const metadata: Metadata = {
     title: 'Studio E - Dance Classes & Training',
     description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
     images: [{
-      url: 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Main.png',
+      url: STUDIO_E_LOGO,
       width: 1200,
       height: 1200,
       alt: 'Studio E - Dance Classes & Training'
@@ -59,7 +62,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Studio E - Dance Classes & Training',
     description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
-    images: ['https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Main.png']
+    images: [STUDIO_E_LOGO]
   },
   robots: {
     index: true,
@@ -73,9 +76,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
+    icon: '/studio-e-logo.svg',
+    shortcut: '/studio-e-logo.svg',
+    apple: '/studio-e-logo.svg',
   },
   manifest: '/site.webmanifest',
   verification: {
@@ -91,7 +94,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <head>
+        {/* Explicitly set favicon links */}
         <link rel="icon" href="/studio-e-logo.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/studio-e-logo.svg" />
+        <link rel="shortcut icon" href="/studio-e-logo.svg" />
         <meta name="color-scheme" content="light only" />
         <SchemaOrg />
       </head>

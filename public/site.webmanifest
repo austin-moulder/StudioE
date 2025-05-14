@@ -1,0 +1,21 @@
+{
+  "name": "Studio E",
+  "short_name": "Studio E",
+  "description": "Join Studio E for professional dance classes, training, and workshops.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#EC407A",
+  "icons": [
+    {
+      "src": "/studio-e-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/studio-e-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+} 
