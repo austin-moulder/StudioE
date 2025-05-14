@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import SchemaOrg from "@/components/SchemaOrg";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Toaster } from "sonner";
+import { AnalyticsDebugger } from "@/components/analytics/AnalyticsDebugger";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -30,8 +31,8 @@ export const viewport = {
   maximumScale: 1,
 };
 
-// Define the Studio E logo URL
-const STUDIO_E_LOGO = 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Main.png';
+// Define the Studio E logo URL - use absolute URL to the logo in public folder
+const STUDIO_E_LOGO = 'https://www.joinstudioe.com/studio-e-logo.png';
 
 export const metadata: Metadata = {
   title: {
@@ -43,11 +44,11 @@ export const metadata: Metadata = {
   authors: [{ name: 'Studio E' }],
   creator: 'Studio E',
   publisher: 'Studio E',
-  metadataBase: new URL('https://joinstudioe.com'),
+  metadataBase: new URL('https://www.joinstudioe.com'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://joinstudioe.com',
+    url: 'https://www.joinstudioe.com',
     siteName: 'Studio E',
     title: 'Studio E - Dance Classes & Training',
     description: 'Join Studio E for professional dance classes, training, and workshops. Expert instructors, multiple dance styles, and a welcoming community.',
@@ -76,9 +77,13 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/studio-e-logo.svg',
-    shortcut: '/studio-e-logo.svg',
-    apple: '/studio-e-logo.svg',
+    icon: [
+      { url: '/favicon.ico', sizes: '16x16', type: 'image/x-icon' },
+      { url: '/studio-e-logo.svg' },
+      { url: '/studio-e-logo.png' }
+    ],
+    shortcut: '/studio-e-logo.png',
+    apple: '/studio-e-logo.png',
   },
   manifest: '/site.webmanifest',
   verification: {
@@ -95,9 +100,10 @@ export default function RootLayout({
     <html lang="en" className="light">
       <head>
         {/* Explicitly set favicon links */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/studio-e-logo.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/studio-e-logo.svg" />
-        <link rel="shortcut icon" href="/studio-e-logo.svg" />
+        <link rel="apple-touch-icon" href="/studio-e-logo.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="color-scheme" content="light only" />
         <SchemaOrg />
       </head>
@@ -110,6 +116,7 @@ export default function RootLayout({
           <Analytics />
           <SpeedInsights />
           <Toaster />
+          <AnalyticsDebugger />
         </Providers>
       </body>
     </html>

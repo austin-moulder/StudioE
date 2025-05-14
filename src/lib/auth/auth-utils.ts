@@ -15,8 +15,14 @@ export async function signInWithGoogle() {
   
   const redirectTo = `${baseUrl}/auth/callback`;
   
-  // For implicit flow - clear any previous verifier to avoid PKCE flow
+  // Generate and store state parameter
   if (typeof window !== 'undefined') {
+    // We need to use localStorage to store the provider state since it needs to persist
+    // even if the page is closed/refreshed during the OAuth flow
+    const providerState = Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('supabase.auth.provider-state', providerState);
+    
+    // For implicit flow - clear any previous verifier to avoid PKCE flow
     localStorage.removeItem('supabase.auth.code_verifier');
     
     // Generate a random nonce for id_token validation
@@ -26,8 +32,7 @@ export async function signInWithGoogle() {
   
   // Prepare query parameters
   const queryParams: Record<string, string> = {
-    prompt: 'select_account',
-    response_type: 'token id_token' // Force implicit flow
+    prompt: 'select_account'
   };
   
   // Add nonce if available
