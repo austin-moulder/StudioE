@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/supabase";
 
 // Production URL - hardcoded to ensure consistency
@@ -9,205 +9,125 @@ const PRODUCTION_URL = 'https://www.joinstudioe.com';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(true);
   const [debug, setDebug] = useState<string[]>([]);
-  const [message, setMessage] = useState<string>("Processing your sign-in...");
 
-  // Add debug messages
-  const addDebug = (msg: string) => {
-    console.log(msg);
-    setDebug(prev => [...prev, msg]);
+  const addDebug = (message: string) => {
+    setDebug(prev => [...prev, message]);
+    console.log(message);
   };
 
   useEffect(() => {
     const handleAuthCallback = async () => {
+      setIsProcessing(true);
+      addDebug("Auth callback page loaded, processing authentication...");
+
       try {
-        addDebug("Auth callback page loaded, processing authentication...");
+        // Get the current URL to examine parameters
+        const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+        addDebug(`Current URL: ${currentUrl}`);
+
+        // Check if we're using PKCE (code) or implicit flow (tokens in hash)
+        const code = searchParams?.get("code");
+        const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
         
-        // Log the current URL and search params for debugging
-        addDebug(`Current URL: ${window.location.href}`);
-        
-        // For PKCE auth flow, code verifier is stored in sessionStorage by Supabase
-        // Don't redirect if we're processing a callback as it would lose the code verifier
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get('code');
-        const error = params.get('error');
-        const errorDescription = params.get('error_description');
-        
-        // Check for stored code verifier in sessionStorage
-        const hasCodeVerifier = sessionStorage.getItem('supabase.auth.code_verifier') !== null;
-        addDebug(`Code verifier present: ${hasCodeVerifier}`);
-        
-        // Handle returned errors first
-        if (error) {
-          addDebug(`Auth error: ${error}, ${errorDescription}`);
-          setError(`Authentication error: ${errorDescription || error}`);
-          return;
-        }
-        
-        // Process the auth code if present
         if (code) {
-          addDebug(`Found auth code: ${code.substring(0, 5)}...`);
+          // Code-based auth (PKCE flow)
+          addDebug(`Found auth code: ${code.substring(0, 6)}...`);
           
-          try {
-            // Don't redirect mid-auth as it would lose the code verifier 
-            // stored in browser sessionStorage
-            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-            
-            if (error) {
-              addDebug(`Error exchanging code: ${error.message}`);
-              setError(`Authentication error: ${error.message}`);
-              return;
-            }
-            
-            if (data?.session) {
-              addDebug("Session established successfully");
-              
-              // Update to ensure consistent home page redirects
-              const handleSuccessfulAuth = () => {
-                addDebug("Authentication successful, redirecting to home page");
-                // Store the successful login
-                localStorage.setItem('auth_success', 'true');
-                
-                // Use direct location change for most reliable redirect
-                window.location.href = "/";
-              };
-              
-              handleSuccessfulAuth();
-              return;
-            } else {
-              addDebug("No session data returned after code exchange");
-            }
-          } catch (codeError) {
-            addDebug(`Exception during code exchange: ${codeError instanceof Error ? codeError.message : String(codeError)}`);
-            setError(`Error processing authentication: ${codeError instanceof Error ? codeError.message : String(codeError)}`);
-            return;
-          }
-        } else {
-          addDebug("No auth code found in URL");
-        }
-        
-        // Check for hash fragments (OAuth providers like Google)
-        const hash = window.location.hash;
-        if (hash) {
-          addDebug(`Found hash: ${hash.substring(0, 15)}...`);
+          // Check if code verifier exists
+          const codeVerifier = typeof window !== 'undefined' ? 
+            localStorage.getItem('supabase.auth.code_verifier') || 
+            sessionStorage.getItem('supabase.auth.code_verifier') : 
+            null;
+          addDebug(`Code verifier present: ${!!codeVerifier}`);
           
-          if (hash.includes('access_token')) {
-            addDebug("Hash contains access_token, likely successful OAuth response");
-            
-            try {
-              // Handle the hash fragment - Supabase should automatically process this
-              await new Promise(resolve => setTimeout(resolve, 500)); // Small delay to let Supabase process
-              
-              const { data } = await supabase.auth.getSession();
-              if (data?.session) {
-                addDebug("Session obtained from hash");
-                
-                // Update to ensure consistent home page redirects
-                const handleSuccessfulAuth = () => {
-                  addDebug("Authentication successful, redirecting to home page");
-                  // Store the successful login
-                  localStorage.setItem('auth_success', 'true');
-                  
-                  // Use direct location change for most reliable redirect
-                  window.location.href = "/";
-                };
-                
-                handleSuccessfulAuth();
-                return;
-              } else {
-                addDebug("No session found after hash processing");
-              }
-            } catch (hashError) {
-              addDebug(`Error processing hash: ${hashError instanceof Error ? hashError.message : String(hashError)}`);
+          if (!codeVerifier) {
+            addDebug("No code verifier found - proceeding with fallback auth method");
+            // Handle missing code verifier case - try implicit login
+            const { error: tokenError } = await supabase.auth.getSession();
+            if (tokenError) {
+              throw new Error(`Fallback auth failed: ${tokenError.message}`);
             }
           } else {
-            addDebug("Hash does not contain access_token");
+            // We have a code verifier, so proceed with PKCE
+            const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+            if (exchangeError) {
+              addDebug(`Error exchanging code: ${exchangeError.message}`);
+              throw exchangeError;
+            }
+          }
+        } else if (hasHash) {
+          // Hash-based auth (implicit flow)
+          addDebug("Using hash-based authentication (implicit flow)");
+          // The Supabase client will automatically process the hash
+          const { error: hashError } = await supabase.auth.getSession();
+          if (hashError) {
+            throw hashError;
           }
         } else {
-          addDebug("No hash found in URL");
+          // No code or hash found
+          addDebug("No auth code or hash fragment found in URL");
+          throw new Error("Invalid callback URL. Missing authentication parameters.");
         }
-        
-        // Fallback session check
-        addDebug("Performing fallback session check");
-        const { data } = await supabase.auth.getSession();
-        if (data?.session) {
-          addDebug("Session found in fallback check");
-          
-          // Update to ensure consistent home page redirects
-          const handleSuccessfulAuth = () => {
-            addDebug("Authentication successful, redirecting to home page");
-            // Store the successful login
-            localStorage.setItem('auth_success', 'true');
-            
-            // Use direct location change for most reliable redirect
-            window.location.href = "/";
-          };
-          
-          handleSuccessfulAuth();
-          return;
-        } else {
-          addDebug("No session found in fallback check");
+
+        // Check if we have a session after auth processes
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session) {
+          addDebug("Authentication completed but no session found");
+          throw new Error("Failed to establish a session after authentication.");
         }
+
+        addDebug("Authentication successful, redirecting...");
         
-        // If we still don't have a session, show an error
-        addDebug("Authentication workflow completed without finding a session");
-        setError("Failed to authenticate. Please try signing in again.");
+        // Determine redirect path - use stored path or default to homepage
+        const redirectTo = localStorage.getItem('authRedirectTo') || '/';
+        localStorage.removeItem('authRedirectTo'); // Clear stored redirect
         
-      } catch (error) {
-        addDebug(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
-        setError("An unexpected error occurred. Please try signing in again.");
+        router.push(redirectTo);
+      } catch (err) {
+        console.error("Auth callback error:", err);
+        setError(err instanceof Error ? err.message : "Authentication failed");
+        setIsProcessing(false);
       }
     };
 
     handleAuthCallback();
-  }, [router]);
+  }, [router, searchParams]);
 
+  // If there's an error, display it and debug info
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-          <h2 className="mb-4 text-2xl font-bold text-red-600">Authentication Error</h2>
-          <p className="mb-6 text-gray-700">{error}</p>
-          
-          {debug.length > 0 && (
-            <div className="mb-6 mt-4 border rounded p-3 bg-gray-50 text-xs font-mono overflow-auto max-h-40">
-              <p className="font-semibold mb-1">Debug Info:</p>
-              {debug.map((msg, i) => (
-                <div key={i} className="mb-1">{msg}</div>
-              ))}
-            </div>
-          )}
-          
-          <button
-            onClick={() => window.location.href = "/"}
-            className="w-full rounded-md bg-[#EC407A] py-2 px-4 font-medium text-white hover:bg-[#EC407A]/90"
-          >
-            Return to Home
-          </button>
+      <div className="container max-w-md mx-auto mt-12 p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-red-600 mb-4">Authentication Error</h2>
+        <p className="mb-4">{error}</p>
+        <button
+          onClick={() => router.push('/login')}
+          className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Return to Login
+        </button>
+        
+        {/* Debug information */}
+        <div className="mt-8 p-4 bg-gray-100 rounded-md">
+          <h3 className="font-semibold mb-2">Debug Information:</h3>
+          <pre className="text-xs overflow-auto max-h-64">
+            {debug.map((msg, i) => (
+              <div key={i}>{msg}</div>
+            ))}
+          </pre>
         </div>
       </div>
     );
   }
 
+  // Show loading state
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <h2 className="mb-4 text-2xl font-bold text-center">Signing you in...</h2>
-        <p className="mb-6 text-center text-gray-700">{message}</p>
-        <div className="flex justify-center">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#EC407A] border-t-transparent"></div>
-        </div>
-        
-        {debug.length > 0 && (
-          <div className="mt-6 border rounded p-3 bg-gray-50 text-xs font-mono overflow-auto max-h-40">
-            <p className="font-semibold mb-1">Authentication Progress:</p>
-            {debug.map((msg, i) => (
-              <div key={i} className="mb-1">{msg}</div>
-            ))}
-          </div>
-        )}
-      </div>
+    <div className="container max-w-md mx-auto mt-12 text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto"></div>
+      <p className="mt-4">Completing sign in...</p>
     </div>
   );
 } 

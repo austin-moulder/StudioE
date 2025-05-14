@@ -8,18 +8,35 @@ const PRODUCTION_URL = 'https://www.joinstudioe.com';
  * @returns Promise that resolves when the sign-in process has started
  */
 export async function signInWithGoogle() {
-  // Use the production URL for most reliable authentication
-  return supabase.auth.signInWithOAuth({
+  // Force absolute URL for redirect to work properly in production
+  const baseUrl = typeof window !== 'undefined' 
+    ? window.location.origin 
+    : process.env.NEXT_PUBLIC_SITE_URL || 'https://www.joinstudioe.com';
+  
+  const redirectTo = `${baseUrl}/auth/callback`;
+  
+  // For implicit flow - clear any previous verifier to avoid PKCE flow
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('supabase.auth.code_verifier');
+  }
+  
+  // Configure Google OAuth with correct settings
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'https://www.joinstudioe.com/auth/callback',
+      redirectTo,
       skipBrowserRedirect: false,
       queryParams: {
         prompt: 'select_account',
-        access_type: 'offline'
+        response_type: 'token id_token' // Force implicit flow
       }
     }
   });
+  
+  if (error) {
+    console.error('Google sign in error:', error);
+    throw error;
+  }
 }
 
 /**
@@ -59,4 +76,16 @@ export async function getSession() {
  */
 export async function getUser() {
   return supabase.auth.getUser();
+}
+
+/**
+ * Store the current path for post-authentication redirect
+ */
+export function storeAuthRedirectPath() {
+  if (typeof window !== 'undefined') {
+    const currentPath = window.location.pathname;
+    if (currentPath !== '/login' && currentPath !== '/auth/callback') {
+      localStorage.setItem('authRedirectTo', currentPath);
+    }
+  }
 } 

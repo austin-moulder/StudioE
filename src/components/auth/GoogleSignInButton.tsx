@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth/auth-context';
+import { storeAuthRedirectPath } from '@/lib/auth/auth-utils';
 
 interface GoogleSignInButtonProps {
   className?: string;
@@ -15,6 +16,10 @@ export default function GoogleSignInButton({ className = '' }: GoogleSignInButto
   const handleSignIn = async () => {
     try {
       setIsLoading(true);
+      
+      // Store current path for redirect after login
+      storeAuthRedirectPath();
+      
       await signInWithGoogle();
       // Auth redirect will handle the rest
     } catch (error) {
