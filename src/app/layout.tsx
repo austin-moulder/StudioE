@@ -10,6 +10,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { Toaster } from "sonner";
 import { AnalyticsDebugger } from "@/components/analytics/AnalyticsDebugger";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
+import DevModeToggle from "@/components/DevModeToggle";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -97,6 +98,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Only show dev mode toggle in development
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  
   return (
     <html lang="en" className="light">
       <head>
@@ -119,6 +123,7 @@ export default function RootLayout({
           <Toaster />
           <AnalyticsDebugger />
           <PageViewTracker />
+          {isDevelopment && <DevModeToggle />}
         </Providers>
       </body>
     </html>
