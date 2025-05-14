@@ -92,7 +92,7 @@ CREATE POLICY "Allow public creation of blog_authors"
 -- Allow authors to update their own profiles
 CREATE POLICY "Allow authors to update their own profiles" 
   ON blog_authors FOR UPDATE TO authenticated USING (
-    auth.uid() IN (SELECT auth_id FROM user_profiles WHERE id = blog_authors.id)
+    auth.uid() = blog_authors.id
   );
 
 -- Modify blog_posts table to reference blog_authors
