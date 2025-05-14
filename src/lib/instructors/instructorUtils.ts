@@ -89,7 +89,7 @@ export async function getFeaturedInstructors(limit = 3): Promise<Instructor[]> {
     }
 
     // Transform the data to match our Instructor type
-    return (data || []).map(instructor => ({
+    const instructors = (data || []).map(instructor => ({
       id: instructor.id,
       name: instructor.name,
       bio: instructor.bio,
@@ -100,11 +100,25 @@ export async function getFeaturedInstructors(limit = 3): Promise<Instructor[]> {
       rating: instructor.rating || 0,
       reviews: instructor.reviews || 0,
       totalStudents: instructor.instructor_profiles?.total_students || 0,
+      instructor_profiles: instructor.instructor_profiles,
       price: {
         lower: instructor.price_lower || 0,
         upper: instructor.price_upper || 0
       }
     }));
+    
+    // Sort to prioritize instructors with profiles
+    return instructors.sort((a, b) => {
+      // Prioritize instructors with profiles
+      const aHasProfile = a.instructor_profiles !== null && a.instructor_profiles !== undefined;
+      const bHasProfile = b.instructor_profiles !== null && b.instructor_profiles !== undefined;
+      
+      if (aHasProfile && !bHasProfile) return -1;
+      if (!aHasProfile && bHasProfile) return 1;
+      
+      // If both have same profile status, sort by rating
+      return b.rating - a.rating;
+    });
   } catch (error) {
     console.error('Exception fetching featured instructors:', error);
     return [];

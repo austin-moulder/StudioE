@@ -291,21 +291,51 @@ function InstructorsContent() {
   const sortInstructors = (instructors: Instructor[], order: string) => {
     const sortedInstructors = [...instructors]
     
+    // Helper function to check if an instructor has a profile
+    const hasProfile = (instructor: Instructor) => {
+      return instructor.instructor_profiles !== null && instructor.instructor_profiles !== undefined;
+    };
+    
     switch (order) {
       case "rating-high":
-        return sortedInstructors.sort((a, b) => b.rating - a.rating)
+        return sortedInstructors.sort((a, b) => {
+          // First sort by whether they have a profile
+          if (hasProfile(a) && !hasProfile(b)) return -1;
+          if (!hasProfile(a) && hasProfile(b)) return 1;
+          // Then sort by rating
+          return b.rating - a.rating;
+        });
       case "price-low":
-        return sortedInstructors.sort((a, b) => a.price.lower - b.price.lower)
+        return sortedInstructors.sort((a, b) => {
+          // First sort by whether they have a profile
+          if (hasProfile(a) && !hasProfile(b)) return -1;
+          if (!hasProfile(a) && hasProfile(b)) return 1;
+          // Then sort by price
+          return a.price.lower - b.price.lower;
+        });
       case "price-high":
-        return sortedInstructors.sort((a, b) => b.price.upper - a.price.upper)
+        return sortedInstructors.sort((a, b) => {
+          // First sort by whether they have a profile
+          if (hasProfile(a) && !hasProfile(b)) return -1;
+          if (!hasProfile(a) && hasProfile(b)) return 1;
+          // Then sort by price
+          return b.price.upper - a.price.upper;
+        });
       case "recommended":
       default:
-        // For recommended, keep featured instructors first, then sort by rating
+        // For recommended, prioritize: 1. has profile, 2. featured, 3. rating
         return sortedInstructors.sort((a, b) => {
-          if (a.featured && !b.featured) return -1
-          if (!a.featured && b.featured) return 1
-          return b.rating - a.rating
-        })
+          // First sort by whether they have a profile
+          if (hasProfile(a) && !hasProfile(b)) return -1;
+          if (!hasProfile(a) && hasProfile(b)) return 1;
+          
+          // Then consider featured status for instructors with the same profile status
+          if (a.featured && !b.featured) return -1;
+          if (!a.featured && b.featured) return 1;
+          
+          // Finally sort by rating
+          return b.rating - a.rating;
+        });
     }
   }
 
