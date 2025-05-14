@@ -27,6 +27,10 @@ const getEventTypeColor = (eventType: string | undefined) => {
       return 'bg-[#333333]'; // Dark Gray
     case 'community':
       return 'bg-[#CC3399]'; // Magenta
+    case 'audition':
+      return 'bg-[#4CAF50]'; // Green
+    case 'competition':
+      return 'bg-[#FF6B00]'; // Orange
     default:
       return 'bg-[#9933CC]'; // Default to Purple
   }
@@ -54,6 +58,7 @@ interface Event {
   start_datetime?: string // New combined datetime field
   end_datetime?: string // New combined datetime field
   is_active: boolean
+  timezone?: string // Timezone of the event (e.g., 'America/Chicago')
 }
 
 function EventsContent() {
@@ -240,7 +245,7 @@ function EventsContent() {
     }, 500);
     
     return () => clearTimeout(timer);
-  }, [searchTerm, eventType, location, events.length]);
+  }, [searchTerm, eventType, location, events.length, router]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -389,28 +394,30 @@ function EventsContent() {
   }
 
   // Add new function to format datetime strings from the database
-  const formatDateTime = (datetimeString: string) => {
+  const formatDateTime = (datetimeString: string, timezone: string = 'America/Chicago') => {
     if (!datetimeString) return null;
     
     try {
-      // Parse the ISO date string without timezone adjustments
+      // Parse the ISO date string
       const date = new Date(datetimeString);
       
       // Check if the date is valid
       if (isNaN(date.getTime())) return null;
       
-      // Format the date - use toLocaleDateString to get local date format
+      // Format the date in the event's timezone
       const formattedDate = date.toLocaleDateString('en-US', { 
         month: 'long', 
-        day: 'numeric'
+        day: 'numeric',
+        timeZone: timezone
       });
       
-      // Format the time with hours and minutes
-      const hours = date.getHours();
-      const minutes = date.getMinutes();
-      const period = hours >= 12 ? 'PM' : 'AM';
-      const hour = hours % 12 || 12; // Convert to 12-hour format
-      const formattedTime = `${hour}:${minutes.toString().padStart(2, '0')} ${period}`;
+      // Format the time in the event's timezone
+      const formattedTime = date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: timezone
+      });
       
       return { date: formattedDate, time: formattedTime };
     } catch (error) {
@@ -421,10 +428,12 @@ function EventsContent() {
 
   // Format both date and time from the new datetime fields
   const formatEventDateTime = (event: Event) => {
+    const timezone = event.timezone || 'America/Chicago';
+    
     // Use new datetime fields if available
     if (event.start_datetime && event.end_datetime) {
-      const start = formatDateTime(event.start_datetime);
-      const end = formatDateTime(event.end_datetime);
+      const start = formatDateTime(event.start_datetime, timezone);
+      const end = formatDateTime(event.end_datetime, timezone);
       
       if (start && end) {
         // Check if start and end are on the same day
@@ -441,7 +450,7 @@ function EventsContent() {
           const startDate = new Date(event.start_datetime);
           const endDate = new Date(event.end_datetime);
           
-          // Get the midnight after the start date
+          // Get the midnight after the start date in the event's timezone
           const nextMidnight = new Date(startDate);
           nextMidnight.setDate(nextMidnight.getDate() + 1);
           nextMidnight.setUTCHours(0, 0, 0, 0);
@@ -534,6 +543,7 @@ function EventsContent() {
                       <SelectItem value="festival">Festival</SelectItem>
                       <SelectItem value="competition">Competition</SelectItem>
                       <SelectItem value="community">Community</SelectItem>
+                      <SelectItem value="audition">Auditions</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

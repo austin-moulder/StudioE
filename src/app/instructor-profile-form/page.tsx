@@ -242,7 +242,7 @@ export default function InstructorProfileForm() {
         setSelectedInstructorImage(selectedInstructor.image_url)
       }
     }
-  }, [watchInstructorId, instructors])
+  }, [watchInstructorId, instructors, setSelectedInstructorImage])
   
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true)

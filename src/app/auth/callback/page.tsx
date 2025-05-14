@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/supabase";
 
 // Production URL - hardcoded to ensure consistency
 const PRODUCTION_URL = 'https://www.joinstudioe.com';
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
@@ -129,5 +129,23 @@ export default function AuthCallbackPage() {
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto"></div>
       <p className="mt-4">Completing sign in...</p>
     </div>
+  );
+}
+
+// Loading state for the Suspense boundary
+function AuthCallbackLoading() {
+  return (
+    <div className="container max-w-md mx-auto mt-12 text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto"></div>
+      <p className="mt-4">Loading authentication...</p>
+    </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={<AuthCallbackLoading />}>
+      <AuthCallbackContent />
+    </Suspense>
   );
 } 

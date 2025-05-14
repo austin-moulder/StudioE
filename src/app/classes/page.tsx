@@ -336,37 +336,6 @@ function ClassesContent() {
     setFilteredClasses(filtered);
   }
   
-  // Apply filters
-  useEffect(() => {
-    if (!classes.length) return
-    
-    // Function to apply filters to the class list
-    applyFilters();
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    classes,
-    searchTerm,
-    danceStyle,
-    location,
-    priceRange,
-    showSeriesOnly,
-    showDropInOnly,
-    showOpenClassesOnly,
-    dateFilter,
-    selectedCompany
-  ])
-  
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-    
-    // Scroll to table
-    if (tableRef.current) {
-      tableRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
-  
   // Apply filters and update URL
   const applyFilters = () => {
     // First, let's filter the classes
@@ -544,6 +513,36 @@ function ClassesContent() {
       '', 
       `${window.location.pathname}?${params.toString()}`
     );
+  }
+  
+  // Apply filters
+  useEffect(() => {
+    if (!classes.length) return
+    
+    // Function to apply filters to the class list
+    applyFilters();
+    
+  }, [
+    classes,
+    searchTerm,
+    danceStyle,
+    location,
+    priceRange,
+    showSeriesOnly,
+    showDropInOnly,
+    showOpenClassesOnly,
+    dateFilter,
+    selectedCompany
+  ])
+  
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    
+    // Scroll to table
+    if (tableRef.current) {
+      tableRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
   
   // When any filter changes, automatically update the URL after a short delay
