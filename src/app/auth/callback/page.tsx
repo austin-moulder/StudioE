@@ -31,6 +31,16 @@ export default function AuthCallbackPage() {
           return;
         }
         
+        // Update to ensure consistent home page redirects
+        const handleSuccessfulAuth = () => {
+          console.log("Authentication successful, redirecting to home page");
+          // Store the successful login
+          localStorage.setItem('auth_success', 'true');
+          
+          // Use direct location change for most reliable redirect
+          window.location.href = "/";
+        };
+        
         // Process the auth code if present
         if (code) {
           console.log("Processing auth code from URL");
@@ -47,12 +57,7 @@ export default function AuthCallbackPage() {
           
           if (data?.session) {
             console.log("Session established successfully");
-            
-            // Store the successful login
-            localStorage.setItem('auth_success', 'true');
-            
-            // Safe to redirect to home now that we have a session
-            router.push("/");
+            handleSuccessfulAuth();
             return;
           }
         }
@@ -69,7 +74,7 @@ export default function AuthCallbackPage() {
             const { data } = await supabase.auth.getSession();
             if (data?.session) {
               console.log("Session obtained from hash");
-              router.push("/");
+              handleSuccessfulAuth();
               return;
             }
           } catch (hashError) {
@@ -81,7 +86,7 @@ export default function AuthCallbackPage() {
         const { data } = await supabase.auth.getSession();
         if (data?.session) {
           console.log("Session found");
-          router.push("/");
+          handleSuccessfulAuth();
           return;
         }
         
@@ -104,7 +109,7 @@ export default function AuthCallbackPage() {
           <h2 className="mb-4 text-2xl font-bold text-red-600">Authentication Error</h2>
           <p className="mb-6 text-gray-700">{error}</p>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => window.location.href = "/"}
             className="w-full rounded-md bg-[#EC407A] py-2 px-4 font-medium text-white hover:bg-[#EC407A]/90"
           >
             Return to Home

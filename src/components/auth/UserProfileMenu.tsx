@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { supabase } from '@/lib/supabase/supabase';
 
 export default function UserProfileMenu() {
   const { user, signOut } = useAuth();
@@ -23,11 +24,18 @@ export default function UserProfileMenu() {
   const handleSignOut = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
     try {
-      await signOut();
-      router.push('/');
-      // Force reload to ensure auth state is cleared
-      window.location.reload();
+      // Use direct Supabase signOut to ensure it works on all devices
+      await supabase.auth.signOut();
+      
+      // Clear any local storage items related to auth
+      localStorage.removeItem('supabase.auth.token');
+      localStorage.removeItem('auth_success');
+      sessionStorage.clear();
+      
+      // Force a complete page reload to reset all state
+      window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
     }
