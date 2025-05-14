@@ -8,10 +8,12 @@ const PRODUCTION_URL = 'https://www.joinstudioe.com';
  * @returns Promise that resolves when the sign-in process has started
  */
 export async function signInWithGoogle() {
+  // Use the production URL for most reliable authentication
   return supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo: 'https://www.joinstudioe.com/auth/callback',
+      skipBrowserRedirect: false,
       queryParams: {
         prompt: 'select_account',
         access_type: 'offline'
