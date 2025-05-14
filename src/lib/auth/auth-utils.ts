@@ -18,6 +18,22 @@ export async function signInWithGoogle() {
   // For implicit flow - clear any previous verifier to avoid PKCE flow
   if (typeof window !== 'undefined') {
     localStorage.removeItem('supabase.auth.code_verifier');
+    
+    // Generate a random nonce for id_token validation
+    const nonce = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('supabase.auth.nonce', nonce);
+  }
+  
+  // Prepare query parameters
+  const queryParams: Record<string, string> = {
+    prompt: 'select_account',
+    response_type: 'token id_token' // Force implicit flow
+  };
+  
+  // Add nonce if available
+  const nonce = typeof window !== 'undefined' ? localStorage.getItem('supabase.auth.nonce') : null;
+  if (nonce) {
+    queryParams.nonce = nonce;
   }
   
   // Configure Google OAuth with correct settings
@@ -26,10 +42,7 @@ export async function signInWithGoogle() {
     options: {
       redirectTo,
       skipBrowserRedirect: false,
-      queryParams: {
-        prompt: 'select_account',
-        response_type: 'token id_token' // Force implicit flow
-      }
+      queryParams
     }
   });
   

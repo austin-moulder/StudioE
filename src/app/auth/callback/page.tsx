@@ -29,6 +29,15 @@ function AuthCallbackContent() {
         const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
         addDebug(`Current URL: ${currentUrl}`);
 
+        // Clean up nonce after use - Supabase client will handle validation during auth
+        if (typeof window !== 'undefined') {
+          const nonce = localStorage.getItem('supabase.auth.nonce');
+          if (nonce) {
+            addDebug("Nonce found for ID token validation");
+            // Allow Supabase client to use it during auth, then we'll clean it up after
+          }
+        }
+
         // Check if we're using PKCE (code) or implicit flow (tokens in hash)
         const code = searchParams?.get("code");
         const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
@@ -73,6 +82,11 @@ function AuthCallbackContent() {
           throw new Error("Invalid callback URL. Missing authentication parameters.");
         }
 
+        // Clean up nonce after auth is completed
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('supabase.auth.nonce');
+        }
+
         // Check if we have a session after auth processes
         const { data: sessionData } = await supabase.auth.getSession();
         if (!sessionData.session) {
@@ -91,6 +105,11 @@ function AuthCallbackContent() {
         console.error("Auth callback error:", err);
         setError(err instanceof Error ? err.message : "Authentication failed");
         setIsProcessing(false);
+        
+        // Clean up nonce in case of error
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('supabase.auth.nonce');
+        }
       }
     };
 
