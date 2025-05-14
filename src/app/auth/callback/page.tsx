@@ -71,10 +71,32 @@ function AuthCallbackContent() {
         } else if (hasHash) {
           // Hash-based auth (implicit flow)
           addDebug("Using hash-based authentication (implicit flow)");
-          // The Supabase client will automatically process the hash
-          const { error: hashError } = await supabase.auth.getSession();
-          if (hashError) {
-            throw hashError;
+          
+          try {
+            // Debug hash fragment
+            const hashFragment = window.location.hash;
+            addDebug(`Hash fragment found: ${hashFragment.substring(0, 20)}...`);
+            
+            // Force hash processing
+            const { data, error } = await supabase.auth.getSession();
+            if (error) {
+              addDebug(`Error processing hash fragment: ${error.message}`);
+              throw error;
+            }
+            
+            if (data.session) {
+              addDebug("Successfully retrieved session after hash processing");
+            } else {
+              addDebug("No session found after hash processing");
+              throw new Error("Failed to extract session from hash fragment");
+            }
+          } catch (hashProcessingError) {
+            addDebug(`Hash processing error: ${hashProcessingError instanceof Error ? hashProcessingError.message : 'Unknown error'}`);
+            // Fallback - try to get session anyway
+            const { error: hashError } = await supabase.auth.getSession();
+            if (hashError) {
+              throw hashError;
+            }
           }
         } else {
           // No code or hash found
