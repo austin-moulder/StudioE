@@ -100,9 +100,9 @@ export default function RootLayout({
     <html lang="en" className="light">
       <head>
         {/* Explicitly set favicon links */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.ico" />
         <link rel="icon" href="/studio-e-logo.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/studio-e-logo.png" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="color-scheme" content="light only" />
         <SchemaOrg />
