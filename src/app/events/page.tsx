@@ -13,6 +13,7 @@ import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase/client"
 import SubscribeToCalendar from "@/components/SubscribeToCalendar"
+import EventRSVPButton from "@/components/EventRSVPButton"
 
 // Function to get event type badge color
 const getEventTypeColor = (eventType: string | undefined) => {
@@ -678,6 +679,14 @@ function EventsContent() {
                             </Link>
                           )}
                         </div>
+                        <div className="mt-4">
+                          <EventRSVPButton 
+                            eventId={event.id}
+                            eventName={event.title}
+                            buttonVariant="default"
+                            buttonClassName="bg-[#F94C8D] hover:bg-[#F94C8D]/90 text-white w-full"
+                          />
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -846,6 +855,16 @@ function EventsContent() {
                             </Link>
                           )}
                         </div>
+                        {isEventUpcoming(event, new Date()) && (
+                          <div className="mt-4">
+                            <EventRSVPButton 
+                              eventId={event.id}
+                              eventName={event.title}
+                              buttonVariant="default"
+                              buttonClassName="bg-[#F94C8D] hover:bg-[#F94C8D]/90 text-white w-full"
+                            />
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   ))}

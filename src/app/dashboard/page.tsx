@@ -41,31 +41,49 @@ export default function Dashboard() {
         setIsLoadingStats(true);
         
         // Fetch upcoming classes using the class_inquiry_status view
-        const { data: upcomingClasses, error: upcomingError } = await supabase
+        const { data: upcomingClasses, error: upcomingClassesError } = await supabase
           .from('class_inquiry_status')
           .select('*')
           .eq('user_id', user.id)
           .eq('temporal_status', 'upcoming');
             
-        if (upcomingError) throw upcomingError;
+        if (upcomingClassesError) throw upcomingClassesError;
         
         // Fetch past classes using the class_inquiry_status view
-        const { data: pastClasses, error: pastError } = await supabase
+        const { data: pastClasses, error: pastClassesError } = await supabase
           .from('class_inquiry_status')
           .select('*')
           .eq('user_id', user.id)
           .eq('temporal_status', 'past');
             
-        if (pastError) throw pastError;
+        if (pastClassesError) throw pastClassesError;
         
-        // Update stats
+        // Fetch upcoming events using the event_rsvp_status view
+        const { data: upcomingEvents, error: upcomingEventsError } = await supabase
+          .from('event_rsvp_status')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('temporal_status', 'upcoming');
+            
+        if (upcomingEventsError) throw upcomingEventsError;
+        
+        // Fetch past events using the event_rsvp_status view
+        const { data: pastEvents, error: pastEventsError } = await supabase
+          .from('event_rsvp_status')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('temporal_status', 'past');
+            
+        if (pastEventsError) throw pastEventsError;
+        
+        // Update stats with all data
         setStats(prev => ({
           ...prev,
           upcomingClasses: upcomingClasses?.length || 0,
           pastClasses: pastClasses?.length || 0,
+          upcomingEvents: upcomingEvents?.length || 0,
+          pastEvents: pastEvents?.length || 0,
           // Keep other stats
-          upcomingEvents: prev.upcomingEvents,
-          pastEvents: prev.pastEvents,
           reviewsGiven: prev.reviewsGiven
         }));
         

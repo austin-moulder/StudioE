@@ -9,7 +9,8 @@ export type EventType =
   | 'profile_view'
   | 'booking_initiated'
   | 'booking_completed'
-  | 'class_inquiry';
+  | 'class_inquiry'
+  | 'event_rsvp';
 
 export interface ActivityMetadata {
   page_path?: string;
@@ -54,19 +55,18 @@ export async function logUserActivity(
 }
 
 /**
- * Generates a consistent session ID for the current browser session
+ * Generate a stable session ID that persists as long as the same user is active
+ * This approach allows us to track session without cookies or local storage
  */
 function generateSessionId(userId: string): string {
-  // Get existing session ID from localStorage or create a new one
-  if (typeof window !== 'undefined') {
-    let sessionId = localStorage.getItem('studio_e_session_id');
-    if (!sessionId) {
-      sessionId = `${userId}-${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
-      localStorage.setItem('studio_e_session_id', sessionId);
-    }
-    return sessionId;
-  }
-  return `${userId}-${Date.now()}`;
+  const now = new Date();
+  const dayOfYear = Math.floor(
+    (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24)
+  );
+  
+  // Create a session ID based on user ID, year and day
+  // This will generate a new session ID daily per user
+  return `${userId}-${now.getFullYear()}-${dayOfYear}`;
 }
 
 /**
@@ -134,6 +134,21 @@ export function logClassInquiry(
     class_id: classId, // Keep as UUID string, no conversion needed
     class_name: className,
     instructor_id: instructorId,
+    timestamp: new Date().toISOString()
+  });
+}
+
+/**
+ * Log event RSVPs
+ */
+export function logEventRSVP(
+  userId: string,
+  eventId: number,
+  eventName: string
+) {
+  return logUserActivity(userId, 'event_rsvp', {
+    event_id: eventId,
+    event_name: eventName,
     timestamp: new Date().toISOString()
   });
 }
