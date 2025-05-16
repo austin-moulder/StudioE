@@ -667,25 +667,26 @@ function EventsContent() {
                           <span className="text-sm font-semibold">
                             {event.price === "0" ? "Free" : `$${event.price}`}
                           </span>
-                          {event.cta_url && (
-                            <Link 
-                              href={event.cta_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                            >
-                              <Button size="sm" className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7">
-                                Register
-                              </Button>
-                            </Link>
-                          )}
-                        </div>
-                        <div className="mt-4">
-                          <EventRSVPButton 
-                            eventId={event.id}
-                            eventName={event.title}
-                            buttonVariant="default"
-                            buttonClassName="bg-[#F94C8D] hover:bg-[#F94C8D]/90 text-white w-full"
-                          />
+                          <div className="flex gap-2">
+                            <EventRSVPButton 
+                              eventId={event.id}
+                              eventName={event.title}
+                              buttonVariant="default"
+                              buttonSize="sm"
+                              buttonClassName="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7"
+                            />
+                            {event.cta_url && (
+                              <Link 
+                                href={event.cta_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                              >
+                                <Button size="sm" className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7">
+                                  Register
+                                </Button>
+                              </Link>
+                            )}
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -843,28 +844,29 @@ function EventsContent() {
                           <span className="text-sm font-semibold">
                             {event.price === "0" ? "Free" : `$${event.price}`}
                           </span>
-                          {event.cta_url && (
-                            <Link 
-                              href={event.cta_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                            >
-                              <Button size="sm" className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7">
-                                Register
-                              </Button>
-                            </Link>
-                          )}
-                        </div>
-                        {isEventUpcoming(event, new Date()) && (
-                          <div className="mt-4">
-                            <EventRSVPButton 
-                              eventId={event.id}
-                              eventName={event.title}
-                              buttonVariant="default"
-                              buttonClassName="bg-[#F94C8D] hover:bg-[#F94C8D]/90 text-white w-full"
-                            />
+                          <div className="flex gap-2">
+                            {isEventUpcoming(event, new Date()) && (
+                              <EventRSVPButton 
+                                eventId={event.id}
+                                eventName={event.title}
+                                buttonVariant="default"
+                                buttonSize="sm"
+                                buttonClassName="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7"
+                              />
+                            )}
+                            {event.cta_url && (
+                              <Link 
+                                href={event.cta_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                              >
+                                <Button size="sm" className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7">
+                                  Register
+                                </Button>
+                              </Link>
+                            )}
                           </div>
-                        )}
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
