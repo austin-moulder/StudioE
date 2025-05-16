@@ -188,10 +188,22 @@ export default function RSVPPage() {
   const formatTime = (timeString: string | undefined | null) => {
     if (!timeString) return 'TBA';
     
-    const [hours, minutes] = timeString.split(':').map(Number);
-    const period = hours >= 12 ? 'PM' : 'AM';
-    const hour = hours % 12 || 12;
-    return `${hour}:${minutes.toString().padStart(2, '0')} ${period}`;
+    try {
+      const parts = timeString.split(':');
+      if (parts.length < 2) return 'TBA';
+      
+      const hours = parseInt(parts[0], 10);
+      const minutes = parseInt(parts[1], 10);
+      
+      if (isNaN(hours) || isNaN(minutes)) return 'TBA';
+      
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const hour = hours % 12 || 12;
+      return `${hour}:${minutes.toString().padStart(2, '0')} ${period}`;
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return 'TBA';
+    }
   };
   
   return (
