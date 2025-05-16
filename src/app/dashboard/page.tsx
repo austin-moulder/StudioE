@@ -7,6 +7,7 @@ import { ArrowRight, Calendar, BookOpen, Star, Image, Bell, CreditCard, FileText
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase/supabase";
+import { Button } from "@/components/ui/button";
 
 interface DashboardStats {
   upcomingEvents: number;
@@ -141,6 +142,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.upcomingEvents}</div>
+            <p className="text-xs text-gray-500 mt-1">Events you've RSVP'd to</p>
           </CardContent>
         </Card>
         
@@ -150,6 +152,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.upcomingClasses}</div>
+            <p className="text-xs text-gray-500 mt-1">Classes you've RSVP'd to</p>
           </CardContent>
         </Card>
         
@@ -159,6 +162,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.pastEvents}</div>
+            <p className="text-xs text-gray-500 mt-1">Events you've attended</p>
           </CardContent>
         </Card>
 
@@ -168,6 +172,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.pastClasses}</div>
+            <p className="text-xs text-gray-500 mt-1">Classes you've attended</p>
           </CardContent>
         </Card>
         
@@ -177,6 +182,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.reviewsGiven}</div>
+            <p className="text-xs text-gray-500 mt-1">Your feedback matters</p>
           </CardContent>
         </Card>
       </div>
@@ -188,24 +194,71 @@ export default function Dashboard() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Upcoming Bookings</CardTitle>
+                <CardTitle>Upcoming RSVPs</CardTitle>
                 <Link href="/dashboard/bookings" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline">
                   View all <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-              <p className="text-gray-500 text-sm mt-1">Your upcoming classes and events</p>
+              <p className="text-gray-500 text-sm mt-1">Classes and events you've RSVP'd to</p>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 border-2 border-dashed rounded-lg border-gray-200">
-                <Calendar className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-                <h3 className="text-lg font-medium text-gray-900">No upcoming bookings</h3>
-                <p className="mt-1 text-sm text-gray-500">When you book classes or events, they'll show up here.</p>
-                <Link href="/classes" className="mt-4 inline-block">
-                  <button className="px-4 py-2 rounded-md bg-[#EC407A] text-white text-sm font-medium hover:bg-[#D81B60] transition-colors">
-                    Browse Classes
-                  </button>
-                </Link>
-              </div>
+              {isLoadingStats ? (
+                <div className="flex justify-center py-8">
+                  <div className="w-8 h-8 border-4 border-[#EC407A] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : stats.upcomingClasses === 0 && stats.upcomingEvents === 0 ? (
+                <div className="text-center py-8 border-2 border-dashed rounded-lg border-gray-200">
+                  <Calendar className="h-10 w-10 text-gray-400 mx-auto mb-3" />
+                  <h3 className="text-lg font-medium text-gray-900">No upcoming RSVPs</h3>
+                  <p className="mt-1 text-sm text-gray-500">When you RSVP to classes or events, they'll show up here.</p>
+                  <div className="mt-4 flex gap-2 justify-center">
+                    <Link href="/classes">
+                      <Button className="px-4 py-2 rounded-md bg-[#EC407A] text-white text-sm font-medium hover:bg-[#D81B60] transition-colors">
+                        Browse Classes
+                      </Button>
+                    </Link>
+                    <Link href="/events">
+                      <Button className="px-4 py-2 rounded-md bg-[#9933CC] text-white text-sm font-medium hover:bg-[#8822BB] transition-colors">
+                        Browse Events
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  {/* If there are upcoming classes */}
+                  {stats.upcomingClasses > 0 && (
+                    <div className="mb-6">
+                      <h3 className="font-semibold mb-3 text-gray-800">Upcoming Classes</h3>
+                      <div className="space-y-3">
+                        {/* We'll need to add a query for the upcoming class details here once that feature is implemented */}
+                        <div className="p-4 border rounded-lg bg-gray-50">
+                          <p className="text-sm text-gray-500">You have {stats.upcomingClasses} upcoming {stats.upcomingClasses === 1 ? 'class' : 'classes'}</p>
+                          <Link href="/dashboard/bookings" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline mt-2">
+                            View details <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* If there are upcoming events */}
+                  {stats.upcomingEvents > 0 && (
+                    <div>
+                      <h3 className="font-semibold mb-3 text-gray-800">Upcoming Events</h3>
+                      <div className="space-y-3">
+                        {/* We'll need to add a query for the upcoming event details here once that feature is implemented */}
+                        <div className="p-4 border rounded-lg bg-gray-50">
+                          <p className="text-sm text-gray-500">You have {stats.upcomingEvents} upcoming {stats.upcomingEvents === 1 ? 'event' : 'events'}</p>
+                          <Link href="/dashboard/bookings" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline mt-2">
+                            View details <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 

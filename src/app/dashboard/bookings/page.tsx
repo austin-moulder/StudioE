@@ -15,7 +15,8 @@ interface ClassRSVP {
   class_name: string;
   status: string;
   class_date: string;
-  end_time: string;
+  start_time: string;
+  location: string;
   temporal_status: 'upcoming' | 'past';
 }
 
@@ -29,7 +30,8 @@ interface EventRSVP {
   updated_at: string;
   event_date: string;
   event_date_end: string | null;
-  end_time: string;
+  start_time: string;
+  location: string;
   temporal_status: 'upcoming' | 'past';
 }
 
@@ -190,7 +192,11 @@ export default function BookingsPage() {
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <Clock className="h-4 w-4 mr-1.5" />
-                            {formatTime(classRSVP.end_time)}
+                            {formatTime(classRSVP.start_time)}
+                          </div>
+                          <div className="flex items-center mt-1 text-sm text-gray-600">
+                            <MapPin className="h-4 w-4 mr-1.5" />
+                            {classRSVP.location}
                           </div>
                         </div>
                         <div className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
@@ -222,19 +228,16 @@ export default function BookingsPage() {
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <Clock className="h-4 w-4 mr-1.5" />
-                            {formatTime(eventRSVP.end_time)}
+                            {formatTime(eventRSVP.start_time)}
+                          </div>
+                          <div className="flex items-center mt-1 text-sm text-gray-600">
+                            <MapPin className="h-4 w-4 mr-1.5" />
+                            {eventRSVP.location}
                           </div>
                         </div>
                         <div className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
                           {eventRSVP.status}
                         </div>
-                      </div>
-                      <div className="flex justify-end">
-                        <Link href={`/events/${eventRSVP.event_id}`}>
-                          <Button variant="outline" size="sm" className="text-[#EC407A] border-[#EC407A] hover:bg-[#EC407A]/10">
-                            View Event
-                          </Button>
-                        </Link>
                       </div>
                     </CardContent>
                   </Card>
@@ -270,7 +273,11 @@ export default function BookingsPage() {
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <Clock className="h-4 w-4 mr-1.5" />
-                            {formatTime(classRSVP.end_time)}
+                            {formatTime(classRSVP.start_time)}
+                          </div>
+                          <div className="flex items-center mt-1 text-sm text-gray-600">
+                            <MapPin className="h-4 w-4 mr-1.5" />
+                            {classRSVP.location}
                           </div>
                         </div>
                         <div className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
@@ -302,24 +309,16 @@ export default function BookingsPage() {
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <Clock className="h-4 w-4 mr-1.5" />
-                            {formatTime(eventRSVP.end_time)}
+                            {formatTime(eventRSVP.start_time)}
+                          </div>
+                          <div className="flex items-center mt-1 text-sm text-gray-600">
+                            <MapPin className="h-4 w-4 mr-1.5" />
+                            {eventRSVP.location}
                           </div>
                         </div>
                         <div className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
                           Completed
                         </div>
-                      </div>
-                      <div className="flex justify-end gap-2">
-                        <Link href={`/events/${eventRSVP.event_id}`}>
-                          <Button variant="outline" size="sm" className="text-[#EC407A] border-[#EC407A] hover:bg-[#EC407A]/10">
-                            View Event
-                          </Button>
-                        </Link>
-                        <Link href={`/events/${eventRSVP.event_id}/reviews`}>
-                          <Button size="sm" className="bg-[#EC407A] hover:bg-[#D81B60]">
-                            Submit Review
-                          </Button>
-                        </Link>
                       </div>
                     </CardContent>
                   </Card>
