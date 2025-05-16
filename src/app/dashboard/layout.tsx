@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth/auth-context";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, User, Calendar, CreditCard, BookOpen, Image, Settings } from "lucide-react";
+import { LayoutDashboard, User, Calendar, CreditCard, BookOpen, Image, Settings, Home } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -13,9 +13,11 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user, isLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [pathname, setPathname] = useState("");
 
   useEffect(() => {
     setMounted(true);
+    setPathname(window.location.pathname);
   }, []);
 
   // If not mounted yet, don't render anything to avoid hydration mismatch
@@ -29,7 +31,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const sidebarLinks = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/profile", label: "Profile", icon: User },
-    { href: "/dashboard/bookings", label: "Bookings", icon: Calendar },
+    { href: "/dashboard/bookings", label: "RSVPs", icon: Calendar },
     { href: "/dashboard/classes", label: "My Classes", icon: BookOpen },
     { href: "/dashboard/gallery", label: "Gallery", icon: Image },
     { href: "/dashboard/payments", label: "Payments", icon: CreditCard },
@@ -49,16 +51,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center h-16 flex-shrink-0 px-4 border-b">
             <span className="text-xl font-semibold">Studio E</span>
           </div>
-          <nav className="flex-1 px-4 py-4 space-y-1">
+          <nav className="grid items-start px-4 text-sm font-medium py-4 gap-1">
             {sidebarLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-100 hover:text-[#EC407A] transition-colors"
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${pathname === link.href ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}
                 >
-                  <Icon className="mr-3 h-5 w-5 text-gray-500" aria-hidden="true" />
+                  <Icon className="h-4 w-4" />
                   {link.label}
                 </Link>
               );
