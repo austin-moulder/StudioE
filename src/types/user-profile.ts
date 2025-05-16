@@ -9,6 +9,8 @@ export interface UserProfile {
   favorite_song?: string;
   favorite_artist?: string;
   dance_motivation?: string;
+  bio?: string;
+  address?: string;
   created_at?: string;
   updated_at?: string;
 }

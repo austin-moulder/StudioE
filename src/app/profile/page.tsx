@@ -68,6 +68,9 @@ export default function Profile() {
             favorite_song: profile.favorite_song || "",
             favorite_artist: profile.favorite_artist || "",
             dance_motivation: profile.dance_motivation || "",
+            // Use extended profile bio and address if they exist
+            bio: profile.bio || prev.bio,
+            address: profile.address || prev.address,
           }));
         }
       }
@@ -183,8 +186,6 @@ export default function Profile() {
         data: {
           full_name: formData.full_name,
           phone: formData.phone,
-          address: formData.address,
-          bio: formData.bio,
         }
       });
       
@@ -201,6 +202,8 @@ export default function Profile() {
         favorite_song: formData.favorite_song,
         favorite_artist: formData.favorite_artist,
         dance_motivation: formData.dance_motivation,
+        bio: formData.bio,
+        address: formData.address,
       };
       
       const savedProfile = await saveUserExtendedProfile(extendedProfileData);

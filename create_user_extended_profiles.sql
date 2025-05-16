@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS public.user_extended_profiles (
     favorite_song TEXT,
     favorite_artist TEXT,
     dance_motivation TEXT,
+    bio TEXT,
+    address TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT user_extended_profiles_user_id_key UNIQUE (user_id)
