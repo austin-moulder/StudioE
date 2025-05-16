@@ -195,7 +195,7 @@ export default function Dashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Upcoming RSVPs</CardTitle>
-                <Link href="/dashboard/bookings" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline">
+                <Link href="/dashboard/rsvp" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline">
                   View all <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
@@ -234,7 +234,7 @@ export default function Dashboard() {
                         {/* We'll need to add a query for the upcoming class details here once that feature is implemented */}
                         <div className="p-4 border rounded-lg bg-gray-50">
                           <p className="text-sm text-gray-500">You have {stats.upcomingClasses} upcoming {stats.upcomingClasses === 1 ? 'class' : 'classes'}</p>
-                          <Link href="/dashboard/bookings" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline mt-2">
+                          <Link href="/dashboard/rsvp" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline mt-2">
                             View details <ArrowRight className="h-3 w-3" />
                           </Link>
                         </div>
@@ -250,7 +250,7 @@ export default function Dashboard() {
                         {/* We'll need to add a query for the upcoming event details here once that feature is implemented */}
                         <div className="p-4 border rounded-lg bg-gray-50">
                           <p className="text-sm text-gray-500">You have {stats.upcomingEvents} upcoming {stats.upcomingEvents === 1 ? 'event' : 'events'}</p>
-                          <Link href="/dashboard/bookings" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline mt-2">
+                          <Link href="/dashboard/rsvp" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline mt-2">
                             View details <ArrowRight className="h-3 w-3" />
                           </Link>
                         </div>

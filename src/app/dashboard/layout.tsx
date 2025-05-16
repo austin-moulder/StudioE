@@ -31,8 +31,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const sidebarLinks = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/profile", label: "Profile", icon: User },
-    { href: "/dashboard/bookings", label: "RSVPs", icon: Calendar },
-    { href: "/dashboard/classes", label: "My Classes", icon: BookOpen },
+    { href: "/dashboard/rsvp", label: "RSVPs", icon: Calendar },
+    { href: "/dashboard/classes", label: "My Private Lessons", icon: BookOpen },
     { href: "/dashboard/gallery", label: "Gallery", icon: Image },
     { href: "/dashboard/payments", label: "Payments", icon: CreditCard },
     { href: "/dashboard/settings", label: "Settings", icon: Settings },
