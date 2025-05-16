@@ -6,14 +6,83 @@ import { redirect } from "next/navigation";
 import { ArrowRight, Calendar, BookOpen, Star, Image, Bell, CreditCard, FileText } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/lib/supabase/supabase";
+
+interface DashboardStats {
+  upcomingEvents: number;
+  upcomingClasses: number;
+  pastEvents: number;
+  pastClasses: number;
+  reviewsGiven: number;
+}
 
 export default function Dashboard() {
   const { user, isLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [stats, setStats] = useState<DashboardStats>({
+    upcomingEvents: 0,
+    upcomingClasses: 0,
+    pastEvents: 0,
+    pastClasses: 0,
+    reviewsGiven: 0
+  });
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Fetch dashboard stats
+  useEffect(() => {
+    async function fetchStats() {
+      if (!user) return;
+      
+      try {
+        setIsLoadingStats(true);
+        
+        // Fetch upcoming classes using the class_inquiry_status view
+        const { data: upcomingClasses, error: upcomingError } = await supabase
+          .from('class_inquiry_status')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('temporal_status', 'upcoming');
+            
+        if (upcomingError) throw upcomingError;
+        
+        // Fetch past classes using the class_inquiry_status view
+        const { data: pastClasses, error: pastError } = await supabase
+          .from('class_inquiry_status')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('temporal_status', 'past');
+            
+        if (pastError) throw pastError;
+        
+        // Update stats
+        setStats(prev => ({
+          ...prev,
+          upcomingClasses: upcomingClasses?.length || 0,
+          pastClasses: pastClasses?.length || 0,
+          // Keep other stats
+          upcomingEvents: prev.upcomingEvents,
+          pastEvents: prev.pastEvents,
+          reviewsGiven: prev.reviewsGiven
+        }));
+        
+        // Fetch other stats here as needed
+        // ...
+        
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+      } finally {
+        setIsLoadingStats(false);
+      }
+    }
+    
+    if (user) {
+      fetchStats();
+    }
+  }, [user]);
 
   // If not mounted yet, don't render anything to avoid hydration mismatch
   if (!mounted) return null;
@@ -47,13 +116,22 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-10 overflow-x-auto">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium text-gray-500">Upcoming Events</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.upcomingEvents}</div>
+          </CardContent>
+        </Card>
+        
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium text-gray-500">Upcoming Classes</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.upcomingClasses}</div>
           </CardContent>
         </Card>
         
@@ -62,7 +140,16 @@ export default function Dashboard() {
             <CardTitle className="text-base font-medium text-gray-500">Past Events</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.pastEvents}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium text-gray-500">Past Classes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.pastClasses}</div>
           </CardContent>
         </Card>
         
@@ -71,7 +158,7 @@ export default function Dashboard() {
             <CardTitle className="text-base font-medium text-gray-500">Reviews Given</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.reviewsGiven}</div>
           </CardContent>
         </Card>
       </div>
