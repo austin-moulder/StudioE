@@ -112,7 +112,9 @@ export default function BookingsPage() {
   };
 
   // Format time helper function
-  const formatTime = (timeString: string) => {
+  const formatTime = (timeString: string | undefined | null) => {
+    if (!timeString) return 'TBA';
+    
     const [hours, minutes] = timeString.split(':').map(Number);
     const period = hours >= 12 ? 'PM' : 'AM';
     const hour = hours % 12 || 12;
@@ -196,7 +198,7 @@ export default function BookingsPage() {
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <MapPin className="h-4 w-4 mr-1.5" />
-                            {classRSVP.location}
+                            {classRSVP.location || 'Location TBA'}
                           </div>
                         </div>
                         <div className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
@@ -232,7 +234,7 @@ export default function BookingsPage() {
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <MapPin className="h-4 w-4 mr-1.5" />
-                            {eventRSVP.location}
+                            {eventRSVP.location || 'Location TBA'}
                           </div>
                         </div>
                         <div className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
@@ -277,7 +279,7 @@ export default function BookingsPage() {
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <MapPin className="h-4 w-4 mr-1.5" />
-                            {classRSVP.location}
+                            {classRSVP.location || 'Location TBA'}
                           </div>
                         </div>
                         <div className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
@@ -313,7 +315,7 @@ export default function BookingsPage() {
                           </div>
                           <div className="flex items-center mt-1 text-sm text-gray-600">
                             <MapPin className="h-4 w-4 mr-1.5" />
-                            {eventRSVP.location}
+                            {eventRSVP.location || 'Location TBA'}
                           </div>
                         </div>
                         <div className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
