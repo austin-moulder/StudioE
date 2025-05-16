@@ -18,7 +18,9 @@ import {
   ArrowRight,
   SlidersHorizontal,
   ChevronUp,
-  Plus
+  Plus,
+  Info,
+  ScrollText
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -42,6 +44,7 @@ import {
 } from '@/components/ui/table'
 import { Slider } from '@/components/ui/slider'
 import { Badge } from '@/components/ui/badge'
+import RSVPButton from '@/components/RSVPButton'
 
 // Import our utility functions and types
 import { 
@@ -137,6 +140,7 @@ function ClassesContent() {
         const classesData = await getAllClasses()
         
         if (classesData) {
+          console.log('Classes data loaded:', classesData.length);
           setClasses(classesData)
           
           // Extract unique dance styles and locations
@@ -220,10 +224,56 @@ function ClassesContent() {
     fetchData()
   }, [])
   
+  // Fallback filter - if we have no filtered classes but have classes data, show at least some classes
+  useEffect(() => {
+    if (classes.length > 0 && filteredClasses.length === 0) {
+      console.log('No filtered classes found but we have classes data - showing next 7 days classes as fallback');
+      
+      // Create a simple filter for the next 7 days to ensure we show something
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const endDate = new Date(today);
+      endDate.setDate(today.getDate() + 7);
+      
+      const fallbackFiltered = classes.filter(classItem => {
+        if (!classItem.class_date) return false;
+        
+        const classDate = new Date(classItem.class_date);
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        const endLocalDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate()
+        );
+        
+        return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
+      });
+      
+      console.log('Fallback filtered classes:', fallbackFiltered.length);
+      
+      if (fallbackFiltered.length > 0) {
+        setFilteredClasses(fallbackFiltered);
+      }
+    }
+  }, [classes, filteredClasses]);
+  
   // Apply initial filters on first load
   const applyInitialFilters = (classData: Class[]) => {
     if (!classData.length) return;
     
+    console.log('Initial data count:', classData.length);
     let filtered = [...classData];
     
     // Filter out past classes
@@ -231,6 +281,8 @@ function ClassesContent() {
     today.setHours(0, 0, 0, 0);
     
     filtered = filtered.filter(classItem => {
+      if (!classItem.class_date) return false;
+      
       const classDate = new Date(classItem.class_date);
       
       // Create date-only version of the date to avoid timezone issues
@@ -249,9 +301,13 @@ function ClassesContent() {
       return classLocalDate >= todayLocalDate;
     });
     
+    console.log('After filtering past classes:', filtered.length);
+    
     // Apply date filter - week is default
     if (dateFilter === 'today') {
       filtered = filtered.filter(classItem => {
+        if (!classItem.class_date) return false;
+        
         const classDate = new Date(classItem.class_date);
         
         // Create date-only version of the date to avoid timezone issues
@@ -269,11 +325,14 @@ function ClassesContent() {
         
         return classLocalDate.getTime() === todayLocalDate.getTime();
       });
+      console.log('After filtering for today:', filtered.length);
     } else if (dateFilter === 'week') {
       const endDate = new Date(today);
       endDate.setDate(today.getDate() + 7);
       
       filtered = filtered.filter(classItem => {
+        if (!classItem.class_date) return false;
+        
         const classDate = new Date(classItem.class_date);
         
         // Create date-only version of the date to avoid timezone issues
@@ -297,6 +356,7 @@ function ClassesContent() {
         
         return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
       });
+      console.log('After filtering for week:', filtered.length);
     }
     
     // Apply other active filters if any
@@ -312,6 +372,7 @@ function ClassesContent() {
         if (danceStyle === 'Choreo') return className.includes('choreo') || className.includes('choreography');
         return true;
       });
+      console.log('After filtering for dance style:', filtered.length);
     }
     
     if (location !== 'all') {
@@ -331,8 +392,10 @@ function ClassesContent() {
         
         return city === location;
       });
+      console.log('After filtering for location:', filtered.length);
     }
     
+    console.log('Final filtered classes count:', filtered.length);
     setFilteredClasses(filtered);
   }
   
@@ -340,29 +403,56 @@ function ClassesContent() {
   const applyFilters = () => {
     // First, let's filter the classes
     let filtered = [...classes];
+    console.log('Starting filter with classes count:', filtered.length);
+    
+    // Check if any classes have invalid date format
+    const invalidDates = filtered.filter(c => !c.class_date || isNaN(new Date(c.class_date).getTime()));
+    if (invalidDates.length > 0) {
+      console.warn('Found classes with invalid dates:', invalidDates.length);
+      console.warn('Example invalid class:', JSON.stringify(invalidDates[0]));
+    }
     
     // Always filter out past classes (for all filter options)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
     filtered = filtered.filter(classItem => {
-      const classDate = new Date(classItem.class_date);
+      // Guard against missing date
+      if (!classItem.class_date) {
+        console.warn('Class missing date:', classItem.id, classItem.class_name);
+        return false;
+      }
       
-      // Create date-only version of the date to avoid timezone issues
-      const classLocalDate = new Date(
-        classDate.getUTCFullYear(), 
-        classDate.getUTCMonth(), 
-        classDate.getUTCDate()
-      );
-      
-      const todayLocalDate = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-      
-      return classLocalDate >= todayLocalDate;
+      try {
+        const classDate = new Date(classItem.class_date);
+        
+        // Check if date is valid
+        if (isNaN(classDate.getTime())) {
+          console.warn('Invalid date format:', classItem.class_date, 'for class ID:', classItem.id);
+          return false;
+        }
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        return classLocalDate >= todayLocalDate;
+      } catch (error) {
+        console.error('Error processing date for class:', classItem.id, error);
+        return false;
+      }
     });
+    
+    console.log('After filtering past classes:', filtered.length);
     
     // Apply search filter
     if (searchTerm) {
@@ -520,6 +610,7 @@ function ClassesContent() {
     if (!classes.length) return
     
     // Function to apply filters to the class list
+    console.log('Main filters useEffect triggered');
     applyFilters();
     
   }, [
@@ -547,6 +638,9 @@ function ClassesContent() {
   
   // When any filter changes, automatically update the URL after a short delay
   useEffect(() => {
+    if (!classes.length) return; // Don't run if no classes loaded yet
+    
+    console.log('Debounced filters useEffect triggered');
     const timer = setTimeout(() => {
       applyFilters();
     }, 500); // 500ms delay to avoid too many URL updates while typing
@@ -940,19 +1034,31 @@ function ClassesContent() {
                               )}
                             </TableCell>
                             <TableCell className="text-right">
-                              <Button 
-                                size="sm"
-                                className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
-                                onClick={() => {
-                                  // Create email inquiry
-                                  const subject = `Inquiry about ${classItem.class_name} dance class`;
-                                  const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
-                                  
-                                  window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                                }}
-                              >
-                                Inquire
-                              </Button>
+                              <div className="flex space-x-2 justify-end">
+                                <Button 
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10"
+                                  onClick={() => {
+                                    // Create email inquiry
+                                    const subject = `Inquiry about ${classItem.class_name} dance class`;
+                                    const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
+                                    
+                                    window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                                  }}
+                                >
+                                  Inquire
+                                </Button>
+                                <RSVPButton
+                                  classId={classItem.id.toString()}
+                                  className={classItem.class_name}
+                                  instructorId={classItem.instructor}
+                                  buttonText="RSVP"
+                                  buttonSize="sm"
+                                  buttonVariant="default"
+                                  buttonClassName="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
+                                />
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))
@@ -1027,18 +1133,29 @@ function ClassesContent() {
                           </div>
                         </div>
                         
-                        <Button 
-                          className="w-full bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
-                          onClick={() => {
-                            // Create email inquiry
-                            const subject = `Inquiry about ${classItem.class_name} dance class`;
-                            const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
-                            
-                            window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                          }}
-                        >
-                          Inquire About This Class
-                        </Button>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button 
+                            variant="outline"
+                            className="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10"
+                            onClick={() => {
+                              // Create email inquiry
+                              const subject = `Inquiry about ${classItem.class_name} dance class`;
+                              const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
+                              
+                              window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                            }}
+                          >
+                            Inquire
+                          </Button>
+                          <RSVPButton
+                            classId={classItem.id.toString()}
+                            className={classItem.class_name}
+                            instructorId={classItem.instructor}
+                            buttonText="RSVP"
+                            buttonVariant="default"
+                            buttonClassName="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
+                          />
+                        </div>
                       </div>
                     ))
                   ) : (

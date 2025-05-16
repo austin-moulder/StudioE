@@ -35,7 +35,8 @@ export default function SubmitEventPage() {
     is_weekly: false,
     gallery_url: '',
     start_datetime: '',
-    end_datetime: ''
+    end_datetime: '',
+    timezone: 'America/Chicago'
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -121,7 +122,8 @@ export default function SubmitEventPage() {
           is_weekly: formData.is_weekly,
           gallery_url: formData.gallery_url || null,
           start_datetime: startDatetime || null,
-          end_datetime: endDatetime || null
+          end_datetime: endDatetime || null,
+          timezone: formData.timezone || 'America/Chicago'
         })
 
       if (error) {
@@ -152,7 +154,8 @@ export default function SubmitEventPage() {
         is_weekly: false,
         gallery_url: '',
         start_datetime: '',
-        end_datetime: ''
+        end_datetime: '',
+        timezone: 'America/Chicago'
       })
       
       // Redirect to events page after 2 seconds
@@ -170,7 +173,7 @@ export default function SubmitEventPage() {
 
   // Event types available in the system
   const eventTypes = [
-    'Social', 'Workshop', 'Showcase', 'Festival', 'Competition', 'Community'
+    'Social', 'Workshop', 'Showcase', 'Festival', 'Competition', 'Community', 'Audition'
   ]
 
   return (
@@ -415,6 +418,31 @@ export default function SubmitEventPage() {
                     <p className="text-xs text-gray-500 mt-2">
                       <strong>Note:</strong> For events ending after midnight, select the following day as the end date.
                     </p>
+
+                    <div>
+                      <Label htmlFor="timezone" className="font-medium">
+                        Timezone <span className="text-red-500">*</span>
+                      </Label>
+                      <Select 
+                        value={formData.timezone} 
+                        onValueChange={(value) => handleSelectChange('timezone', value)}
+                      >
+                        <SelectTrigger id="timezone" className="w-full mt-1">
+                          <SelectValue placeholder="Select timezone" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                          <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
+                          <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
+                          <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
+                          <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
+                          <SelectItem value="America/Anchorage">Alaska Time (AKT)</SelectItem>
+                          <SelectItem value="Pacific/Honolulu">Hawaii Time (HT)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Select the timezone for your event's start and end times.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
