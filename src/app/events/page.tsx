@@ -644,25 +644,23 @@ function EventsContent() {
                           </div>
                         )}
                       </div>
-                      <CardContent className="p-4 flex flex-col h-full">
-                        <div className="space-y-3 flex-grow">
-                          <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
-                            {event.event_type || "Event"}
-                          </Badge>
-                          <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
-                          <div className="space-y-2">
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <Calendar className="mr-1.5 h-3 w-3" />
-                              {formatEventDateTime(event).date}
-                            </div>
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <Clock className="mr-1.5 h-3 w-3" />
-                              {formatEventDateTime(event).time}
-                            </div>
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <MapPin className="mr-1.5 h-4 w-4" />
-                              <span className="line-clamp-2">{formatLocation(event.location)}</span>
-                            </div>
+                      <CardContent className="p-4 space-y-3 flex flex-col h-full">
+                        <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
+                          {event.event_type || "Event"}
+                        </Badge>
+                        <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
+                        <div className="space-y-2 flex-grow">
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Calendar className="mr-1.5 h-3 w-3" />
+                            {formatEventDateTime(event).date}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Clock className="mr-1.5 h-3 w-3" />
+                            {formatEventDateTime(event).time}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <MapPin className="mr-1.5 h-4 w-4" />
+                            {formatLocation(event.location)}
                           </div>
                         </div>
                         <div className="flex items-center justify-between pt-3 mt-auto">
@@ -673,9 +671,9 @@ function EventsContent() {
                             <EventRSVPButton 
                               eventId={event.id}
                               eventName={event.title}
-                              buttonVariant="default"
+                              buttonVariant="outline"
                               buttonSize="sm"
-                              buttonClassName="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7"
+                              buttonClassName="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10 text-xs px-3 py-1 h-7"
                             />
                             {event.cta_url && (
                               <Link 
@@ -822,26 +820,24 @@ function EventsContent() {
                           Featured
                         </div>
                       </div>
-                      <CardContent className="p-4 flex flex-col h-full">
-                        <div className="space-y-3 flex-grow">
-                          <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
-                            {event.event_type || "Special Event"}
-                          </Badge>
-                          <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
-                          <p className="text-xs text-muted-foreground line-clamp-2">{event.description}</p>
-                          <div className="space-y-2">
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <Calendar className="mr-1.5 h-3 w-3" />
-                              {formatEventDateTime(event).date}
-                            </div>
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <Clock className="mr-1.5 h-3 w-3" />
-                              {formatEventDateTime(event).time}
-                            </div>
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <MapPin className="mr-1.5 h-4 w-4" />
-                              <span className="line-clamp-2">{formatLocation(event.location)}</span>
-                            </div>
+                      <CardContent className="p-4 space-y-3 flex flex-col h-full">
+                        <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
+                          {event.event_type || "Special Event"}
+                        </Badge>
+                        <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{event.description}</p>
+                        <div className="space-y-2 flex-grow">
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Calendar className="mr-1.5 h-3 w-3" />
+                            {formatEventDateTime(event).date}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Clock className="mr-1.5 h-3 w-3" />
+                            {formatEventDateTime(event).time}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <MapPin className="mr-1.5 h-4 w-4" />
+                            {formatLocation(event.location)}
                           </div>
                         </div>
                         <div className="flex items-center justify-between pt-3 mt-auto">
@@ -853,9 +849,9 @@ function EventsContent() {
                               <EventRSVPButton 
                                 eventId={event.id}
                                 eventName={event.title}
-                                buttonVariant="default"
+                                buttonVariant="outline"
                                 buttonSize="sm"
-                                buttonClassName="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 text-xs px-3 py-1 h-7"
+                                buttonClassName="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10 text-xs px-3 py-1 h-7"
                               />
                             )}
                             {event.cta_url && (
@@ -907,25 +903,23 @@ function EventsContent() {
                           </Badge>
                         </div>
                       </div>
-                      <CardContent className="p-4 flex flex-col h-full">
-                        <div className="space-y-3 flex-grow">
-                          <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
-                            {event.event_type || "Event"}
-                          </Badge>
-                          <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
-                          <div className="space-y-2">
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <Calendar className="mr-1.5 h-4 w-4" />
-                              {formatEventDateTime(event).date}
-                            </div>
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <Clock className="mr-1.5 h-4 w-4" />
-                              {formatEventDateTime(event).time}
-                            </div>
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <MapPin className="mr-1.5 h-4 w-4" />
-                              <span className="line-clamp-2">{formatLocation(event.location)}</span>
-                            </div>
+                      <CardContent className="p-4 space-y-3 flex flex-col h-full">
+                        <Badge className={`${getEventTypeColor(event.event_type)} text-white hover:${getEventTypeColor(event.event_type)}/90 text-xs`}>
+                          {event.event_type || "Event"}
+                        </Badge>
+                        <h3 className="text-lg font-bold mt-1 line-clamp-1">{event.title}</h3>
+                        <div className="space-y-2 flex-grow">
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Calendar className="mr-1.5 h-4 w-4" />
+                            {formatEventDateTime(event).date}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <Clock className="mr-1.5 h-4 w-4" />
+                            {formatEventDateTime(event).time}
+                          </div>
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            <MapPin className="mr-1.5 h-4 w-4" />
+                            {formatLocation(event.location)}
                           </div>
                         </div>
                         <div className="flex items-center justify-end pt-3 mt-auto gap-2">
