@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase/supabase";
 import { logEventRSVP } from "@/lib/analytics/userActivity";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
+import { Check } from "lucide-react";
 
 interface EventRSVPButtonProps {
   eventId: number;
@@ -29,8 +30,36 @@ export default function EventRSVPButton({
   onError
 }: EventRSVPButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [hasRSVPd, setHasRSVPd] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
+
+  // Check if user has already RSVP'd for this event
+  useEffect(() => {
+    if (!user) return;
+    
+    async function checkExistingRSVP() {
+      try {
+        const { data, error } = await supabase
+          .from("event_rsvps")
+          .select("*")
+          .eq("user_id", user?.id || '') // Add optional chaining and fallback
+          .eq("event_id", eventId)
+          .single();
+        
+        if (error && error.code !== 'PGRST116') { // PGRST116 is the error code for no rows returned
+          console.error("Error checking RSVP status:", error);
+          return;
+        }
+        
+        setHasRSVPd(!!data);
+      } catch (error) {
+        console.error("Error checking RSVP status:", error);
+      }
+    }
+    
+    checkExistingRSVP();
+  }, [eventId, user]);
 
   const handleRSVP = async () => {
     if (!user) {
@@ -39,11 +68,13 @@ export default function EventRSVPButton({
       return;
     }
 
+    // If already RSVP'd, don't do anything
+    if (hasRSVPd) return;
+    
     setIsLoading(true);
 
     try {
       // Log the analytics event
-      // We'll implement this function in the next step
       await logEventRSVP(
         user.id,
         eventId,
@@ -67,6 +98,9 @@ export default function EventRSVPButton({
 
       if (error) throw error;
 
+      // Update local state to show RSVP'd status
+      setHasRSVPd(true);
+      
       // Call onSuccess callback if provided
       if (onSuccess) onSuccess();
       
@@ -81,15 +115,40 @@ export default function EventRSVPButton({
     }
   };
 
+  // Determine button appearance based on RSVP status
+  const getButtonProps = () => {
+    if (hasRSVPd) {
+      return {
+        variant: buttonVariant,
+        size: buttonSize,
+        className: `bg-green-600 text-white hover:bg-green-700 ${buttonClassName}`,
+        disabled: true,
+        children: (
+          <span className="flex items-center">
+            <Check className="h-3.5 w-3.5 mr-1" />
+            RSVP'd
+          </span>
+        )
+      };
+    }
+    
+    return {
+      variant: buttonVariant,
+      size: buttonSize,
+      className: buttonClassName,
+      disabled: isLoading,
+      children: isLoading ? "Submitting..." : buttonText
+    };
+  };
+
+  const buttonProps = getButtonProps();
+
   return (
     <Button
-      variant={buttonVariant}
-      size={buttonSize}
-      className={buttonClassName}
+      {...buttonProps}
       onClick={handleRSVP}
-      disabled={isLoading}
     >
-      {isLoading ? "Submitting..." : buttonText}
+      {buttonProps.children}
     </Button>
   );
 } 
