@@ -8,7 +8,8 @@ export type EventType =
   | 'instructor_search'
   | 'profile_view'
   | 'booking_initiated'
-  | 'booking_completed';
+  | 'booking_completed'
+  | 'class_inquiry';
 
 export interface ActivityMetadata {
   page_path?: string;
@@ -115,6 +116,23 @@ export function logProfileView(
   instructorId: string
 ) {
   return logUserActivity(userId, 'profile_view', {
+    instructor_id: instructorId,
+    timestamp: new Date().toISOString()
+  });
+}
+
+/**
+ * Log class inquiries
+ */
+export function logClassInquiry(
+  userId: string,
+  classId: string,
+  className: string,
+  instructorId?: string
+) {
+  return logUserActivity(userId, 'class_inquiry', {
+    class_id: classId, // Keep as UUID string, no conversion needed
+    class_name: className,
     instructor_id: instructorId,
     timestamp: new Date().toISOString()
   });
