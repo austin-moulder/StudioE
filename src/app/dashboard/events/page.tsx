@@ -45,6 +45,7 @@ type ClassType = {
   address?: string;
   status?: string;
   temporal_status?: string;
+  sortDate?: Date; // For sorting
 };
 
 export default function EventsPage() {
@@ -79,8 +80,8 @@ export default function EventsPage() {
           const processedEvents = eventData.map(item => ({
             id: item.id,
             event_id: item.event_id,
-            title: item.EVENT?.event_name || 'Untitled Event',
-            event_name: item.EVENT?.event_name || 'Untitled Event',
+            title: item.EVENT?.event_name || item.EVENT?.title || 'Untitled Event',
+            event_name: item.EVENT?.event_name || item.EVENT?.title || 'Untitled Event',
             description: item.EVENT?.description,
             start_datetime: item.EVENT?.start_datetime || '',
             end_datetime: item.EVENT?.end_datetime,
@@ -131,7 +132,7 @@ export default function EventsPage() {
               }
             }
             
-            // Determine temporal status
+            // Determine temporal status based ONLY on current time
             let status = 'Upcoming';
             if (classDate instanceof Date && !isNaN(classDate.getTime())) {
               status = classDate < now ? 'Past' : 'Upcoming';
@@ -147,8 +148,22 @@ export default function EventsPage() {
               location: item.classes?.companies?.name,
               address: item.classes?.companies?.address,
               status: item.status,
-              temporal_status: status
+              temporal_status: status,
+              sortDate: classDate // Store date object for sorting
             };
+          });
+          
+          // Sort classes with most recent at the top
+          processedClasses.sort((a, b) => {
+            // If both have sort dates, compare them (most recent first)
+            if (a.sortDate && b.sortDate) {
+              return b.sortDate.getTime() - a.sortDate.getTime();
+            }
+            // If only one has a sort date, put the one with a date first
+            if (a.sortDate) return -1;
+            if (b.sortDate) return 1;
+            // If neither has a sort date, maintain original order
+            return 0;
           });
           
           setUserClasses(processedClasses);
