@@ -18,149 +18,110 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase/supabase";
 import { useAuth } from "@/lib/auth/auth-context";
 
-// Types for our data
-interface Event {
-  id: number;
-  event_id: number;
-  title: string; // From EVENT.event_name
-  description: string;
+// Define basic types to avoid "never[]" errors
+type EventType = {
+  id: string | number;
+  event_id: string | number;
+  title: string;
+  description?: string;
   start_datetime: string;
   end_datetime?: string;
-  timezone: string;
-  location: string;
+  timezone?: string;
+  location?: string;
   image_url?: string;
   event_type?: string;
   status?: string;
-}
+};
 
-interface Class {
-  id: string;
-  class_id: string;
+type ClassType = {
+  id: string | number;
+  class_id: string | number;
   class_name: string;
-  instructor: string;
-  is_series_start: boolean;
-  temporal_status: string;
-  class_date: string;
-  start_time: string;
-  name: string; // company name
-  address: string;
+  instructor?: string;
+  class_date?: string;
+  start_time?: string;
+  location?: string;
+  address?: string;
   status?: string;
-}
+};
 
 export default function EventsPage() {
   const [activeTab, setActiveTab] = useState("events");
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [userEvents, setUserEvents] = useState<Event[]>([]);
-  const [userClasses, setUserClasses] = useState<Class[]>([]);
+  const [userEvents, setUserEvents] = useState<EventType[]>([]);
+  const [userClasses, setUserClasses] = useState<ClassType[]>([]);
   
-  // Fetch data from the database
   useEffect(() => {
     async function fetchUserData() {
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       
       try {
         setLoading(true);
         
-        // Fetch RSVP'd events using the joined query
-        const { data: eventRsvps, error: eventError } = await supabase
+        // Fetch RSVP'd events
+        const { data: eventData, error: eventError } = await supabase
           .from('event_rsvp_status')
           .select(`
-            id,
-            event_id,
-            status,
-            EVENT!inner (
-              id,
-              title:event_name,
-              description,
-              start_datetime,
-              end_datetime,
-              timezone,
-              location,
-              image_url,
-              event_type
-            )
+            *,
+            EVENT (*)
           `)
-          .eq('user_id', user?.id || '')
-          .order('created_at', { ascending: false });
+          .eq('user_id', user.id);
         
         if (eventError) {
-          console.error('Error fetching RSVP events:', eventError);
-          throw eventError;
-        }
-        
-        // Process event data
-        if (eventRsvps && eventRsvps.length > 0) {
-          const processedEvents = eventRsvps.map(rsvp => ({
-            id: rsvp.id,
-            event_id: rsvp.event_id,
-            title: rsvp.EVENT.title,
-            description: rsvp.EVENT.description,
-            start_datetime: rsvp.EVENT.start_datetime,
-            end_datetime: rsvp.EVENT.end_datetime,
-            timezone: rsvp.EVENT.timezone,
-            location: rsvp.EVENT.location,
-            image_url: rsvp.EVENT.image_url,
-            event_type: rsvp.EVENT.event_type,
-            status: rsvp.status
+          console.error('Error fetching events:', eventError);
+        } else if (eventData) {
+          const processedEvents = eventData.map(item => ({
+            id: item.id,
+            event_id: item.event_id,
+            title: item.EVENT?.event_name || 'Untitled Event',
+            description: item.EVENT?.description,
+            start_datetime: item.EVENT?.start_datetime || '',
+            end_datetime: item.EVENT?.end_datetime,
+            timezone: item.EVENT?.timezone,
+            location: item.EVENT?.location,
+            image_url: item.EVENT?.image_url,
+            event_type: item.EVENT?.event_type,
+            status: item.status
           }));
           
           setUserEvents(processedEvents);
-        } else {
-          setUserEvents([]);
         }
         
-        // Fetch class registrations using the joined query
-        const { data: classInquiries, error: classError } = await supabase
+        // Fetch class registrations
+        const { data: classData, error: classError } = await supabase
           .from('class_inquiry_status')
           .select(`
-            id,
-            class_id,
-            class_name,
-            status,
-            classes!inner (
-              id,
-              instructor,
-              is_series_start,
-              class_date,
-              start_time,
-              company_id,
-              companies!inner (
-                id,
-                name,
-                address
-              )
+            *,
+            classes (
+              *,
+              companies (*)
             )
           `)
-          .eq('user_id', user?.id || '');
+          .eq('user_id', user.id);
         
         if (classError) {
-          console.error('Error fetching class inquiries:', classError);
-          throw classError;
-        }
-        
-        // Process class data
-        if (classInquiries && classInquiries.length > 0) {
-          const processedClasses = classInquiries.map(inquiry => ({
-            id: inquiry.id,
-            class_id: inquiry.class_id,
-            class_name: inquiry.class_name,
-            instructor: inquiry.classes.instructor,
-            is_series_start: inquiry.classes.is_series_start,
-            temporal_status: inquiry.status,
-            class_date: inquiry.classes.class_date,
-            start_time: inquiry.classes.start_time,
-            name: inquiry.classes.companies.name,
-            address: inquiry.classes.companies.address,
-            status: inquiry.status
+          console.error('Error fetching classes:', classError);
+        } else if (classData) {
+          const processedClasses = classData.map(item => ({
+            id: item.id,
+            class_id: item.class_id,
+            class_name: item.class_name || 'Untitled Class',
+            instructor: item.classes?.instructor,
+            class_date: item.classes?.class_date,
+            start_time: item.classes?.start_time,
+            location: item.classes?.companies?.name,
+            address: item.classes?.companies?.address,
+            status: item.status
           }));
           
           setUserClasses(processedClasses);
-        } else {
-          setUserClasses([]);
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
@@ -169,12 +130,11 @@ export default function EventsPage() {
     fetchUserData();
   }, [user]);
   
-  // Helper functions for formatting
-  const formatDate = (datetimeStr) => {
-    if (!datetimeStr) return 'TBA';
-    
+  // Format date: "Mon, Jan 1"
+  function formatDate(dateStr?: string) {
+    if (!dateStr) return 'TBA';
     try {
-      const date = new Date(datetimeStr);
+      const date = new Date(dateStr);
       return date.toLocaleDateString('en-US', { 
         weekday: 'short', 
         month: 'short', 
@@ -183,49 +143,53 @@ export default function EventsPage() {
     } catch (e) {
       return 'Invalid date';
     }
-  };
+  }
 
-  const formatTime = (datetimeStr) => {
-    if (!datetimeStr) return 'TBA';
+  // Format time: "7:30 PM"
+  function formatTime(timeStr?: string) {
+    if (!timeStr) return 'TBA';
     
     try {
-      const date = new Date(datetimeStr);
-      return date.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true 
-      });
-    } catch (e) {
-      // If it's just a time string (not datetime)
-      if (typeof datetimeStr === 'string' && datetimeStr.includes(':')) {
-        const parts = datetimeStr.split(':');
-        if (parts.length >= 2) {
-          const hours = parseInt(parts[0]);
-          const minutes = parseInt(parts[1]);
-          if (!isNaN(hours) && !isNaN(minutes)) {
-            const period = hours >= 12 ? 'PM' : 'AM';
-            const hour12 = hours % 12 || 12;
-            return `${hour12}:${minutes.toString().padStart(2, '0')} ${period}`;
-          }
-        }
+      // Handle datetime strings
+      if (timeStr.includes('T') || timeStr.includes('-')) {
+        const date = new Date(timeStr);
+        return date.toLocaleTimeString('en-US', { 
+          hour: 'numeric', 
+          minute: '2-digit',
+          hour12: true 
+        });
       }
-      return 'Invalid time';
+      
+      // Handle time strings like "19:30:00"
+      if (timeStr.includes(':')) {
+        const parts = timeStr.split(':');
+        const hours = parseInt(parts[0]);
+        const minutes = parts[1];
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const hour12 = hours % 12 || 12;
+        return `${hour12}:${minutes} ${period}`;
+      }
+      
+      return timeStr;
+    } catch (e) {
+      return timeStr || 'TBA';
     }
-  };
+  }
 
-  // Get event type badge color
-  const getEventTypeColor = (eventType) => {
-    switch(eventType?.toLowerCase()) {
-      case 'social': return 'bg-[#9933CC]';
-      case 'showcase': return 'bg-[#FF3366]';
-      case 'festival': return 'bg-[#FF7A5A]';
-      case 'workshop': return 'bg-[#333333]';
-      case 'community': return 'bg-[#CC3399]';
-      case 'audition': return 'bg-[#4CAF50]';
-      case 'competition': return 'bg-[#FF6B00]';
-      default: return 'bg-[#9933CC]'; 
-    }
-  };
+  // Get badge color based on event type
+  function getEventTypeColor(type?: string) {
+    const types: Record<string, string> = {
+      social: 'bg-[#9933CC]',
+      showcase: 'bg-[#FF3366]',
+      festival: 'bg-[#FF7A5A]',
+      workshop: 'bg-[#333333]',
+      community: 'bg-[#CC3399]',
+      audition: 'bg-[#4CAF50]',
+      competition: 'bg-[#FF6B00]'
+    };
+    
+    return type?.toLowerCase() ? types[type.toLowerCase()] || 'bg-[#9933CC]' : 'bg-[#9933CC]';
+  }
 
   return (
     <div className="container max-w-5xl py-10">
@@ -259,7 +223,7 @@ export default function EventsPage() {
               {userEvents.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {userEvents.map((event) => (
-                    <Card key={event.id} className="overflow-hidden flex flex-col h-full">
+                    <Card key={String(event.id)} className="overflow-hidden flex flex-col h-full">
                       {event.image_url && (
                         <div className="h-40 overflow-hidden relative">
                           <img 
@@ -290,7 +254,7 @@ export default function EventsPage() {
                           </div>
                           <div className="flex items-center text-sm">
                             <MapPin className="h-4 w-4 mr-2 text-[#EC407A]" />
-                            <span className="line-clamp-1">{event.location}</span>
+                            <span className="line-clamp-1">{event.location || 'TBA'}</span>
                           </div>
                         </div>
                         <div className="mt-auto">
@@ -338,11 +302,11 @@ export default function EventsPage() {
                     </TableHeader>
                     <TableBody>
                       {userClasses.map((classItem) => (
-                        <TableRow key={classItem.id}>
+                        <TableRow key={String(classItem.id)}>
                           <TableCell className="font-medium">{classItem.class_name}</TableCell>
                           <TableCell>{formatDate(classItem.class_date)}</TableCell>
                           <TableCell>{formatTime(classItem.start_time)}</TableCell>
-                          <TableCell className="max-w-[150px] truncate">{`${classItem.name} - ${classItem.address}`}</TableCell>
+                          <TableCell className="max-w-[150px] truncate">{`${classItem.location || 'TBA'} ${classItem.address ? `- ${classItem.address}` : ''}`}</TableCell>
                           <TableCell>{classItem.instructor || 'TBA'}</TableCell>
                           <TableCell>
                             <Badge variant="outline" className="capitalize">
