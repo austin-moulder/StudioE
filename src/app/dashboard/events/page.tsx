@@ -300,12 +300,11 @@ export default function EventsPage() {
   // Get status badge style based on temporal status
   function getStatusStyle(status?: string) {
     switch (status) {
-      case 'Today':
-        return 'text-blue-600 border-blue-600';
+      // Today case is now handled separately with a dedicated badge variant
       case 'Upcoming':
-        return 'text-green-600';
+        return 'text-green-600 border-green-600';
       case 'Past':
-        return 'text-gray-500';
+        return 'text-gray-500 border-gray-300';
       default:
         return '';
     }
@@ -418,9 +417,15 @@ export default function EventsPage() {
                           <TableCell className="max-w-[150px] truncate">{`${classItem.location || 'TBA'} ${classItem.address ? `- ${classItem.address}` : ''}`}</TableCell>
                           <TableCell>{classItem.instructor || 'TBA'}</TableCell>
                           <TableCell>
-                            <Badge variant="outline" className={`capitalize ${getStatusStyle(classItem.temporal_status)}`}>
-                              {classItem.temporal_status}
-                            </Badge>
+                            {classItem.temporal_status === 'Today' ? (
+                              <Badge variant="today">
+                                Today
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className={`capitalize ${getStatusStyle(classItem.temporal_status)}`}>
+                                {classItem.temporal_status}
+                              </Badge>
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
