@@ -20,7 +20,9 @@ import {
   ChevronUp,
   Plus,
   Info,
-  ScrollText
+  ScrollText,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -1065,7 +1067,20 @@ function ClassesContent() {
                       ) : (
                         <TableRow>
                           <TableCell colSpan={8} className="h-24 text-center">
-                            No classes found matching your filters.
+                            <div className="flex flex-col items-center justify-center space-y-4 py-6">
+                              <div className="text-gray-500 flex items-center">
+                                <AlertCircle className="h-5 w-5 mr-2 text-amber-500" />
+                                No classes found matching your filters.
+                              </div>
+                              <Button 
+                                onClick={resetFilters}
+                                variant="outline" 
+                                className="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10"
+                              >
+                                <RefreshCw className="h-4 w-4 mr-2" />
+                                Reset Filters
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       )}
@@ -1159,8 +1174,20 @@ function ClassesContent() {
                       </div>
                     ))
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      No classes found matching your filters.
+                    <div className="bg-white rounded-lg border shadow-sm p-6">
+                      <div className="flex flex-col items-center justify-center space-y-4 py-4">
+                        <div className="flex items-center text-gray-500 mb-2">
+                          <AlertCircle className="h-5 w-5 mr-2 text-amber-500" />
+                          <span className="text-center">No classes found matching your filters.</span>
+                        </div>
+                        <Button 
+                          onClick={resetFilters} 
+                          className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 w-full"
+                        >
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          Reset Filters
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>

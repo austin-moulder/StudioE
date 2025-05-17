@@ -639,7 +639,7 @@ export default function SubmitEventPage() {
 
               <Button 
                 type="submit" 
-                className="w-full bg-[#F94C8D] hover:bg-[#F94C8D]/90" 
+                className="w-full bg-[#9933CC] hover:bg-[#9933CC]/90" 
                 disabled={loading}
               >
                 {loading ? 'Submitting...' : 'Submit Event'}

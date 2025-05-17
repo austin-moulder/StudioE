@@ -570,7 +570,7 @@ function EventsContent() {
                 </Button>
 
                 <Link href="/submit-event">
-                  <Button className="flex items-center gap-2 h-10 bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90">
+                  <Button className="flex items-center gap-2 h-10 bg-[#9933CC] text-white hover:bg-[#9933CC]/90">
                     <CalendarPlus className="h-4 w-4" />
                     Submit Event
                   </Button>

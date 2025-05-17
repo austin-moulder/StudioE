@@ -247,39 +247,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Why Studio E */}
-      <section className="bg-gray-50 py-16 md:py-24">
+      {/* Our Mission */}
+      <section className="bg-gradient-to-r from-[#FF7A5A]/10 via-[#FF3366]/10 to-[#9933CC]/10 py-24 md:py-32">
         <div className="container">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Mission</h2>
-            <p className="mt-6 text-2xl italic font-medium text-gray-700">
-              &quot;To unlock confidence, creativity, and technical mastery for all.&quot;
-            </p>
-          </div>
-
-          <div className="mt-12 relative overflow-hidden rounded-xl bg-gradient-to-r from-[#FF7A5A]/80 via-[#FF3366]/80 to-[#9933CC]/80 py-16">
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0 bg-[url('https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Backgrounds/dance_pattern.png')] bg-repeat opacity-20"></div>
-            </div>
-            <div className="relative z-10 px-6 md:px-10">
-              <div className="mx-auto max-w-4xl text-center text-white">
-                <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16">
-                  <div className="flex flex-col items-center">
-                    <div className="text-5xl mb-4">🌍</div>
-                    <h3 className="text-xl font-bold mb-2">Accessibility</h3>
-                    <p className="text-white/90">Making quality dance instruction available to everyone, regardless of location or experience level.</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="text-5xl mb-4">👥</div>
-                    <h3 className="text-xl font-bold mb-2">Community</h3>
-                    <p className="text-white/90">Building a supportive network of dancers, instructors, and enthusiasts who share a passion for movement.</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="text-5xl mb-4">🏆</div>
-                    <h3 className="text-xl font-bold mb-2">Excellence</h3>
-                    <p className="text-white/90">Maintaining high standards for our instructors to ensure students receive the best possible education.</p>
-                  </div>
-                </div>
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-12">Our Mission</h2>
+            <div className="relative p-10 md:p-16 mx-4 md:mx-8">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/80 to-white/50 rounded-2xl shadow-xl"></div>
+              <div className="relative z-10">
+                <div className="absolute -top-10 -left-4 text-9xl text-[#FF3366]/20 font-serif">"</div>
+                <p className="text-2xl md:text-4xl font-light tracking-wide text-gray-800 leading-relaxed">
+                  To unlock <span className="font-medium text-[#FF3366]">confidence</span>, 
+                  <span className="font-medium text-[#FF7A5A]"> creativity</span>, and 
+                  <span className="font-medium text-[#9933CC]"> technical mastery</span> for all.
+                </p>
+                <div className="absolute -bottom-10 -right-4 text-9xl text-[#FF3366]/20 font-serif">"</div>
               </div>
             </div>
           </div>
@@ -287,170 +269,172 @@ export default function AboutPage() {
       </section>
 
       {/* Why Studio E */}
-      <section className="py-16 md:py-24 bg-gradient-to-r from-[#FF7A5A]/10 via-[#FF3366]/10 to-[#9933CC]/10">
-        <div className="container">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-12">Why Choose Studio E?</h2>
+      <section className="py-16 md:py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FF7A5A]/5 via-[#FF3366]/5 to-[#9933CC]/5"></div>
+        
+        <div className="container relative z-10">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC]">
+              Why Choose Studio E?
+            </h2>
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+              We're reimagining dance education to make it more accessible, personalized, and community-focused.
+            </p>
+          </div>
 
-          {/* Mobile Carousel */}
-          <div className="md:hidden">
-            <div className="overflow-hidden" ref={featuresEmblaRef}>
-              <div className="flex">
-                {[
-                  {
-                    title: "Simplified Search",
-                    description: "We take the struggle out of finding qualified instructors.",
-                    number: "1"
-                  },
-                  {
-                    title: "Personalized Learning",
-                    description: "Our vast network of instructors means you will find someone who understands your learning style and can enable you to grow beyond what you imagined.",
-                    number: "2"
-                  },
-                  {
-                    title: "Vibrant Community",
-                    description: "Join a vibrant and supportive network where you'll connect with like-minded individuals and gain access to exclusive events and experiences.",
-                    number: "3"
-                  },
-                  {
-                    title: "Vetted Instructors",
-                    description: "We personally review every instructor on the platform for your safety.",
-                    icon: "✓"
-                  },
-                  {
-                    title: "Value for Money",
-                    description: "Heavily discounted rates to access instructors and exclusive events.",
-                    icon: "✓"
-                  },
-                  {
-                    title: "24/7 Support",
-                    description: "Customer support and confidential hotline available around the clock (coming soon).",
-                    icon: "✓"
-                  }
-                ].map((feature, index) => (
-                  <div key={index} className="flex-[0_0_100%] min-w-0 px-2">
-                    <div className="bg-white p-6 rounded-lg shadow-md h-[280px] flex flex-col">
-                      {feature.number ? (
-                        <div className="h-12 w-12 rounded-full bg-brand-gradient/10 flex items-center justify-center text-xl mb-4">
-                          {feature.number}
-                        </div>
-                      ) : (
-                        <div className="h-12 w-12 rounded-full bg-brand-gradient/10 flex items-center justify-center text-xl mb-4">
-                          {feature.icon}
-                        </div>
-                      )}
-                      <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                      <p className="text-gray-500 flex-grow">{feature.description}</p>
-                    </div>
+          {/* Main Feature Cards - Always visible on all devices */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {/* Card 1 */}
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FF7A5A] to-[#FF3366] rounded-2xl transform group-hover:scale-[1.02] transition-all duration-300 opacity-90"></div>
+              <div className="relative p-8 md:p-10 text-white h-full flex flex-col">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-3xl">1</span>
                   </div>
-                ))}
+                  <h3 className="text-2xl font-bold mb-3">Simplified Search</h3>
+                </div>
+                <p className="text-white/90 flex-grow">
+                  We take the struggle out of finding qualified instructors who match your learning style and goals.
+                </p>
+                <div className="absolute top-3 right-3 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
               </div>
             </div>
-            <div className="flex justify-center mt-6 space-x-2">
-              {[0, 1, 2, 3, 4, 5].map((index) => (
-                <button
-                  key={index}
-                  onClick={() => scrollToFeature(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    selectedFeatureIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
-                  }`}
-                  aria-label={`Go to feature ${index + 1}`}
-                />
+
+            {/* Card 2 */}
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FF3366] to-[#9933CC] rounded-2xl transform group-hover:scale-[1.02] transition-all duration-300 opacity-90"></div>
+              <div className="relative p-8 md:p-10 text-white h-full flex flex-col">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-3xl">2</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">Personalized Learning</h3>
+                </div>
+                <p className="text-white/90 flex-grow">
+                  Our vast network of instructors means you'll find someone who understands your learning style and can help you grow beyond what you imagined.
+                </p>
+                <div className="absolute top-3 right-3 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#9933CC] to-[#FF7A5A] rounded-2xl transform group-hover:scale-[1.02] transition-all duration-300 opacity-90"></div>
+              <div className="relative p-8 md:p-10 text-white h-full flex flex-col">
+                <div className="mb-6">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
+                    <span className="text-3xl">3</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">Vibrant Community</h3>
+                </div>
+                <p className="text-white/90 flex-grow">
+                  Join a vibrant and supportive network where you'll connect with like-minded individuals and gain access to exclusive events and experiences.
+                </p>
+                <div className="absolute top-3 right-3 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Secondary Features Hexagon Grid */}
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {[
+                {
+                  title: "Vetted Instructors",
+                  description: "We personally review every instructor on the platform for your safety.",
+                  icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  ),
+                  color: "#FF3366"
+                },
+                {
+                  title: "Value for Money",
+                  description: "Heavily discounted rates to access instructors and exclusive events.",
+                  icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  ),
+                  color: "#FF7A5A"
+                },
+                {
+                  title: "24/7 Support",
+                  description: "Customer support and confidential hotline available around the clock (coming soon).",
+                  icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
+                    </svg>
+                  ),
+                  color: "#9933CC"
+                },
+                {
+                  title: "Convenient Booking",
+                  description: "Online booking system with flexible cancellation options.",
+                  icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  ),
+                  color: "#FF3366"
+                },
+                {
+                  title: "Exclusive Content",
+                  description: "Access to exclusive content and events for Studio E members.",
+                  icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                  ),
+                  color: "#FF7A5A"
+                },
+                {
+                  title: "100% to Instructors",
+                  description: "All coaching fees and tips go directly to your instructor.",
+                  icon: (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  ),
+                  color: "#9933CC"
+                }
+              ].map((feature, index) => (
+                <div key={index} className="relative group">
+                  <div className="bg-white rounded-xl shadow-md p-6 transition-all duration-300 group-hover:shadow-xl group-hover:translate-y-[-5px] h-full flex flex-col">
+                    <div className="flex items-start space-x-4 mb-3">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${feature.color}20` }}>
+                        <div className="text-[#FF3366]">{feature.icon}</div>
+                      </div>
+                      <h3 className="font-bold text-lg">{feature.title}</h3>
+                    </div>
+                    <p className="text-gray-600 text-sm">{feature.description}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Desktop Grid */}
-          <div className="hidden md:grid gap-8 md:grid-cols-3">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="h-12 w-12 rounded-full bg-brand-gradient/10 flex items-center justify-center text-xl mb-4">
-                1
-              </div>
-              <h3 className="text-xl font-bold mb-2">Simplified Search</h3>
-              <p className="text-gray-500">We take the struggle out of finding qualified instructors.</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="h-12 w-12 rounded-full bg-brand-gradient/10 flex items-center justify-center text-xl mb-4">
-                2
-              </div>
-              <h3 className="text-xl font-bold mb-2">Personalized Learning</h3>
-              <p className="text-gray-500">
-                Our vast network of instructors means you will find someone who understands your learning style and can
-                enable you to grow beyond what you imagined.
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="h-12 w-12 rounded-full bg-brand-gradient/10 flex items-center justify-center text-xl mb-4">
-                3
-              </div>
-              <h3 className="text-xl font-bold mb-2">Vibrant Community</h3>
-              <p className="text-gray-500">
-                Join a vibrant and supportive network where you'll connect with like-minded individuals and gain access
-                to exclusive events and experiences.
-              </p>
-            </div>
-          </div>
-
-          <div className="hidden md:grid mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <div className="bg-white p-5 rounded-lg shadow-md flex items-start">
-              <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0">✓</div>
-              <div>
-                <h4 className="font-semibold mb-1">Vetted Instructors</h4>
-                <p className="text-sm text-gray-500">
-                  We personally review every instructor on the platform for your safety.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white p-5 rounded-lg shadow-md flex items-start">
-              <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0">✓</div>
-              <div>
-                <h4 className="font-semibold mb-1">Value for Money</h4>
-                <p className="text-sm text-gray-500">
-                  Heavily discounted rates to access instructors and exclusive events.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white p-5 rounded-lg shadow-md flex items-start">
-              <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0">✓</div>
-              <div>
-                <h4 className="font-semibold mb-1">24/7 Support</h4>
-                <p className="text-sm text-gray-500">
-                  Customer support and confidential hotline available around the clock (coming soon).
-                </p>
-              </div>
-            </div>
-            <div className="bg-white p-5 rounded-lg shadow-md flex items-start">
-              <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0">✓</div>
-              <div>
-                <h4 className="font-semibold mb-1">Convenient Booking</h4>
-                <p className="text-sm text-gray-500">
-                  Online booking system with flexible cancellation options.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white p-5 rounded-lg shadow-md flex items-start">
-              <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0">✓</div>
-              <div>
-                <h4 className="font-semibold mb-1">Exclusive Content</h4>
-                <p className="text-sm text-gray-500">
-                  Access to exclusive content and events for Studio E members.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white p-5 rounded-lg shadow-md flex items-start">
-              <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0">✓</div>
-              <div>
-                <h4 className="font-semibold mb-1">100% to Instructors</h4>
-                <p className="text-sm text-gray-500">
-                  All coaching fees and tips go directly to your instructor.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <p className="text-lg font-medium">Build the life you desire with the people who can get you there.</p>
+          <div className="text-center mt-16">
+            <p className="text-xl font-light text-gray-700 mb-6">
+              Build the life you desire with the people who can get you there.
+            </p>
             <Link href="/instructors">
-              <Button size="lg" className="mt-4">
+              <Button size="lg" className="bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] border-none hover:from-[#FF3366]/90 hover:to-[#FF7A5A]/90 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                 Find Your Instructor Today
               </Button>
             </Link>
