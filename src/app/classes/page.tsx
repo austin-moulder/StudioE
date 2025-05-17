@@ -130,6 +130,9 @@ function ClassesContent() {
   const [filtersExpanded, setFiltersExpanded] = useState(false)
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>(searchParams ? searchParams.get('date') as any ?? 'week' : 'week')
   const [selectedCompany, setSelectedCompany] = useState<string>('all')
+  const [companySearchTerm, setCompanySearchTerm] = useState('')
+  const [showCompanySuggestions, setShowCompanySuggestions] = useState(false)
+  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([])
   
   // Fetch data
   useEffect(() => {
@@ -215,6 +218,45 @@ function ClassesContent() {
     
     fetchData()
   }, [])
+  
+  // Filter companies based on search term
+  useEffect(() => {
+    if (!companies.length) return;
+    
+    if (!companySearchTerm.trim()) {
+      setFilteredCompanies(companies);
+      return;
+    }
+    
+    const searchLower = companySearchTerm.toLowerCase();
+    const filtered = companies.filter(company => 
+      company.name.toLowerCase().includes(searchLower)
+    );
+    
+    setFilteredCompanies(filtered);
+  }, [companySearchTerm, companies]);
+
+  // Handle clicks outside the company suggestions dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (showCompanySuggestions) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('#company-search') && !target.closest('.company-suggestion')) {
+          setShowCompanySuggestions(false);
+        }
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCompanySuggestions]);
+
+  // Initialize filtered companies
+  useEffect(() => {
+    setFilteredCompanies(companies);
+  }, [companies]);
   
   // Fallback filter - if we have no filtered classes but have classes data, show at least some classes
   useEffect(() => {
@@ -758,14 +800,14 @@ function ClassesContent() {
                 
                 <div>
                   <label htmlFor="location" className="mb-2 block text-sm font-medium">
-                    Location
+                    City
                   </label>
                   <Select value={location} onValueChange={setLocation}>
                     <SelectTrigger id="location" className="bg-white !bg-opacity-100">
-                      <SelectValue placeholder="All Locations" />
+                      <SelectValue placeholder="All Cities" />
                     </SelectTrigger>
                     <SelectContent className="bg-white !bg-opacity-100">
-                      <SelectItem value="all">All Locations</SelectItem>
+                      <SelectItem value="all">All Cities</SelectItem>
                       {locations.map(loc => (
                         <SelectItem key={loc} value={loc}>{loc}</SelectItem>
                       ))}
@@ -774,20 +816,68 @@ function ClassesContent() {
                 </div>
                 
                 <div>
-                  <label htmlFor="company" className="mb-2 block text-sm font-medium">
+                  <label htmlFor="company-search" className="mb-2 block text-sm font-medium">
                     Studio
                   </label>
-                  <Select value={selectedCompany} onValueChange={setSelectedCompany}>
-                    <SelectTrigger id="company" className="bg-white !bg-opacity-100">
-                      <SelectValue placeholder="All Studios" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white !bg-opacity-100">
-                      <SelectItem value="all">All Studios</SelectItem>
-                      {companies.map(company => (
-                        <SelectItem key={company.id} value={company.id.toString()}>{company.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="relative">
+                    <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="company-search"
+                      placeholder="Search for a studio..."
+                      className="pl-10"
+                      value={companySearchTerm}
+                      onChange={(e) => setCompanySearchTerm(e.target.value)}
+                      onFocus={() => setShowCompanySuggestions(true)}
+                    />
+                    {companySearchTerm && (
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        onClick={() => {
+                          setCompanySearchTerm('');
+                          setSelectedCompany('all');
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
+                    
+                    {showCompanySuggestions && filteredCompanies.length > 0 && (
+                      <div className="company-suggestion absolute z-10 mt-1 w-full max-h-56 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        <div 
+                          className="company-suggestion cursor-pointer px-4 py-2 text-sm hover:bg-gray-100"
+                          onClick={() => {
+                            setSelectedCompany('all');
+                            setCompanySearchTerm('');
+                            setShowCompanySuggestions(false);
+                          }}
+                        >
+                          All Studios
+                        </div>
+                        {filteredCompanies.map(company => (
+                          <div
+                            key={company.id}
+                            className={`company-suggestion cursor-pointer px-4 py-2 text-sm ${selectedCompany === company.id.toString() ? 'bg-gray-100 font-medium' : 'hover:bg-gray-100'}`}
+                            onClick={() => {
+                              setSelectedCompany(company.id.toString());
+                              setCompanySearchTerm(company.name);
+                              setShowCompanySuggestions(false);
+                            }}
+                          >
+                            {company.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {showCompanySuggestions && filteredCompanies.length === 0 && companySearchTerm && (
+                      <div className="company-suggestion absolute z-10 mt-1 w-full rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        <div className="px-4 py-2 text-sm text-gray-500">
+                          No studios found
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
                 <div>
