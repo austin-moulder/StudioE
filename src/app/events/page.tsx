@@ -200,28 +200,22 @@ function EventsContent() {
       }
       const isAUpcoming = isEventUpcoming(a, now);
       const isBUpcoming = isEventUpcoming(b, now);
-      const isAFeatured = a.is_featured;
-      const isBFeatured = b.is_featured;
-      // Priority 1 & 2: Upcoming Featured vs. Others/Upcoming Featured
-      if (isAUpcoming && isAFeatured && (!isBUpcoming || !isBFeatured)) return -1;
-      if (isBUpcoming && isBFeatured && (!isAUpcoming || !isAFeatured)) return 1;
-      if (isAUpcoming && isAFeatured && isBUpcoming && isBFeatured) {
-        // Both are featured and upcoming - sort by start date first
-        return aStartDateTime.getTime() - bStartDateTime.getTime();
-      }
-      // Priority 3 & 4: Upcoming Non-Featured vs. Past/Upcoming Non-Featured
+      
+      // First separate upcoming from past events
       if (isAUpcoming && !isBUpcoming) return -1;
-      if (isBUpcoming && !isAUpcoming) return 1;
-      if (isAUpcoming && isBUpcoming) { // Both are upcoming, non-featured
-        // Sort by start date
+      if (!isAUpcoming && isBUpcoming) return 1;
+      
+      // For upcoming events, sort strictly by chronological order
+      if (isAUpcoming && isBUpcoming) {
         return aStartDateTime.getTime() - bStartDateTime.getTime();
       }
-      // Priority 5: Both are past
+      
+      // For past events, sort by most recent first
       if (!isAUpcoming && !isBUpcoming) {
-        // Sort past events by most recent end date first
-        return bEndDateTime.getTime() - aEndDateTime.getTime(); 
+        return bEndDateTime.getTime() - aEndDateTime.getTime();
       }
-      return 0; 
+      
+      return 0;
     });
     setFilteredEvents(filtered)
   }, [events, searchTerm, eventType, location])

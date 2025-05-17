@@ -4,6 +4,7 @@ export interface Testimonial {
   quote: string;
   style: string;
   type?: string;
+  role?: string;
   rating?: number;
   image_url?: string;
   featured: boolean;

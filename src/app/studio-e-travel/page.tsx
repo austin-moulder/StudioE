@@ -7,33 +7,7 @@ import { CalendarDays, MapPin, Clock } from "lucide-react";
 export default function StudioETravel() {
   const destinations = [
     {
-      name: "Fall 2025",
-      locations: [
-        {
-          city: "Mexico City, Mexico",
-          dates: "Sep 26 - Oct 6, 2025",
-          duration: "11 days",
-          highlight: "Fusion Salsa Festival",
-          image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Locations/Mexico.jpg",
-        },
-        {
-          city: "Cali & Medellin, Colombia",
-          dates: "Oct 22 - Nov 2, 2025",
-          duration: "5-11 days",
-          highlight: "World Salsa Festival",
-          image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Locations/Colombia.jpg",
-        },
-        {
-          city: "Busan & Seoul, Korea",
-          dates: "Oct 23 - Nov 2, 2025",
-          duration: "5-10 days",
-          highlight: "Busan Salsa Festival",
-          image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Locations/Korea.jpg",
-        },
-      ],
-    },
-    {
-      name: "Winter 2025/26",
+      name: "Winter 2026",
       locations: [
         {
           city: "San Juan, Puerto Rico",
@@ -77,6 +51,32 @@ export default function StudioETravel() {
         },
       ],
     },
+    {
+      name: "Fall 2026",
+      locations: [
+        {
+          city: "Mexico City, Mexico",
+          dates: "Sep 25 - Oct 5, 2026",
+          duration: "11 days",
+          highlight: "Fusion Salsa Festival",
+          image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Locations/Mexico.jpg",
+        },
+        {
+          city: "Cali & Medellin, Colombia",
+          dates: "Oct 21 - Nov 1, 2026",
+          duration: "5-11 days",
+          highlight: "World Salsa Festival",
+          image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Locations/Colombia.jpg",
+        },
+        {
+          city: "Busan & Seoul, Korea",
+          dates: "Oct 22 - Nov 1, 2026",
+          duration: "5-10 days",
+          highlight: "Busan Salsa Festival",
+          image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Locations/Korea.jpg",
+        },
+      ],
+    },
   ];
 
   return (
@@ -106,9 +106,9 @@ export default function StudioETravel() {
       <section className="py-16 md:py-24">
         <div className="container">
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">2025-2026 Destinations</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">2026 Destinations</h2>
             <p className="mt-4 text-lg text-gray-500">
-              Vote for your favorite destination by mid-May. The top choices will be selected for final voting.{" "}
+              Vote for your favorite destination by August 31st. The top choices will be selected for final voting.{" "}
               <Link 
                 href="https://docs.google.com/document/d/1ULAS8mxe7DpGVmb98gHkZmbw2uO9OwHAuWTYwYnNxT0/edit?usp=sharing" 
                 target="_blank"
@@ -166,7 +166,7 @@ export default function StudioETravel() {
         <div className="container text-center">
           <h2 className="text-2xl font-bold mb-4">Ready to Join the Adventure?</h2>
           <p className="text-gray-500 mb-8">
-            Cast your vote by mid-May to help choose our next destination.
+            Cast your vote by August 31st to help choose our next destination.
           </p>
           <Link href="/travel-vote">
             <Button size="lg" className="bg-[#FF3366] text-white hover:bg-[#FF3366]/90">

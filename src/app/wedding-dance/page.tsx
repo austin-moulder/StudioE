@@ -261,29 +261,6 @@ export default function WeddingDancePage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="container">
-          <h2 className="text-3xl font-bold text-center mb-12">What Our Couples Say</h2>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <blockquote className="text-lg italic text-gray-600 mb-4">
-                "Our first dance was a huge hit! Everyone was amazed and kept asking where we learned. Our instructor made the whole process fun and stress-free."
-              </blockquote>
-              <p className="font-medium">— Jessica & Michael</p>
-            </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <blockquote className="text-lg italic text-gray-600 mb-4">
-                "As two people with zero dance experience, we were nervous. But our instructor was patient and created a dance that felt natural. We had so much fun!"
-              </blockquote>
-              <p className="font-medium">— David & Sarah</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC] text-white">
         <div className="container text-center">

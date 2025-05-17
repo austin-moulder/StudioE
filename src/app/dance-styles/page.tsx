@@ -17,7 +17,7 @@ export default function DanceStylesPage() {
     },
     {
       name: "Bachata",
-      description: "Bachata is a sensual partner dance from the Dominican Republic characterized by its intimate connection, hip movements, and romantic feel. Originally developed in rural areas during the 1960s, bachata features a basic side-to-side step pattern with the characteristic Cuban hip motion, danced to music with a distinctive rhythm and often melancholy lyrics about heartbreak and romance. Modern bachata has evolved into several styles including Dominican (Traditional), Sensual, and Fusion. The dance emphasizes connection between partners, creating a beautiful expression of musicality and emotion.",
+      description: "Bachata is a style of music and dance that originated in the Dominican Republic. It features romantic, often heartfelt lyrics paired with a distinctive rhythm created by guitar, bass, bongos, and güira (a type of scraper). The dance is known for its simple steps, hip movements, and close partner connection, making it both easy to learn and expressive to perform. Over time, bachata has evolved from its traditional roots to include more modern influences, but it still retains the passionate, soulful essence that makes it so popular around the world.",
       image: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/Bachata_2.jpg",
       instructors: 0
     },
@@ -37,13 +37,13 @@ export default function DanceStylesPage() {
 
   const [otherStyles, setOtherStyles] = useState([
     { name: "Hip Hop", count: 0 },
-    { name: "Contemporary", count: 0 },
+    { name: "Reggaeton", count: 0 },
     { name: "Jazz", count: 0 },
-    { name: "Ballet", count: 0 },
-    { name: "Tap", count: 0 },
-    { name: "Ballroom", count: 0 },
+    { name: "Mambo", count: 0 },
+    { name: "DJ", count: 0 },
+    { name: "Zumba", count: 0 },
     { name: "Zouk", count: 0 },
-    { name: "Afro-Latin", count: 0 },
+    { name: "Kizomba", count: 0 },
   ]);
 
   const fetchInstructorCounts = useCallback(async () => {

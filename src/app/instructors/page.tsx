@@ -147,7 +147,7 @@ function InstructorsContent() {
           .from('instructors')
           .select(`
             *,
-            instructor_profiles(total_students)
+            instructor_profiles(total_students, experience)
           `)
           .eq('active', true)
         
@@ -320,6 +320,39 @@ function InstructorsContent() {
           if (!hasProfile(a) && hasProfile(b)) return 1;
           // Then sort by price
           return b.price.upper - a.price.upper;
+        });
+      case "experience":
+        return sortedInstructors.sort((a, b) => {
+          // First sort by whether they have a profile
+          if (hasProfile(a) && !hasProfile(b)) return -1;
+          if (!hasProfile(a) && hasProfile(b)) return 1;
+          
+          // Get years of experience, default to 0 if not available
+          // The experience field might be nested inside the instructor_profiles object
+          // Handle both regular object and array cases
+          let aExperience = 0;
+          let bExperience = 0;
+          
+          if (a.instructor_profiles) {
+            if (Array.isArray(a.instructor_profiles)) {
+              aExperience = a.instructor_profiles[0]?.experience || 0;
+            } else {
+              aExperience = a.instructor_profiles.experience || 0;
+            }
+          }
+          
+          if (b.instructor_profiles) {
+            if (Array.isArray(b.instructor_profiles)) {
+              bExperience = b.instructor_profiles[0]?.experience || 0;
+            } else {
+              bExperience = b.instructor_profiles.experience || 0;
+            }
+          }
+          
+          console.log(`Sorting by experience: ${a.name} (${aExperience}) vs ${b.name} (${bExperience})`);
+          
+          // Then sort by years of experience (highest first)
+          return bExperience - aExperience;
         });
       case "recommended":
       default:
