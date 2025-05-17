@@ -153,47 +153,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Our Story */}
-      <section className="py-16 md:py-24">
-        <div className="container">
-          <div className="grid gap-12 md:grid-cols-2 items-center">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Story</h2>
-              <p className="mt-4 text-lg text-gray-500">
-                Studio E was founded in 2023 with a simple mission: Unlock confidence, creativity, and technical mastery
-                for all.
-              </p>
-              <p className="mt-4 text-gray-500">
-                What began as a series of conversations with dance instructors in Chicago grew into an idea for a
-                marketplace that would connect thousands of eager students with top instructors who are experienced,
-                trustworthy, and dedicated to achieving results.
-              </p>
-              <p className="mt-4 text-gray-500">
-                Our platform was created to provide a space where creatives and hobbyists alike could achieve their
-                potential and engage with their best selves.
-              </p>
-              <p className="mt-4 text-gray-500">We hold our instructors accountable for:</p>
-              <ul className="mt-2 space-y-2 text-gray-500 list-disc pl-5">
-                <li>The growth of their students through structured privates</li>
-                <li>Model behavior inside and outside of their lessons</li>
-                <li>Clear and reliable communication with their clients</li>
-                <li>An inclusive teaching environment</li>
-                <li>A path of continuous learning</li>
-              </ul>
-            </div>
-            <div className="relative aspect-square overflow-hidden rounded-lg">
-              <Image
-                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Profile_Picture_Sitting.jpeg"
-                alt="Austin Moulder, Founder of Studio E"
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* How Does it Work? */}
       <section className="py-16 md:py-24 bg-white">
         <div className="container px-4 md:px-8">
