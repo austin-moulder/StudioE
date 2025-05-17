@@ -64,7 +64,7 @@ export default function MessagesPage() {
         const { data: sentMessages, error: sentError } = await supabase
           .from('messages')
           .select('receiver_id')
-          .eq('sender_id', user.id)
+          .eq('sender_id', user?.id || '')
           .order('created_at', { ascending: false });
           
         if (sentError) throw sentError;
@@ -72,7 +72,7 @@ export default function MessagesPage() {
         const { data: receivedMessages, error: receivedError } = await supabase
           .from('messages')
           .select('sender_id')
-          .eq('receiver_id', user.id)
+          .eq('receiver_id', user?.id || '')
           .order('created_at', { ascending: false });
           
         if (receivedError) throw receivedError;
@@ -113,7 +113,7 @@ export default function MessagesPage() {
             .from('messages')
             .select('*', { count: 'exact', head: true })
             .eq('sender_id', profileUser.id)
-            .eq('receiver_id', user.id)
+            .eq('receiver_id', user?.id || '')
             .eq('read', false);
             
           return {
