@@ -21,24 +21,29 @@ import { useAuth } from "@/lib/auth/auth-context";
 // Types for our data
 interface Event {
   id: number;
-  title: string;
+  event_id: number;
+  title: string; // From EVENT.event_name
   description: string;
   start_datetime: string;
-  end_datetime: string;
+  end_datetime?: string;
+  timezone: string;
   location: string;
-  event_type: string;
-  image_url: string;
-  is_rsvped?: boolean;
+  image_url?: string;
+  event_type?: string;
   status?: string;
 }
 
 interface Class {
   id: string;
+  class_id: string;
   class_name: string;
+  instructor: string;
+  is_series_start: boolean;
+  temporal_status: string;
   class_date: string;
   start_time: string;
-  location: string;
-  instructor: string;
+  name: string; // company name
+  address: string;
   status?: string;
 }
 
@@ -57,87 +62,100 @@ export default function EventsPage() {
       try {
         setLoading(true);
         
-        // Get all events the user has RSVP'd to
-        const { data: rsvps, error: rsvpError } = await supabase
+        // Fetch RSVP'd events using the joined query
+        const { data: eventRsvps, error: eventError } = await supabase
           .from('event_rsvp_status')
-          .select('event_id, status')
-          .eq('user_id', user.id);
+          .select(`
+            id,
+            event_id,
+            status,
+            EVENT!inner (
+              id,
+              title:event_name,
+              description,
+              start_datetime,
+              end_datetime,
+              timezone,
+              location,
+              image_url,
+              event_type
+            )
+          `)
+          .eq('user_id', user?.id || '')
+          .order('created_at', { ascending: false });
         
-        if (rsvpError) {
-          console.error('Error fetching RSVPs:', rsvpError);
-          throw rsvpError;
+        if (eventError) {
+          console.error('Error fetching RSVP events:', eventError);
+          throw eventError;
         }
         
-        if (rsvps && rsvps.length > 0) {
-          // Get the event IDs the user has RSVP'd to
-          const eventIds = rsvps.map(rsvp => rsvp.event_id);
+        // Process event data
+        if (eventRsvps && eventRsvps.length > 0) {
+          const processedEvents = eventRsvps.map(rsvp => ({
+            id: rsvp.id,
+            event_id: rsvp.event_id,
+            title: rsvp.EVENT.title,
+            description: rsvp.EVENT.description,
+            start_datetime: rsvp.EVENT.start_datetime,
+            end_datetime: rsvp.EVENT.end_datetime,
+            timezone: rsvp.EVENT.timezone,
+            location: rsvp.EVENT.location,
+            image_url: rsvp.EVENT.image_url,
+            event_type: rsvp.EVENT.event_type,
+            status: rsvp.status
+          }));
           
-          // Get the full event data for those IDs
-          const { data: eventsData, error: eventsError } = await supabase
-            .from('events')
-            .select('*')
-            .in('id', eventIds)
-            .order('start_datetime', { ascending: true });
-          
-          if (eventsError) {
-            console.error('Error fetching events:', eventsError);
-            throw eventsError;
-          }
-          
-          // Combine event data with RSVP status
-          if (eventsData) {
-            const processedEvents = eventsData.map(event => {
-              const rsvp = rsvps.find(r => r.event_id === event.id);
-              return {
-                ...event,
-                is_rsvped: true,
-                status: rsvp?.status || 'confirmed'
-              };
-            });
-            
-            setUserEvents(processedEvents);
-          }
+          setUserEvents(processedEvents);
         } else {
           setUserEvents([]);
         }
         
-        // Fetch class registrations
-        const { data: classRegistrations, error: classError } = await supabase
+        // Fetch class registrations using the joined query
+        const { data: classInquiries, error: classError } = await supabase
           .from('class_inquiry_status')
-          .select('class_id, class_name, status')
-          .eq('user_id', user.id);
+          .select(`
+            id,
+            class_id,
+            class_name,
+            status,
+            classes!inner (
+              id,
+              instructor,
+              is_series_start,
+              class_date,
+              start_time,
+              company_id,
+              companies!inner (
+                id,
+                name,
+                address
+              )
+            )
+          `)
+          .eq('user_id', user?.id || '');
         
         if (classError) {
-          console.error('Error fetching class registrations:', classError);
+          console.error('Error fetching class inquiries:', classError);
           throw classError;
         }
         
-        if (classRegistrations && classRegistrations.length > 0) {
-          const classIds = classRegistrations.map(reg => reg.class_id);
+        // Process class data
+        if (classInquiries && classInquiries.length > 0) {
+          const processedClasses = classInquiries.map(inquiry => ({
+            id: inquiry.id,
+            class_id: inquiry.class_id,
+            class_name: inquiry.class_name,
+            instructor: inquiry.classes.instructor,
+            is_series_start: inquiry.classes.is_series_start,
+            temporal_status: inquiry.status,
+            class_date: inquiry.classes.class_date,
+            start_time: inquiry.classes.start_time,
+            name: inquiry.classes.companies.name,
+            address: inquiry.classes.companies.address,
+            status: inquiry.status
+          }));
           
-          const { data: classesData, error: classesError } = await supabase
-            .from('classes')
-            .select('*')
-            .in('id', classIds)
-            .order('class_date', { ascending: true });
-          
-          if (classesError) {
-            console.error('Error fetching classes:', classesError);
-            throw classesError;
-          }
-          
-          if (classesData) {
-            const processedClasses = classesData.map(classItem => {
-              const registration = classRegistrations.find(r => r.class_id === classItem.id);
-              return {
-                ...classItem,
-                class_name: registration?.class_name || classItem.class_name || 'Class',
-                status: registration?.status || 'confirmed'
-              };
-            });
-            
-            setUserClasses(processedClasses);
-          }
+          setUserClasses(processedClasses);
         } else {
           setUserClasses([]);
         }
@@ -276,7 +294,7 @@ export default function EventsPage() {
                           </div>
                         </div>
                         <div className="mt-auto">
-                          <Link href={`/events/${event.id}`}>
+                          <Link href={`/events/${event.event_id}`}>
                             <Button variant="outline" size="sm" className="w-full mt-2">
                               View Details
                               <ArrowRight className="h-4 w-4 ml-1" />
@@ -324,7 +342,7 @@ export default function EventsPage() {
                           <TableCell className="font-medium">{classItem.class_name}</TableCell>
                           <TableCell>{formatDate(classItem.class_date)}</TableCell>
                           <TableCell>{formatTime(classItem.start_time)}</TableCell>
-                          <TableCell className="max-w-[150px] truncate">{classItem.location}</TableCell>
+                          <TableCell className="max-w-[150px] truncate">{`${classItem.name} - ${classItem.address}`}</TableCell>
                           <TableCell>{classItem.instructor || 'TBA'}</TableCell>
                           <TableCell>
                             <Badge variant="outline" className="capitalize">
