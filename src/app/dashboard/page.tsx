@@ -77,6 +77,14 @@ export default function Dashboard() {
             
         if (pastEventsError) throw pastEventsError;
         
+        // Fetch user reviews
+        const { data: userReviews, error: userReviewsError } = await supabase
+          .from('event_reviews')
+          .select('*')
+          .eq('auth_id', user.id);
+          
+        if (userReviewsError) throw userReviewsError;
+        
         // Update stats with all data
         setStats(prev => ({
           ...prev,
@@ -84,12 +92,8 @@ export default function Dashboard() {
           pastClasses: pastClasses?.length || 0,
           upcomingEvents: upcomingEvents?.length || 0,
           pastEvents: pastEvents?.length || 0,
-          // Keep other stats
-          reviewsGiven: prev.reviewsGiven
+          reviewsGiven: userReviews?.length || 0
         }));
-        
-        // Fetch other stats here as needed
-        // ...
         
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
@@ -266,7 +270,7 @@ export default function Dashboard() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Progress & Notes</CardTitle>
-                <Link href="/dashboard/notes" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline">
+                <Link href="/dashboard/privates" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline">
                   View all <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
@@ -276,7 +280,7 @@ export default function Dashboard() {
               <div className="text-center py-8 border-2 border-dashed rounded-lg border-gray-200">
                 <FileText className="h-10 w-10 text-gray-400 mx-auto mb-3" />
                 <h3 className="text-lg font-medium text-gray-900">No notes yet</h3>
-                <p className="mt-1 text-sm text-gray-500">As you take classes, your instructors may leave notes for you.</p>
+                <p className="mt-1 text-sm text-gray-500">As you take private lessons, your instructors may leave notes for you.</p>
               </div>
             </CardContent>
           </Card>
@@ -300,15 +304,37 @@ export default function Dashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Reviews</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Reviews</CardTitle>
+                {stats.reviewsGiven > 0 && (
+                  <Link href="/dashboard/reviews" className="text-sm text-[#EC407A] flex items-center gap-1 hover:underline">
+                    View all <ArrowRight className="h-3 w-3" />
+                  </Link>
+                )}
+              </div>
               <p className="text-gray-500 text-sm mt-1">Your instructor and class reviews</p>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 border-2 border-dashed rounded-lg border-gray-200">
-                <Star className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-                <h3 className="text-lg font-medium text-gray-900">No reviews yet</h3>
-                <p className="mt-1 text-sm text-gray-500">Reviews you leave for instructors will appear here.</p>
-              </div>
+              {isLoadingStats ? (
+                <div className="flex justify-center py-8">
+                  <div className="w-8 h-8 border-4 border-[#EC407A] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : stats.reviewsGiven > 0 ? (
+                <div className="space-y-4">
+                  <p className="text-sm">You have submitted {stats.reviewsGiven} {stats.reviewsGiven === 1 ? 'review' : 'reviews'} for classes and events.</p>
+                  <Link href="/dashboard/reviews">
+                    <Button className="w-full bg-[#EC407A] hover:bg-[#EC407A]/90">
+                      View Your Reviews
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="text-center py-8 border-2 border-dashed rounded-lg border-gray-200">
+                  <Star className="h-10 w-10 text-gray-400 mx-auto mb-3" />
+                  <h3 className="text-lg font-medium text-gray-900">No reviews yet</h3>
+                  <p className="mt-1 text-sm text-gray-500">Reviews you leave for classes and events will appear here.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -320,11 +346,14 @@ export default function Dashboard() {
             <CardContent>
               <div className="text-center py-6 border-2 border-dashed rounded-lg border-gray-200">
                 <CreditCard className="h-10 w-10 text-gray-400 mx-auto mb-3" />
-                <h3 className="text-lg font-medium text-gray-900">No payment methods</h3>
-                <p className="mt-1 text-sm text-gray-500">Add a payment method for faster checkout.</p>
-                <button className="mt-4 px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors">
-                  Add Payment Method
-                </button>
+                <h3 className="text-lg font-medium text-gray-900">Payment Info Coming Soon</h3>
+                <p className="mt-1 text-sm text-gray-500">This feature is under development.</p>
+                <Button 
+                  className="mt-4 px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+                  disabled
+                >
+                  Coming Soon
+                </Button>
               </div>
             </CardContent>
           </Card>

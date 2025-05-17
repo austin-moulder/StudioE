@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/lib/auth/auth-context";
-import { redirect } from "next/navigation";
-import { User, Mail, Phone, MapPin, Camera, Music, Calendar, Sparkles, Heart, Headphones } from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
+import { User, Mail, Phone, MapPin, Camera, Music, Calendar, Sparkles, Heart, Headphones, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ import {
 
 export default function Profile() {
   const { user, isLoading } = useAuth();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [extendedProfile, setExtendedProfile] = useState<UserProfile | null>(null);
@@ -225,6 +226,17 @@ export default function Profile() {
   return (
     <div className="container max-w-3xl mx-auto py-10 px-4">
       <div className="mb-8">
+        <div className="flex items-center space-x-2 mb-4">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={() => router.push('/dashboard')}
+            className="hover:bg-gray-100"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <span className="text-sm text-gray-500">Back to Dashboard</span>
+        </div>
         <h1 className="text-3xl font-bold tracking-tight">Your Profile</h1>
         <p className="text-gray-500 mt-1">
           Manage your personal information and preferences

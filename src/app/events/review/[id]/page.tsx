@@ -11,9 +11,21 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Star } from 'lucide-react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase/client'
+import { useAuth } from '@/lib/auth/auth-context'
+
+interface ReviewData {
+  event_id: number;
+  user_name: string;
+  user_email: string;
+  rating: number;
+  review_text: string;
+  is_approved: boolean;
+  auth_id?: string;
+}
 
 export default function EventReviewPage({ params }: { params: { id: string } }) {
   const router = useRouter()
+  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [event, setEvent] = useState<any>(null)
@@ -64,7 +76,16 @@ export default function EventReviewPage({ params }: { params: { id: string } }) 
     }
 
     fetchEvent()
-  }, [params.id, router])
+    
+    // Set name and email from authenticated user if available
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.user_metadata?.full_name || 'Anonymous',
+        email: user.email || ''
+      }))
+    }
+  }, [params.id, router, user])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -98,19 +119,25 @@ export default function EventReviewPage({ params }: { params: { id: string } }) 
     try {
       console.log('Submitting review for event ID:', event.id, 'Type:', typeof event.id)
 
+      // Prepare review data
+      const reviewData: ReviewData = {
+        event_id: event.id,
+        user_name: formData.name,
+        user_email: formData.email,
+        rating: formData.rating,
+        review_text: formData.review_text,
+        is_approved: false
+      }
+      
+      // Add auth_id if user is authenticated
+      if (user) {
+        reviewData.auth_id = user.id
+      }
+
       // Insert review into event_reviews table
       const { data, error } = await supabase
         .from('event_reviews')
-        .insert([
-          {
-            event_id: event.id,
-            user_name: formData.name,
-            user_email: formData.email,
-            rating: formData.rating,
-            review_text: formData.review_text,
-            is_approved: false
-          }
-        ])
+        .insert([reviewData])
       
       if (error) {
         console.error('Error submitting review:', error)

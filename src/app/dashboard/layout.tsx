@@ -1,23 +1,37 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/auth/auth-context";
 import { redirect } from "next/navigation";
+import {
+  CircleUser,
+  Calendar,
+  Menu,
+  X,
+  Home,
+  BookOpen,
+  MessageSquare,
+  CreditCard,
+  Settings,
+  MessageCircle,
+  CalendarDays,
+  Users,
+  Star,
+  LogOut,
+} from "lucide-react";
 import Link from "next/link";
-import { LayoutDashboard, User, Calendar, CreditCard, BookOpen, Image, Settings, Home } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth/auth-context";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { FormButton } from "@/components/ui/form-button";
 
-interface DashboardLayoutProps {
-  children: React.ReactNode;
-}
-
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const { user, isLoading } = useAuth();
+export default function DashboardLayout({ children }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [pathname, setPathname] = useState("");
+  const { user, isLoading } = useAuth();
+  const pathname = "/dashboard";
 
   useEffect(() => {
     setMounted(true);
-    setPathname(window.location.pathname);
   }, []);
 
   // If not mounted yet, don't render anything to avoid hydration mismatch
@@ -28,52 +42,130 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     redirect("/");
   }
 
-  const sidebarLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/profile", label: "Profile", icon: User },
-    { href: "/dashboard/rsvp", label: "RSVPs", icon: Calendar },
-    { href: "/dashboard/classes", label: "My Private Lessons", icon: BookOpen },
-    { href: "/dashboard/gallery", label: "Gallery", icon: Image },
-    { href: "/dashboard/payments", label: "Payments", icon: CreditCard },
-    { href: "/dashboard/settings", label: "Settings", icon: Settings },
-  ];
-
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Mobile sidebar toggle */}
-      <div className="lg:hidden">
-        {/* Mobile navigation implementation would go here */}
-      </div>
-
-      {/* Sidebar for desktop */}
-      <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 border-r bg-white">
-        <div className="flex flex-col flex-1 min-h-0">
-          <div className="flex items-center h-16 flex-shrink-0 px-4 border-b">
-            <span className="text-xl font-semibold">Studio E</span>
+      <div className="lg:hidden fixed top-0 left-0 z-40 w-full bg-white border-b">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              {sidebarOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+            <span className="ml-3 text-lg font-medium">Dashboard</span>
           </div>
-          <nav className="grid items-start px-4 text-sm font-medium py-4 gap-1">
-            {sidebarLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 ${pathname === link.href ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900'}`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
         </div>
       </div>
 
+      {/* Sidebar for mobile (off-canvas) */}
+      <div
+        className={cn(
+          "fixed inset-0 z-30 lg:hidden bg-gray-600 bg-opacity-75 transition-opacity duration-300",
+          sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => setSidebarOpen(false)}
+      ></div>
+
+      <aside
+        className={cn(
+          "fixed top-0 left-0 z-40 h-full w-64 transform transition-transform duration-300 ease-in-out bg-white border-r lg:translate-x-0",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-center h-16 border-b">
+            <Link href="/" className="text-xl font-bold text-[#EC407A]">
+              Studio E
+            </Link>
+          </div>
+
+          <nav className="flex-1 overflow-y-auto p-4">
+            <ul className="space-y-1">
+              <li>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <Home className="h-5 w-5 mr-3 text-gray-500" />
+                  Dashboard Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/privates"
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <BookOpen className="h-5 w-5 mr-3 text-gray-500" />
+                  My Private Lessons
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/events"
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <Calendar className="h-5 w-5 mr-3 text-gray-500" />
+                  Events & Workshops
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/messages"
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <MessageCircle className="h-5 w-5 mr-3 text-gray-500" />
+                  Messages
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/payments"
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <CreditCard className="h-5 w-5 mr-3 text-gray-500" />
+                  Payments & Billing
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/settings"
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <Settings className="h-5 w-5 mr-3 text-gray-500" />
+                  Settings
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <div className="p-4 border-t">
+            <Link
+              href="/profile"
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <CircleUser className="h-5 w-5 mr-3 text-gray-500" />
+              Profile
+            </Link>
+          </div>
+        </div>
+      </aside>
+
       {/* Main content */}
-      <div className="lg:pl-64 flex flex-col flex-1">
-        <main className="flex-1">
-          {children}
-        </main>
+      <div className="lg:pl-64 pt-16 lg:pt-0">
+        <main className="min-h-screen bg-gray-50">{children}</main>
       </div>
     </div>
   );
