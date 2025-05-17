@@ -23,6 +23,7 @@ type EventType = {
   id: string | number;
   event_id: string | number;
   title: string;
+  event_name: string;
   description?: string;
   start_datetime: string;
   end_datetime?: string;
@@ -43,6 +44,7 @@ type ClassType = {
   location?: string;
   address?: string;
   status?: string;
+  temporal_status?: string;
 };
 
 export default function EventsPage() {
@@ -78,6 +80,7 @@ export default function EventsPage() {
             id: item.id,
             event_id: item.event_id,
             title: item.EVENT?.event_name || 'Untitled Event',
+            event_name: item.EVENT?.event_name || 'Untitled Event',
             description: item.EVENT?.description,
             start_datetime: item.EVENT?.start_datetime || '',
             end_datetime: item.EVENT?.end_datetime,
@@ -115,7 +118,8 @@ export default function EventsPage() {
             start_time: item.classes?.start_time,
             location: item.classes?.companies?.name,
             address: item.classes?.companies?.address,
-            status: item.status
+            status: item.status,
+            temporal_status: new Date(item.classes?.class_date) < new Date() ? 'Past' : 'Upcoming'
           }));
           
           setUserClasses(processedClasses);
@@ -130,29 +134,55 @@ export default function EventsPage() {
     fetchUserData();
   }, [user]);
   
-  // Format date: "Mon, Jan 1"
-  function formatDate(dateStr?: string) {
+  // Format date respecting event's timezone: "Mon, Jan 1"
+  function formatDate(dateStr?: string, timezone?: string) {
     if (!dateStr) return 'TBA';
+    
     try {
       const date = new Date(dateStr);
+      
+      // Use the event's timezone if provided
+      if (timezone) {
+        return new Intl.DateTimeFormat('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          timeZone: timezone
+        }).format(date);
+      }
+      
+      // Otherwise use local formatting
       return date.toLocaleDateString('en-US', { 
         weekday: 'short', 
         month: 'short', 
-        day: 'numeric' 
+        day: 'numeric'
       });
     } catch (e) {
+      console.error('Error formatting date:', e);
       return 'Invalid date';
     }
   }
 
-  // Format time: "7:30 PM"
-  function formatTime(timeStr?: string) {
+  // Format time respecting event's timezone: "7:30 PM"
+  function formatTime(timeStr?: string, timezone?: string) {
     if (!timeStr) return 'TBA';
     
     try {
       // Handle datetime strings
       if (timeStr.includes('T') || timeStr.includes('-')) {
         const date = new Date(timeStr);
+        
+        // Use the event's timezone if provided
+        if (timezone) {
+          return new Intl.DateTimeFormat('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: timezone
+          }).format(date);
+        }
+        
+        // Otherwise use local formatting
         return date.toLocaleTimeString('en-US', { 
           hour: 'numeric', 
           minute: '2-digit',
@@ -172,6 +202,7 @@ export default function EventsPage() {
       
       return timeStr;
     } catch (e) {
+      console.error('Error formatting time:', e);
       return timeStr || 'TBA';
     }
   }
@@ -228,7 +259,7 @@ export default function EventsPage() {
                         <div className="h-40 overflow-hidden relative">
                           <img 
                             src={event.image_url} 
-                            alt={event.title} 
+                            alt={event.event_name} 
                             className="w-full h-full object-cover"
                           />
                           {event.event_type && (
@@ -236,21 +267,18 @@ export default function EventsPage() {
                               {event.event_type}
                             </div>
                           )}
-                          <div className="absolute top-2 left-2 bg-white bg-opacity-90 text-xs py-1 px-2 rounded-full text-gray-800">
-                            {event.status || 'Registered'}
-                          </div>
                         </div>
                       )}
                       <CardContent className="p-4 flex flex-col flex-grow">
-                        <h3 className="font-bold text-lg mb-2 line-clamp-1">{event.title}</h3>
+                        <h3 className="font-bold text-lg mb-2 line-clamp-1">{event.event_name}</h3>
                         <div className="space-y-2 mb-4 flex-grow">
                           <div className="flex items-center text-sm">
                             <Calendar className="h-4 w-4 mr-2 text-[#EC407A]" />
-                            <span>{formatDate(event.start_datetime)}</span>
+                            <span>{formatDate(event.start_datetime, event.timezone)}</span>
                           </div>
                           <div className="flex items-center text-sm">
                             <Clock className="h-4 w-4 mr-2 text-[#EC407A]" />
-                            <span>{formatTime(event.start_datetime)}</span>
+                            <span>{formatTime(event.start_datetime, event.timezone)}</span>
                           </div>
                           <div className="flex items-center text-sm">
                             <MapPin className="h-4 w-4 mr-2 text-[#EC407A]" />
@@ -309,8 +337,8 @@ export default function EventsPage() {
                           <TableCell className="max-w-[150px] truncate">{`${classItem.location || 'TBA'} ${classItem.address ? `- ${classItem.address}` : ''}`}</TableCell>
                           <TableCell>{classItem.instructor || 'TBA'}</TableCell>
                           <TableCell>
-                            <Badge variant="outline" className="capitalize">
-                              {classItem.status || 'Registered'}
+                            <Badge variant="outline" className={`capitalize ${classItem.temporal_status === 'Past' ? 'text-gray-500' : 'text-green-600'}`}>
+                              {classItem.temporal_status}
                             </Badge>
                           </TableCell>
                         </TableRow>
