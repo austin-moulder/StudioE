@@ -111,6 +111,7 @@ export default function EventsPage() {
           console.error('Error fetching classes:', classError);
         } else if (classData) {
           const now = new Date();
+          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
           
           const processedClasses = classData.map(item => {
             // Create a date that accounts for potential time zone issues
@@ -132,10 +133,23 @@ export default function EventsPage() {
               }
             }
             
-            // Determine temporal status based ONLY on current time
+            // Determine temporal status based on date comparison with today
             let status = 'Upcoming';
             if (classDate instanceof Date && !isNaN(classDate.getTime())) {
-              status = classDate < now ? 'Past' : 'Upcoming';
+              // Create date objects with just the date part for comparison
+              const classDateOnly = new Date(
+                classDate.getFullYear(),
+                classDate.getMonth(),
+                classDate.getDate()
+              );
+              
+              if (classDateOnly.getTime() < today.getTime()) {
+                status = 'Past';
+              } else if (classDateOnly.getTime() === today.getTime()) {
+                status = 'Today';
+              } else {
+                status = 'Upcoming';
+              }
             }
             
             return {
@@ -282,6 +296,20 @@ export default function EventsPage() {
     
     return type?.toLowerCase() ? types[type.toLowerCase()] || 'bg-[#9933CC]' : 'bg-[#9933CC]';
   }
+  
+  // Get status badge style based on temporal status
+  function getStatusStyle(status?: string) {
+    switch (status) {
+      case 'Today':
+        return 'text-blue-600 border-blue-600';
+      case 'Upcoming':
+        return 'text-green-600';
+      case 'Past':
+        return 'text-gray-500';
+      default:
+        return '';
+    }
+  }
 
   return (
     <div className="container max-w-5xl py-10">
@@ -398,7 +426,7 @@ export default function EventsPage() {
                           <TableCell className="max-w-[150px] truncate">{`${classItem.location || 'TBA'} ${classItem.address ? `- ${classItem.address}` : ''}`}</TableCell>
                           <TableCell>{classItem.instructor || 'TBA'}</TableCell>
                           <TableCell>
-                            <Badge variant="outline" className={`capitalize ${classItem.temporal_status === 'Past' ? 'text-gray-500' : 'text-green-600'}`}>
+                            <Badge variant="outline" className={`capitalize ${getStatusStyle(classItem.temporal_status)}`}>
                               {classItem.temporal_status}
                             </Badge>
                           </TableCell>
