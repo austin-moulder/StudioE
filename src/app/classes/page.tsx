@@ -105,15 +105,19 @@ function ClassesContent() {
   // Filter state
   const [searchTerm, setSearchTerm] = useState('')
   const [danceStyle, setDanceStyle] = useState(searchParams ? searchParams.get('style') ?? 'all' : 'all')
-  const [selectedCompany, setSelectedCompany] = useState<string>('all')
-  const [studioSearchTerm, setStudioSearchTerm] = useState('')
+  const [location, setLocation] = useState(searchParams ? searchParams.get('location') ?? 'all' : 'all')
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200])
+  const [showSeriesOnly, setShowSeriesOnly] = useState(false)
+  const [showDropInOnly, setShowDropInOnly] = useState(false)
+  const [showOpenClassesOnly, setShowOpenClassesOnly] = useState(false)
   
   // Data state
   const [classes, setClasses] = useState<Class[]>([])
   const [filteredClasses, setFilteredClasses] = useState<Class[]>([])
   const [companies, setCompanies] = useState<Company[]>([])
-  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([])
   const [loading, setLoading] = useState(true)
+  const [danceStyles, setDanceStyles] = useState<string[]>([])
+  const [locations, setLocations] = useState<string[]>([])
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1)
@@ -125,23 +129,7 @@ function ClassesContent() {
   // Additional state
   const [filtersExpanded, setFiltersExpanded] = useState(false)
   const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>(searchParams ? searchParams.get('date') as any ?? 'week' : 'week')
-  
-  // Define the fixed dance styles
-  const danceStylesFixed = ["Salsa", "Bachata", "Heels", "Choreo", "Other"]
-  
-  // Filter companies when search term changes
-  useEffect(() => {
-    if (companies.length > 0) {
-      if (!studioSearchTerm) {
-        setFilteredCompanies(companies);
-      } else {
-        const filtered = companies.filter(company => 
-          company.name.toLowerCase().includes(studioSearchTerm.toLowerCase())
-        );
-        setFilteredCompanies(filtered);
-      }
-    }
-  }, [studioSearchTerm, companies]);
+  const [selectedCompany, setSelectedCompany] = useState<string>('all')
   
   // Fetch data
   useEffect(() => {
@@ -156,12 +144,20 @@ function ClassesContent() {
         if (classesData) {
           console.log('Classes data loaded:', classesData.length);
           setClasses(classesData)
-          setFilteredCompanies(companiesData || [])
           
-          // Extract unique locations
+          // Extract unique dance styles and locations
+          const styles = new Set<string>()
           const locationSet = new Set<string>()
           
           classesData.forEach(classItem => {
+            // Extract dance style from class name
+            const className = classItem.class_name.toLowerCase()
+            if (className.includes('salsa')) styles.add('Salsa')
+            else if (className.includes('bachata')) styles.add('Bachata')
+            else if (className.includes('heel')) styles.add('Heels')
+            else if (className.includes('choreo') || className.includes('choreography')) styles.add('Choreo')
+            else styles.add('Other')
+            
             // Use the location column if available, otherwise fallback to address extraction
             if (classItem.location) {
               locationSet.add(classItem.location)
@@ -196,13 +192,19 @@ function ClassesContent() {
             }
           })
           
+          // Get sorted dance styles with 'Other' at the end (replaced with fixed order)
+          // We want a specific order: Salsa, Bachata, Heels, Choreo, Other
+          const styleArray = ['Salsa', 'Bachata', 'Heels', 'Choreo', 'Other'].filter(style => styles.has(style));
+          
+          setDanceStyles(styleArray)
+          setLocations(Array.from(locationSet))
+          
           // Apply initial filters after loading data
           applyInitialFilters(classesData);
         }
         
         if (companiesData) {
           setCompanies(companiesData)
-          setFilteredCompanies(companiesData)
         }
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -261,47 +263,90 @@ function ClassesContent() {
   
   // Apply initial filters on first load
   const applyInitialFilters = (classData: Class[]) => {
-    let filtered = [...classData];
-    console.log('Initial classes count:', filtered.length);
+    if (!classData.length) return;
     
-    // Apply date filter (week is default)
+    console.log('Initial data count:', classData.length);
+    let filtered = [...classData];
+    
+    // Filter out past classes
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    if (dateFilter === 'week') {
+    filtered = filtered.filter(classItem => {
+      if (!classItem.class_date) return false;
+      
+      const classDate = new Date(classItem.class_date);
+      
+      // Create date-only version of the date to avoid timezone issues
+      const classLocalDate = new Date(
+        classDate.getUTCFullYear(), 
+        classDate.getUTCMonth(), 
+        classDate.getUTCDate()
+      );
+      
+      const todayLocalDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      
+      return classLocalDate >= todayLocalDate;
+    });
+    
+    console.log('After filtering past classes:', filtered.length);
+    
+    // Apply date filter - week is default
+    if (dateFilter === 'today') {
+      filtered = filtered.filter(classItem => {
+        if (!classItem.class_date) return false;
+        
+        const classDate = new Date(classItem.class_date);
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        return classLocalDate.getTime() === todayLocalDate.getTime();
+      });
+      console.log('After filtering for today:', filtered.length);
+    } else if (dateFilter === 'week') {
       const endDate = new Date(today);
-      endDate.setDate(endDate.getDate() + 7);
+      endDate.setDate(today.getDate() + 7);
       
       filtered = filtered.filter(classItem => {
         if (!classItem.class_date) return false;
         
-        try {
-          const classDate = new Date(classItem.class_date);
-          
-          // Create date-only version of the date to avoid timezone issues
-          const classLocalDate = new Date(
-            classDate.getUTCFullYear(), 
-            classDate.getUTCMonth(), 
-            classDate.getUTCDate()
-          );
-          
-          const todayLocalDate = new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate()
-          );
-          
-          const endLocalDate = new Date(
-            endDate.getFullYear(),
-            endDate.getMonth(),
-            endDate.getDate()
-          );
-          
-          return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
-        } catch (error) {
-          console.error('Error processing date for class:', classItem.id, error);
-          return false;
-        }
+        const classDate = new Date(classItem.class_date);
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        const endLocalDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate()
+        );
+        
+        return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
       });
       console.log('After filtering for week:', filtered.length);
     }
@@ -315,7 +360,7 @@ function ClassesContent() {
         if (danceStyle === 'Heels') return className.includes('heel');
         if (danceStyle === 'Choreo') return className.includes('choreo') || className.includes('choreography');
         if (danceStyle === 'Other') {
-          // "Other" includes all classes that don't match the above styles
+          // Other means it doesn't fit into the above categories
           return !className.includes('salsa') && 
                  !className.includes('bachata') && 
                  !className.includes('heel') && 
@@ -326,12 +371,24 @@ function ClassesContent() {
       console.log('After filtering for dance style:', filtered.length);
     }
     
-    // Apply company filter if active
-    if (selectedCompany !== 'all') {
-      filtered = filtered.filter(classItem => 
-        classItem.company.id.toString() === selectedCompany
-      );
-      console.log('After filtering for company:', filtered.length);
+    if (location !== 'all') {
+      filtered = filtered.filter(classItem => {
+        if (classItem.location) return classItem.location === location;
+        
+        // Extract city from address
+        const address = classItem.company.address;
+        const addressParts = address.split(',').map(part => part.trim());
+        let city = 'Chicago';
+        
+        if (addressParts.length >= 3) {
+          city = addressParts[addressParts.length - 2];
+        } else if (addressParts.length === 2) {
+          city = addressParts[1];
+        }
+        
+        return city === location;
+      });
+      console.log('After filtering for location:', filtered.length);
     }
     
     console.log('Final filtered classes count:', filtered.length);
@@ -343,6 +400,55 @@ function ClassesContent() {
     // First, let's filter the classes
     let filtered = [...classes];
     console.log('Starting filter with classes count:', filtered.length);
+    
+    // Check if any classes have invalid date format
+    const invalidDates = filtered.filter(c => !c.class_date || isNaN(new Date(c.class_date).getTime()));
+    if (invalidDates.length > 0) {
+      console.warn('Found classes with invalid dates:', invalidDates.length);
+      console.warn('Example invalid class:', JSON.stringify(invalidDates[0]));
+    }
+    
+    // Always filter out past classes (for all filter options)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    filtered = filtered.filter(classItem => {
+      // Guard against missing date
+      if (!classItem.class_date) {
+        console.warn('Class missing date:', classItem.id, classItem.class_name);
+        return false;
+      }
+      
+      try {
+        const classDate = new Date(classItem.class_date);
+        
+        // Check if date is valid
+        if (isNaN(classDate.getTime())) {
+          console.warn('Invalid date format:', classItem.class_date, 'for class ID:', classItem.id);
+          return false;
+        }
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        return classLocalDate >= todayLocalDate;
+      } catch (error) {
+        console.error('Error processing date for class:', classItem.id, error);
+        return false;
+      }
+    });
+    
+    console.log('After filtering past classes:', filtered.length);
     
     // Apply search filter
     if (searchTerm) {
@@ -363,13 +469,111 @@ function ClassesContent() {
         if (danceStyle === 'Heels') return className.includes('heel');
         if (danceStyle === 'Choreo') return className.includes('choreo') || className.includes('choreography');
         if (danceStyle === 'Other') {
-          // "Other" includes all classes that don't match the above styles
+          // Other means it doesn't fit into the above categories
           return !className.includes('salsa') && 
                  !className.includes('bachata') && 
                  !className.includes('heel') && 
                  !(className.includes('choreo') || className.includes('choreography'));
         }
         return true;
+      });
+    }
+    
+    // Apply location filter
+    if (location && location !== 'all') {
+      filtered = filtered.filter(classItem => {
+        if (classItem.location) return classItem.location === location;
+        
+        // Extract city from address
+        const address = classItem.company.address;
+        const addressParts = address.split(',').map(part => part.trim());
+        let city = 'Chicago';
+        
+        if (addressParts.length >= 3) {
+          city = addressParts[addressParts.length - 2];
+        } else if (addressParts.length === 2) {
+          city = addressParts[1];
+        }
+        
+        return city === location;
+      });
+    }
+    
+    // Apply price range filter
+    filtered = filtered.filter(classItem => {
+      // Handle price as a number or as a string with $ prefix
+      let price: number;
+      if (typeof classItem.price === 'number') {
+        price = classItem.price;
+      } else {
+        // If price is stored as a string for some reason, convert it
+        const priceStr = String(classItem.price).replace('$', '');
+        price = parseFloat(priceStr) || 0;
+      }
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+    
+    // Apply class type filters
+    if (showSeriesOnly) {
+      filtered = filtered.filter(classItem => !classItem.is_drop_in);
+    }
+    
+    if (showDropInOnly) {
+      filtered = filtered.filter(classItem => classItem.is_drop_in);
+    }
+    
+    // Apply open classes filter
+    if (showOpenClassesOnly) {
+      filtered = filtered.filter(classItem => !classItem.instructor_approval_required);
+    }
+    
+    // Apply specific date filters
+    if (dateFilter === 'today') {
+      filtered = filtered.filter(classItem => {
+        const classDate = new Date(classItem.class_date);
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        return classLocalDate.getTime() === todayLocalDate.getTime();
+      });
+    } else if (dateFilter === 'week') {
+      const endDate = new Date(today);
+      endDate.setDate(today.getDate() + 7);
+      
+      filtered = filtered.filter(classItem => {
+        const classDate = new Date(classItem.class_date);
+        
+        // Create date-only version of the date to avoid timezone issues
+        const classLocalDate = new Date(
+          classDate.getUTCFullYear(), 
+          classDate.getUTCMonth(), 
+          classDate.getUTCDate()
+        );
+        
+        const todayLocalDate = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+        
+        const endLocalDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate()
+        );
+        
+        return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
       });
     }
     
@@ -387,6 +591,7 @@ function ClassesContent() {
     const params = new URLSearchParams();
     if (searchTerm) params.set('q', searchTerm);
     if (danceStyle && danceStyle !== 'all') params.set('style', danceStyle);
+    if (location && location !== 'all') params.set('location', location);
     if (dateFilter && dateFilter !== 'all') params.set('date', dateFilter);
     
     // Reset to first page when filters change
@@ -412,8 +617,13 @@ function ClassesContent() {
     classes,
     searchTerm,
     danceStyle,
-    selectedCompany,
-    dateFilter
+    location,
+    priceRange,
+    showSeriesOnly,
+    showDropInOnly,
+    showOpenClassesOnly,
+    dateFilter,
+    selectedCompany
   ])
   
   // Handle page change
@@ -436,14 +646,17 @@ function ClassesContent() {
     }, 500); // 500ms delay to avoid too many URL updates while typing
     
     return () => clearTimeout(timer);
-  }, [searchTerm, danceStyle, selectedCompany]);
+  }, [searchTerm, danceStyle, location]);
   
   // Reset filters
   const resetFilters = () => {
     setSearchTerm('')
     setDanceStyle('all')
-    setSelectedCompany('all')
-    setStudioSearchTerm('')
+    setLocation('all')
+    setPriceRange([0, 200])
+    setShowSeriesOnly(false)
+    setShowDropInOnly(false)
+    setShowOpenClassesOnly(false)
     
     // Use replaceState instead of router.push to avoid scrolling to top
     window.history.replaceState({}, '', '/classes');
@@ -507,7 +720,7 @@ function ClassesContent() {
             </div>
             
             <div className={`${filtersExpanded ? 'block' : 'hidden'} md:block`}>
-              <div className="grid gap-6 md:grid-cols-3">
+              <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
                 <div>
                   <label htmlFor="search" className="mb-2 block text-sm font-medium">
                     Search
@@ -534,8 +747,27 @@ function ClassesContent() {
                     </SelectTrigger>
                     <SelectContent className="bg-white !bg-opacity-100">
                       <SelectItem value="all">All Styles</SelectItem>
-                      {danceStylesFixed.map(style => (
-                        <SelectItem key={style} value={style}>{style}</SelectItem>
+                      <SelectItem value="Salsa">Salsa</SelectItem>
+                      <SelectItem value="Bachata">Bachata</SelectItem>
+                      <SelectItem value="Heels">Heels</SelectItem>
+                      <SelectItem value="Choreo">Choreo</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label htmlFor="location" className="mb-2 block text-sm font-medium">
+                    Location
+                  </label>
+                  <Select value={location} onValueChange={setLocation}>
+                    <SelectTrigger id="location" className="bg-white !bg-opacity-100">
+                      <SelectValue placeholder="All Locations" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white !bg-opacity-100">
+                      <SelectItem value="all">All Locations</SelectItem>
+                      {locations.map(loc => (
+                        <SelectItem key={loc} value={loc}>{loc}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -545,41 +777,132 @@ function ClassesContent() {
                   <label htmlFor="company" className="mb-2 block text-sm font-medium">
                     Studio
                   </label>
-                  <div className="relative">
-                    <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                    <Input
-                      id="studio-search"
-                      placeholder="Search for a studio..."
-                      className="pl-10 mb-1"
-                      value={studioSearchTerm}
-                      onChange={(e) => setStudioSearchTerm(e.target.value)}
-                    />
-                  </div>
                   <Select value={selectedCompany} onValueChange={setSelectedCompany}>
                     <SelectTrigger id="company" className="bg-white !bg-opacity-100">
                       <SelectValue placeholder="All Studios" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white !bg-opacity-100 max-h-[300px]">
+                    <SelectContent className="bg-white !bg-opacity-100">
                       <SelectItem value="all">All Studios</SelectItem>
-                      {filteredCompanies.map(company => (
+                      {companies.map(company => (
                         <SelectItem key={company.id} value={company.id.toString()}>{company.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
+                
+                <div>
+                  <label className="mb-2 block text-sm font-medium">
+                    Date
+                  </label>
+                  <div className="flex flex-col space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <input 
+                        type="radio" 
+                        id="date-all" 
+                        name="date-filter" 
+                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
+                        checked={dateFilter === 'all'}
+                        onChange={() => setDateFilter('all')}
+                      />
+                      <label htmlFor="date-all" className="text-sm">
+                        All Dates
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input 
+                        type="radio" 
+                        id="date-today" 
+                        name="date-filter" 
+                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
+                        checked={dateFilter === 'today'}
+                        onChange={() => setDateFilter('today')}
+                      />
+                      <label htmlFor="date-today" className="text-sm">
+                        Today
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input 
+                        type="radio" 
+                        id="date-week" 
+                        name="date-filter" 
+                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
+                        checked={dateFilter === 'week'}
+                        onChange={() => setDateFilter('week')}
+                      />
+                      <label htmlFor="date-week" className="text-sm">
+                        Next 7 Days
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="price-range" className="mb-2 block text-sm font-medium">
+                    Price Range: ${priceRange[0]} - ${priceRange[1]}
+                  </label>
+                  <div className="py-2 pr-3">
+                    <Slider
+                      id="price-range"
+                      min={0}
+                      max={200}
+                      step={5}
+                      value={[priceRange[0], priceRange[1]]}
+                      onValueChange={(value: number[]) => setPriceRange([value[0], value[1]])}
+                      className="py-1"
+                    />
+                  </div>
+                </div>
               </div>
               
-              <div className="flex justify-between items-center mt-6">
-                <Button
-                  variant="outline"
-                  onClick={resetFilters}
-                  className="text-sm"
-                >
-                  Reset Filters
-                </Button>
+              <div className="flex flex-wrap justify-between items-center mt-6">
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Checkbox 
+                      id="series-only" 
+                      checked={showSeriesOnly} 
+                      onCheckedChange={(checked) => {
+                        const isChecked = checked as boolean;
+                        setShowSeriesOnly(isChecked);
+                        if (isChecked) setShowDropInOnly(false);
+                      }}
+                      disabled={showDropInOnly}
+                    />
+                    <label htmlFor="series-only" className={`text-sm ${showDropInOnly ? 'text-gray-400' : ''}`}>
+                      Series Classes Only
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Checkbox 
+                      id="drop-in-only" 
+                      checked={showDropInOnly} 
+                      onCheckedChange={(checked) => {
+                        const isChecked = checked as boolean;
+                        setShowDropInOnly(isChecked);
+                        if (isChecked) setShowSeriesOnly(false);
+                      }}
+                      disabled={showSeriesOnly}
+                    />
+                    <label htmlFor="drop-in-only" className={`text-sm ${showSeriesOnly ? 'text-gray-400' : ''}`}>
+                      Drop-in Classes Only
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Checkbox 
+                      id="open-only" 
+                      checked={showOpenClassesOnly}
+                      onCheckedChange={(checked) => setShowOpenClassesOnly(checked as boolean)} 
+                    />
+                    <label htmlFor="open-only" className="text-sm">
+                      No Approval Required
+                    </label>
+                  </div>
+                </div>
                 
                 {/* Desktop Submit Button */}
-                <div className="hidden md:block">
+                <div className="hidden md:block mt-2">
                   <Link href="/submit-class">
                     <Button className="bg-[#9933CC] text-white hover:bg-[#9933CC]/90 flex items-center gap-1">
                       <Plus className="h-4 w-4" />
