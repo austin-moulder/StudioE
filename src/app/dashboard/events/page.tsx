@@ -109,18 +109,47 @@ export default function EventsPage() {
         if (classError) {
           console.error('Error fetching classes:', classError);
         } else if (classData) {
-          const processedClasses = classData.map(item => ({
-            id: item.id,
-            class_id: item.class_id,
-            class_name: item.class_name || 'Untitled Class',
-            instructor: item.classes?.instructor,
-            class_date: item.classes?.class_date,
-            start_time: item.classes?.start_time,
-            location: item.classes?.companies?.name,
-            address: item.classes?.companies?.address,
-            status: item.status,
-            temporal_status: new Date(item.classes?.class_date) < new Date() ? 'Past' : 'Upcoming'
-          }));
+          const now = new Date();
+          
+          const processedClasses = classData.map(item => {
+            // Create a date that accounts for potential time zone issues
+            let classDate: Date | undefined = undefined;
+            if (item.classes?.class_date) {
+              // Ensure we're using YYYY-MM-DD format with 'T00:00:00' to avoid timezone issues
+              const dateStr = item.classes.class_date;
+              const dateParts = (typeof dateStr === 'string' ? dateStr.split('T')[0] : dateStr).split('-');
+              if (dateParts.length === 3) {
+                // Create date with explicit year, month, day to avoid timezone shifts
+                classDate = new Date(
+                  parseInt(dateParts[0]),     // year
+                  parseInt(dateParts[1]) - 1, // month (0-indexed)
+                  parseInt(dateParts[2])      // day
+                );
+              } else {
+                // Fallback if date format is unexpected
+                classDate = new Date(dateStr);
+              }
+            }
+            
+            // Determine temporal status
+            let status = 'Upcoming';
+            if (classDate instanceof Date && !isNaN(classDate.getTime())) {
+              status = classDate < now ? 'Past' : 'Upcoming';
+            }
+            
+            return {
+              id: item.id,
+              class_id: item.class_id,
+              class_name: item.class_name || 'Untitled Class',
+              instructor: item.classes?.instructor,
+              class_date: item.classes?.class_date,
+              start_time: item.classes?.start_time,
+              location: item.classes?.companies?.name,
+              address: item.classes?.companies?.address,
+              status: item.status,
+              temporal_status: status
+            };
+          });
           
           setUserClasses(processedClasses);
         }
@@ -139,6 +168,23 @@ export default function EventsPage() {
     if (!dateStr) return 'TBA';
     
     try {
+      // For class dates, ensure we handle potential timezone issues
+      if (dateStr && !dateStr.includes('T')) {
+        // If it's just a YYYY-MM-DD format with no time
+        const dateParts = dateStr.split('-');
+        if (dateParts.length === 3) {
+          const year = parseInt(dateParts[0]);
+          const month = parseInt(dateParts[1]) - 1; // JS months are 0-indexed
+          const day = parseInt(dateParts[2]);
+          
+          return new Date(year, month, day).toLocaleDateString('en-US', {
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric'
+          });
+        }
+      }
+      
       const date = new Date(dateStr);
       
       // Use the event's timezone if provided
