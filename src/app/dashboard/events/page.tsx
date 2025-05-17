@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, Clock, MapPin, ArrowRight, Users } from "lucide-react";
+import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -373,14 +373,6 @@ export default function EventsPage() {
                             <MapPin className="h-4 w-4 mr-2 text-[#EC407A]" />
                             <span className="line-clamp-1">{event.location || 'TBA'}</span>
                           </div>
-                        </div>
-                        <div className="mt-auto">
-                          <Link href={`/events/${event.event_id}`}>
-                            <Button variant="outline" size="sm" className="w-full mt-2">
-                              View Details
-                              <ArrowRight className="h-4 w-4 ml-1" />
-                            </Button>
-                          </Link>
                         </div>
                       </CardContent>
                     </Card>
