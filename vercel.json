@@ -1,12 +1,7 @@
 {
   "buildCommand": "npm run build",
-  "framework": "nextjs",
-  "installCommand": "npm install",
   "devCommand": "npm run dev",
-  "outputDirectory": ".next",
-  "regions": ["iad1"],
-  "images": {
-    "sizes": [16, 32, 48, 64, 96, 128, 256, 384],
-    "domains": ["bjpfwbpepuglhrmdumqj.supabase.co"]
-  }
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next"
 } 
