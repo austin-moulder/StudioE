@@ -252,85 +252,36 @@ export default function AboutPage() {
         <div className="container">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Mission</h2>
-            <p className="mt-6 text-xl text-gray-500">
+            <p className="mt-6 text-2xl italic font-medium text-gray-700">
               &quot;To unlock confidence, creativity, and technical mastery for all.&quot;
             </p>
           </div>
 
-          {/* Mobile Carousel */}
-          <div className="md:hidden mt-16">
-            <div className="overflow-hidden" ref={valuesEmblaRef}>
-              <div className="flex">
-                {[
-                  {
-                    title: "Accessibility",
-                    description: "Making quality dance instruction available to everyone, regardless of location or experience level.",
-                    icon: "🌍",
-                  },
-                  {
-                    title: "Community",
-                    description: "Building a supportive network of dancers, instructors, and enthusiasts who share a passion for movement.",
-                    icon: "👥",
-                  },
-                  {
-                    title: "Excellence",
-                    description: "Maintaining high standards for our instructors to ensure students receive the best possible education.",
-                    icon: "🏆",
-                  },
-                ].map((value, index) => (
-                  <div key={index} className="flex-[0_0_100%] min-w-0">
-                    <div className="flex flex-col items-center text-center p-6 bg-white rounded-lg mx-2">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-gradient/10 text-3xl">
-                        {value.icon}
-                      </div>
-                      <h3 className="mt-6 text-xl font-bold">{value.title}</h3>
-                      <p className="mt-2 text-gray-500">{value.description}</p>
-                    </div>
+          <div className="mt-12 relative overflow-hidden rounded-xl bg-gradient-to-r from-[#FF7A5A]/80 via-[#FF3366]/80 to-[#9933CC]/80 py-16">
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0 bg-[url('https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Backgrounds/dance_pattern.png')] bg-repeat opacity-20"></div>
+            </div>
+            <div className="relative z-10 px-6 md:px-10">
+              <div className="mx-auto max-w-4xl text-center text-white">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16">
+                  <div className="flex flex-col items-center">
+                    <div className="text-5xl mb-4">🌍</div>
+                    <h3 className="text-xl font-bold mb-2">Accessibility</h3>
+                    <p className="text-white/90">Making quality dance instruction available to everyone, regardless of location or experience level.</p>
                   </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex justify-center mt-6 space-x-2">
-              {[0, 1, 2].map((index) => (
-                <button
-                  key={index}
-                  onClick={() => scrollToValue(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    selectedValueIndex === index ? 'bg-[#FF3366] w-4' : 'bg-gray-300'
-                  }`}
-                  aria-label={`Go to value ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop Grid */}
-          <div className="hidden md:grid mt-16 grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Accessibility",
-                description: "Making quality dance instruction available to everyone, regardless of location or experience level.",
-                icon: "🌍",
-              },
-              {
-                title: "Community",
-                description: "Building a supportive network of dancers, instructors, and enthusiasts who share a passion for movement.",
-                icon: "👥",
-              },
-              {
-                title: "Excellence",
-                description: "Maintaining high standards for our instructors to ensure students receive the best possible education.",
-                icon: "🏆",
-              },
-            ].map((value, index) => (
-              <div key={index} className="flex flex-col items-center text-center p-6 bg-white rounded-lg">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-gradient/10 text-3xl">
-                  {value.icon}
+                  <div className="flex flex-col items-center">
+                    <div className="text-5xl mb-4">👥</div>
+                    <h3 className="text-xl font-bold mb-2">Community</h3>
+                    <p className="text-white/90">Building a supportive network of dancers, instructors, and enthusiasts who share a passion for movement.</p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-5xl mb-4">🏆</div>
+                    <h3 className="text-xl font-bold mb-2">Excellence</h3>
+                    <p className="text-white/90">Maintaining high standards for our instructors to ensure students receive the best possible education.</p>
+                  </div>
                 </div>
-                <h3 className="mt-6 text-xl font-bold">{value.title}</h3>
-                <p className="mt-2 text-gray-500">{value.description}</p>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
