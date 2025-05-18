@@ -85,6 +85,16 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+          
+          {/* Dashboard link - only visible when user is logged in */}
+          {user && (
+            <Link 
+              href="/dashboard" 
+              className="text-sm font-medium text-[#EC407A] hover:text-[#D03A6C] transition-colors"
+            >
+              Dashboard
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-4">

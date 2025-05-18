@@ -122,13 +122,12 @@ export async function getUser() {
 }
 
 /**
- * Store the current path for post-authentication redirect
+ * Store the path for post-authentication redirect
+ * Always redirects to dashboard for simplicity
  */
 export function storeAuthRedirectPath() {
   if (typeof window !== 'undefined') {
-    const currentPath = window.location.pathname;
-    if (currentPath !== '/login' && currentPath !== '/auth/callback') {
-      localStorage.setItem('authRedirectTo', currentPath);
-    }
+    // Always redirect to dashboard after successful authentication
+    localStorage.setItem('authRedirectTo', '/dashboard');
   }
 } 

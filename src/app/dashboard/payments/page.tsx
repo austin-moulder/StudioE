@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import Image from "next/image";
+import BackButton from "@/components/dashboard/BackButton";
 
 // Mock payment history data
 const PAYMENT_HISTORY = [
@@ -134,10 +135,7 @@ export default function PaymentsPage() {
   return (
     <div className="container max-w-5xl mx-auto py-10 px-4">
       <div className="mb-8">
-        <Link href="/dashboard" className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-4">
-          <ArrowLeft className="mr-1 h-4 w-4" />
-          Back to Dashboard
-        </Link>
+        <BackButton />
         <h1 className="text-3xl font-bold tracking-tight">Payments & Billing</h1>
         <p className="text-gray-500 mt-1">
           Manage your payment methods and view transaction history
@@ -145,20 +143,22 @@ export default function PaymentsPage() {
       </div>
 
       <Tabs defaultValue="history" className="space-y-8">
-        <TabsList className="mb-4">
-          <TabsTrigger value="history" className="flex items-center">
-            <Receipt className="mr-2 h-4 w-4" />
-            Payment History
-          </TabsTrigger>
-          <TabsTrigger value="methods" className="flex items-center">
-            <CreditCard className="mr-2 h-4 w-4" />
-            Payment Methods
-          </TabsTrigger>
-          <TabsTrigger value="checkout" className="flex items-center">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Buy Classes
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-4 px-4">
+          <TabsList className="mb-4 flex-nowrap w-max min-w-full">
+            <TabsTrigger value="history" className="flex items-center whitespace-nowrap">
+              <Receipt className="mr-2 h-4 w-4" />
+              <span>Payment History</span>
+            </TabsTrigger>
+            <TabsTrigger value="methods" className="flex items-center whitespace-nowrap">
+              <CreditCard className="mr-2 h-4 w-4" />
+              <span>Payment Methods</span>
+            </TabsTrigger>
+            <TabsTrigger value="checkout" className="flex items-center whitespace-nowrap">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              <span>Buy Classes</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
         
         {/* Payment History Tab */}
         <TabsContent value="history" className="space-y-6">
