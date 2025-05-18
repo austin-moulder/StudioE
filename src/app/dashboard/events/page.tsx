@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, Clock, MapPin, Users } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/supabase";
 import { useAuth } from "@/lib/auth/auth-context";
+import BackButton from "@/components/dashboard/BackButton";
 
 // Define basic types to avoid "never[]" errors
 type EventType = {
@@ -32,6 +33,7 @@ type EventType = {
   image_url?: string;
   event_type?: string;
   status?: string;
+  isPast: boolean;
 };
 
 type ClassType = {
@@ -77,20 +79,29 @@ export default function EventsPage() {
         if (eventError) {
           console.error('Error fetching events:', eventError);
         } else if (eventData) {
-          const processedEvents = eventData.map(item => ({
-            id: item.id,
-            event_id: item.event_id,
-            title: item.EVENT?.event_name || item.EVENT?.title || 'Untitled Event',
-            event_name: item.EVENT?.event_name || item.EVENT?.title || 'Untitled Event',
-            description: item.EVENT?.description,
-            start_datetime: item.EVENT?.start_datetime || '',
-            end_datetime: item.EVENT?.end_datetime,
-            timezone: item.EVENT?.timezone,
-            location: item.EVENT?.location,
-            image_url: item.EVENT?.image_url,
-            event_type: item.EVENT?.event_type,
-            status: item.status
-          }));
+          const now = new Date();
+          
+          const processedEvents = eventData.map(item => {
+            // Create event date object
+            const eventDate = item.EVENT?.start_datetime ? new Date(item.EVENT.start_datetime) : null;
+            const isPast = eventDate ? eventDate < now : false;
+            
+            return {
+              id: item.id,
+              event_id: item.event_id,
+              title: item.EVENT?.event_name || item.EVENT?.title || 'Untitled Event',
+              event_name: item.EVENT?.event_name || item.EVENT?.title || 'Untitled Event',
+              description: item.EVENT?.description,
+              start_datetime: item.EVENT?.start_datetime || '',
+              end_datetime: item.EVENT?.end_datetime,
+              timezone: item.EVENT?.timezone,
+              location: item.EVENT?.location,
+              image_url: item.EVENT?.image_url,
+              event_type: item.EVENT?.event_type,
+              status: item.status,
+              isPast: isPast
+            };
+          });
           
           setUserEvents(processedEvents);
         }
@@ -311,44 +322,77 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="container max-w-5xl py-10">
+    <div className="container max-w-5xl py-10 px-4">
       <div className="mb-8">
+        <BackButton />
         <h1 className="text-3xl font-bold tracking-tight">Events & Workshops</h1>
         <p className="text-gray-500 mt-1">
           Manage your event registrations and workshop RSVPs
         </p>
       </div>
 
-      <Tabs defaultValue="events" className="space-y-8" onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="events" className="flex items-center">
-            <Calendar className="mr-2 h-4 w-4" />
-            Events & Workshops
-          </TabsTrigger>
-          <TabsTrigger value="classes" className="flex items-center">
-            <Users className="mr-2 h-4 w-4" />
-            Classes
-          </TabsTrigger>
-        </TabsList>
-        
-        {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="w-12 h-12 rounded-full border-4 border-[#EC407A] border-t-transparent animate-spin"></div>
-          </div>
-        ) : (
-          <>
-            {/* Events Tab */}
-            <TabsContent value="events" className="space-y-6">
+      {/* Mobile tabs - visible only on mobile */}
+      <div className="md:hidden flex border-b mb-6">
+        <button
+          onClick={() => setActiveTab('events')}
+          className={`flex-1 py-2 text-center text-sm font-medium ${
+            activeTab === 'events' 
+              ? 'text-[#EC407A] border-b-2 border-[#EC407A]' 
+              : 'text-gray-500'
+          }`}
+        >
+          Events & Workshops
+        </button>
+        <button
+          onClick={() => setActiveTab('classes')}
+          className={`flex-1 py-2 text-center text-sm font-medium ${
+            activeTab === 'classes' 
+              ? 'text-[#EC407A] border-b-2 border-[#EC407A]' 
+              : 'text-gray-500'
+          }`}
+        >
+          Classes
+        </button>
+      </div>
+
+      {/* Desktop tabs - hidden on mobile */}
+      <div className="hidden md:block mb-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="events" className="flex items-center">
+              <Calendar className="mr-2 h-4 w-4" />
+              Events & Workshops
+            </TabsTrigger>
+            <TabsTrigger value="classes" className="flex items-center">
+              <Users className="mr-2 h-4 w-4" />
+              Classes
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="w-12 h-12 rounded-full border-4 border-[#EC407A] border-t-transparent animate-spin"></div>
+        </div>
+      ) : (
+        <>
+          {/* Events Content */}
+          {activeTab === 'events' && (
+            <div className="space-y-6">
               {userEvents.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {userEvents.map((event) => (
-                    <Card key={String(event.id)} className="overflow-hidden flex flex-col h-full">
+                    <Card 
+                      key={String(event.id)} 
+                      className={`overflow-hidden flex flex-col h-full ${event.isPast ? 'opacity-75' : ''}`}
+                    >
                       {event.image_url && (
                         <div className="h-40 overflow-hidden relative">
                           <img 
                             src={event.image_url} 
                             alt={event.event_name} 
-                            className="w-full h-full object-cover"
+                            className={`w-full h-full object-cover ${event.isPast ? 'grayscale' : ''}`}
                           />
                           {event.event_type && (
                             <div className={`absolute top-2 right-2 ${getEventTypeColor(event.event_type)} text-white text-xs font-medium py-1 px-2 rounded-full`}>
@@ -373,6 +417,19 @@ export default function EventsPage() {
                             <span className="line-clamp-1">{event.location || 'TBA'}</span>
                           </div>
                         </div>
+                        
+                        {event.isPast && (
+                          <Link href={`/events/${event.event_id}/reviews`}>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full border-[#EC407A] text-[#EC407A] hover:bg-[#EC407A]/10"
+                            >
+                              <Star className="h-3.5 w-3.5 mr-1.5" />
+                              Leave Review
+                            </Button>
+                          </Link>
+                        )}
                       </CardContent>
                     </Card>
                   ))}
@@ -391,47 +448,91 @@ export default function EventsPage() {
                   </Link>
                 </div>
               )}
-            </TabsContent>
-            
-            {/* Classes Tab */}
-            <TabsContent value="classes" className="space-y-6">
+            </div>
+          )}
+          
+          {/* Classes Content */}
+          {activeTab === 'classes' && (
+            <div className="space-y-6">
               {userClasses.length > 0 ? (
-                <div className="rounded-md border overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Class</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Time</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead>Instructor</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {userClasses.map((classItem) => (
-                        <TableRow key={String(classItem.id)}>
-                          <TableCell className="font-medium">{classItem.class_name}</TableCell>
-                          <TableCell>{formatDate(classItem.class_date)}</TableCell>
-                          <TableCell>{formatTime(classItem.start_time)}</TableCell>
-                          <TableCell className="max-w-[150px] truncate">{`${classItem.location || 'TBA'} ${classItem.address ? `- ${classItem.address}` : ''}`}</TableCell>
-                          <TableCell>{classItem.instructor || 'TBA'}</TableCell>
-                          <TableCell>
+                <>
+                  {/* Mobile view with cards */}
+                  <div className="md:hidden space-y-4">
+                    {userClasses.map((classItem) => (
+                      <Card key={String(classItem.id)} className="overflow-hidden">
+                        <CardContent className="p-4">
+                          <div className="font-medium mb-1.5">{classItem.class_name}</div>
+                          <div className="grid grid-cols-2 gap-y-1.5 text-sm text-gray-600 mb-2">
+                            <div className="flex items-center">
+                              <Calendar className="h-3.5 w-3.5 mr-1.5" />
+                              {formatDate(classItem.class_date)}
+                            </div>
+                            <div className="flex items-center">
+                              <Clock className="h-3.5 w-3.5 mr-1.5" />
+                              {formatTime(classItem.start_time)}
+                            </div>
+                            <div className="flex items-center col-span-2">
+                              <MapPin className="h-3.5 w-3.5 mr-1.5" />
+                              <span className="truncate">{classItem.location || 'TBA'}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="text-xs text-gray-500">
+                              Instructor: {classItem.instructor || 'TBA'}
+                            </div>
                             {classItem.temporal_status === 'Today' ? (
-                              <Badge variant="today">
+                              <Badge variant="today" className="text-xs">
                                 Today
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className={`capitalize ${getStatusStyle(classItem.temporal_status)}`}>
+                              <Badge variant="outline" className={`capitalize text-xs ${getStatusStyle(classItem.temporal_status)}`}>
                                 {classItem.temporal_status}
                               </Badge>
                             )}
-                          </TableCell>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                  
+                  {/* Desktop view with table */}
+                  <div className="hidden md:block rounded-md border overflow-hidden">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Class</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Time</TableHead>
+                          <TableHead>Location</TableHead>
+                          <TableHead>Instructor</TableHead>
+                          <TableHead>Status</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                      </TableHeader>
+                      <TableBody>
+                        {userClasses.map((classItem) => (
+                          <TableRow key={String(classItem.id)}>
+                            <TableCell className="font-medium">{classItem.class_name}</TableCell>
+                            <TableCell>{formatDate(classItem.class_date)}</TableCell>
+                            <TableCell>{formatTime(classItem.start_time)}</TableCell>
+                            <TableCell className="max-w-[150px] truncate">{`${classItem.location || 'TBA'} ${classItem.address ? `- ${classItem.address}` : ''}`}</TableCell>
+                            <TableCell>{classItem.instructor || 'TBA'}</TableCell>
+                            <TableCell>
+                              {classItem.temporal_status === 'Today' ? (
+                                <Badge variant="today">
+                                  Today
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className={`capitalize ${getStatusStyle(classItem.temporal_status)}`}>
+                                  {classItem.temporal_status}
+                                </Badge>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
               ) : (
                 <div className="text-center p-8 border rounded-lg bg-gray-50">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -446,10 +547,10 @@ export default function EventsPage() {
                   </Link>
                 </div>
               )}
-            </TabsContent>
-          </>
-        )}
-      </Tabs>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 } 

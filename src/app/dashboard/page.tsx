@@ -41,41 +41,78 @@ export default function Dashboard() {
       try {
         setIsLoadingStats(true);
         
-        // Fetch upcoming classes using the class_inquiry_status view
-        const { data: upcomingClasses, error: upcomingClassesError } = await supabase
+        // Fetch class data and determine status based on date
+        const { data: classData, error: classError } = await supabase
           .from('class_inquiry_status')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('temporal_status', 'upcoming');
+          .select('*, classes(class_date)')
+          .eq('user_id', user.id);
             
-        if (upcomingClassesError) throw upcomingClassesError;
+        if (classError) throw classError;
         
-        // Fetch past classes using the class_inquiry_status view
-        const { data: pastClasses, error: pastClassesError } = await supabase
-          .from('class_inquiry_status')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('temporal_status', 'past');
+        // Process class data with timestamp logic
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        let upcomingClassesCount = 0;
+        let pastClassesCount = 0;
+        
+        if (classData) {
+          classData.forEach(item => {
+            if (!item.classes?.class_date) return;
             
-        if (pastClassesError) throw pastClassesError;
+            // Parse date handling different formats
+            let classDate;
+            const dateStr = item.classes.class_date;
+            const dateParts = (typeof dateStr === 'string' ? dateStr.split('T')[0] : dateStr).split('-');
+            
+            if (dateParts.length === 3) {
+              // Create date with explicit values to avoid timezone issues
+              classDate = new Date(
+                parseInt(dateParts[0]),     // year
+                parseInt(dateParts[1]) - 1, // month (0-indexed)
+                parseInt(dateParts[2])      // day
+              );
+              
+              // Compare only the date part
+              const classDateOnly = new Date(
+                classDate.getFullYear(),
+                classDate.getMonth(),
+                classDate.getDate()
+              );
+              
+              if (classDateOnly.getTime() < today.getTime()) {
+                pastClassesCount++;
+              } else {
+                upcomingClassesCount++;
+              }
+            }
+          });
+        }
         
-        // Fetch upcoming events using the event_rsvp_status view
-        const { data: upcomingEvents, error: upcomingEventsError } = await supabase
+        // Fetch event data
+        const { data: eventData, error: eventError } = await supabase
           .from('event_rsvp_status')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('temporal_status', 'upcoming');
+          .select('*, EVENT(start_datetime)')
+          .eq('user_id', user.id);
             
-        if (upcomingEventsError) throw upcomingEventsError;
+        if (eventError) throw eventError;
         
-        // Fetch past events using the event_rsvp_status view
-        const { data: pastEvents, error: pastEventsError } = await supabase
-          .from('event_rsvp_status')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('temporal_status', 'past');
+        // Process event data with timestamp logic
+        let upcomingEventsCount = 0;
+        let pastEventsCount = 0;
+        
+        if (eventData) {
+          eventData.forEach(item => {
+            if (!item.EVENT?.start_datetime) return;
             
-        if (pastEventsError) throw pastEventsError;
+            const eventDate = new Date(item.EVENT.start_datetime);
+            if (eventDate < now) {
+              pastEventsCount++;
+            } else {
+              upcomingEventsCount++;
+            }
+          });
+        }
         
         // Fetch user reviews
         const { data: userReviews, error: userReviewsError } = await supabase
@@ -88,10 +125,10 @@ export default function Dashboard() {
         // Update stats with all data
         setStats(prev => ({
           ...prev,
-          upcomingClasses: upcomingClasses?.length || 0,
-          pastClasses: pastClasses?.length || 0,
-          upcomingEvents: upcomingEvents?.length || 0,
-          pastEvents: pastEvents?.length || 0,
+          upcomingClasses: upcomingClassesCount,
+          pastClasses: pastClassesCount,
+          upcomingEvents: upcomingEventsCount,
+          pastEvents: pastEventsCount,
           reviewsGiven: userReviews?.length || 0
         }));
         
@@ -138,55 +175,55 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-10 overflow-x-auto">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">Upcoming Events</CardTitle>
+      {/* Quick Stats - More compact on mobile */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-6">
+        <Card className="shadow-sm">
+          <CardHeader className="pb-0 pt-3 px-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Upcoming Events</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-3 pt-1 px-3">
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.upcomingEvents}</div>
-            <p className="text-xs text-gray-500 mt-1">Events you've RSVP'd to</p>
+            <p className="text-xs text-gray-500">RSVP'd</p>
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">Upcoming Classes</CardTitle>
+        <Card className="shadow-sm">
+          <CardHeader className="pb-0 pt-3 px-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Upcoming Classes</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-3 pt-1 px-3">
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.upcomingClasses}</div>
-            <p className="text-xs text-gray-500 mt-1">Classes you've RSVP'd to</p>
+            <p className="text-xs text-gray-500">RSVP'd</p>
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">Past Events</CardTitle>
+        <Card className="shadow-sm">
+          <CardHeader className="pb-0 pt-3 px-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Past Events</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-3 pt-1 px-3">
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.pastEvents}</div>
-            <p className="text-xs text-gray-500 mt-1">Events you've attended</p>
+            <p className="text-xs text-gray-500">Attended</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">Past Classes</CardTitle>
+        <Card className="shadow-sm">
+          <CardHeader className="pb-0 pt-3 px-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Past Classes</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-3 pt-1 px-3">
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.pastClasses}</div>
-            <p className="text-xs text-gray-500 mt-1">Classes you've attended</p>
+            <p className="text-xs text-gray-500">Attended</p>
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium text-gray-500">Reviews Given</CardTitle>
+        <Card className="col-span-2 md:col-span-1 shadow-sm">
+          <CardHeader className="pb-0 pt-3 px-3">
+            <CardTitle className="text-sm font-medium text-gray-500">Reviews Given</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-3 pt-1 px-3">
             <div className="text-2xl font-bold">{isLoadingStats ? "..." : stats.reviewsGiven}</div>
-            <p className="text-xs text-gray-500 mt-1">Your feedback matters</p>
+            <p className="text-xs text-gray-500">Feedback</p>
           </CardContent>
         </Card>
       </div>
@@ -349,7 +386,7 @@ export default function Dashboard() {
                 <h3 className="text-lg font-medium text-gray-900">Payment Info Coming Soon</h3>
                 <p className="mt-1 text-sm text-gray-500">This feature is under development.</p>
                 <Button 
-                  className="mt-4 px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+                  className="mt-4 bg-gray-200 text-gray-700 hover:bg-gray-300 border border-gray-300"
                   disabled
                 >
                   Coming Soon

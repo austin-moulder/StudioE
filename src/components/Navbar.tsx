@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import StudioELogo from "./StudioELogo";
 import AuthNavbarSection from "./auth/AuthNavbarSection";
+import { useAuth } from "@/lib/auth/auth-context";
+import SignInModal from "./auth/SignInModal";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -20,6 +22,8 @@ const navLinks = [
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
+  const { user } = useAuth();
 
   // Prevent hydration mismatch
   useEffect(() => {
@@ -84,16 +88,21 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-4">
-          {/* Auth section */}
-          <div className="hidden md:block">
-            <AuthNavbarSection />
-          </div>
+          {/* Auth section - only display when user is logged in */}
+          {user && (
+            <div className="hidden md:block">
+              <AuthNavbarSection />
+            </div>
+          )}
 
-          <Link href="/get-started">
-            <button className="hidden rounded-md bg-[#EC407A] px-3 py-1.5 text-sm font-medium text-white md:block">
+          {!user && (
+            <button 
+              onClick={() => setShowSignInModal(true)}
+              className="hidden rounded-md bg-[#EC407A] px-3 py-1.5 text-sm font-medium text-white md:block hover:bg-[#D03A6C]"
+            >
               Get Started
             </button>
-          </Link>
+          )}
 
           <button
             className="md:hidden flex items-center justify-center h-9 w-9 rounded-full hover:bg-gray-100"
@@ -157,20 +166,34 @@ export default function Navbar() {
             ))}
 
             <div className="mt-6 space-y-4 bg-white/90">
-              {/* Mobile auth section */}
-              <div className="mb-4" onClick={() => setMobileMenuOpen(false)}>
-                <AuthNavbarSection />
-              </div>
+              {/* Mobile auth section - only display when user is logged in */}
+              {user && (
+                <div className="mb-4" onClick={() => setMobileMenuOpen(false)}>
+                  <AuthNavbarSection />
+                </div>
+              )}
 
-              <Link href="/get-started" className="block">
-                <button className="w-full rounded-md bg-[#EC407A] px-4 py-3 text-sm font-bold text-white hover:bg-[#D03A6C] transition shadow-md">
+              {!user && (
+                <button 
+                  onClick={() => {
+                    setShowSignInModal(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full rounded-md bg-[#EC407A] px-4 py-3 text-sm font-bold text-white hover:bg-[#D03A6C] transition shadow-md"
+                >
                   Get Started
                 </button>
-              </Link>
+              )}
             </div>
           </nav>
         </div>
       </div>
+
+      {/* Sign in modal */}
+      <SignInModal 
+        isOpen={showSignInModal} 
+        onClose={() => setShowSignInModal(false)} 
+      />
     </header>
   );
 } 
