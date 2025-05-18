@@ -53,19 +53,26 @@ export default function UserProfileMenu() {
     e.stopPropagation();
     
     try {
-      // Use direct Supabase signOut to ensure it works on all devices
-      await supabase.auth.signOut();
+      // Use the auth context signOut method instead of direct Supabase call
+      // This ensures proper state updates and cleanup
+      await signOut();
       
       // Clear any local storage items related to auth
       localStorage.removeItem('supabase.auth.token');
       localStorage.removeItem('auth_success');
-      localStorage.removeItem('use_dev_auth'); // Also clear dev auth flag
+      localStorage.removeItem('use_dev_auth');
+      localStorage.removeItem('supabase.auth.provider-state');
+      localStorage.removeItem('supabase.auth.nonce');
+      localStorage.removeItem('supabase.auth.code_verifier');
       sessionStorage.clear();
       
       // Force a complete page reload to reset all state
       window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
+      // If all else fails, try direct signout
+      await supabase.auth.signOut();
+      window.location.href = '/';
     }
   };
 

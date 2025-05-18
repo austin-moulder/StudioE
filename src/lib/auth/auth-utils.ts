@@ -77,7 +77,32 @@ export async function signInWithMagicLink(email: string) {
  * @returns Promise that resolves when the sign-out process is complete
  */
 export async function signOut() {
-  return supabase.auth.signOut();
+  // First, sign out with Supabase
+  const { error } = await supabase.auth.signOut();
+  
+  // Clean up any auth-related items in storage
+  if (typeof window !== 'undefined') {
+    // Clear Supabase-related items from localStorage
+    localStorage.removeItem('supabase.auth.token');
+    localStorage.removeItem('supabase.auth.provider-state');
+    localStorage.removeItem('supabase.auth.nonce');
+    localStorage.removeItem('supabase.auth.code_verifier');
+    
+    // Clear our custom auth flags
+    localStorage.removeItem('auth_success');
+    localStorage.removeItem('use_dev_auth');
+    localStorage.removeItem('authRedirectTo');
+    
+    // Clear session storage
+    sessionStorage.clear();
+  }
+  
+  if (error) {
+    console.error('Error signing out:', error);
+    throw error;
+  }
+  
+  return { error: null };
 }
 
 /**
