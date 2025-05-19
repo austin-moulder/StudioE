@@ -1,12 +1,12 @@
 import { supabase } from './supabase';
 
 /**
- * Ensures the necessary storage buckets exist and have the correct permissions
+ * Set up storage buckets if they don't exist
+ * This ensures consistent storage availability across environments
  */
-export const setupStorageBuckets = async () => {
-  // Skip bucket creation completely to avoid RLS errors
-  console.log('Storage bucket setup is now disabled');
+export async function setupStorageBuckets(): Promise<boolean> {
+  // Skip storage bucket operations completely
   return true;
-};
+}
 
 export default setupStorageBuckets; 

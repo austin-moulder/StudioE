@@ -7,6 +7,79 @@ import { supabase } from "@/lib/supabase/supabase";
 // Production URL - hardcoded to ensure consistency
 const PRODUCTION_URL = 'https://www.joinstudioe.com';
 
+/**
+ * Helper function to ensure a user profile exists
+ * This serves as a client-side fallback for the database trigger
+ */
+async function ensureUserProfileExists(userId: string, userData: any): Promise<boolean> {
+  console.log(`[Auth] Ensuring user profile exists for: ${userId}`);
+  
+  try {
+    // First check if profile exists
+    const { data: existingProfile, error: checkError } = await supabase
+      .from('user_profiles')
+      .select('id, auth_id')
+      .eq('auth_id', userId)
+      .maybeSingle();
+    
+    if (checkError) {
+      console.error('[Auth] Error checking for user profile:', checkError);
+    }
+    
+    // If profile exists, we're done
+    if (existingProfile) {
+      console.log(`[Auth] User profile already exists with ID: ${existingProfile.id}`);
+      return true;
+    }
+    
+    // Get name from user metadata or email
+    const fullName = userData.user_metadata?.full_name || 
+                    userData.user_metadata?.name || 
+                    userData.email ||
+                    'New User';
+    
+    // Profile doesn't exist, create it
+    console.log(`[Auth] Creating new user profile for: ${userId}`);
+    
+    // Try at most 3 times to create the profile
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (attempts < maxAttempts) {
+      attempts++;
+      console.log(`[Auth] Profile creation attempt ${attempts}/${maxAttempts}`);
+      
+      const { data: createdProfile, error: createError } = await supabase
+        .from('user_profiles')
+        .insert([{ 
+          auth_id: userId,
+          full_name: fullName
+        }])
+        .select();
+      
+      if (createError) {
+        console.error(`[Auth] Error creating profile (attempt ${attempts}):`, createError);
+        // Wait a short time before retrying
+        if (attempts < maxAttempts) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          continue;
+        }
+        
+        // All attempts failed, but we'll continue the auth flow anyway
+        return false;
+      }
+      
+      console.log(`[Auth] Successfully created profile with ID: ${createdProfile?.[0]?.id}`);
+      return true;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error('[Auth] Exception during profile verification:', error);
+    return false;
+  }
+}
+
 function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -16,7 +89,7 @@ function AuthCallbackContent() {
 
   const addDebug = (message: string) => {
     setDebug(prev => [...prev, message]);
-    console.log(message);
+    console.log(`[Auth Callback] ${message}`);
   };
 
   useEffect(() => {
@@ -74,6 +147,23 @@ function AuthCallbackContent() {
                     if (data.session) {
                       addDebug("Session recovered successfully");
                       
+                      // Ensure user profile exists with retries
+                      try {
+                        const userId = data.session.user.id;
+                        addDebug(`Ensuring user profile exists for user: ${userId}`);
+                        
+                        const profileCreated = await ensureUserProfileExists(userId, data.session.user);
+                        if (profileCreated) {
+                          addDebug(`User profile verified or created successfully for: ${userId}`);
+                        } else {
+                          addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
+                          // Continue anyway - don't block login
+                        }
+                      } catch (profileError) {
+                        addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
+                        // Continue anyway - don't block login
+                      }
+                      
                       // Mark auth as successful to prevent repeated login prompts
                       localStorage.setItem('auth_success', 'true');
                       
@@ -99,6 +189,23 @@ function AuthCallbackContent() {
                             addDebug(`ID token sign-in error: ${signInError.message}`);
                           } else if (signInData.session) {
                             addDebug("Successfully recovered session with ID token");
+                            
+                            // Ensure user profile exists with retries
+                            try {
+                              const userId = signInData.session.user.id;
+                              addDebug(`Ensuring user profile exists for user: ${userId}`);
+                              
+                              const profileCreated = await ensureUserProfileExists(userId, signInData.session.user);
+                              if (profileCreated) {
+                                addDebug(`User profile verified or created successfully for: ${userId}`);
+                              } else {
+                                addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
+                                // Continue anyway - don't block login
+                              }
+                            } catch (profileError) {
+                              addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
+                              // Continue anyway - don't block login
+                            }
                             
                             // Mark auth as successful
                             localStorage.setItem('auth_success', 'true');
@@ -150,6 +257,23 @@ function AuthCallbackContent() {
         if (data.session) {
           addDebug("Session obtained successfully");
           
+          // Ensure user profile exists with retries
+          try {
+            const userId = data.session.user.id;
+            addDebug(`Ensuring user profile exists for user: ${userId}`);
+            
+            const profileCreated = await ensureUserProfileExists(userId, data.session.user);
+            if (profileCreated) {
+              addDebug(`User profile verified or created successfully for: ${userId}`);
+            } else {
+              addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
+              // Continue anyway - don't block login
+            }
+          } catch (profileError) {
+            addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
+            // Continue anyway - don't block login
+          }
+          
           // Clear auth-related localStorage items that are no longer needed
           if (typeof window !== 'undefined') {
             localStorage.removeItem('supabase.auth.nonce');
@@ -193,6 +317,24 @@ function AuthCallbackContent() {
                 
                 if (sessionData.session) {
                   addDebug("Successfully created session from hash tokens");
+                  
+                  // Ensure user profile exists with retries
+                  try {
+                    const userId = sessionData.session.user.id;
+                    addDebug(`Ensuring user profile exists for user: ${userId}`);
+                    
+                    const profileCreated = await ensureUserProfileExists(userId, sessionData.session.user);
+                    if (profileCreated) {
+                      addDebug(`User profile verified or created successfully for: ${userId}`);
+                    } else {
+                      addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
+                      // Continue anyway - don't block login
+                    }
+                  } catch (profileError) {
+                    addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
+                    // Continue anyway - don't block login
+                  }
+                  
                   localStorage.setItem('auth_success', 'true');
                   
                   // Redirect to intended page
@@ -213,6 +355,24 @@ function AuthCallbackContent() {
               
               if (hashData.session) {
                 addDebug("Session obtained from hash successfully");
+                
+                // Ensure user profile exists with retries
+                try {
+                  const userId = hashData.session.user.id;
+                  addDebug(`Ensuring user profile exists for user: ${userId}`);
+                  
+                  const profileCreated = await ensureUserProfileExists(userId, hashData.session.user);
+                  if (profileCreated) {
+                    addDebug(`User profile verified or created successfully for: ${userId}`);
+                  } else {
+                    addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
+                    // Continue anyway - don't block login
+                  }
+                } catch (profileError) {
+                  addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
+                  // Continue anyway - don't block login
+                }
+                
                 localStorage.setItem('auth_success', 'true');
                 
                 // Determine redirect path
@@ -250,56 +410,68 @@ function AuthCallbackContent() {
       }
     };
 
+    // Execute the auth callback handler when the component mounts
     handleAuthCallback();
   }, [router, searchParams]);
 
+  // Display loading state, error, or debug information
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Authentication</h1>
-          {isProcessing ? (
-            <div className="flex flex-col items-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-              <p className="text-gray-600">Processing your sign-in...</p>
-            </div>
-          ) : error ? (
-            <div className="text-red-500">
-              <p className="font-semibold">Error</p>
-              <p>{error}</p>
-              <p className="text-sm mt-2">Redirecting you to login...</p>
-            </div>
-          ) : (
-            <p className="text-gray-600">Completing authentication...</p>
-          )}
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+      <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+        <h1 className="text-2xl font-bold text-center mb-4">
+          {isProcessing ? 'Finalizing Sign In...' : (error ? 'Error' : 'Success!')}
+        </h1>
         
-        {/* Debug section - only shown in development */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-6 p-3 bg-gray-100 rounded text-xs text-gray-800 max-h-60 overflow-auto">
-            <h3 className="font-bold mb-1">Debug Info:</h3>
-            {debug.map((msg, i) => (
-              <div key={i} className="mb-1">
-                {msg}
+        {isProcessing && (
+          <div className="flex flex-col items-center justify-center mb-4">
+            <div className="w-12 h-12 border-t-2 border-b-2 border-primary rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-600">Please wait while we complete the authentication process...</p>
+          </div>
+        )}
+        
+        {error && (
+          <div className="bg-red-50 text-red-700 p-4 rounded-md mb-4">
+            <p className="font-medium">Authentication Error:</p>
+            <p>{error}</p>
+          </div>
+        )}
+        
+        {!isProcessing && !error && (
+          <div className="bg-green-50 text-green-700 p-4 rounded-md mb-4">
+            <p>Authentication successful! Redirecting you to your dashboard...</p>
+          </div>
+        )}
+        
+        {/* Debug information (only in dev mode) */}
+        {process.env.NODE_ENV === 'development' && debug.length > 0 && (
+          <div className="mt-8">
+            <details>
+              <summary className="cursor-pointer font-medium text-gray-700 mb-2">Debug Information</summary>
+              <div className="bg-gray-100 p-4 rounded text-xs font-mono overflow-x-auto">
+                {debug.map((message, i) => (
+                  <div key={i} className="mb-1">
+                    {i + 1}. {message}
+                  </div>
+                ))}
               </div>
-            ))}
+            </details>
           </div>
         )}
       </div>
-    </main>
-  );
-}
-
-// Loading state for the Suspense boundary
-function AuthCallbackLoading() {
-  return (
-    <div className="container max-w-md mx-auto mt-12 text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto"></div>
-      <p className="mt-4">Loading authentication...</p>
     </div>
   );
 }
 
+// Loading fallback component
+function AuthCallbackLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-16 h-16 border-t-4 border-primary border-solid rounded-full animate-spin"></div>
+    </div>
+  );
+}
+
+// Main component with Suspense for improved loading UX
 export default function AuthCallbackPage() {
   return (
     <Suspense fallback={<AuthCallbackLoading />}>

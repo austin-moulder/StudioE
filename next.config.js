@@ -1,10 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    // Remove optimizeCss to fix GoTrueClient issues
-    serverComponentsExternalPackages: [],
-  },
   images: {
     domains: ['rnlubphxootnmsurnuvr.supabase.co'],
     remotePatterns: [
