@@ -16,6 +16,7 @@ import {
   type UserNotificationSettings, 
   type UserPrivacySettings 
 } from "@/lib/api/user-settings";
+import BackButton from "@/components/dashboard/BackButton";
 
 export default function SettingsPage() {
   const { user, isLoading } = useAuth();
@@ -142,10 +143,7 @@ export default function SettingsPage() {
   return (
     <div className="container max-w-5xl mx-auto py-10 px-4">
       <div className="mb-8">
-        <Link href="/dashboard" className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-4">
-          <ArrowLeft className="mr-1 h-4 w-4" />
-          Back to Dashboard
-        </Link>
+        <BackButton />
         <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
         <p className="text-gray-500 mt-1">
           Manage your account preferences, privacy, and notifications

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase/supabase";
 import { Button } from "@/components/ui/button";
+import LessonInvoiceForm from "@/components/dashboard/LessonInvoiceForm";
 
 interface DashboardStats {
   upcomingEvents: number;
@@ -28,10 +29,38 @@ export default function Dashboard() {
     reviewsGiven: 0
   });
   const [isLoadingStats, setIsLoadingStats] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [isInstructor, setIsInstructor] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Fetch user profile to determine if they're an instructor
+  useEffect(() => {
+    async function fetchUserProfile() {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        if (error) throw error;
+        
+        setUserProfile(data);
+        
+        // Check if user is an instructor
+        setIsInstructor(data?.account_type === 'instructor');
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    }
+    
+    fetchUserProfile();
+  }, [user]);
 
   // Fetch dashboard stats
   useEffect(() => {
@@ -232,6 +261,11 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left column - Calendar and Bookings */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Show Lesson Invoice Form for instructors only */}
+          {isInstructor && (
+            <LessonInvoiceForm />
+          )}
+          
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">

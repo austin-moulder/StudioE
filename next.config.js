@@ -1,14 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  experimental: {
+    // add for improved DX and error handling
+    optimizeCss: true,
+    serverComponentsExternalPackages: [],
+  },
   images: {
+    domains: ['rnlubphxootnmsurnuvr.supabase.co'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'rnlubphxootnmsurnuvr.supabase.co',
-        pathname: '/storage/v1/object/public/**',
+        hostname: '**',
       },
     ],
     unoptimized: process.env.NODE_ENV === 'development', // Use unoptimized in development for faster builds
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
   },
   // Ensure robots.txt and sitemap.xml are handled correctly
   async rewrites() {

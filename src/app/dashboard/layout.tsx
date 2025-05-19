@@ -17,12 +17,14 @@ import {
   Users,
   Star,
   LogOut,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth/auth-context";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FormButton } from "@/components/ui/form-button";
+import MobileNavbar from "@/components/dashboard/MobileNavbar";
 
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -109,6 +111,16 @@ export default function DashboardLayout({ children }) {
               </li>
               <li>
                 <Link
+                  href="/dashboard/lessons"
+                  className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <FileText className="h-5 w-5 mr-3 text-gray-500" />
+                  Lesson Invoices
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/dashboard/events"
                   className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md"
                   onClick={() => setSidebarOpen(false)}
@@ -164,9 +176,12 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-64 pt-16 lg:pt-0">
+      <div className="lg:pl-64 pt-16 lg:pt-0 pb-20 lg:pb-0">
         <main className="min-h-screen bg-gray-50">{children}</main>
       </div>
+
+      {/* Mobile bottom navigation */}
+      <MobileNavbar />
     </div>
   );
 } 

@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/lib/auth/auth-context";
 import { supabase } from "@/lib/supabase/supabase";
 import { formatDistanceToNow } from "date-fns";
+import BackButton from "@/components/dashboard/BackButton";
 
 // Types
 interface UserProfile {
@@ -313,11 +314,12 @@ export default function MessagesPage() {
   };
 
   return (
-    <div className="container max-w-6xl py-10">
-      <div className="mb-6">
+    <div className="container max-w-5xl mx-auto py-10 px-4">
+      <div className="mb-8">
+        <BackButton />
         <h1 className="text-3xl font-bold tracking-tight">Messages</h1>
         <p className="text-gray-500 mt-1">
-          Connect with other dancers and instructors
+          Connect with instructors and other students
         </p>
       </div>
       

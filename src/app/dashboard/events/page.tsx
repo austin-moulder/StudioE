@@ -34,6 +34,7 @@ type EventType = {
   event_type?: string;
   status?: string;
   isPast: boolean;
+  sortDate?: Date | null; // Make sortDate optional and allow null
 };
 
 type ClassType = {
@@ -99,8 +100,39 @@ export default function EventsPage() {
               image_url: item.EVENT?.image_url,
               event_type: item.EVENT?.event_type,
               status: item.status,
-              isPast: isPast
+              isPast: isPast,
+              sortDate: eventDate // Add sortDate for consistent sorting
             };
+          });
+          
+          // Sort events chronologically - furthest in future first, then past events
+          processedEvents.sort((a, b) => {
+            // If one is past and one is upcoming, upcoming comes first
+            if (a.isPast && !b.isPast) return 1;
+            if (!a.isPast && b.isPast) return -1;
+            
+            // For two upcoming events, furthest in future comes first
+            if (!a.isPast && !b.isPast) {
+              // If both have sortDate, compare them (furthest in future first)
+              if (a.sortDate && b.sortDate) {
+                return b.sortDate.getTime() - a.sortDate.getTime();
+              }
+            }
+            
+            // For two past events, most recent past event comes first
+            if (a.isPast && b.isPast) {
+              // If both have sortDate, compare them (most recent past first)
+              if (a.sortDate && b.sortDate) {
+                return b.sortDate.getTime() - a.sortDate.getTime();
+              }
+            }
+            
+            // If only one has a sort date, put the one with a date first
+            if (a.sortDate) return -1;
+            if (b.sortDate) return 1;
+            
+            // If neither has a sort date, maintain original order
+            return 0;
           });
           
           setUserEvents(processedEvents);
@@ -178,15 +210,31 @@ export default function EventsPage() {
             };
           });
           
-          // Sort classes with most recent at the top
+          // Sort classes with furthest future date first, then past classes
           processedClasses.sort((a, b) => {
-            // If both have sort dates, compare them (most recent first)
-            if (a.sortDate && b.sortDate) {
-              return b.sortDate.getTime() - a.sortDate.getTime();
+            // If both have temporal status, sort by status first (Upcoming, Today, Past)
+            if (a.temporal_status && b.temporal_status) {
+              if (a.temporal_status === 'Past' && b.temporal_status !== 'Past') return 1;
+              if (a.temporal_status !== 'Past' && b.temporal_status === 'Past') return -1;
             }
-            // If only one has a sort date, put the one with a date first
+            
+            // Then sort by date
+            if (a.sortDate && b.sortDate) {
+              // For upcoming classes, furthest in future first
+              if (a.temporal_status !== 'Past' && b.temporal_status !== 'Past') {
+                return b.sortDate.getTime() - a.sortDate.getTime();
+              }
+              
+              // For past classes, most recent first
+              if (a.temporal_status === 'Past' && b.temporal_status === 'Past') {
+                return b.sortDate.getTime() - a.sortDate.getTime();
+              }
+            }
+            
+            // If only one has a sort date, prioritize the one with a date
             if (a.sortDate) return -1;
             if (b.sortDate) return 1;
+            
             // If neither has a sort date, maintain original order
             return 0;
           });
