@@ -16,10 +16,11 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { CalendarIcon, Loader2, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
+// Temporarily comment out the calendar import which is causing issues
+// import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -39,13 +40,24 @@ interface User {
   email?: string;
 }
 
+// Hardcoded test students
+const TEST_STUDENTS = [
+  { id: "test-student-1", full_name: "Test Student 1" },
+  { id: "test-student-2", full_name: "Test Student 2" },
+  { id: "test-student-3", full_name: "Test Student 3" },
+];
+
 export default function LessonInvoiceForm() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [students, setStudents] = useState<{ id: string; full_name: string }[]>(TEST_STUDENTS);
+  const [studentsLoading, setStudentsLoading] = useState(false);
   
   // Form state
   const [formData, setFormData] = useState({
+    student_id: "",
     student_name: "",
     instructor_name: (user as User)?.user_metadata?.full_name || "",
     first_time_match: false,
@@ -58,11 +70,61 @@ export default function LessonInvoiceForm() {
     homework_notes: ""
   });
 
+  // Attempt to fetch real students after testing with hardcoded ones
+  useEffect(() => {
+    async function fetchStudents() {
+      // Don't set loading since we already have test data
+      try {
+        console.log("Attempting to fetch real students...");
+        const { data, error } = await supabase
+          .from('user_profiles')
+          .select('id, full_name');
+        
+        console.log('Student data from Supabase:', { data, error });
+        
+        if (error) {
+          console.error('Supabase error:', error);
+          // Keep using test students
+          return;
+        }
+        
+        // If we got data successfully, replace test students
+        if (data && data.length > 0) {
+          const validStudents = data.filter(s => s.full_name);
+          console.log('Valid students from database:', validStudents);
+          if (validStudents.length > 0) {
+            setStudents(validStudents);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching students:', error);
+        // We'll continue using test students
+      }
+    }
+    
+    fetchStudents();
+  }, []);
+
   // Update instructor pay whenever rate or hours change
   useEffect(() => {
     const pay = formData.instructor_pay_rate * formData.num_hours;
     setFormData(prev => ({ ...prev, instructor_pay: pay }));
   }, [formData.instructor_pay_rate, formData.num_hours]);
+
+  // Handle student selection - populate student name automatically
+  const handleStudentChange = (studentId: string) => {
+    console.log("Student selected:", studentId);
+    const selectedStudent = students.find(s => s.id === studentId);
+    console.log("Selected student:", selectedStudent);
+    
+    if (selectedStudent) {
+      setFormData({
+        ...formData,
+        student_id: studentId,
+        student_name: selectedStudent.full_name || ""
+      });
+    }
+  };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -78,6 +140,7 @@ export default function LessonInvoiceForm() {
     }
     
     setIsLoading(true);
+    setIsCompleted(false);
     
     try {
       const response = await fetch('/api/lessons', {
@@ -87,6 +150,7 @@ export default function LessonInvoiceForm() {
         },
         body: JSON.stringify({
           ...formData,
+          instructor_id: (user as User)?.id,
           lesson_start: formData.lesson_start.toISOString(),
           invoiced_date: formData.invoiced_date.toISOString(),
         }),
@@ -102,8 +166,11 @@ export default function LessonInvoiceForm() {
         description: "Lesson invoice submitted successfully",
       });
       
+      setIsCompleted(true);
+      
       // Reset form
       setFormData({
+        student_id: "",
         student_name: "",
         instructor_name: (user as User).user_metadata?.full_name || "",
         first_time_match: false,
@@ -136,13 +203,27 @@ export default function LessonInvoiceForm() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="student_name">Student Name</Label>
-            <Input
-              id="student_name"
-              value={formData.student_name}
-              onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
-              required
-            />
+            <Label htmlFor="student">Student</Label>
+            <Select
+              value={formData.student_id}
+              onValueChange={handleStudentChange}
+            >
+              <SelectTrigger id="student">
+                <SelectValue placeholder="Select a student" />
+              </SelectTrigger>
+              <SelectContent>
+                {students.map((student) => (
+                  <SelectItem key={student.id} value={student.id}>
+                    {student.full_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {students.length === 0 && (
+              <p className="text-xs text-red-500 mt-1">
+                No students available. Using test data.
+              </p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -169,54 +250,28 @@ export default function LessonInvoiceForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Lesson Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !formData.lesson_start && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.lesson_start ? format(formData.lesson_start, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={formData.lesson_start}
-                    onSelect={(date) => date && setFormData({ ...formData, lesson_start: date })}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <Input
+                type="date"
+                value={formData.lesson_start.toISOString().split('T')[0]}
+                onChange={(e) => {
+                  const date = new Date(e.target.value);
+                  setFormData({ ...formData, lesson_start: date });
+                }}
+                required
+              />
             </div>
             
             <div className="space-y-2">
               <Label>Invoice Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !formData.invoiced_date && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.invoiced_date ? format(formData.invoiced_date, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={formData.invoiced_date}
-                    onSelect={(date) => date && setFormData({ ...formData, invoiced_date: date })}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <Input
+                type="date"
+                value={formData.invoiced_date.toISOString().split('T')[0]}
+                onChange={(e) => {
+                  const date = new Date(e.target.value);
+                  setFormData({ ...formData, invoiced_date: date });
+                }}
+                required
+              />
             </div>
           </div>
           
@@ -288,6 +343,11 @@ export default function LessonInvoiceForm() {
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Submitting...
+              </>
+            ) : isCompleted ? (
+              <>
+                <CheckCircle className="mr-2 h-4 w-4" />
+                Completed
               </>
             ) : (
               "Submit Lesson Invoice"

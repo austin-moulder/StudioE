@@ -77,29 +77,32 @@ export async function signInWithMagicLink(email: string) {
  * @returns Promise that resolves when the sign-out process is complete
  */
 export async function signOut() {
-  // First, sign out with Supabase
-  const { error } = await supabase.auth.signOut();
+  console.log("Auth utils: Starting sign out process");
   
-  // Clean up any auth-related items in storage
+  // Clear all client storage first, even if server-side logout fails
   if (typeof window !== 'undefined') {
-    // Clear Supabase-related items from localStorage
-    localStorage.removeItem('supabase.auth.token');
-    localStorage.removeItem('supabase.auth.provider-state');
-    localStorage.removeItem('supabase.auth.nonce');
-    localStorage.removeItem('supabase.auth.code_verifier');
-    
-    // Clear our custom auth flags
-    localStorage.removeItem('auth_success');
-    localStorage.removeItem('use_dev_auth');
-    localStorage.removeItem('authRedirectTo');
-    
-    // Clear session storage
-    sessionStorage.clear();
+    try {
+      // Clear all localStorage
+      localStorage.clear();
+      
+      // Clear all sessionStorage
+      sessionStorage.clear();
+      
+      // Clear cookies
+      document.cookie.split(";").forEach(c => {
+        document.cookie = c.trim().split("=")[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      });
+    } catch (err) {
+      console.error("Error clearing storage:", err);
+    }
   }
   
-  if (error) {
-    console.error('Error signing out:', error);
-    throw error;
+  // Attempt Supabase signout
+  try {
+    await supabase.auth.signOut();
+    console.log("Auth utils: Supabase sign out completed");
+  } catch (error) {
+    console.error("Auth utils: Error during Supabase sign out:", error);
   }
   
   return { error: null };

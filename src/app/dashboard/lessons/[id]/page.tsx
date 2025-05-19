@@ -45,24 +45,16 @@ export default function LessonDetailPage() {
   const id = params.id as string;
   
   useEffect(() => {
-    if (!user) return;
-    
+    if (!user || !id) return;
+    let didCancel = false;
     async function fetchLessonAndUserType() {
       try {
-        // First fetch the lesson
         const lessonResponse = await fetch(`/api/lessons?id=${id}`);
-        if (!lessonResponse.ok) {
-          throw new Error('Failed to fetch lesson');
-        }
-        
+        if (!lessonResponse.ok) throw new Error('Failed to fetch lesson');
         const lessonData = await lessonResponse.json();
-        if (!lessonData.lessons || lessonData.lessons.length === 0) {
-          throw new Error('Lesson not found');
-        }
+        if (!lessonData.lessons || lessonData.lessons.length === 0) throw new Error('Lesson not found');
+        if (!didCancel) setLesson(lessonData.lessons[0]);
         
-        setLesson(lessonData.lessons[0]);
-        
-        // Then fetch user profile to determine permissions
         const profileResponse = await fetch('/api/user/profile');
         const profileData = await profileResponse.json();
         
@@ -70,19 +62,21 @@ export default function LessonDetailPage() {
         setIsAdmin(profileData.account_type === 'admin');
         
       } catch (error) {
-        console.error('Error fetching lesson:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load lesson details. Please try again.",
-          variant: "destructive",
-        });
+        if (!didCancel) {
+          console.error('Error fetching lesson:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load lesson details. Please try again.",
+            variant: "destructive",
+          });
+        }
       } finally {
-        setLoading(false);
+        if (!didCancel) setLoading(false);
       }
     }
-    
     fetchLessonAndUserType();
-  }, [user, toast, id]);
+    return () => { didCancel = true; };
+  }, [user, id]);
 
   const handleStatusUpdate = async (newStatus: string) => {
     if (!lesson) return;

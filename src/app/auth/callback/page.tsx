@@ -74,14 +74,46 @@ function AuthCallbackContent() {
                     if (data.session) {
                       addDebug("Session recovered successfully");
                       
+                      // Mark auth as successful to prevent repeated login prompts
+                      localStorage.setItem('auth_success', 'true');
+                      
                       // Determine redirect path - use stored path or default to homepage
-                      const redirectTo = localStorage.getItem('authRedirectTo') || '/';
+                      const redirectTo = localStorage.getItem('authRedirectTo') || '/dashboard';
                       localStorage.removeItem('authRedirectTo'); // Clear stored redirect
                       
                       // Redirect to the intended page
                       router.push(redirectTo);
                       return;
                     } else {
+                      // Try one more approach - exchange the token for a session
+                      try {
+                        // Attempt to sign in with ID token
+                        if (idToken) {
+                          const { data: signInData, error: signInError } = 
+                            await supabase.auth.signInWithIdToken({
+                              provider: 'google',
+                              token: idToken,
+                            });
+                            
+                          if (signInError) {
+                            addDebug(`ID token sign-in error: ${signInError.message}`);
+                          } else if (signInData.session) {
+                            addDebug("Successfully recovered session with ID token");
+                            
+                            // Mark auth as successful
+                            localStorage.setItem('auth_success', 'true');
+                            
+                            // Redirect to dashboard or stored path
+                            const redirectTo = localStorage.getItem('authRedirectTo') || '/dashboard';
+                            localStorage.removeItem('authRedirectTo');
+                            router.push(redirectTo);
+                            return;
+                          }
+                        }
+                      } catch (tokenSignInError) {
+                        addDebug(`ID token sign-in error: ${tokenSignInError instanceof Error ? tokenSignInError.message : 'Unknown error'}`);
+                      }
+                      
                       throw new Error("Failed to recover session after OAuth state error");
                     }
                   } else {
@@ -93,12 +125,16 @@ function AuthCallbackContent() {
               }
             }
             
-            // If recovery failed, redirect to login
+            // If recovery failed, redirect to login with a helpful message
             addDebug("Recovery failed, redirecting to login page");
-            throw new Error(`Authentication error: ${errorDescription}`);
+            localStorage.setItem('auth_error', 'Session recovery failed. Please try signing in again.');
+            router.push('/?auth=failed');
+            return;
           } else {
             // Handle other OAuth errors
-            throw new Error(`Authentication error: ${errorDescription || errorParam}`);
+            localStorage.setItem('auth_error', `Authentication error: ${errorDescription || errorParam}`);
+            router.push('/?auth=failed');
+            return;
           }
         }
 
@@ -120,8 +156,11 @@ function AuthCallbackContent() {
             localStorage.removeItem('supabase.auth.provider-state');
           }
           
+          // Mark authentication as successful
+          localStorage.setItem('auth_success', 'true');
+          
           // Determine where to redirect the user after successful login
-          const redirectTo = localStorage.getItem('authRedirectTo') || '/';
+          const redirectTo = localStorage.getItem('authRedirectTo') || '/dashboard';
           localStorage.removeItem('authRedirectTo'); // Clear stored redirect path
           
           addDebug(`Redirecting to: ${redirectTo}`);
@@ -134,6 +173,37 @@ function AuthCallbackContent() {
             addDebug(`Hash fragment found: ${window.location.hash.substring(0, 20)}...`);
             try {
               // This will attempt to extract session from hash fragment
+              const hashParams = new URLSearchParams(window.location.hash.substring(1));
+              const accessToken = hashParams.get('access_token');
+              
+              if (accessToken) {
+                addDebug("Access token found in hash, attempting to exchange for session");
+                
+                // Try to use the token to explicitly set up a session
+                const { data: sessionData, error: sessionError } = 
+                  await supabase.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: hashParams.get('refresh_token') || '',
+                  });
+                  
+                if (sessionError) {
+                  addDebug(`Error setting up session: ${sessionError.message}`);
+                  throw sessionError;
+                }
+                
+                if (sessionData.session) {
+                  addDebug("Successfully created session from hash tokens");
+                  localStorage.setItem('auth_success', 'true');
+                  
+                  // Redirect to intended page
+                  const redirectTo = localStorage.getItem('authRedirectTo') || '/dashboard';
+                  localStorage.removeItem('authRedirectTo');
+                  router.push(redirectTo);
+                  return;
+                }
+              }
+              
+              // If that didn't work, try the general hash handler
               const { data: hashData, error: hashError } = await supabase.auth.getSession();
               
               if (hashError) {
@@ -143,9 +213,10 @@ function AuthCallbackContent() {
               
               if (hashData.session) {
                 addDebug("Session obtained from hash successfully");
+                localStorage.setItem('auth_success', 'true');
                 
                 // Determine redirect path
-                const redirectTo = localStorage.getItem('authRedirectTo') || '/';
+                const redirectTo = localStorage.getItem('authRedirectTo') || '/dashboard';
                 localStorage.removeItem('authRedirectTo');
                 
                 addDebug(`Redirecting to: ${redirectTo}`);
@@ -167,10 +238,13 @@ function AuthCallbackContent() {
         addDebug(`Authentication error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setError(error instanceof Error ? error.message : 'Authentication failed');
         
-        // Wait 3 seconds then redirect to login
+        // Set auth error for display on landing page
+        localStorage.setItem('auth_error', error instanceof Error ? error.message : 'Authentication failed');
+        
+        // Wait 2 seconds then redirect to login
         setTimeout(() => {
-          router.push('/login');
-        }, 3000);
+          router.push('/?auth=failed');
+        }, 2000);
       } finally {
         setIsProcessing(false);
       }

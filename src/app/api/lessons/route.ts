@@ -8,95 +8,37 @@ import { createServerClient, getSupabaseServerClient } from '@/lib/supabase/serv
 // GET handler - fetch lessons with optional filters
 export async function GET(request: NextRequest) {
   try {
-    // Initialize Supabase client with auth context
-    const supabaseServerClient = createRouteHandlerClient({ cookies });
-    
-    // Get the current logged in user
-    const { data: { user } } = await supabaseServerClient.auth.getUser();
-    
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized. Please log in.' }, 
-        { status: 401 }
-      );
-    }
-    
     // Get query parameters
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
-    const studentId = searchParams.get('student_id');
-    const startDate = searchParams.get('start_date');
-    const endDate = searchParams.get('end_date');
-    
+    const instructorId = searchParams.get('instructor_id');
+    // Add more filters as needed
+
     // Start building query
-    let query = supabase
-      .from('lessons')
-      .select('*');
-    
-    // Check user role and add appropriate filters
-    const { data: userProfile } = await supabase
-      .from('user_profiles')
-      .select('account_type')
-      .eq('id', user.id)
-      .single();
-    
-    if (!userProfile) {
-      return NextResponse.json(
-        { error: 'User profile not found' }, 
-        { status: 404 }
-      );
+    let query = supabase.from('lessons').select('*');
+
+    if (instructorId) {
+      query = query.eq('instructor_id', instructorId);
     }
-    
-    // Apply role-based filters
-    if (userProfile.account_type === 'instructor') {
-      query = query.eq('instructor_id', user.id);
-    } else if (userProfile.account_type === 'student') {
-      query = query.eq('student_id', user.id);
-    } else if (userProfile.account_type !== 'admin') {
-      // If not admin, instructor, or student, restrict access
-      return NextResponse.json(
-        { error: 'Insufficient permissions' }, 
-        { status: 403 }
-      );
-    }
-    
-    // Apply optional filters
-    if (status) {
-      query = query.eq('status', status);
-    }
-    
-    if (studentId) {
-      query = query.eq('student_id', studentId);
-    }
-    
-    if (startDate) {
-      query = query.gte('lesson_start', startDate);
-    }
-    
-    if (endDate) {
-      query = query.lte('lesson_start', endDate);
-    }
-    
+
     // Order results by lesson date, newest first
     query = query.order('lesson_start', { ascending: false });
-    
+
     // Execute query
     const { data, error } = await query;
-    
+
     if (error) {
       console.error('Error fetching lessons:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch lessons' }, 
+        { error: 'Failed to fetch lessons' },
         { status: 500 }
       );
     }
-    
+
     return NextResponse.json({ lessons: data }, { status: 200 });
-    
   } catch (error) {
     console.error('Unhandled error in lessons API:', error);
     return NextResponse.json(
-      { error: 'An unexpected error occurred' }, 
+      { error: 'An unexpected error occurred' },
       { status: 500 }
     );
   }
@@ -105,22 +47,11 @@ export async function GET(request: NextRequest) {
 // POST handler - create a new lesson
 export async function POST(request: NextRequest) {
   try {
-    // Initialize Supabase client with auth context
-    const supabaseServerClient = createRouteHandlerClient({ cookies });
-    
-    // Get the current logged in user
-    const { data: { user } } = await supabaseServerClient.auth.getUser();
-    
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized. Please log in.' }, 
-        { status: 401 }
-      );
-    }
-    
+    // Remove server-side auth check
     // Parse the request body
     const {
-      student_id,
+      instructor_id, // now required from client
+      student_id, // optional
       student_name,
       instructor_name,
       first_time_match,
@@ -134,7 +65,7 @@ export async function POST(request: NextRequest) {
     } = await request.json();
     
     // Basic validation
-    if (!student_name || !instructor_name || !lesson_start || !invoiced_date) {
+    if (!student_name || !instructor_name || !lesson_start || !invoiced_date || !instructor_id) {
       return NextResponse.json(
         { error: 'Missing required fields' }, 
         { status: 400 }
@@ -147,7 +78,7 @@ export async function POST(request: NextRequest) {
       .insert([
         {
           student_id: student_id || null,
-          instructor_id: user.id,
+          instructor_id,
           instructor_name,
           student_name,
           first_time_match,

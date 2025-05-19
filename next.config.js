@@ -2,8 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    // add for improved DX and error handling
-    optimizeCss: true,
+    // Remove optimizeCss to fix GoTrueClient issues
     serverComponentsExternalPackages: [],
   },
   images: {
