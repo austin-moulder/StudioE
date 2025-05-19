@@ -12,7 +12,7 @@ const PRODUCTION_URL = 'https://www.joinstudioe.com';
  * This serves as a client-side fallback for the database trigger
  */
 async function ensureUserProfileExists(userId: string, userData: any): Promise<boolean> {
-  console.log(`[Auth] Ensuring user profile exists for: ${userId}`);
+  console.log(`[Auth] Attempting to create user profile for: ${userId}`);
   
   try {
     // First check if profile exists
@@ -24,6 +24,8 @@ async function ensureUserProfileExists(userId: string, userData: any): Promise<b
     
     if (checkError) {
       console.error('[Auth] Error checking for user profile:', checkError);
+      // Continue authentication even if profile check fails
+      return false;
     }
     
     // If profile exists, we're done
@@ -34,48 +36,33 @@ async function ensureUserProfileExists(userId: string, userData: any): Promise<b
     
     // Get name from user metadata or email
     const fullName = userData.user_metadata?.full_name || 
-                    userData.user_metadata?.name || 
-                    userData.email ||
-                    'New User';
+                     userData.user_metadata?.name || 
+                     userData.email ||
+                     'New User';
     
     // Profile doesn't exist, create it
-    console.log(`[Auth] Creating new user profile for: ${userId}`);
+    console.log(`[Auth] Creating new user profile for: ${userId} with name: ${fullName}`);
     
-    // Try at most 3 times to create the profile
-    let attempts = 0;
-    const maxAttempts = 3;
+    // Only try once to create the profile - don't block auth if it fails
+    const { data: createdProfile, error: createError } = await supabase
+      .from('user_profiles')
+      .insert([{ 
+        auth_id: userId,
+        full_name: fullName
+      }])
+      .select();
     
-    while (attempts < maxAttempts) {
-      attempts++;
-      console.log(`[Auth] Profile creation attempt ${attempts}/${maxAttempts}`);
-      
-      const { data: createdProfile, error: createError } = await supabase
-        .from('user_profiles')
-        .insert([{ 
-          auth_id: userId,
-          full_name: fullName
-        }])
-        .select();
-      
-      if (createError) {
-        console.error(`[Auth] Error creating profile (attempt ${attempts}):`, createError);
-        // Wait a short time before retrying
-        if (attempts < maxAttempts) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-          continue;
-        }
-        
-        // All attempts failed, but we'll continue the auth flow anyway
-        return false;
-      }
-      
-      console.log(`[Auth] Successfully created profile with ID: ${createdProfile?.[0]?.id}`);
-      return true;
+    if (createError) {
+      console.error(`[Auth] Error creating profile:`, createError);
+      // Continue authentication even if profile creation fails
+      return false;
     }
     
-    return false;
+    console.log(`[Auth] Successfully created profile with ID: ${createdProfile?.[0]?.id}`);
+    return true;
   } catch (error) {
     console.error('[Auth] Exception during profile verification:', error);
+    // Continue authentication even if profile creation fails
     return false;
   }
 }
@@ -147,21 +134,20 @@ function AuthCallbackContent() {
                     if (data.session) {
                       addDebug("Session recovered successfully");
                       
-                      // Ensure user profile exists with retries
+                      // Try to create profile but don't block authentication if it fails
                       try {
                         const userId = data.session.user.id;
-                        addDebug(`Ensuring user profile exists for user: ${userId}`);
+                        addDebug(`Attempting to create user profile for: ${userId}`);
                         
                         const profileCreated = await ensureUserProfileExists(userId, data.session.user);
                         if (profileCreated) {
-                          addDebug(`User profile verified or created successfully for: ${userId}`);
+                          addDebug(`User profile created successfully for: ${userId}`);
                         } else {
-                          addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
-                          // Continue anyway - don't block login
+                          addDebug(`Note: Could not create user profile for: ${userId}, but continuing with authentication`);
                         }
                       } catch (profileError) {
                         addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
-                        // Continue anyway - don't block login
+                        // Continue with authentication regardless
                       }
                       
                       // Mark auth as successful to prevent repeated login prompts
@@ -190,21 +176,20 @@ function AuthCallbackContent() {
                           } else if (signInData.session) {
                             addDebug("Successfully recovered session with ID token");
                             
-                            // Ensure user profile exists with retries
+                            // Try to create profile but don't block authentication if it fails
                             try {
                               const userId = signInData.session.user.id;
-                              addDebug(`Ensuring user profile exists for user: ${userId}`);
+                              addDebug(`Attempting to create user profile for: ${userId}`);
                               
                               const profileCreated = await ensureUserProfileExists(userId, signInData.session.user);
                               if (profileCreated) {
-                                addDebug(`User profile verified or created successfully for: ${userId}`);
+                                addDebug(`User profile created successfully for: ${userId}`);
                               } else {
-                                addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
-                                // Continue anyway - don't block login
+                                addDebug(`Note: Could not create user profile for: ${userId}, but continuing with authentication`);
                               }
                             } catch (profileError) {
                               addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
-                              // Continue anyway - don't block login
+                              // Continue with authentication regardless
                             }
                             
                             // Mark auth as successful
@@ -257,21 +242,20 @@ function AuthCallbackContent() {
         if (data.session) {
           addDebug("Session obtained successfully");
           
-          // Ensure user profile exists with retries
+          // Try to create profile but don't block authentication if it fails
           try {
             const userId = data.session.user.id;
-            addDebug(`Ensuring user profile exists for user: ${userId}`);
+            addDebug(`Attempting to create user profile for: ${userId}`);
             
             const profileCreated = await ensureUserProfileExists(userId, data.session.user);
             if (profileCreated) {
-              addDebug(`User profile verified or created successfully for: ${userId}`);
+              addDebug(`User profile created successfully for: ${userId}`);
             } else {
-              addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
-              // Continue anyway - don't block login
+              addDebug(`Note: Could not create user profile for: ${userId}, but continuing with authentication`);
             }
           } catch (profileError) {
             addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
-            // Continue anyway - don't block login
+            // Continue with authentication regardless
           }
           
           // Clear auth-related localStorage items that are no longer needed
@@ -318,21 +302,20 @@ function AuthCallbackContent() {
                 if (sessionData.session) {
                   addDebug("Successfully created session from hash tokens");
                   
-                  // Ensure user profile exists with retries
+                  // Try to create profile but don't block authentication if it fails
                   try {
                     const userId = sessionData.session.user.id;
-                    addDebug(`Ensuring user profile exists for user: ${userId}`);
+                    addDebug(`Attempting to create user profile for: ${userId}`);
                     
                     const profileCreated = await ensureUserProfileExists(userId, sessionData.session.user);
                     if (profileCreated) {
-                      addDebug(`User profile verified or created successfully for: ${userId}`);
+                      addDebug(`User profile created successfully for: ${userId}`);
                     } else {
-                      addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
-                      // Continue anyway - don't block login
+                      addDebug(`Note: Could not create user profile for: ${userId}, but continuing with authentication`);
                     }
                   } catch (profileError) {
                     addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
-                    // Continue anyway - don't block login
+                    // Continue with authentication regardless
                   }
                   
                   localStorage.setItem('auth_success', 'true');
@@ -356,21 +339,20 @@ function AuthCallbackContent() {
               if (hashData.session) {
                 addDebug("Session obtained from hash successfully");
                 
-                // Ensure user profile exists with retries
+                // Try to create profile but don't block authentication if it fails
                 try {
                   const userId = hashData.session.user.id;
-                  addDebug(`Ensuring user profile exists for user: ${userId}`);
+                  addDebug(`Attempting to create user profile for: ${userId}`);
                   
                   const profileCreated = await ensureUserProfileExists(userId, hashData.session.user);
                   if (profileCreated) {
-                    addDebug(`User profile verified or created successfully for: ${userId}`);
+                    addDebug(`User profile created successfully for: ${userId}`);
                   } else {
-                    addDebug(`Warning: Could not verify or create user profile for: ${userId}`);
-                    // Continue anyway - don't block login
+                    addDebug(`Note: Could not create user profile for: ${userId}, but continuing with authentication`);
                   }
                 } catch (profileError) {
                   addDebug(`Profile creation error: ${profileError instanceof Error ? profileError.message : 'Unknown error'}`);
-                  // Continue anyway - don't block login
+                  // Continue with authentication regardless
                 }
                 
                 localStorage.setItem('auth_success', 'true');

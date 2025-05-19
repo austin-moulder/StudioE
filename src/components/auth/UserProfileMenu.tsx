@@ -11,11 +11,12 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { supabase } from '@/lib/supabase/supabase';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function UserProfileMenu() {
   const { user, signOut, isLoading } = useAuth();
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   
   // Debug logging - only in development
   useEffect(() => {
@@ -48,38 +49,31 @@ export default function UserProfileMenu() {
   const displayName = user.user_metadata?.full_name || 
                       (user.email ? user.email.split('@')[0] : 'User');
   
-  const handleSignOut = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleSignOut = async () => {
+    console.log('[UserMenu] Starting sign out process');
     
-    console.log("Starting sign out process");
-    
-    // Force clear all client-side storage - even if other steps fail
     try {
-      // Clear all localStorage
-      localStorage.clear();
+      // First close the dropdown menu
+      setIsOpen(false);
       
-      // Clear all sessionStorage
-      sessionStorage.clear();
+      // Clear auth status in localStorage first for a fast user experience
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_success');
+        sessionStorage.clear();
+      }
       
-      // Clear all cookies
-      document.cookie.split(";").forEach(c => {
-        document.cookie = c.trim().split("=")[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      // Call the signOut method from auth context (non-blocking)
+      signOut().catch(error => {
+        console.error('[UserMenu] Error during sign out:', error);
       });
-    } catch (storageError) {
-      console.error("Error clearing storage:", storageError);
+      
+      // Redirect to homepage with query param to indicate signed out
+      window.location.href = '/?signedout=true';
+    } catch (error) {
+      console.error('[UserMenu] Error in handleSignOut:', error);
+      // If all else fails, just force a hard reload
+      window.location.reload();
     }
-    
-    // Try to sign out from Supabase - don't wait or handle errors
-    try {
-      await supabase.auth.signOut();
-    } catch (supabaseError) {
-      console.error("Error signing out from Supabase:", supabaseError);
-    }
-    
-    // Force hard refresh to homepage
-    console.log("Sign out complete, redirecting to homepage");
-    window.location.href = "/?signout=true";
   };
 
   return (

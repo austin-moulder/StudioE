@@ -54,6 +54,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         setIsLoading(true);
         const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+          console.log("Auth context: Session found", session.user.id);
+        } else {
+          console.log("Auth context: No session found");
+        }
+        
         setSession(session);
         setUser(session?.user || null);
       } catch (error) {
@@ -69,9 +76,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Set up the auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log("Auth state change event:", event);
+        
+        if (session) {
+          console.log("Auth state change: Session found for user", session.user.id);
+        } else {
+          console.log("Auth state change: No session");
+        }
+        
         setSession(session);
         setUser(session?.user || null);
         setIsLoading(false);
+        
+        // If this is a sign-in event, make sure we don't block by profile errors
+        if (event === 'SIGNED_IN') {
+          console.log("User signed in successfully - auth state is set regardless of profile status");
+        }
       }
     );
 
@@ -118,6 +138,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleSignOut = useCallback(async () => {
     try {
       setError(null);
+      console.log("Auth context: Signing out");
+      
+      // Immediately clear the local state
+      setUser(null);
+      setSession(null);
+      
+      // Then attempt the actual signout
       await signOutUtil();
     } catch (error) {
       console.error('Error signing out:', error);
