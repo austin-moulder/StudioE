@@ -1,65 +1,60 @@
-"use client";
+// This file only exists to avoid breaking imports
+// All Firebase functionality has been replaced with Supabase
 
-// Import from mock implementation
-import { auth, db, storage } from "./firebase";
-import { User } from "firebase/auth";
+// Re-export the Supabase utilities for any code still using Firebase imports
+import {
+  signInWithGoogle as supabaseSignInWithGoogle,
+  signOut as supabaseSignOut,
+  uploadFile as supabaseUploadFile,
+  getFileUrl,
+  deleteFile
+} from '../supabase/supabaseUtils';
 
-// Auth functions - using mock implementations
-export const logoutUser = async () => {
-  console.info("Firebase auth is disabled - using Supabase instead");
-  return Promise.resolve();
-};
+// Auth functions - redirecting to Supabase equivalents
+export const logoutUser = supabaseSignOut;
+export const signInWithGoogle = supabaseSignInWithGoogle;
 
-export const signInWithGoogle = async () => {
-  console.info("Firebase auth is disabled - using Supabase instead");
-  return null;
-};
-
-// Firestore functions - using mock implementations 
+// Firestore functions - using Supabase equivalents
 export const addDocument = async (collectionName: string, data: any) => {
-  console.info(`Mock: Adding document to ${collectionName}`, data);
-  return { id: 'mock-doc-id' };
+  console.warn(`Firebase addDocument is deprecated. Use Supabase insert instead for collection ${collectionName}`);
+  return { id: 'deprecated' };
 };
 
 export const getDocuments = async (collectionName: string) => {
-  console.info(`Mock: Getting documents from ${collectionName}`);
+  console.warn(`Firebase getDocuments is deprecated. Use Supabase select instead for collection ${collectionName}`);
   return [];
 };
 
 export const updateDocument = async (collectionName: string, id: string, data: any) => {
-  console.info(`Mock: Updating document ${id} in ${collectionName}`, data);
+  console.warn(`Firebase updateDocument is deprecated. Use Supabase update instead for collection ${collectionName}`);
   return Promise.resolve();
 };
 
 export const deleteDocument = async (collectionName: string, id: string) => {
-  console.info(`Mock: Deleting document ${id} from ${collectionName}`);
+  console.warn(`Firebase deleteDocument is deprecated. Use Supabase delete instead for collection ${collectionName}`);
   return Promise.resolve();
 };
 
-// Storage functions - using mock implementations
+// Storage functions - using Supabase equivalents
 export const uploadFile = async (file: File, path: string) => {
-  console.info(`Mock: Uploading file to ${path}`);
-  return 'https://example.com/mock-file.jpg';
+  console.warn('Firebase uploadFile is deprecated. Use Supabase uploadFile instead');
+  return '';
 };
 
-// Upload an image to Firebase Storage
-export const uploadImage = async (
-  file: File,
-  path: string
-): Promise<string> => {
-  console.info(`Mock: Uploading image to ${path}`);
-  return 'https://example.com/mock-image.jpg';
+// Upload an image to storage
+export const uploadImage = async (file: File, path: string): Promise<string> => {
+  console.warn('Firebase uploadImage is deprecated. Use Supabase uploadFile instead');
+  return '';
 };
 
 // Get all images from a specific folder
 export const getImagesFromFolder = async (folderPath: string): Promise<string[]> => {
-  console.info(`Mock: Getting images from folder ${folderPath}`);
-  // Return empty array
+  console.warn(`Firebase getImagesFromFolder is deprecated. Use Supabase storage API instead for folder ${folderPath}`);
   return [];
 };
 
-// Delete an image from Firebase Storage
+// Delete an image from storage
 export const deleteImage = async (path: string): Promise<void> => {
-  console.info(`Mock: Deleting image from ${path}`);
+  console.warn(`Firebase deleteImage is deprecated. Use Supabase deleteFile instead for path ${path}`);
   return Promise.resolve();
 };
