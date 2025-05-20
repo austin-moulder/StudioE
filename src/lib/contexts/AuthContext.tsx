@@ -56,14 +56,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Set up auth state change listener
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (_event, session) => {
+          console.log(`[AuthContext] Auth state change: ${_event}`);
           setSession(session);
           setUser(session?.user || null);
           setLoading(false);
         }
       );
       
+      // Check if user manually signed out (extra protection)
+      const checkLocalSignOut = () => {
+        if (typeof window !== 'undefined') {
+          const signedOutTimestamp = localStorage.getItem('signedout_timestamp');
+          // If we have a signedout_timestamp, ensure user state is cleared
+          if (signedOutTimestamp) {
+            console.log('[AuthContext] Detected manual sign out, clearing state');
+            setUser(null);
+            setSession(null);
+          }
+        }
+      };
+      
+      // Run initially and set up listener
+      checkLocalSignOut();
+      window.addEventListener('storage', checkLocalSignOut);
+      
       return () => {
         subscription.unsubscribe();
+        window.removeEventListener('storage', checkLocalSignOut);
       };
     } catch (error) {
       console.error("Error setting up auth state listener:", error);

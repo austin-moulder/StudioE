@@ -1,11 +1,20 @@
 "use client"
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { Database } from "@/types/supabase"
+import { createClient } from '@supabase/supabase-js';
 
-export const createClient = () => {
-  return createClientComponentClient<Database>()
+// Initialize the Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase URL and Anon Key must be defined in environment variables');
 }
 
-// Export a ready-to-use instance for utilities
-export const supabase = createClientComponentClient<Database>() 
+// Create a singleton instance of the Supabase client
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  }
+}); 

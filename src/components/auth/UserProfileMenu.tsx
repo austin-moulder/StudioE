@@ -60,19 +60,22 @@ export default function UserProfileMenu() {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('auth_success');
         sessionStorage.clear();
+        
+        // Set signout flag in localStorage to trigger UI update on homepage
+        localStorage.setItem('signedout_timestamp', Date.now().toString());
       }
       
-      // Call the signOut method from auth context (non-blocking)
-      signOut().catch(error => {
+      // Call the signOut method from context
+      await signOut().catch(error => {
         console.error('[UserMenu] Error during sign out:', error);
       });
       
-      // Redirect to homepage with query param to indicate signed out
+      // Redirect with a hard refresh to ensure clean state
       window.location.href = '/?signedout=true';
     } catch (error) {
       console.error('[UserMenu] Error in handleSignOut:', error);
-      // If all else fails, just force a hard reload
-      window.location.reload();
+      // If all else fails, just force a hard reload to the homepage
+      window.location.href = '/?signedout=true';
     }
   };
 

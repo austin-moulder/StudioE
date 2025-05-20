@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode, useEffect } from 'react'
-import { ConditionalAuthProvider } from './auth'
+import { AuthProvider } from './auth/AuthContext'
 import setupStorageBuckets from './supabase/setupStorage'
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -18,5 +18,9 @@ export function Providers({ children }: { children: ReactNode }) {
       });
   }, []);
   
-  return <ConditionalAuthProvider>{children}</ConditionalAuthProvider>
+  return (
+    <AuthProvider>
+      {children}
+    </AuthProvider>
+  )
 } 

@@ -100,6 +100,19 @@ export default function Home() {
       // Check if we have an auth code
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
+      const signedOut = params.get('signedout');
+      
+      // Handle signed out state
+      if (signedOut === 'true') {
+        console.log("User has been signed out, updating UI");
+        
+        // Clear the URL parameter without refreshing the page
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete('signedout');
+        window.history.replaceState({}, '', newUrl);
+        
+        // Could trigger some UI notification here if needed
+      }
       
       // If we're on localhost and have a code, redirect to production
       if (isLocalhost && code) {

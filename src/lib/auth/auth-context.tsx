@@ -38,34 +38,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isClient, setIsClient] = useState(false);
-
-  // Ensure we're only running on client
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   // Set up auth state listener
   useEffect(() => {
-    if (!isClient) return;
+    if (typeof window === 'undefined') return;
 
-    // Get the initial session
+    console.log("[Auth Context] Setting up auth state listener");
+    
+    // Get initial session
     const initializeAuth = async () => {
       try {
         setIsLoading(true);
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data } = await supabase.auth.getSession();
         
-        if (session) {
-          console.log("Auth context: Session found", session.user.id);
+        if (data.session) {
+          console.log("[Auth Context] Initial session found for user", data.session.user.id);
+          setSession(data.session);
+          setUser(data.session.user);
         } else {
-          console.log("Auth context: No session found");
+          console.log("[Auth Context] No initial session found");
+          setSession(null);
+          setUser(null);
         }
-        
-        setSession(session);
-        setUser(session?.user || null);
       } catch (error) {
-        console.error('Error getting initial session:', error);
-        setError('Failed to initialize authentication.');
+        console.error('[Auth Context] Error getting initial session:', error);
       } finally {
         setIsLoading(false);
       }
@@ -73,24 +69,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     initializeAuth();
 
-    // Set up the auth state change listener
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log("Auth state change event:", event);
+        console.log(`[Auth Context] Auth state change: ${event}`);
         
         if (session) {
-          console.log("Auth state change: Session found for user", session.user.id);
+          console.log(`[Auth Context] User ${session.user.id} is now ${event}`);
+          setSession(session);
+          setUser(session.user);
         } else {
-          console.log("Auth state change: No session");
+          console.log(`[Auth Context] No session after ${event} event`);
+          setSession(null);
+          setUser(null);
         }
         
-        setSession(session);
-        setUser(session?.user || null);
         setIsLoading(false);
         
-        // If this is a sign-in event, make sure we don't block by profile errors
-        if (event === 'SIGNED_IN') {
-          console.log("User signed in successfully - auth state is set regardless of profile status");
+        // Handle specific events
+        if (event === 'SIGNED_OUT') {
+          console.log('[Auth Context] User signed out - clearing state');
+          // Make sure we clear state
+          setSession(null);
+          setUser(null);
         }
       }
     );
@@ -99,21 +100,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [isClient]);
+  }, []);
 
   // Implement sign in with Google
   const handleGoogleSignIn = useCallback(async () => {
     try {
       setError(null);
+      setIsLoading(true);
+      console.log('[Auth Context] Starting Google sign-in process');
       await signInWithGoogle();
+      // Auth state changes will be handled by the listener
     } catch (error) {
-      console.error('Error signing in with Google:', error);
+      console.error('[Auth Context] Google sign-in error:', error);
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('An error occurred during sign in with Google.');
+        setError('Failed to sign in with Google. Please try again.');
       }
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -121,16 +127,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleEmailSignIn = useCallback(async (email: string) => {
     try {
       setError(null);
+      setIsLoading(true);
+      console.log(`[Auth Context] Sending magic link to ${email}`);
       await signInWithMagicLink(email);
+      
+      // This is a success message for magic link
       setError('Check your email for the login link!');
     } catch (error) {
-      console.error('Error signing in with email:', error);
+      console.error('[Auth Context] Magic link error:', error);
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('An error occurred during sign in with email.');
+        setError('Failed to send magic link. Please try again.');
       }
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -138,22 +150,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleSignOut = useCallback(async () => {
     try {
       setError(null);
-      console.log("Auth context: Signing out");
+      setIsLoading(true);
+      console.log("[Auth Context] Signing out user");
       
-      // Immediately clear the local state
-      setUser(null);
-      setSession(null);
-      
-      // Then attempt the actual signout
+      // Call the sign out utility
       await signOutUtil();
+      
+      // We don't need to manually update state since the auth listener will handle it
+      // and signOutUtil now includes a redirect that will reset the app state
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error('[Auth Context] Sign out error:', error);
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('An error occurred during sign out.');
+        setError('Failed to sign out. Please try again.');
       }
-      throw error;
     }
   }, []);
 
@@ -162,7 +173,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError(null);
   }, []);
 
-  // Memoize the context value to prevent unnecessary re-renders
+  // Context value
   const value = {
     user,
     session,
