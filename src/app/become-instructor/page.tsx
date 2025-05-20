@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,35 +8,77 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
+import { useToast } from '@/components/ui/use-toast'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+const teachingStyles = [
+  'Choreography', 'Heels', 'Salsa', 'Bachata', 'Merengue', 
+  'Cumbia', 'Kizomba', 'Zouk', 'Swing', 'DJ', 
+  'Dance Photography', 'Event Organizing', 'Fitness'
+]
+
+const teachingLocations = [
+  'I own my own studio',
+  'I can rent a studio (Studio E has discounted rates)',
+  "At the client's home",
+  'At my home',
+  'In an open public space (i.e. park)',
+  'Virtually'
+]
 
 export default function BecomeInstructorPage() {
   const router = useRouter()
+  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
+  const [locations, setLocations] = useState<string[]>([])
+  const [locationType, setLocationType] = useState<'select' | 'other'>('select')
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     phone: '',
-    address: '',
-    isInterested: 'yes',
-    teachingStyles: [] as string[],
-    otherTeachingStyle: '',
-    teachingInfo: '',
+    style: [] as string[],
+    other_style: '',
+    location: '',
+    custom_location: '',
+    price_lower: 50,
+    price_upper: 70,
+    teaching_info: '',
     goals: '',
-    teachingLocations: [] as string[],
-    referralSource: ''
+    teaching_locations: [] as string[],
+    referral_source: ''
   })
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  useEffect(() => {
+    async function fetchLocations() {
+      const { data, error } = await supabase
+        .from('instructors')
+        .select('location')
+      if (!error && data) {
+        const unique = Array.from(new Set(data.map((row: any) => row.location).filter(Boolean)))
+        setLocations(unique)
+      }
+    }
+    fetchLocations()
+  }, [])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'price_lower' || name === 'price_upper' ? parseFloat(value) : value
+    }))
   }
 
-  const handleCheckboxChange = (field: string, value: string, checked: boolean) => {
+  const handleCheckboxChange = (field: 'style' | 'teaching_locations', value: string, checked: boolean) => {
     setFormData(prev => {
-      const current = [...(prev[field as keyof typeof prev] as unknown as string[])]
+      const current = [...(prev[field] as string[])]
       return {
         ...prev,
         [field]: checked 
@@ -46,8 +88,15 @@ export default function BecomeInstructorPage() {
     })
   }
 
-  const handleRadioChange = (value: string) => {
-    setFormData(prev => ({ ...prev, isInterested: value }))
+  const handleLocationSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value
+    if (value === '__other__') {
+      setLocationType('other')
+      setFormData(prev => ({ ...prev, location: '', custom_location: '' }))
+    } else {
+      setLocationType('select')
+      setFormData(prev => ({ ...prev, location: value, custom_location: '' }))
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,27 +104,31 @@ export default function BecomeInstructorPage() {
     setLoading(true)
 
     try {
-      // Combine selected teaching styles with "Other" option if provided
-      const finalTeachingStyles = [...formData.teachingStyles]
-      if (formData.otherTeachingStyle.trim()) {
-        finalTeachingStyles.push(`Other: ${formData.otherTeachingStyle.trim()}`)
+      const displayName = `${formData.first_name} ${formData.last_name.charAt(0)}.`
+      let styleArray = [...formData.style]
+      if (formData.other_style.trim()) {
+        styleArray.push(`Other: ${formData.other_style.trim()}`)
       }
+      const styleString = styleArray.join(', ')
+      const locationToSubmit = locationType === 'other' ? formData.custom_location : formData.location
 
-      // Submit to Supabase
       const { data, error } = await supabase
-        .from('instructor_applications')
+        .from('instructors')
         .insert({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
+          name: displayName,
+          first_name: formData.first_name,
+          last_name: formData.last_name,
           email: formData.email,
           phone: formData.phone,
-          address: formData.address,
-          is_interested: formData.isInterested,
-          teaching_styles: finalTeachingStyles,
-          teaching_info: formData.teachingInfo,
+          style: styleString,
+          location: locationToSubmit,
+          price_lower: formData.price_lower,
+          price_upper: formData.price_upper,
+          teaching_info: formData.teaching_info,
           goals: formData.goals,
-          teaching_locations: formData.teachingLocations,
-          referral_source: formData.referralSource
+          teaching_locations: formData.teaching_locations,
+          referral_source: formData.referral_source,
+          active: false
         })
 
       if (error) {
@@ -83,35 +136,27 @@ export default function BecomeInstructorPage() {
         throw error
       }
       
-      toast.success('Application submitted successfully! We will review your application and get back to you soon.')
+      toast({
+        title: "Success",
+        description: "Instructor profile created successfully!",
+        variant: "default"
+      })
       
-      // Redirect to home page
       setTimeout(() => {
-        router.push('/')
+        router.push('/instructor-profile-form')
       }, 2000)
       
     } catch (error: any) {
       console.error('Error submitting form:', error)
-      toast.error(error?.message || 'Failed to submit application. Please try again.')
+      toast({
+        title: "Error",
+        description: error?.message || 'Failed to submit application. Please try again.',
+        variant: "destructive"
+      })
     } finally {
       setLoading(false)
     }
   }
-
-  const teachingStyles = [
-    'Choreography', 'Heels', 'Salsa', 'Bachata', 'Merengue', 
-    'Cumbia', 'Kizomba', 'Zouk', 'Swing', 'DJ', 
-    'Dance Photography', 'Event Organizing', 'Fitness'
-  ]
-
-  const teachingLocations = [
-    'I own my own studio',
-    'I can rent a studio (Studio E has discounted rates)',
-    'At the client\'s home',
-    'At my home',
-    'In an open public space (i.e. park)',
-    'Virtually'
-  ]
 
   return (
     <div className="container py-12 max-w-3xl mx-auto">
@@ -129,196 +174,108 @@ export default function BecomeInstructorPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div>
-                <Label htmlFor="firstName" className="font-medium">
-                  First Name <span className="text-red-500">*</span>
-                </Label>
-                <Input 
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1"
-                />
+                <Label htmlFor="first_name" className="font-medium">First Name <span className="text-pink-500">*</span></Label>
+                <Input id="first_name" name="first_name" value={formData.first_name} onChange={handleInputChange} required />
               </div>
-
               <div>
-                <Label htmlFor="lastName" className="font-medium">
-                  Last Name <span className="text-red-500">*</span>
-                </Label>
-                <Input 
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1"
-                />
+                <Label htmlFor="last_name" className="font-medium">Last Name <span className="text-pink-500">*</span></Label>
+                <Input id="last_name" name="last_name" value={formData.last_name} onChange={handleInputChange} required />
               </div>
-
               <div>
-                <Label htmlFor="email" className="font-medium">
-                  Email <span className="text-red-500">*</span>
-                </Label>
-                <Input 
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1"
-                />
+                <Label htmlFor="email" className="font-medium">Email <span className="text-pink-500">*</span></Label>
+                <Input id="email" name="email" value={formData.email} onChange={handleInputChange} type="email" required />
               </div>
-
               <div>
-                <Label htmlFor="phone" className="font-medium">
-                  Phone number
-                </Label>
-                <Input 
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="mt-1"
-                />
+                <Label htmlFor="phone" className="font-medium">Phone <span className="text-pink-500">*</span></Label>
+                <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} required />
               </div>
-
               <div>
-                <Label htmlFor="address" className="font-medium">
-                  Address
-                </Label>
-                <Input 
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="mt-1"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="font-medium">
-                  Are you interested in becoming a Studio E Instructor? <span className="text-red-500">*</span>
-                </Label>
-                <div className="flex flex-col space-y-1 mt-1">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id="interested-yes"
-                      name="isInterested"
-                      value="yes"
-                      checked={formData.isInterested === 'yes'}
-                      onChange={() => handleRadioChange('yes')}
-                      className="rounded-full"
-                    />
-                    <Label htmlFor="interested-yes">Yes</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id="interested-no"
-                      name="isInterested"
-                      value="no"
-                      checked={formData.isInterested === 'no'}
-                      onChange={() => handleRadioChange('no')}
-                      className="rounded-full"
-                    />
-                    <Label htmlFor="interested-no">No</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id="interested-other"
-                      name="isInterested"
-                      value="other"
-                      checked={formData.isInterested === 'other'}
-                      onChange={() => handleRadioChange('other')}
-                      className="rounded-full"
-                    />
-                    <Label htmlFor="interested-other">Other</Label>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="font-medium">
-                  What lessons are you interested in teaching?
-                </Label>
+                <Label className="font-medium">What lessons are you interested in teaching?</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1">
                   {teachingStyles.map(style => (
                     <div key={style} className="flex items-center space-x-2">
                       <input
                         type="checkbox"
                         id={`style-${style}`}
-                        checked={formData.teachingStyles.includes(style)}
-                        onChange={(e) => handleCheckboxChange('teachingStyles', style, e.target.checked)}
+                        checked={formData.style.includes(style)}
+                        onChange={(e) => handleCheckboxChange('style', style, e.target.checked)}
                         className="rounded"
                       />
                       <Label htmlFor={`style-${style}`}>{style}</Label>
                     </div>
                   ))}
                 </div>
+                <div className="mt-2">
+                  <Label htmlFor="other_style" className="font-medium">Other teaching style (optional)</Label>
+                  <Input
+                    id="other_style"
+                    name="other_style"
+                    value={formData.other_style}
+                    onChange={handleInputChange}
+                    placeholder="Enter any additional teaching styles not listed above"
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    If you teach something that's not on our list, please specify it here
+                  </p>
+                </div>
               </div>
-
               <div>
-                <Label htmlFor="otherTeachingStyle" className="font-medium">
-                  Other teaching style (optional)
-                </Label>
-                <Input 
-                  id="otherTeachingStyle"
-                  name="otherTeachingStyle"
-                  value={formData.otherTeachingStyle}
-                  onChange={handleInputChange}
-                  className="mt-1"
-                  placeholder="Enter any additional teaching styles not listed above"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  If you teach something that's not on our list, please specify it here
-                </p>
+                <Label htmlFor="location" className="font-medium">Location *</Label>
+                <select
+                  id="location"
+                  name="location"
+                  value={locationType === 'other' ? '__other__' : formData.location}
+                  onChange={handleLocationSelect}
+                  className="mt-1 block w-full border rounded px-3 py-2"
+                  required={locationType === 'select'}
+                >
+                  <option value="" disabled>Select a location</option>
+                  {locations.map(loc => (
+                    <option key={loc} value={loc}>{loc}</option>
+                  ))}
+                  <option value="__other__">Other (write in new location)</option>
+                </select>
+                {locationType === 'other' && (
+                  <Input
+                    id="custom_location"
+                    name="custom_location"
+                    value={formData.custom_location}
+                    onChange={handleInputChange}
+                    placeholder="Enter new location"
+                    className="mt-2"
+                    required
+                  />
+                )}
               </div>
-
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="price_lower" className="font-medium">Intro Session Rate ($)</Label>
+                  <Input id="price_lower" name="price_lower" type="number" min="0" value={formData.price_lower} onChange={handleInputChange} required placeholder="50" />
+                </div>
+                <div>
+                  <Label htmlFor="price_upper" className="font-medium">Recurring Rate ($)</Label>
+                  <Input id="price_upper" name="price_upper" type="number" min="0" value={formData.price_upper} onChange={handleInputChange} required placeholder="70" />
+                </div>
+              </div>
               <div>
-                <Label htmlFor="teachingInfo" className="font-medium">
-                  Share a little bit about your preferred teaching topic and your teaching style
-                </Label>
-                <Textarea 
-                  id="teachingInfo"
-                  name="teachingInfo"
-                  value={formData.teachingInfo}
-                  onChange={handleInputChange}
-                  className="mt-1"
-                  rows={4}
-                />
+                <Label htmlFor="teaching_info" className="font-medium">Share a little bit about your preferred teaching topic and your teaching style</Label>
+                <Textarea id="teaching_info" name="teaching_info" value={formData.teaching_info} onChange={handleInputChange} rows={3} />
               </div>
-
               <div>
-                <Label htmlFor="goals" className="font-medium">
-                  What would you like to achieve with Studio E?
-                </Label>
-                <Textarea 
-                  id="goals"
-                  name="goals"
-                  value={formData.goals}
-                  onChange={handleInputChange}
-                  className="mt-1"
-                  rows={4}
-                />
+                <Label htmlFor="goals" className="font-medium">What would you like to achieve with Studio E?</Label>
+                <Textarea id="goals" name="goals" value={formData.goals} onChange={handleInputChange} rows={3} />
               </div>
-
-              <div className="space-y-2">
-                <Label className="font-medium">
-                  Where would you be open to teaching?
-                </Label>
+              <div>
+                <Label className="font-medium">Where would you be open to teaching?</Label>
                 <div className="flex flex-col space-y-2 mt-1">
                   {teachingLocations.map(location => (
                     <div key={location} className="flex items-center space-x-2">
                       <input
                         type="checkbox"
                         id={`location-${location}`}
-                        checked={formData.teachingLocations.includes(location)}
-                        onChange={(e) => handleCheckboxChange('teachingLocations', location, e.target.checked)}
+                        checked={formData.teaching_locations.includes(location)}
+                        onChange={(e) => handleCheckboxChange('teaching_locations', location, e.target.checked)}
                         className="rounded"
                       />
                       <Label htmlFor={`location-${location}`}>{location}</Label>
@@ -326,26 +283,12 @@ export default function BecomeInstructorPage() {
                   ))}
                 </div>
               </div>
-
               <div>
-                <Label htmlFor="referralSource" className="font-medium">
-                  How did you hear about us?
-                </Label>
-                <Input 
-                  id="referralSource"
-                  name="referralSource"
-                  value={formData.referralSource}
-                  onChange={handleInputChange}
-                  className="mt-1"
-                />
+                <Label htmlFor="referral_source" className="font-medium">How did you hear about us?</Label>
+                <Input id="referral_source" name="referral_source" value={formData.referral_source} onChange={handleInputChange} />
               </div>
             </div>
-
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Submitting...' : 'Submit Application'}
             </Button>
           </form>
