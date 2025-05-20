@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase/client';
 
 // Define types for user settings
 export interface UserNotificationSettings {
@@ -35,8 +35,6 @@ export interface UserSettings {
  */
 export async function getUserSettings(userId: string): Promise<UserSettings | null> {
   try {
-    const supabase = createClient();
-    
     const { data, error } = await supabase
       .from('user_settings')
       .select('*')
@@ -75,8 +73,6 @@ export async function getUserSettings(userId: string): Promise<UserSettings | nu
  */
 export async function ensureUserSettingsExist(userId: string): Promise<boolean> {
   try {
-    const supabase = createClient();
-    
     // Check if settings already exist
     const { data, error: checkError } = await supabase
       .from('user_settings')
@@ -136,8 +132,6 @@ export async function updateNotificationSettings(
       };
     }
     
-    const supabase = createClient();
-    
     const { error } = await supabase
       .from('user_settings')
       .update({
@@ -184,8 +178,6 @@ export async function updatePrivacySettings(
       };
     }
     
-    const supabase = createClient();
-    
     const { error } = await supabase
       .from('user_settings')
       .update({
@@ -230,8 +222,6 @@ export async function updateAllSettings(
         error: 'Failed to ensure user settings exist' 
       };
     }
-    
-    const supabase = createClient();
     
     const { error } = await supabase
       .from('user_settings')
