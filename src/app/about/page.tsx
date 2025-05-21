@@ -10,7 +10,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { getAllTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { TestimonialCarousel } from "@/app/components/TestimonialCarousel"
 import { Testimonial } from "@/types/testimonial"
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/lib/supabase/supabase"
 
 // Helper function to determine if a name is likely male or female
 function getDefaultImageByName(name: string): string {

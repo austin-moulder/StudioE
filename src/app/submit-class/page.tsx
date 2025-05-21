@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase/supabase'
 import { Company, getAllCompanies } from '@/lib/supabase/classesUtils'
 
 export default function SubmitClassPage() {

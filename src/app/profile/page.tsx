@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/lib/auth/auth-context";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { redirect, useRouter } from "next/navigation";
 import { User, Mail, Phone, MapPin, Camera, Music, Calendar, Sparkles, Heart, Headphones, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase/supabase";

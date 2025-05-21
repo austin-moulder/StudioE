@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/lib/auth/auth-context";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FormButton } from "@/components/ui/form-button";
 import MobileNavbar from "@/components/dashboard/MobileNavbar";

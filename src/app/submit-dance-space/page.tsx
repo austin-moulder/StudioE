@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase/supabase'
 import Image from 'next/image'
 
 // Common amenities for dance spaces

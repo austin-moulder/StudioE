@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase/supabase'
 
 export default function GetStartedPage() {
   const router = useRouter()

@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { Star } from 'lucide-react'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase/client'
+import { supabase } from '@/lib/supabase/supabase'
 import { useAuth } from '@/lib/auth/auth-context'
 
 interface ReviewData {

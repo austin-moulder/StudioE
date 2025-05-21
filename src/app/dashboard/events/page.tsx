@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/supabase";
-import { useAuth } from "@/lib/auth/auth-context";
+import { useAuth } from "@/lib/hooks/useAuth";
 import BackButton from "@/components/dashboard/BackButton";
 
 // Define basic types to avoid "never[]" errors

@@ -1,50 +1,66 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Exchange the code for a session
     const handleAuthCallback = async () => {
       try {
-        // Get the session - Supabase will automatically exchange the code
+        // Get URL hash and handle it
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error("Auth callback error:", error.message);
-          // Redirect to login page with error
-          router.push(`/login?error=${encodeURIComponent(error.message)}`);
-          return;
+          throw error;
         }
         
         if (data?.session) {
-          console.log("Auth successful, redirecting to dashboard");
-          // Redirect to dashboard or home page on successful auth
+          console.log("Authentication successful, redirecting to dashboard");
+          
+          // Get user profile info or store additional data if needed
+          // Fetch any needed data before redirecting
+          
+          // Redirect to dashboard
           router.push("/dashboard");
         } else {
-          console.error("No session found");
-          router.push("/login?error=No session found");
+          throw new Error("No session found");
         }
       } catch (error) {
-        console.error("Unexpected error in auth callback:", error);
-        router.push("/login?error=Authentication failed");
+        console.error("Error in auth callback:", error);
+        setError(error instanceof Error ? error.message : "Authentication failed");
+        
+        // After a delay, redirect to login with error
+        setTimeout(() => {
+          const errorMsg = encodeURIComponent(error instanceof Error ? error.message : "Authentication failed");
+          router.push(`/login?error=${errorMsg}`);
+        }, 2000);
       }
     };
 
     handleAuthCallback();
   }, [router]);
 
-  // Show a simple loading state while processing
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
         <div className="flex flex-col items-center">
-          <h1 className="mb-4 text-2xl font-bold">Completing sign in...</h1>
-          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
+          {error ? (
+            <>
+              <h1 className="mb-4 text-2xl font-bold text-red-600">Authentication Error</h1>
+              <p className="mb-4 text-center text-gray-600">{error}</p>
+              <p className="text-sm text-gray-500">Redirecting you to login page...</p>
+            </>
+          ) : (
+            <>
+              <h1 className="mb-4 text-2xl font-bold">Completing sign in...</h1>
+              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-[#EC407A]"></div>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase/supabase";
 import { logClassInquiry } from "@/lib/analytics/userActivity";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth/auth-context";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { Check } from "lucide-react";
 
 interface RSVPButtonProps {

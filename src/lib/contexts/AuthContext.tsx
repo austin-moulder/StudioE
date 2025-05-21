@@ -1,129 +1,174 @@
 "use client";
 
 import React, { createContext, useEffect, useState, useMemo } from "react";
-import { User, Session } from "@supabase/supabase-js";
-import { supabase } from "../supabase/supabase";
-import { signInWithGoogle as supabaseSignInWithGoogle, signOut as supabaseSignOut } from "../supabase/supabaseUtils";
+import { useRouter } from "next/navigation";
+import { 
+  User, 
+  Session, 
+  AuthError, 
+  AuthResponse, 
+  OAuthResponse
+} from "@supabase/supabase-js";
+import { supabase } from "../supabase/client";
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
-  loading: boolean;
-  signInWithGoogle: () => Promise<void>;
+  isLoading: boolean;
+  signInWithGoogle: () => Promise<OAuthResponse>;
+  signInWithEmail: (email: string, password: string) => Promise<AuthResponse>;
+  signInWithMagicLink: (email: string) => Promise<AuthResponse>;
   signOut: () => Promise<void>;
+  error: string | null;
+  setError: (error: string | null) => void;
 }
 
-// Create a default context value
-const defaultContextValue: AuthContextType = {
-  user: null,
-  session: null,
-  loading: true,
-  signInWithGoogle: async () => {
-    console.warn("signInWithGoogle was called before AuthProvider was initialized");
-  },
-  signOut: async () => {
-    console.warn("signOut was called before AuthProvider was initialized");
-  },
-};
-
-// Create the context with the default value
-const AuthContext = createContext<AuthContextType>(defaultContextValue);
+// Create the context with null as default (will check in useAuth hook)
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isClient, setIsClient] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  // Set isClient to true when running in the browser
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Only set up the auth listener when in the browser
+  // Set up the auth state listener
   useEffect(() => {
     // Skip if not in client-side environment
-    if (!isClient) return;
+    if (typeof window === 'undefined') return;
 
-    try {
-      // Initial session check
-      supabase.auth.getSession().then(({ data: { session } }) => {
+    // Initial session check
+    const setupAuth = async () => {
+      setIsLoading(true);
+      try {
+        // Get current session
+        const { data: { session } } = await supabase.auth.getSession();
         setSession(session);
         setUser(session?.user || null);
-        setLoading(false);
-      });
 
-      // Set up auth state change listener
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        (_event, session) => {
-          console.log(`[AuthContext] Auth state change: ${_event}`);
-          setSession(session);
-          setUser(session?.user || null);
-          setLoading(false);
-        }
-      );
-      
-      // Check if user manually signed out (extra protection)
-      const checkLocalSignOut = () => {
-        if (typeof window !== 'undefined') {
-          const signedOutTimestamp = localStorage.getItem('signedout_timestamp');
-          // If we have a signedout_timestamp, ensure user state is cleared
-          if (signedOutTimestamp) {
-            console.log('[AuthContext] Detected manual sign out, clearing state');
-            setUser(null);
-            setSession(null);
+        // Set up auth state change listener
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            console.log(`[AuthContext] Auth state change: ${event}`);
+            setSession(session);
+            setUser(session?.user || null);
+            
+            // Handle specific auth events
+            if (event === 'SIGNED_IN' && session) {
+              // You could redirect here, or let components handle it
+              console.log('User signed in:', session.user.email);
+            } else if (event === 'SIGNED_OUT') {
+              console.log('User signed out');
+            }
           }
+        );
+        
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (error) {
+        console.error("Error setting up auth:", error);
+        setError(error instanceof Error ? error.message : "Authentication error");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    setupAuth();
+  }, []);
+
+  // Google OAuth sign in
+  const signInWithGoogle = async (): Promise<OAuthResponse> => {
+    setError(null);
+    try {
+      return await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
         }
-      };
-      
-      // Run initially and set up listener
-      checkLocalSignOut();
-      window.addEventListener('storage', checkLocalSignOut);
-      
-      return () => {
-        subscription.unsubscribe();
-        window.removeEventListener('storage', checkLocalSignOut);
-      };
+      });
     } catch (error) {
-      console.error("Error setting up auth state listener:", error);
-      setLoading(false);
-    }
-  }, [isClient]);
-
-  const handleSignInWithGoogle = async (): Promise<void> => {
-    if (typeof window === 'undefined') return;
-    try {
-      await supabaseSignInWithGoogle();
-    } catch (error) {
-      console.error("Error signing in with Google", error);
+      console.error("Error signing in with Google:", error);
+      setError(error instanceof Error ? error.message : "Google sign-in failed");
       throw error;
     }
   };
 
-  const handleSignOut = async (): Promise<void> => {
-    if (typeof window === 'undefined') return;
+  // Email/password sign in
+  const signInWithEmail = async (email: string, password: string): Promise<AuthResponse> => {
+    setError(null);
     try {
-      await supabaseSignOut();
+      return await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
     } catch (error) {
-      console.error("Error signing out", error);
+      console.error("Error signing in with email:", error);
+      setError(error instanceof Error ? error.message : "Email sign-in failed");
       throw error;
     }
   };
 
-  // Memoize the context value to prevent unnecessary re-renders
+  // Magic link sign in
+  const signInWithMagicLink = async (email: string): Promise<AuthResponse> => {
+    setError(null);
+    try {
+      return await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          shouldCreateUser: true
+        }
+      });
+    } catch (error) {
+      console.error("Error sending magic link:", error);
+      setError(error instanceof Error ? error.message : "Failed to send magic link");
+      throw error;
+    }
+  };
+
+  // Sign out
+  const signOut = async (): Promise<void> => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      // Force redirect to login page
+      router.push('/login');
+    } catch (error) {
+      console.error("Error signing out:", error);
+      setError(error instanceof Error ? error.message : "Sign-out failed");
+      throw error;
+    }
+  };
+
+  // Create memoized context value to prevent unnecessary re-renders
   const contextValue = useMemo(() => ({
     user,
     session,
-    loading,
-    signInWithGoogle: handleSignInWithGoogle,
-    signOut: handleSignOut,
-  }), [user, session, loading]);
+    isLoading,
+    signInWithGoogle,
+    signInWithEmail,
+    signInWithMagicLink,
+    signOut,
+    error,
+    setError
+  }), [user, session, isLoading, error]);
 
   return (
     <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
+}
+
+export function useAuth() {
+  const context = React.useContext(AuthContext);
+  if (context === null) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }
 
 export { AuthContext };

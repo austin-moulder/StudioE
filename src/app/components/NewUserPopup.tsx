@@ -75,7 +75,10 @@ export default function NewUserPopup() {
     
     return () => {
       resetDiv.removeEventListener('click', handleCornerClick);
-      document.body.removeChild(resetDiv);
+      // Check if the element is still a child of document.body before removing
+      if (resetDiv.parentNode === document.body) {
+        document.body.removeChild(resetDiv);
+      }
     };
   }, [handleCornerClick]);
 

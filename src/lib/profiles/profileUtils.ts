@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { UserProfile } from '@/types/user-profile';
 import { v4 as uuidv4 } from 'uuid';
 

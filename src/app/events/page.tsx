@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { supabase } from "@/lib/supabase/client"
+import { supabase } from "@/lib/supabase/supabase"
 import SubscribeToCalendar from "@/components/SubscribeToCalendar"
 import EventRSVPButton from "@/components/EventRSVPButton"
 

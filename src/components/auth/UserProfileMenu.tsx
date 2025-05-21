@@ -1,7 +1,7 @@
 "use client";
 
 import { LogOut, ChevronDown, User, LayoutDashboard } from 'lucide-react';
-import { useAuth } from '@/lib/auth/auth-context';
+import { useAuth } from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { supabase } from '@/lib/supabase/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 
 export default function UserProfileMenu() {

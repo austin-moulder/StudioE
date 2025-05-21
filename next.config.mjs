@@ -1,18 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
+    // Allow production builds to complete even if there are ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
+    // Allow production builds to complete even if there are type errors.
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['rnlubphxootnmsurnuvr.supabase.co'],
+    domains: [
+      'rnlubphxootnmsurnuvr.supabase.co',
+    ],
     remotePatterns: [
       {
         protocol: "https",
@@ -46,9 +46,14 @@ const nextConfig = {
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
     ],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    unoptimized: process.env.NODE_ENV === 'development', // Use unoptimized in development for faster builds
   },
   // Disable webpack persistent caching to prevent cache corruption
   webpack: (config, { dev, isServer }) => {
@@ -63,6 +68,10 @@ const nextConfig = {
       {
         source: "/api/:path*",
         destination: "https://api.openai.com/:path*",
+      },
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
       },
     ];
   },

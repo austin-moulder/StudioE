@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import StudioELogo from "./StudioELogo";
 import AuthNavbarSection from "./auth/AuthNavbarSection";
-import { useAuth } from "@/lib/auth/auth-context";
+import { useAuth } from "@/lib/hooks/useAuth";
 import SignInModal from "./auth/SignInModal";
 
 const navLinks = [

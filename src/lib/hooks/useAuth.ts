@@ -7,7 +7,7 @@ export function useAuth() {
   // Get the context
   const context = useContext(AuthContext);
   
-  // Ensure the context exists (it should because of our AuthProvider)
+  // Ensure the context exists
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }

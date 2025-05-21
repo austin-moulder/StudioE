@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/auth/auth-context";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { redirect } from "next/navigation";
 import { ArrowLeft, Star } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase/client";
+import { supabase } from "@/lib/supabase/supabase";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 

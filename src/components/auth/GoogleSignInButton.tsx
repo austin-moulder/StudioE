@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { supabase } from '@/lib/supabase/supabase';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 interface GoogleSignInButtonProps {
   className?: string;
@@ -15,30 +15,25 @@ export default function GoogleSignInButton({
   onSuccess,
   onError
 }: GoogleSignInButtonProps) {
+  const { signInWithGoogle } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async () => {
     try {
       setIsLoading(true);
       
-      // Direct call to supabase auth
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: { prompt: 'select_account' }
-        }
-      });
-      
+      // Call the Supabase OAuth function - this will redirect to Google
+      const { error } = await signInWithGoogle();
       if (error) throw error;
       
-      // OAuth flow will handle the redirect
-      onSuccess?.();
+      // This will only run if there's no redirect (which shouldn't happen)
+      if (onSuccess) onSuccess();
     } catch (error) {
       console.error('Google sign-in error:', error);
+      
       // Don't show error for user-cancelled popup
       if (error instanceof Error && !error.message.includes('popup-closed-by-user')) {
-        onError?.(error instanceof Error ? error : new Error('Failed to sign in with Google'));
+        if (onError) onError(error as Error);
       }
     } finally {
       setIsLoading(false);
@@ -51,6 +46,7 @@ export default function GoogleSignInButton({
       disabled={isLoading}
       className={`flex w-full items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 ${className}`}
       type="button"
+      aria-label="Sign in with Google"
     >
       {isLoading ? (
         <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-[#EC407A]"></div>
