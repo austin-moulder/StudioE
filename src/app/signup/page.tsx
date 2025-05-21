@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import MagicLinkButton from "@/components/auth/MagicLinkButton";
 
-export default function SignUpPage() {
+function SignUpPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -109,5 +109,17 @@ export default function SignUpPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
+      </div>
+    }>
+      <SignUpPageContent />
+    </Suspense>
   );
 } 
