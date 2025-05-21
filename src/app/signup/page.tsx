@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-function SignUpPageInner() {
+export default function SignUpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -238,13 +238,5 @@ function SignUpPageInner() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function SignUpPage() {
-  return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div></div>}>
-      <SignUpPageInner />
-    </Suspense>
   );
 } 
