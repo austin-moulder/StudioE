@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { supabase } from "@/lib/supabase/client";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [useDirectLogin, setUseDirectLogin] = useState(false);
 
   // Check for error in URL params
   useEffect(() => {
@@ -25,11 +27,13 @@ export default function LoginPage() {
     if (errorParam) {
       setLocalError(decodeURIComponent(errorParam));
     }
+    console.log("Login page mounted");
   }, []);
 
   // Redirect if user is already logged in
   useEffect(() => {
     if (user && !isLoading) {
+      console.log("User already logged in, redirecting to dashboard");
       router.push("/dashboard");
     }
   }, [user, isLoading, router]);
@@ -58,22 +62,61 @@ export default function LoginPage() {
     }
   };
 
-  // Handle Google sign in
+  // Handle Google sign in through context
   const handleGoogleSignIn = useCallback(async () => {
+    console.log("Google sign-in button clicked");
     try {
       setIsSubmitting(true);
       setLocalError(null);
       setError(null);
       
+      console.log("Calling signInWithGoogle function");
       await signInWithGoogle();
+      console.log("signInWithGoogle completed");
       // Redirect will happen via OAuth flow
     } catch (error: any) {
       console.error("Google sign in error:", error);
       setLocalError(error.message || "Failed to sign in with Google");
     } finally {
+      console.log("Sign-in process completed (success or failure)");
       setIsSubmitting(false);
     }
   }, [setError, signInWithGoogle]);
+
+  // Direct Google sign-in bypassing the context
+  const handleDirectGoogleSignIn = async () => {
+    console.log("Direct Google sign-in clicked");
+    try {
+      setIsSubmitting(true);
+      setLocalError(null);
+      
+      const redirectUrl = `${window.location.origin}/auth/callback`;
+      console.log("Using redirect URL:", redirectUrl);
+      
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+        },
+      });
+      
+      if (error) throw error;
+      console.log("Direct Google sign-in initiated");
+      
+    } catch (error: any) {
+      console.error("Direct Google sign-in error:", error);
+      setLocalError(error.message || "Failed to sign in with Google");
+      setIsSubmitting(false);
+    }
+  };
+
+  // Debug output of available auth functions
+  useEffect(() => {
+    console.log("Auth functions available:", {
+      signInWithGoogle: typeof signInWithGoogle,
+      signInWithEmail: typeof signInWithEmail
+    });
+  }, [signInWithGoogle, signInWithEmail]);
 
   if (isLoading) {
     return (
@@ -162,12 +205,12 @@ export default function LoginPage() {
           </div>
 
           {/* Google Sign In */}
-          <div>
+          <div className="space-y-2">
             <Button
               type="button"
               variant="outline"
               className="flex w-full items-center justify-center gap-2"
-              onClick={handleGoogleSignIn}
+              onClick={useDirectLogin ? handleDirectGoogleSignIn : handleGoogleSignIn}
               disabled={isSubmitting}
             >
               <svg viewBox="0 0 24 24" width="16" height="16">
@@ -190,8 +233,18 @@ export default function LoginPage() {
                   />
                 </g>
               </svg>
-              Sign in with Google
+              Sign in with Google {useDirectLogin ? "(Direct)" : "(Context)"}
             </Button>
+            
+            <div className="text-center text-xs">
+              <button 
+                type="button" 
+                onClick={() => setUseDirectLogin(!useDirectLogin)}
+                className="text-blue-500 hover:underline"
+              >
+                Switch to {useDirectLogin ? "context" : "direct"} login method
+              </button>
+            </div>
           </div>
 
           {/* Sign up link */}
@@ -202,6 +255,13 @@ export default function LoginPage() {
                 Sign up
               </Link>
             </p>
+          </div>
+          
+          {/* Debug link */}
+          <div className="mt-2 text-center text-xs">
+            <Link href="/test-env" className="text-gray-400 hover:text-gray-600">
+              Debug Environment
+            </Link>
           </div>
         </div>
       </div>
