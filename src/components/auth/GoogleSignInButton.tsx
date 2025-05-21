@@ -2,31 +2,43 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useAuth } from '@/lib/auth/auth-context';
-import { storeAuthRedirectPath } from '@/lib/auth/auth-utils';
+import { supabase } from '@/lib/supabase/supabase';
 
 interface GoogleSignInButtonProps {
   className?: string;
+  onSuccess?: () => void;
+  onError?: (error: Error) => void;
 }
 
-export default function GoogleSignInButton({ className = '' }: GoogleSignInButtonProps) {
-  const { signInWithGoogle } = useAuth();
+export default function GoogleSignInButton({ 
+  className = '',
+  onSuccess,
+  onError
+}: GoogleSignInButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async () => {
     try {
       setIsLoading(true);
       
-      // Store current path for redirect after login
-      storeAuthRedirectPath();
+      // Direct call to supabase auth
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: { prompt: 'select_account' }
+        }
+      });
       
-      await signInWithGoogle();
-      // Auth redirect will handle the rest
+      if (error) throw error;
+      
+      // OAuth flow will handle the redirect
+      onSuccess?.();
     } catch (error) {
       console.error('Google sign-in error:', error);
-      // Dont show error for user-cancelled popup
+      // Don't show error for user-cancelled popup
       if (error instanceof Error && !error.message.includes('popup-closed-by-user')) {
-        console.error('Error:', error);
+        onError?.(error instanceof Error ? error : new Error('Failed to sign in with Google'));
       }
     } finally {
       setIsLoading(false);
