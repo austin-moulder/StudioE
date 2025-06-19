@@ -123,6 +123,14 @@ export default function Footer() {
                   Blog
                 </Link>
               </li>
+              <li className="pt-2 border-t">
+                <Link 
+                  href="/hire-instructors" 
+                  className="text-[#FF3366] hover:text-[#9933CC] font-medium flex items-center gap-1"
+                >
+                  For Studios & Venues
+                </Link>
+              </li>
             </ul>
           </div>
 

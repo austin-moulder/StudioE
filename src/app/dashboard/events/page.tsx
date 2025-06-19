@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, Clock, MapPin, Users, Star } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, Star, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,9 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase/supabase";
 import { useAuth } from "@/lib/hooks/useAuth";
 import BackButton from "@/components/dashboard/BackButton";
+import { getSavedInstructors, SavedInstructor } from "@/lib/supabase/savedInstructorsUtils";
+import InstructorHeartButton from "@/components/InstructorHeartButton";
+import Image from "next/image";
 
 // Define basic types to avoid "never[]" errors
 type EventType = {
@@ -57,6 +60,7 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true);
   const [userEvents, setUserEvents] = useState<EventType[]>([]);
   const [userClasses, setUserClasses] = useState<ClassType[]>([]);
+  const [savedInstructors, setSavedInstructors] = useState<SavedInstructor[]>([]);
   
   useEffect(() => {
     async function fetchUserData() {
@@ -241,6 +245,16 @@ export default function EventsPage() {
           
           setUserClasses(processedClasses);
         }
+
+        // Fetch saved instructors (handle gracefully if table doesn't exist yet)
+        try {
+          const instructorsData = await getSavedInstructors(user.id);
+          setSavedInstructors(instructorsData);
+        } catch (error) {
+          console.warn('Saved instructors feature not available yet. Please run the database setup script.');
+          setSavedInstructors([]);
+        }
+
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -401,6 +415,16 @@ export default function EventsPage() {
         >
           Classes
         </button>
+        <button
+          onClick={() => setActiveTab('instructors')}
+          className={`flex-1 py-2 text-center text-sm font-medium ${
+            activeTab === 'instructors' 
+              ? 'text-[#EC407A] border-b-2 border-[#EC407A]' 
+              : 'text-gray-500'
+          }`}
+        >
+          Instructors
+        </button>
       </div>
 
       {/* Desktop tabs - hidden on mobile */}
@@ -414,6 +438,10 @@ export default function EventsPage() {
             <TabsTrigger value="classes" className="flex items-center">
               <Users className="mr-2 h-4 w-4" />
               Classes
+            </TabsTrigger>
+            <TabsTrigger value="instructors" className="flex items-center">
+              <Heart className="mr-2 h-4 w-4" />
+              Saved Instructors
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -592,6 +620,100 @@ export default function EventsPage() {
                   </p>
                   <Link href="/classes">
                     <Button>Browse Classes</Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Saved Instructors Content */}
+          {activeTab === 'instructors' && (
+            <div className="space-y-6">
+              {savedInstructors.length > 0 ? (
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {savedInstructors.map((savedItem) => (
+                    <Card 
+                      key={savedItem.id} 
+                      className="overflow-hidden flex flex-col h-full"
+                    >
+                      <div className="relative h-64 w-full">
+                        <Image
+                          src={savedItem.instructor?.image_url || '/placeholder.svg'}
+                          alt={savedItem.instructor?.name || 'Instructor'}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                        <div className="absolute top-2 right-2">
+                          <InstructorHeartButton 
+                            instructorId={savedItem.instructor_id} 
+                            className="p-2 bg-white/80 hover:bg-white rounded-full shadow-sm"
+                            showToast={false}
+                          />
+                        </div>
+                      </div>
+                      <CardContent className="p-4 flex flex-col flex-grow">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg line-clamp-1">
+                              {savedItem.instructor?.name || 'Unknown Instructor'}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              {savedItem.instructor?.style || 'Dance Instructor'}
+                            </p>
+                          </div>
+                          {savedItem.instructor?.rating && savedItem.instructor.rating > 0 && (
+                            <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full ml-2">
+                              <Star className="h-3 w-3 fill-current" />
+                              {savedItem.instructor.rating}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center text-sm text-gray-500 mb-3">
+                          <MapPin className="mr-1 h-4 w-4" />
+                          {savedItem.instructor?.location || 'Location TBA'}
+                        </div>
+                        
+                        <div className="text-sm mb-4 flex-grow">
+                          <span className="font-medium">
+                            ${savedItem.instructor?.price_lower || 0}-{savedItem.instructor?.price_upper || 0}
+                          </span>
+                          <span className="text-gray-500"> / hour</span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center mt-auto">
+                          {savedItem.instructor?.reviews_count && savedItem.instructor.reviews_count > 0 ? (
+                            <span className="text-sm text-gray-500">
+                              {savedItem.instructor.reviews_count} reviews
+                            </span>
+                          ) : (
+                            <span></span>
+                          )}
+                          <Link href={`/instructors`}>
+                            <Button 
+                              size="sm"
+                              className="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90"
+                            >
+                              View Profile
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center p-8 border rounded-lg bg-gray-50">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Heart className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-medium">No saved instructors</h3>
+                  <p className="text-gray-500 mt-1 mb-6">
+                    You haven't saved any instructors yet. Browse our instructors and save your favorites!
+                  </p>
+                  <Link href="/instructors">
+                    <Button>Browse Instructors</Button>
                   </Link>
                 </div>
               )}

@@ -23,8 +23,11 @@ import {
   ScrollText,
   AlertCircle,
   RefreshCw,
+  LayoutGrid,
   List,
-  Map
+  Map,
+  Star,
+  Heart
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -48,8 +51,9 @@ import {
 } from '@/components/ui/table'
 import { Slider } from '@/components/ui/slider'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import RSVPButton from '@/components/RSVPButton'
-import ClassesMap from '@/components/ClassesMap'
 
 // Import our utility functions and types
 import { 
@@ -63,12 +67,10 @@ import {
 // Main component
 export default function ClassesPage() {
   return (
-    <div>
+    <Suspense fallback={<ClassesLoading />}>
       <ClassesHero />
-      <Suspense fallback={<ClassesLoading />}>
-        <ClassesContent />
-      </Suspense>
-    </div>
+      <ClassesContent />
+    </Suspense>
   )
 }
 
@@ -113,6 +115,10 @@ function ClassesContent() {
   const [showSeriesOnly, setShowSeriesOnly] = useState(false)
   const [showDropInOnly, setShowDropInOnly] = useState(false)
   const [showOpenClassesOnly, setShowOpenClassesOnly] = useState(false)
+  const [showSavedInstructorsFirst, setShowSavedInstructorsFirst] = useState(false)
+  
+  // View state
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid')
   
   // Data state
   const [classes, setClasses] = useState<Class[]>([])
@@ -136,10 +142,6 @@ function ClassesContent() {
   const [companySearchTerm, setCompanySearchTerm] = useState('')
   const [showCompanySuggestions, setShowCompanySuggestions] = useState(false)
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([])
-  
-  // Map view state
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('list')
-  const [showMap, setShowMap] = useState(false)
   
   // Fetch data
   useEffect(() => {
@@ -742,10 +744,10 @@ function ClassesContent() {
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentClasses = filteredClasses.slice(indexOfFirstItem, indexOfLastItem)
-  const totalPages = Math.ceil(filteredClasses.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredClasses.length / itemsPerPage)
   
   return (
-    <>
+    <div>
       {/* Filter Section */}
       <section className="py-8 bg-gray-50">
         <div className="container">
@@ -935,24 +937,6 @@ function ClassesContent() {
                 </div>
                 
                 <div>
-                  <label className="mb-2 block text-sm font-medium">
-                    Saved Instructors First
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <input 
-                      type="checkbox" 
-                      id="saved-instructors" 
-                      className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D] rounded"
-                      checked={false} // Static for now
-                      onChange={() => {}} // Static for now
-                    />
-                    <label htmlFor="saved-instructors" className="text-sm">
-                      Show Saved Instructors First
-                    </label>
-                  </div>
-                </div>
-                
-                <div>
                   <label htmlFor="price-range" className="mb-2 block text-sm font-medium">
                     Price Range: ${priceRange[0]} - ${priceRange[1]}
                   </label>
@@ -1043,185 +1027,349 @@ function ClassesContent() {
         </div>
       </section>
       
-      {/* Classes Table Section */}
+      {/* Classes Section */}
       <section className="py-12" ref={tableRef}>
         <div className="container">
-          <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h2 className="text-2xl font-bold">
-              {loading ? 'Loading Classes...' : `${filteredClasses.length} Classes Found`}
-            </h2>
+          <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <h2 className="text-2xl font-bold">
+                {loading ? 'Loading Classes...' : `${filteredClasses.length} Classes Found`}
+              </h2>
+              
+              {/* Saved Instructors Toggle */}
+              <div className="flex items-center space-x-2 border border-[#EC407A] rounded px-3 py-2 bg-white shadow-sm">
+                <input 
+                  type="checkbox" 
+                  className="h-4 w-4 rounded-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2"
+                  id="saved-instructors"
+                  checked={showSavedInstructorsFirst}
+                  onChange={(e) => setShowSavedInstructorsFirst(e.target.checked)}
+                />
+                <label htmlFor="saved-instructors" className="text-sm font-medium leading-none">
+                  Show Saved Instructors First
+                </label>
+              </div>
+            </div>
             
             <div className="flex items-center gap-4">
-              {/* View Toggle */}
-              <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                <Button
-                  size="sm"
-                  variant={viewMode === 'list' ? 'default' : 'outline'}
-                  onClick={() => setViewMode('list')}
-                  className={`h-8 px-2 sm:px-3 ${
-                    viewMode === 'list'
-                      ? 'bg-[#EC407A] text-white hover:bg-[#EC407A]/90'
-                      : 'bg-transparent border-none hover:bg-gray-200'
-                  }`}
-                >
-                  <List className="h-4 w-4 sm:mr-1" />
-                  <span className="hidden sm:inline">List View</span>
-                </Button>
-                <Button
-                  size="sm"
-                  variant={viewMode === 'map' ? 'default' : 'outline'}
-                  onClick={() => {
-                    setViewMode('map')
-                    setShowMap(true)
-                  }}
-                  className={`h-8 px-2 sm:px-3 ${
-                    viewMode === 'map'
-                      ? 'bg-[#EC407A] text-white hover:bg-[#EC407A]/90'
-                      : 'bg-transparent border-none hover:bg-gray-200'
-                  }`}
-                >
-                  <Map className="h-4 w-4 sm:mr-1" />
-                  <span className="hidden sm:inline">Map View</span>
-                </Button>
-              </div>
+              {/* View Mode Toggle */}
+              <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'grid' | 'list' | 'map')} className="w-auto">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="grid" className="flex items-center gap-2">
+                    <LayoutGrid className="h-4 w-4" />
+                    <span className="hidden sm:inline">Grid View</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="list" className="flex items-center gap-2">
+                    <List className="h-4 w-4" />
+                    <span className="hidden sm:inline">List View</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="map" className="flex items-center gap-2">
+                    <Map className="h-4 w-4" />
+                    <span className="hidden sm:inline">Map View</span>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
               
-              {/* Items per page - only show in list view */}
-              {viewMode === 'list' && (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">Show:</span>
-                  <Select 
-                    value={itemsPerPage.toString()} 
-                    onValueChange={(value) => setItemsPerPage(Number(value))}
-                  >
-                    <SelectTrigger className="w-[80px] bg-white !bg-opacity-100">
-                      <SelectValue placeholder="20" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white !bg-opacity-100">
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="20">20</SelectItem>
-                      <SelectItem value="50">50</SelectItem>
-                      <SelectItem value="100">100</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Show:</span>
+                <Select 
+                  value={itemsPerPage.toString()} 
+                  onValueChange={(value) => setItemsPerPage(Number(value))}
+                >
+                  <SelectTrigger className="w-[80px] bg-white !bg-opacity-100">
+                    <SelectValue placeholder="20" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white !bg-opacity-100">
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
           
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#F94C8D] border-t-transparent"></div>
-            </div>
-          ) : viewMode === 'map' ? (
-            <div className="text-center py-12">
-              <div className="flex flex-col items-center justify-center space-y-4">
-                <div className="w-16 h-16 bg-[#EC407A]/10 rounded-full flex items-center justify-center">
-                  <Map className="h-8 w-8 text-[#EC407A]" />
-                </div>
-                <div className="text-gray-900 text-lg font-medium">
-                  Map View Active
-                </div>
-                <p className="text-gray-600 max-w-md">
-                  Click the "Map View" button above to open the interactive map showing all class locations
-                </p>
-                <Button 
-                  onClick={() => setShowMap(true)}
-                  className="bg-[#EC407A] text-white hover:bg-[#EC407A]/90"
-                >
-                  <Map className="h-4 w-4 mr-2" />
-                  Open Map
-                </Button>
-              </div>
+              <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#EC407A] border-t-transparent"></div>
             </div>
           ) : (
             <>
-              {currentClasses.length ? (
-                <div className="grid gap-4 md:gap-6">
-                  {currentClasses.map((classItem) => (
-                    <div 
-                      key={classItem.id} 
-                      className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
-                    >
-                      <div className="p-4 md:p-6">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                          {/* Left Section - Class Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-6">
-                              {/* Date/Time Column */}
-                              <div className="flex flex-col items-center md:items-start min-w-[120px]">
-                                <div className="text-lg font-bold text-gray-900">
-                                  {format(new Date(classItem.class_date), 'EEE, MMM d')}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                  {formatTime(classItem.start_time)}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  ({formatTime(classItem.start_time)} - {formatTime(classItem.end_time)})
-                                </div>
-                              </div>
-                              
-                              {/* Class Details Column */}
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-start justify-between mb-2">
-                                  <h3 className="text-lg font-semibold text-gray-900 truncate pr-2">
-                                    {classItem.class_name}
-                                  </h3>
-                                  <div className="flex items-center gap-2 flex-shrink-0">
-                                    {classItem.is_series_start && classItem.series_length ? (
-                                      <Badge variant="outline" className="border-[#9D4EDD] text-[#9D4EDD] bg-[#9D4EDD]/5">
-                                        Series ({classItem.series_length})
-                                      </Badge>
-                                    ) : classItem.is_drop_in === true || classItem.series_length === null ? (
-                                      <Badge variant="outline" className="border-[#EC407A] text-[#EC407A] bg-[#EC407A]/5">
-                                        Drop-in
-                                      </Badge>
-                                    ) : (
-                                      <Badge variant="outline" className="border-gray-500 text-gray-600">
-                                        Class
-                                      </Badge>
-                                    )}
-                                  </div>
-                                </div>
-                                
-                                <div className="text-sm text-gray-600 mb-1">
-                                  <span className="font-medium">{classItem.instructor}</span>
-                                </div>
-                                
-                                <div className="flex items-center text-sm text-gray-600 mb-2">
-                                  <MapPin className="mr-1 h-4 w-4 flex-shrink-0" />
-                                  <span className="truncate">
-                                    {classItem.company.name} • {classItem.company.address.split(',')[0]}
-                                  </span>
-                                </div>
-                                
-                                <div className="flex items-center gap-4">
-                                  <div className="text-lg font-bold text-[#EC407A]">
-                                    ${classItem.price}
-                                  </div>
-                                  {classItem.instructor_approval_required && (
-                                    <Badge variant="outline" className="border-amber-500 text-amber-600 bg-amber-50">
-                                      Approval Required
-                                    </Badge>
-                                  )}
-                                </div>
-                              </div>
+              {/* Grid View */}
+              {viewMode === 'grid' && (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {currentClasses.length ? (
+                    currentClasses.map((classItem) => (
+                      <Card key={classItem.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-200">
+                        <CardContent className="p-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex-1">
+                              <h3 className="font-bold text-lg line-clamp-2 mb-1">
+                                {classItem.class_name}
+                              </h3>
+                              <p className="text-sm text-gray-600 mb-2">
+                                {classItem.instructor}
+                              </p>
+                            </div>
+                            <div className="flex flex-col items-end gap-2">
+                              {classItem.is_series_start && classItem.series_length ? (
+                                <Badge variant="outline" className="border-[#EC407A] text-[#EC407A] text-xs">
+                                  Series {classItem.series_length > 0 ? `(${classItem.series_length})` : ''}
+                                </Badge>
+                              ) : classItem.is_drop_in === true || classItem.series_length === null ? (
+                                <Badge variant="outline" className="border-[#10B981] text-[#10B981] text-xs">
+                                  Drop-in
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="border-gray-500 text-gray-600 text-xs">
+                                  Class
+                                </Badge>
+                              )}
                             </div>
                           </div>
                           
-                          {/* Right Section - Actions */}
-                          <div className="flex flex-col sm:flex-row gap-2 md:flex-col md:items-end">
+                          <div className="space-y-2 mb-4">
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Calendar className="mr-2 h-4 w-4 text-[#EC407A]" />
+                              <span className="font-medium">{formatDate(classItem.class_date)}</span>
+                            </div>
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Clock className="mr-2 h-4 w-4 text-[#EC407A]" />
+                              <span>{formatTime(classItem.start_time)} - {formatTime(classItem.end_time)}</span>
+                            </div>
+                            <div className="flex items-center text-sm text-gray-600">
+                              <MapPin className="mr-2 h-4 w-4 text-[#EC407A]" />
+                              <span className="line-clamp-1">{classItem.company.name}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex justify-between items-center mb-4">
+                            <div className="text-lg font-bold text-[#EC407A]">
+                              ${classItem.price}
+                            </div>
+                            {classItem.instructor_approval_required && (
+                              <Badge variant="outline" className="border-amber-500 text-amber-600 text-xs">
+                                Approval Required
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          <div className="flex gap-2">
                             <Button 
                               size="sm"
                               variant="outline"
-                              className="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10 min-w-[80px]"
+                              className="flex-1 border-[#EC407A] text-[#EC407A] hover:bg-[#EC407A]/10"
                               onClick={() => {
-                                // Create email inquiry
                                 const subject = `Inquiry about ${classItem.class_name} dance class`;
                                 const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
-                                
                                 window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                               }}
                             >
+                              Inquire
+                            </Button>
+                            <RSVPButton
+                              classId={classItem.id.toString()}
+                              className={classItem.class_name}
+                              instructorId={classItem.instructor}
+                              buttonText="RSVP"
+                              buttonSize="sm"
+                              buttonVariant="default"
+                              buttonClassName="flex-1 bg-[#EC407A] text-white hover:bg-[#EC407A]/90"
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="col-span-full flex flex-col items-center justify-center py-12">
+                      <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No classes found</h3>
+                      <p className="text-gray-500 mb-4">No classes match your current filters.</p>
+                      <Button 
+                        onClick={resetFilters}
+                        variant="outline" 
+                        className="border-[#EC407A] text-[#EC407A] hover:bg-[#EC407A]/10"
+                      >
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Reset Filters
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* List View */}
+              {viewMode === 'list' && (
+                <div className="overflow-hidden rounded-lg border shadow">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-gray-50">
+                        <TableHead className="font-semibold">Class</TableHead>
+                        <TableHead className="font-semibold">Date & Time</TableHead>
+                        <TableHead className="font-semibold">Studio</TableHead>
+                        <TableHead className="font-semibold">Instructor</TableHead>
+                        <TableHead className="font-semibold text-center">Price</TableHead>
+                        <TableHead className="font-semibold text-center">Type</TableHead>
+                        <TableHead className="font-semibold text-center w-20">Approval</TableHead>
+                        <TableHead className="font-semibold text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {currentClasses.length ? (
+                        currentClasses.map((classItem) => (
+                          <TableRow key={classItem.id} className="hover:bg-gray-50">
+                            <TableCell className="font-medium">
+                              {classItem.class_name}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-col">
+                                <span className="flex items-center">
+                                  <Calendar className="mr-1 h-4 w-4 text-gray-500" />
+                                  {formatDate(classItem.class_date)}
+                                </span>
+                                <span className="flex items-center text-sm text-gray-600">
+                                  <Clock className="mr-1 h-3 w-3" />
+                                  {formatTime(classItem.start_time)} - {formatTime(classItem.end_time)}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-col">
+                                <span>{classItem.company.name}</span>
+                                <span className="flex items-center text-sm text-gray-600">
+                                  <MapPin className="mr-1 h-3 w-3" />
+                                  {classItem.company.address.split(',')[0]}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell>{classItem.instructor}</TableCell>
+                            <TableCell className="text-center">
+                              <span className="text-[#EC407A] font-semibold">
+                                ${classItem.price}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-center">
+                              {classItem.is_series_start && classItem.series_length ? (
+                                <Badge variant="outline" className="border-[#EC407A] text-[#EC407A]">
+                                  Series {classItem.series_length > 0 ? `(${classItem.series_length})` : ''}
+                                </Badge>
+                              ) : classItem.is_drop_in === true || classItem.series_length === null ? (
+                                <Badge variant="outline" className="border-[#10B981] text-[#10B981]">
+                                  Drop-in
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="border-gray-500 text-gray-600">
+                                  Class
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-center">
+                              {classItem.instructor_approval_required ? (
+                                <Badge variant="outline" className="border-amber-500 text-amber-600">
+                                  Required
+                                </Badge>
+                              ) : (
+                                <span className="text-sm text-gray-500">-</span>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex space-x-2 justify-end">
+                                <Button 
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-[#EC407A] text-[#EC407A] hover:bg-[#EC407A]/10"
+                                  onClick={() => {
+                                    const subject = `Inquiry about ${classItem.class_name} dance class`;
+                                    const body = `Hello,\n\nI'm interested in the following class:\n\nClass: ${classItem.class_name}\nInstructor: ${classItem.instructor}\nDate: ${format(new Date(classItem.class_date), 'MMM d, yyyy')}\nTime: ${formatTime(classItem.start_time)} - ${formatTime(classItem.end_time)}\nLocation: ${classItem.company.name} (${classItem.company.address})\n\nPlease provide more information about this class and how I can register.\n\nThank you!`;
+                                    window.location.href = `mailto:${classItem.company.email}?cc=studioelatindance@gmail.com&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                                  }}
+                                >
+                                  Inquire
+                                </Button>
+                                <RSVPButton
+                                  classId={classItem.id.toString()}
+                                  className={classItem.class_name}
+                                  instructorId={classItem.instructor}
+                                  buttonText="RSVP"
+                                  buttonSize="sm"
+                                  buttonVariant="default"
+                                  buttonClassName="bg-[#EC407A] text-white hover:bg-[#EC407A]/90"
+                                />
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={8} className="h-24 text-center">
+                            <div className="flex flex-col items-center justify-center space-y-4 py-6">
+                              <div className="text-gray-500 flex items-center">
+                                <AlertCircle className="h-5 w-5 mr-2 text-amber-500" />
+                                No classes found matching your filters.
+                              </div>
+                              <Button 
+                                onClick={resetFilters}
+                                variant="outline" 
+                                className="border-[#EC407A] text-[#EC407A] hover:bg-[#EC407A]/10"
+                              >
+                                <RefreshCw className="h-4 w-4 mr-2" />
+                                Reset Filters
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+              
+              {/* Map View */}
+              {viewMode === 'map' && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[600px]">
+                  {/* Class List on Left */}
+                  <div className="space-y-4 overflow-y-auto pr-4">
+                    <h3 className="font-semibold text-lg mb-4">Classes in Chicago, Illinois</h3>
+                    {currentClasses.length ? (
+                      currentClasses.map((classItem) => (
+                        <Card key={classItem.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h4 className="font-semibold">{classItem.class_name}</h4>
+                              <p className="text-sm text-gray-600">{classItem.instructor}</p>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-[#EC407A] font-bold">${classItem.price}</div>
+                              {classItem.is_series_start && classItem.series_length ? (
+                                <Badge variant="outline" className="border-[#EC407A] text-[#EC407A] text-xs">
+                                  Series
+                                </Badge>
+                              ) : (
+                                <Badge variant="outline" className="border-[#10B981] text-[#10B981] text-xs">
+                                  Drop-in
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-sm text-gray-600 mb-3">
+                            <div className="flex items-center gap-4">
+                              <span className="flex items-center">
+                                <Calendar className="mr-1 h-3 w-3" />
+                                {formatDate(classItem.class_date)}
+                              </span>
+                              <span className="flex items-center">
+                                <Clock className="mr-1 h-3 w-3" />
+                                {formatTime(classItem.start_time)}
+                              </span>
+                            </div>
+                            <div className="flex items-center mt-1">
+                              <MapPin className="mr-1 h-3 w-3" />
+                              {classItem.company.name}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline" className="flex-1 text-xs border-[#EC407A] text-[#EC407A]">
                               DETAILS
                             </Button>
                             <RSVPButton
@@ -1231,38 +1379,30 @@ function ClassesContent() {
                               buttonText="RSVP"
                               buttonSize="sm"
                               buttonVariant="default"
-                              buttonClassName="bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90 min-w-[80px]"
+                              buttonClassName="flex-1 bg-[#EC407A] text-white hover:bg-[#EC407A]/90 text-xs"
                             />
                           </div>
-                        </div>
+                        </Card>
+                      ))
+                    ) : (
+                      <div className="text-center py-8">
+                        <AlertCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-500">No classes found</p>
                       </div>
+                    )}
+                  </div>
+                  
+                  {/* Map Placeholder on Right */}
+                  <div className="bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <Map className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600 font-medium">Interactive Map View</p>
+                      <p className="text-sm text-gray-500 mt-1">Coming Soon</p>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="flex flex-col items-center justify-center space-y-4">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                      <AlertCircle className="h-8 w-8 text-gray-400" />
-                    </div>
-                    <div className="text-gray-500 text-lg font-medium">
-                      No classes found matching your filters
-                    </div>
-                    <p className="text-gray-400 max-w-md">
-                      Try adjusting your search criteria or clearing filters to see more results
-                    </p>
-                    <Button 
-                      onClick={resetFilters}
-                      variant="outline" 
-                      className="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10"
-                    >
-                      <RefreshCw className="h-4 w-4 mr-2" />
-                      Reset Filters
-                    </Button>
                   </div>
                 </div>
               )}
-
+                
               
               {/* Pagination */}
               {totalPages > 1 && (
@@ -1332,7 +1472,7 @@ function ClassesContent() {
                   </div>
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
       </section>
@@ -1391,17 +1531,6 @@ function ClassesContent() {
           </div>
         </div>
       </section>
-      
-      {/* Map Modal */}
-      {showMap && (
-        <ClassesMap 
-          classes={filteredClasses} 
-          onClose={() => {
-            setShowMap(false)
-            setViewMode('list')
-          }} 
-        />
-      )}
-    </>
+    </div>
   )
 } 

@@ -15,6 +15,7 @@ import { Suspense } from "react"
 import { Instructor } from "@/types/instructor"
 import { createClient } from '@supabase/supabase-js'
 import { generateInstructorSlug } from '@/lib/instructors/instructorUtils'
+import InstructorHeartButton from '@/components/InstructorHeartButton'
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -639,12 +640,18 @@ function InstructorsContent() {
                       </h3>
                         <p className="text-sm text-gray-500">{instructor.danceStyles.join(" & ")}</p>
                     </div>
-                    {instructor.reviews > 0 && (
-                      <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
-                        <Star className="h-3 w-3 fill-current" />
-                        {instructor.rating}
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {instructor.reviews > 0 && (
+                        <div className="flex items-center gap-1 bg-[#9D4EDD] text-white px-2 py-1 rounded-full">
+                          <Star className="h-3 w-3 fill-current" />
+                          {instructor.rating}
+                        </div>
+                      )}
+                      <InstructorHeartButton 
+                        instructorId={instructor.id} 
+                        className="p-1 hover:bg-gray-100 rounded-full"
+                      />
+                    </div>
                   </div>
                   <div className="mt-4 flex items-center text-sm text-gray-500">
                     <MapPin className="mr-1 h-4 w-4" />
@@ -802,58 +809,106 @@ function InstructorsContent() {
       {/* CTA Sections */}
       <section className="py-16 bg-gray-50">
         <div className="container">
-          <div className="grid gap-8 md:grid-cols-2 items-center">
+          <div className="grid gap-12 lg:grid-cols-2 items-center">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">Are You a Dance Instructor?</h2>
-              <p className="mt-4 text-lg text-gray-500">
+              <h2 className="text-4xl font-bold tracking-tight mb-6">Are You a Dance Instructor?</h2>
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 Join our community of professional dance instructors and connect with students who are eager to learn.
               </p>
-              <ul className="mt-6 space-y-2">
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Set your own rates and availability</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Turn your side hustle into your main hustle</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Discounted rates for training spaces (coming soon)</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Connect with students in your area</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Establish credibility in the community</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Automate recurring payments and schedule instant payouts (coming soon)</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="mr-2 h-5 w-5 text-[#FF3366]">✓</div>
-                  <span>Access business experts dedicated to helping you grow</span>
-                </li>
-              </ul>
-              <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                <Link href="/become-instructor">
-                  <Button size="lg" className="bg-[#F94C8D] hover:bg-[#F94C8D]/90">Apply to Teach</Button>
-                </Link>
-                <Link href="/dance-business-consulting">
-                  <Button size="lg" variant="outline">Grow Your Business</Button>
-                </Link>
-                <Link href="/dance-certifications">
-                  <Button size="lg" className="bg-[#9333EA] hover:bg-[#9333EA]/90 text-white">Get Certified</Button>
-                </Link>
-                <Link href="/find-dance-space">
-                  <Button size="lg" variant="outline">Find a Space</Button>
-                </Link>
+              
+              {/* Benefits List */}
+              <div className="grid gap-4 mb-8">
+                <div className="flex items-start">
+                  <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0 mt-0.5">✓</div>
+                  <span className="text-gray-700">Set your own rates and availability</span>
+                </div>
+                <div className="flex items-start">
+                  <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0 mt-0.5">✓</div>
+                  <span className="text-gray-700">Turn your side hustle into your main hustle</span>
+                </div>
+                <div className="flex items-start">
+                  <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0 mt-0.5">✓</div>
+                  <span className="text-gray-700">Discounted rates for training spaces (coming soon)</span>
+                </div>
+                <div className="flex items-start">
+                  <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0 mt-0.5">✓</div>
+                  <span className="text-gray-700">Connect with students in your area</span>
+                </div>
+                <div className="flex items-start">
+                  <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0 mt-0.5">✓</div>
+                  <span className="text-gray-700">Establish credibility in the community</span>
+                </div>
+                <div className="flex items-start">
+                  <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0 mt-0.5">✓</div>
+                  <span className="text-gray-700">Automate recurring payments and schedule instant payouts (coming soon)</span>
+                </div>
+                <div className="flex items-start">
+                  <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0 mt-0.5">✓</div>
+                  <span className="text-gray-700">Access business experts dedicated to helping you grow</span>
+                </div>
+                <div className="flex items-start">
+                  <div className="mr-3 h-6 w-6 text-[#FF3366] flex-shrink-0 mt-0.5">✓</div>
+                  <span className="text-gray-700">Join our exclusive mentoring program to accelerate your teaching skills</span>
+                </div>
+              </div>
+
+              {/* Action Buttons - Organized Layout */}
+              <div className="space-y-6">
+                {/* Primary Action */}
+                <div>
+                  <Link href="/become-instructor">
+                    <Button size="lg" className="bg-[#F94C8D] hover:bg-[#F94C8D]/90 text-white font-semibold px-8 py-3 text-lg">
+                      Apply to Teach
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Secondary Actions Grid */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Link href="/mentoring-program">
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#FF3366]/90 hover:to-[#9933CC]/90 text-white font-semibold"
+                    >
+                      Join Mentoring Program
+                    </Button>
+                  </Link>
+                  <Link href="/dance-business-consulting">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="w-full border-2 border-[#FF3366] text-[#FF3366] hover:bg-[#FF3366] hover:text-white font-semibold"
+                    >
+                      Grow Your Business
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Tertiary Actions Grid */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Link href="/dance-certifications">
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-[#9333EA] hover:bg-[#9333EA]/90 text-white font-semibold"
+                    >
+                      Get Certified
+                    </Button>
+                  </Link>
+                  <Link href="/find-dance-space">
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="w-full border-2 border-[#9333EA] text-[#9333EA] hover:bg-[#9333EA] hover:text-white font-semibold"
+                    >
+                      Find a Space
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
-            <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-200">
+            
+            {/* Image Section */}
+            <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gray-200 shadow-lg">
               <Image
                 src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Adrian_1.jpg"
                 alt="Dance instructor teaching"
@@ -861,6 +916,7 @@ function InstructorsContent() {
                 className="object-cover object-[50%_35%]"
                 priority
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
           </div>
         </div>
