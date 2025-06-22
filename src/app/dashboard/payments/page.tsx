@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { redirect } from "next/navigation";
-import { CreditCard, Receipt, ArrowLeft, Clock, Calendar, Download, PlusCircle, AlertCircle } from "lucide-react";
+import { redirect, useSearchParams } from "next/navigation";
+import { CreditCard, Receipt, ArrowLeft, Clock, Calendar, Download, PlusCircle, AlertCircle, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,75 +11,85 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import Image from "next/image";
 import BackButton from "@/components/dashboard/BackButton";
+import { getStripe, PRODUCTS, ProductKey } from "@/lib/stripe/config";
+import { supabase } from "@/lib/supabase/client";
 
-// Mock payment history data
-const PAYMENT_HISTORY = [
-  {
-    id: "INV-001",
-    date: new Date().toISOString().split('T')[0], // Today's date as default
-    description: "Virtual Consultation with Studio E Specialist",
-    amount: 0.00,
-    status: "completed"
-  }
-];
-
-// Mock saved payment methods
-const PAYMENT_METHODS = [
-  {
-    id: "pm_1",
-    type: "visa",
-    last4: "4242",
-    expiryMonth: "12",
-    expiryYear: "2025",
-    isDefault: true
-  },
-  {
-    id: "pm_2",
-    type: "mastercard",
-    last4: "5555",
-    expiryMonth: "10",
-    expiryYear: "2024",
-    isDefault: false
-  }
-];
+// Types
+interface Payment {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  product_key: string;
+  created_at: string;
+  stripe_payment_intent_id: string;
+}
 
 // Format date for display
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric' } as Intl.DateTimeFormatOptions;
   return new Date(dateString).toLocaleDateString('en-US', options);
 };
 
+// Format amount from cents to dollars
+const formatAmount = (cents: number) => {
+  return (cents / 100).toFixed(2);
+};
+
 export default function PaymentsPage() {
   const { user, isLoading } = useAuth();
+  const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState({
     download: false as boolean | string,
-    checkout: false
+    checkout: false as boolean | string
   });
-  const [paymentHistory, setPaymentHistory] = useState(PAYMENT_HISTORY);
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [paymentsLoading, setPaymentsLoading] = useState(true);
   
   useEffect(() => {
     setMounted(true);
     
-    // Update the payment date if user exists
-    if (user) {
-      try {
-        // Try to get the created time from user data
-        // Assuming the created time is available in some form from user
-        const userCreatedTime = user.email_confirmed_at || new Date();
-        const signupDate = new Date(userCreatedTime);
-        const formattedDate = signupDate.toISOString().split('T')[0];
-        
-        // Update the payment history with the signup date
-        setPaymentHistory([{
-          ...PAYMENT_HISTORY[0],
-          date: formattedDate
-        }]);
-      } catch (error) {
-        console.error('Error setting user signup date:', error);
-        // Keep using default date if there's an error
+    // Check for success/cancel from Stripe
+    if (searchParams) {
+      const success = searchParams.get('success');
+      const canceled = searchParams.get('canceled');
+      
+      if (success) {
+        toast.success('Payment successful! Thank you for your purchase.');
+      } else if (canceled) {
+        toast.error('Payment was canceled.');
       }
     }
+  }, [searchParams]);
+
+  // Fetch real payments from database
+  useEffect(() => {
+    async function fetchPayments() {
+      if (!user?.id) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('payments')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching payments:', error);
+          toast.error('Failed to load payment history');
+        } else {
+          setPayments(data || []);
+        }
+      } catch (error) {
+        console.error('Error fetching payments:', error);
+        toast.error('Failed to load payment history');
+      } finally {
+        setPaymentsLoading(false);
+      }
+    }
+
+    fetchPayments();
   }, [user]);
 
   // If not mounted yet, don't render anything to avoid hydration mismatch
@@ -100,36 +110,66 @@ export default function PaymentsPage() {
     );
   }
   
-  const handleDownloadInvoice = (invoiceId) => {
-    setLoading(prev => ({ ...prev, download: invoiceId }));
+  const handleDownloadInvoice = (paymentId: string) => {
+    setLoading(prev => ({ ...prev, download: paymentId }));
     
-    // Simulate download delay
+    // Simulate download delay - in a real app, you'd generate and download a PDF
     setTimeout(() => {
       setLoading(prev => ({ ...prev, download: false }));
-      toast.success(`Invoice ${invoiceId} downloaded successfully`);
+      toast.success(`Invoice downloaded successfully`);
     }, 1000);
   };
   
-  const handleCheckout = () => {
-    setLoading(prev => ({ ...prev, checkout: true }));
+  const handleCheckout = async (productKey: ProductKey) => {
+    if (!user?.id || !user?.email) {
+      toast.error('Please log in to make a purchase');
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, checkout: productKey }));
     
-    // Simulate checkout process
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/stripe/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productKey,
+          userId: user.id,
+          userEmail: user.email,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+
+      // Redirect to Stripe Checkout
+      const stripe = await getStripe();
+      if (!stripe) {
+        throw new Error('Stripe failed to load');
+      }
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+    } catch (error: any) {
+      console.error('Checkout error:', error);
+      toast.error(error.message || 'Failed to start checkout process');
+    } finally {
       setLoading(prev => ({ ...prev, checkout: false }));
-      toast.info("This is a demo. Checkout functionality is not active.");
-    }, 1500);
+    }
   };
   
   const handleAddPaymentMethod = () => {
-    toast.info("This is a demo. Adding payment methods is not active.");
-  };
-  
-  const handleRemovePaymentMethod = (id) => {
-    toast.info("This is a demo. Removing payment methods is not active.");
-  };
-  
-  const handleSetDefaultPaymentMethod = (id) => {
-    toast.info("This is a demo. Setting default payment method is not active.");
+    toast.info("Payment methods are managed through Stripe during checkout.");
   };
 
   return (
@@ -148,10 +188,6 @@ export default function PaymentsPage() {
             <TabsTrigger value="history" className="flex items-center whitespace-nowrap">
               <Receipt className="mr-2 h-4 w-4" />
               <span>Payment History</span>
-            </TabsTrigger>
-            <TabsTrigger value="methods" className="flex items-center whitespace-nowrap">
-              <CreditCard className="mr-2 h-4 w-4" />
-              <span>Payment Methods</span>
             </TabsTrigger>
             <TabsTrigger value="checkout" className="flex items-center whitespace-nowrap">
               <PlusCircle className="mr-2 h-4 w-4" />
@@ -173,12 +209,16 @@ export default function PaymentsPage() {
               </p>
             </CardHeader>
             <CardContent>
-              {paymentHistory.length > 0 ? (
+              {paymentsLoading ? (
+                <div className="text-center py-10">
+                  <div className="w-8 h-8 border-4 border-[#EC407A] border-t-transparent rounded-full animate-spin mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading payment history...</p>
+                </div>
+              ) : payments.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="py-2 px-4 text-left text-sm font-medium text-gray-500">Invoice</th>
                         <th className="py-2 px-4 text-left text-sm font-medium text-gray-500">Date</th>
                         <th className="py-2 px-4 text-left text-sm font-medium text-gray-500">Description</th>
                         <th className="py-2 px-4 text-left text-sm font-medium text-gray-500">Amount</th>
@@ -187,15 +227,27 @@ export default function PaymentsPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {paymentHistory.map((payment) => (
+                      {payments.map((payment) => (
                         <tr key={payment.id} className="border-b hover:bg-gray-50">
-                          <td className="py-3 px-4 text-sm">{payment.id}</td>
-                          <td className="py-3 px-4 text-sm">{formatDate(payment.date)}</td>
-                          <td className="py-3 px-4 text-sm">{payment.description}</td>
-                          <td className="py-3 px-4 text-sm font-medium">${payment.amount.toFixed(2)}</td>
+                          <td className="py-3 px-4 text-sm">{formatDate(payment.created_at)}</td>
                           <td className="py-3 px-4 text-sm">
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              {payment.status === 'completed' ? 'Paid' : payment.status}
+                            {PRODUCTS[payment.product_key as ProductKey]?.name || payment.product_key}
+                          </td>
+                          <td className="py-3 px-4 text-sm font-medium">${formatAmount(payment.amount)}</td>
+                          <td className="py-3 px-4 text-sm">
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                              payment.status === 'succeeded' 
+                                ? 'bg-green-100 text-green-800'
+                                : payment.status === 'failed'
+                                ? 'bg-red-100 text-red-800'
+                                : 'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {payment.status === 'succeeded' ? (
+                                <>
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  Paid
+                                </>
+                              ) : payment.status}
                             </span>
                           </td>
                           <td className="py-3 px-4 text-right">
@@ -260,114 +312,6 @@ export default function PaymentsPage() {
           </Card>
         </TabsContent>
         
-        {/* Payment Methods Tab */}
-        <TabsContent value="methods" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <CreditCard className="mr-2 h-5 w-5 text-[#EC407A]" />
-                Your Payment Methods
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Manage your saved payment methods for faster checkout
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {PAYMENT_METHODS.map((method) => (
-                  <div key={method.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center">
-                      {method.type === 'visa' && (
-                        <div className="w-12 h-8 relative mr-3">
-                          <div className="absolute inset-0 bg-blue-600 rounded-md flex items-center justify-center">
-                            <div className="text-white font-bold text-sm">VISA</div>
-                          </div>
-                        </div>
-                      )}
-                      {method.type === 'mastercard' && (
-                        <div className="w-12 h-8 relative mr-3">
-                          <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-500 rounded-md flex items-center justify-center">
-                            <div className="text-white font-bold text-[9px]">MASTERCARD</div>
-                          </div>
-                        </div>
-                      )}
-                      <div>
-                        <p className="font-medium">
-                          {method.type.charAt(0).toUpperCase() + method.type.slice(1)} ending in {method.last4}
-                          {method.isDefault && <span className="ml-2 text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">Default</span>}
-                        </p>
-                        <p className="text-sm text-gray-500">Expires {method.expiryMonth}/{method.expiryYear}</p>
-                      </div>
-                    </div>
-                    <div className="space-x-2">
-                      {!method.isDefault && (
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleSetDefaultPaymentMethod(method.id)}
-                        >
-                          Set Default
-                        </Button>
-                      )}
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="border-red-500 text-red-500 hover:bg-red-50"
-                        onClick={() => handleRemovePaymentMethod(method.id)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                
-                <Button 
-                  variant="outline" 
-                  className="w-full mt-4 border-dashed"
-                  onClick={handleAddPaymentMethod}
-                >
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Add Payment Method
-                </Button>
-                
-                <div className="mt-4 text-xs text-gray-500 flex items-center justify-center space-x-4">
-                  <span className="flex items-center">
-                    <div className="w-8 h-5 relative mr-1">
-                      <div className="absolute inset-0 bg-blue-600 rounded-md flex items-center justify-center">
-                        <div className="text-white font-bold text-[8px]">VISA</div>
-                      </div>
-                    </div>
-                    Visa
-                  </span>
-                  <span className="flex items-center">
-                    <div className="w-8 h-5 relative mr-1">
-                      <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-500 rounded-md flex items-center justify-center">
-                        <div className="text-white font-bold text-[6px]">MASTERCARD</div>
-                      </div>
-                    </div>
-                    Mastercard
-                  </span>
-                  <span className="flex items-center">
-                    <div className="w-8 h-5 relative mr-1">
-                      <div className="absolute inset-0 bg-gray-800 rounded-md flex items-center justify-center">
-                        <div className="text-white font-bold text-[8px]">AMEX</div>
-                      </div>
-                    </div>
-                    Amex
-                  </span>
-                </div>
-                
-                <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-                  <h3 className="text-sm font-medium mb-2">Secure Payments</h3>
-                  <p className="text-xs text-gray-500">
-                    All payments are processed securely through our payment provider. We never store your full card details on our servers.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
         {/* Checkout Tab */}
         <TabsContent value="checkout" className="space-y-6">
           <Card>
@@ -385,61 +329,63 @@ export default function PaymentsPage() {
                 {/* Live Studio E-valuation */}
                 <div className="border rounded-lg p-4 hover:shadow-md transition-shadow flex flex-col justify-between h-[360px]">
                   <div>
-                    <h3 className="text-lg font-bold mb-2">Live Studio E-valuation</h3>
-                    <div className="text-2xl font-bold text-[#EC407A] mb-1">$49</div>
-                    <div className="text-sm text-gray-500 mb-3">30-minute consultation session</div>
+                    <h3 className="text-lg font-bold mb-2">{PRODUCTS.STUDIO_EVALUATION.name}</h3>
+                    <div className="text-2xl font-bold text-[#EC407A] mb-1">${formatAmount(PRODUCTS.STUDIO_EVALUATION.price)}</div>
+                    <div className="text-sm text-gray-500 mb-3">{PRODUCTS.STUDIO_EVALUATION.description}</div>
                     <ul className="mb-4 space-y-2 text-sm">
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Work with a Studio E specialist
-                      </li>
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Diagnose your dance goals
-                      </li>
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Build a personalized plan
-                      </li>
+                      {PRODUCTS.STUDIO_EVALUATION.features.map((feature, index) => (
+                        <li key={index} className="flex items-center">
+                          <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          {feature}
+                        </li>
+                      ))}
                     </ul>
                   </div>
-                  <Button className="w-full mt-auto">Get Started</Button>
+                  <Button 
+                    className="w-full mt-auto"
+                    onClick={() => handleCheckout('STUDIO_EVALUATION')}
+                    disabled={loading.checkout === 'STUDIO_EVALUATION'}
+                  >
+                    {loading.checkout === 'STUDIO_EVALUATION' ? (
+                      <>
+                        <div className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                        Processing...
+                      </>
+                    ) : "Get Started"}
+                  </Button>
                 </div>
                 
                 {/* Single Instructor Experience */}
                 <div className="border rounded-lg p-4 hover:shadow-md transition-shadow flex flex-col justify-between h-[360px]">
                   <div>
-                    <h3 className="text-lg font-bold mb-2">Single Instructor Experience</h3>
-                    <div className="text-2xl font-bold text-[#EC407A] mb-1">$99</div>
-                    <div className="text-sm text-gray-500 mb-3">1-hour introductory session</div>
+                    <h3 className="text-lg font-bold mb-2">{PRODUCTS.SINGLE_INSTRUCTOR.name}</h3>
+                    <div className="text-2xl font-bold text-[#EC407A] mb-1">${formatAmount(PRODUCTS.SINGLE_INSTRUCTOR.price)}</div>
+                    <div className="text-sm text-gray-500 mb-3">{PRODUCTS.SINGLE_INSTRUCTOR.description}</div>
                     <ul className="mb-4 space-y-2 text-sm">
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        One private lesson with an instructor
-                      </li>
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Focused teaching on your specific needs
-                      </li>
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Personalized feedback and next steps
-                      </li>
+                      {PRODUCTS.SINGLE_INSTRUCTOR.features.map((feature, index) => (
+                        <li key={index} className="flex items-center">
+                          <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          {feature}
+                        </li>
+                      ))}
                     </ul>
                   </div>
-                  <Button className="w-full mt-auto">Select Package</Button>
+                  <Button 
+                    className="w-full mt-auto"
+                    onClick={() => handleCheckout('SINGLE_INSTRUCTOR')}
+                    disabled={loading.checkout === 'SINGLE_INSTRUCTOR'}
+                  >
+                    {loading.checkout === 'SINGLE_INSTRUCTOR' ? (
+                      <>
+                        <div className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                        Processing...
+                      </>
+                    ) : "Select Package"}
+                  </Button>
                 </div>
                 
                 {/* Multi-instructor Experience */}
@@ -448,36 +394,26 @@ export default function PaymentsPage() {
                     <div className="absolute -top-3 right-4 bg-[#EC407A] text-white text-xs px-2 py-1 rounded-full font-medium">
                       Best Value
                     </div>
-                    <h3 className="text-lg font-bold mb-2">Multi-instructor Experience</h3>
-                    <div className="text-2xl font-bold text-[#EC407A] mb-1">$449</div>
-                    <div className="text-sm text-gray-500 mb-3">5 one-hour sessions with different instructors</div>
+                    <h3 className="text-lg font-bold mb-2">{PRODUCTS.MULTI_INSTRUCTOR.name}</h3>
+                    <div className="text-2xl font-bold text-[#EC407A] mb-1">${formatAmount(PRODUCTS.MULTI_INSTRUCTOR.price)}</div>
+                    <div className="text-sm text-gray-500 mb-3">{PRODUCTS.MULTI_INSTRUCTOR.description}</div>
                     <ul className="mb-4 space-y-2 text-sm">
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        5 private lessons with up to 5 instructors
-                      </li>
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Experience diverse teaching styles
-                      </li>
-                      <li className="flex items-center">
-                        <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Comprehensive progress tracking
-                      </li>
+                      {PRODUCTS.MULTI_INSTRUCTOR.features.map((feature, index) => (
+                        <li key={index} className="flex items-center">
+                          <svg className="h-4 w-4 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          {feature}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                   <Button 
                     className="w-full bg-[#EC407A] hover:bg-[#EC407A]/90 mt-auto"
-                    onClick={handleCheckout}
-                    disabled={loading.checkout}
+                    onClick={() => handleCheckout('MULTI_INSTRUCTOR')}
+                    disabled={loading.checkout === 'MULTI_INSTRUCTOR'}
                   >
-                    {loading.checkout ? (
+                    {loading.checkout === 'MULTI_INSTRUCTOR' ? (
                       <>
                         <div className="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
                         Processing...
@@ -487,16 +423,16 @@ export default function PaymentsPage() {
                 </div>
               </div>
               
-              <div className="mt-6 rounded-md border border-yellow-100 bg-yellow-50 p-4">
+              <div className="mt-6 rounded-md border border-green-100 bg-green-50 p-4">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <AlertCircle className="h-5 w-5 text-yellow-400" />
+                    <CheckCircle className="h-5 w-5 text-green-400" />
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-sm font-medium text-yellow-800">Demo Mode</h3>
-                    <div className="mt-2 text-sm text-yellow-700">
+                    <h3 className="text-sm font-medium text-green-800">Secure Payments</h3>
+                    <div className="mt-2 text-sm text-green-700">
                       <p>
-                        This is a demonstration. Payment buttons are not active. In a live environment, clicking these buttons would take you to a secure checkout page.
+                        All payments are processed securely through Stripe. Your card information is never stored on our servers.
                       </p>
                     </div>
                   </div>

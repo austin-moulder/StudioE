@@ -344,11 +344,12 @@ export default function Dashboard() {
           <div className="relative h-64 rounded-xl overflow-hidden shadow-lg group cursor-pointer">
             <Link href="/dashboard/events">
               <div 
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-300 group-hover:scale-105"
+                className="absolute inset-0 bg-cover bg-no-repeat transition-transform duration-300 group-hover:scale-105"
                 style={{
                   backgroundImage: upcomingEvent?.image_url 
                     ? `url(${upcomingEvent.image_url})` 
-                    : 'url(https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/dashboard_2.jpg)'
+                    : 'url(https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/dashboard_2.jpg)',
+                  backgroundPosition: upcomingEvent?.image_url ? 'center' : 'center top'
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
