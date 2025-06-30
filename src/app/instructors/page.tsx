@@ -852,23 +852,52 @@ function InstructorsContent() {
                 </div>
               </div>
 
-              {/* Action Buttons - Organized Layout */}
+              {/* Action Buttons - Simplified Layout */}
               <div className="space-y-6">
-                {/* Primary Action */}
-                <div>
+                {/* Primary Actions */}
+                <div className="grid sm:grid-cols-2 gap-4">
                   <Link href="/become-instructor">
-                    <Button size="lg" className="bg-[#F94C8D] hover:bg-[#F94C8D]/90 text-white font-semibold px-8 py-3 text-lg">
+                    <Button size="lg" className="w-full bg-[#F94C8D] hover:bg-[#F94C8D]/90 text-white font-semibold px-8 py-3 text-lg">
                       Apply to Teach
                     </Button>
                   </Link>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="w-full border-2 border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D] hover:text-white font-semibold px-8 py-3 text-lg"
+                    onClick={() => {
+                      const subject = "Application to Become a Substitute Instructor";
+                      const body = `Hi Studio E Team,
+
+I am interested in signing up as a substitute instructor for my city. I understand that this means I will be contacted when local instructors are looking for paid replacements.
+
+Please provide me with more information about:
+- The substitute instructor program
+- Requirements and qualifications
+- How the replacement process works
+- Payment structure for substitute work
+
+My location: [Please specify your city]
+
+Thank you for your time and I look forward to hearing from you!
+
+Best regards,
+[Your Name]`;
+                      
+                      window.location.href = `mailto:studioelatindance@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                    }}
+                  >
+                    Apply to Substitute
+                  </Button>
                 </div>
 
-                {/* Secondary Actions Grid */}
+                {/* Secondary Actions */}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Link href="/mentoring-program">
                     <Button 
                       size="lg" 
-                      className="w-full bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#FF3366]/90 hover:to-[#9933CC]/90 text-white font-semibold"
+                      variant="outline"
+                      className="w-full border-2 border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D] hover:text-white font-semibold"
                     >
                       Join Mentoring Program
                     </Button>
@@ -877,19 +906,16 @@ function InstructorsContent() {
                     <Button 
                       size="lg" 
                       variant="outline" 
-                      className="w-full border-2 border-[#FF3366] text-[#FF3366] hover:bg-[#FF3366] hover:text-white font-semibold"
+                      className="w-full border-2 border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D] hover:text-white font-semibold"
                     >
                       Grow Your Business
                     </Button>
                   </Link>
-                </div>
-
-                {/* Tertiary Actions Grid */}
-                <div className="grid sm:grid-cols-2 gap-4">
                   <Link href="/dance-certifications">
                     <Button 
                       size="lg" 
-                      className="w-full bg-[#9333EA] hover:bg-[#9333EA]/90 text-white font-semibold"
+                      variant="outline"
+                      className="w-full border-2 border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D] hover:text-white font-semibold"
                     >
                       Get Certified
                     </Button>
@@ -898,7 +924,7 @@ function InstructorsContent() {
                     <Button 
                       size="lg" 
                       variant="outline" 
-                      className="w-full border-2 border-[#9333EA] text-[#9333EA] hover:bg-[#9333EA] hover:text-white font-semibold"
+                      className="w-full border-2 border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D] hover:text-white font-semibold"
                     >
                       Find a Space
                     </Button>

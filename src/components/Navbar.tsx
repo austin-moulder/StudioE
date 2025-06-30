@@ -14,6 +14,7 @@ const navLinks = [
   { name: "Instructors", href: "/instructors" },
   { name: "Classes", href: "/classes" },
   { name: "Events", href: "/events" },
+  { name: "The Club", href: "/club" },
   { name: "Podcast", href: "/podcast" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
