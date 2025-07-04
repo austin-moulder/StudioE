@@ -154,10 +154,4 @@ echo "Setup complete. Run 'npm run dev' to start the development server."
 
 ## Common Issues
 
-1. **500 Internal Server Error on Dashboard**: Usually caused by missing Supabase environment variables.
-
-2. **Can't find module '@radix-ui/react-*'**: Missing Radix UI component - install the specific component.
-
-3. **Supabase errors**: Make sure you have the correct Supabase URL and keys in your `.env.local` file.
-
-4. **CORS errors**: These can occur when trying to access Supabase from localhost - check Supabase project settings. 
+1. **Can't find module '@radix-ui/react-*'**: Missing Radix UI component - install the specific component.

@@ -344,11 +344,11 @@ export default function Home() {
           {/* Placeholder for hero image */}
         </div>
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
-          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Find Your Perfect Dance Instructor
+          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl leading-tight">
+            How much longer will you dance <br className="hidden sm:inline" />without direction?
           </h1>
           <p className="mt-6 max-w-2xl text-lg">
-            Connect with professional dance instructors for private lessons tailored to your skill level and goals.
+            Connect with top dance instructors who tailor every session to your style, pace, and purpose—so you actually grow every time you dance.
           </p>
           <div className="mt-10 flex w-full max-w-md flex-col gap-4 sm:flex-row">
             <div className="relative w-full">
@@ -591,11 +591,11 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-pink-50 to-purple-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What Our Students Say</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-[#FF3366] to-[#9933CC] bg-clip-text text-transparent mb-4">What Our Students Say</h2>
+            <p className="text-xl font-medium text-gray-700 max-w-2xl mx-auto">
               Join our community of dancers who have transformed their lives through dance
             </p>
           </div>
@@ -611,35 +611,37 @@ export default function Home() {
                 ) : (
                   testimonials.map((testimonial, index) => (
                     <div key={index} className="flex-[0_0_100%] min-w-0">
-                      <div className="bg-white rounded-lg shadow-lg p-6 mx-2">
-                        <div className="flex items-center mb-4">
-                          <div className="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden">
-                            {testimonial.image_url && testimonial.image_url !== "/placeholder.svg" ? (
-                              <Image
-                                src={testimonial.image_url}
-                                alt={testimonial.name}
-                                width={48}
-                                height={48}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <span className="flex items-center justify-center w-full h-full text-gray-400 text-xs">
-                                {testimonial.name.charAt(0)}
-                              </span>
-                            )}
+                      <div className="bg-white rounded-xl shadow-xl border border-pink-100 p-8 mx-2 transform hover:scale-105 transition-transform duration-300">
+                        <div className="flex items-center mb-6">
+                          <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#FF3366] to-[#9933CC] mr-4 overflow-hidden p-0.5">
+                            <div className="w-full h-full rounded-full bg-white overflow-hidden">
+                              {testimonial.image_url && testimonial.image_url !== "/placeholder.svg" ? (
+                                <Image
+                                  src={testimonial.image_url}
+                                  alt={testimonial.name}
+                                  width={52}
+                                  height={52}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <span className="flex items-center justify-center w-full h-full bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold text-lg">
+                                  {testimonial.name.charAt(0)}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <div>
-                            <h3 className="font-semibold text-gray-900">{testimonial.name}</h3>
-                            <p className="text-sm text-gray-500">{testimonial.style} Student</p>
+                            <h3 className="font-bold text-lg text-gray-900">{testimonial.name}</h3>
+                            <p className="text-sm font-medium text-[#FF3366]">{testimonial.style} Student</p>
                           </div>
                         </div>
-                        <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
+                        <p className="text-gray-800 font-medium text-lg leading-relaxed mb-6">"{testimonial.quote}"</p>
                         <div className="flex items-center">
                           <div className="flex text-yellow-400">
                             {[...Array(testimonial.rating || 5)].map((_, i) => (
                               <svg
                                 key={i}
-                                className="w-5 h-5"
+                                className="w-6 h-6"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -676,35 +678,37 @@ export default function Home() {
               </div>
             ) : (
               testimonials.map((testimonial, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-lg p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden">
-                      {testimonial.image_url && testimonial.image_url !== "/placeholder.svg" ? (
-                        <Image
-                          src={testimonial.image_url}
-                          alt={testimonial.name}
-                          width={48}
-                          height={48}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="flex items-center justify-center w-full h-full text-gray-400 text-xs">
-                          {testimonial.name.charAt(0)}
-                        </span>
-                      )}
+                <div key={index} className="bg-white rounded-xl shadow-xl border border-pink-100 p-8 transform hover:scale-105 transition-transform duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#FF3366] to-[#9933CC] mr-4 overflow-hidden p-0.5">
+                      <div className="w-full h-full rounded-full bg-white overflow-hidden">
+                        {testimonial.image_url && testimonial.image_url !== "/placeholder.svg" ? (
+                          <Image
+                            src={testimonial.image_url}
+                            alt={testimonial.name}
+                            width={52}
+                            height={52}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="flex items-center justify-center w-full h-full bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold text-lg">
+                            {testimonial.name.charAt(0)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">{testimonial.name}</h3>
-                      <p className="text-sm text-gray-500">{testimonial.style} Student</p>
+                      <h3 className="font-bold text-lg text-gray-900">{testimonial.name}</h3>
+                      <p className="text-sm font-medium text-[#FF3366]">{testimonial.style} Student</p>
                     </div>
                   </div>
-                  <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
+                  <p className="text-gray-800 font-medium text-lg leading-relaxed mb-6">"{testimonial.quote}"</p>
                   <div className="flex items-center">
                     <div className="flex text-yellow-400">
                       {[...Array(testimonial.rating || 5)].map((_, i) => (
                         <svg
                           key={i}
-                          className="w-5 h-5"
+                          className="w-6 h-6"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >

@@ -146,9 +146,9 @@ export default function AboutPage() {
           {/* Placeholder for hero image */}
         </div>
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
-          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">About Studio E</h1>
+          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">You love dancing, but your progress doesn't match your passion.</h1>
           <p className="mt-6 max-w-2xl text-lg">
-            Connecting passionate dance instructors with eager students since 2023.
+            Studio E wants to fix that by connecting you with your city's top instructors
           </p>
         </div>
       </section>
