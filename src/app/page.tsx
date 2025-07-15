@@ -4,7 +4,7 @@ import "./globals.css"
 import { Inter } from "next/font/google"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Star, MapPin, Search, ChevronDown, Calendar } from "lucide-react"
+import { ArrowRight, Star, MapPin, Search, ChevronDown, Calendar, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -345,7 +345,7 @@ export default function Home() {
         </div>
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
           <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl leading-tight">
-            How much longer will you dance <br className="hidden sm:inline" />without direction?
+            Progress starts with the <br className="hidden sm:inline" />right teacher
           </h1>
           <p className="mt-6 max-w-2xl text-lg">
             Connect with top dance instructors who tailor every session to your style, pace, and purpose—so you actually grow every time you dance.
@@ -372,6 +372,46 @@ export default function Home() {
               <Search className="mr-2 h-4 w-4" />
               Search
             </Button>
+          </div>
+          
+          {/* Value Proposition Callouts */}
+          <div className="mt-16 flex flex-wrap justify-center gap-4">
+            <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm">
+              <Star className="h-4 w-4 text-white" />
+              <span className="text-sm font-medium">Experienced Instructors</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm">
+              <Calendar className="h-4 w-4 text-white" />
+              <span className="text-sm font-medium">Proven Curriculums</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm">
+              <Users className="h-4 w-4 text-white" />
+              <span className="text-sm font-medium">Personalized Learning</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Circular Popup Badge */}
+        <div className="absolute top-24 right-8 z-30 hidden md:block">
+          <div className="relative">
+            <div className="w-40 h-40 rounded-full overflow-hidden shadow-lg border-4 border-white/80 relative">
+              <Image
+                src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/wedding_capture.jpg"
+                alt="Students dancing"
+                width={160}
+                height={160}
+                className="object-cover w-full h-full"
+              />
+              {/* Dark overlay for text contrast */}
+              <div className="absolute inset-0 bg-black/40"></div>
+              {/* Centered text */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <div className="text-xl font-bold text-white">100+</div>
+                <div className="text-sm text-white font-medium">Students Served</div>
+              </div>
+            </div>
+            {/* Pulse animation ring */}
+            <div className="absolute inset-0 rounded-full border-2 border-[#FF3366]/40 animate-pulse"></div>
           </div>
         </div>
       </section>
