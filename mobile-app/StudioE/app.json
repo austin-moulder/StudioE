@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "StudioE",
+    "slug": "StudioE",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#FF3366"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "backgroundColor": "#FF3366"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "platforms": ["ios", "android", "web"]
+  }
+}

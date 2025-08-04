@@ -348,8 +348,8 @@ export default function Dashboard() {
                 style={{
                   backgroundImage: upcomingEvent?.image_url 
                     ? `url(${upcomingEvent.image_url})` 
-                    : 'url(https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/dashboard_2.jpg)',
-                  backgroundPosition: upcomingEvent?.image_url ? 'center' : 'center top'
+                    : 'url(https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png)',
+                  backgroundPosition: upcomingEvent?.image_url ? 'center' : 'center'
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
