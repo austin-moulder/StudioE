@@ -23,8 +23,7 @@ import {
   ScrollText,
   AlertCircle,
   RefreshCw,
-  List,
-  Map
+  List
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -49,7 +48,6 @@ import {
 import { Slider } from '@/components/ui/slider'
 import { Badge } from '@/components/ui/badge'
 import RSVPButton from '@/components/RSVPButton'
-import ClassesMap from '@/components/ClassesMap'
 
 // Import our utility functions and types
 import { 
@@ -131,15 +129,13 @@ function ClassesContent() {
   
   // Additional state
   const [filtersExpanded, setFiltersExpanded] = useState(false)
-  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>(searchParams ? searchParams.get('date') as any ?? 'week' : 'week')
   const [selectedCompany, setSelectedCompany] = useState<string>('all')
+  const [selectedDate, setSelectedDate] = useState<string>('')
   const [companySearchTerm, setCompanySearchTerm] = useState('')
   const [showCompanySuggestions, setShowCompanySuggestions] = useState(false)
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([])
   
-  // Map view state
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('list')
-  const [showMap, setShowMap] = useState(false)
+  // Removed map view state for simplicity
   
   // Fetch data
   useEffect(() => {
@@ -317,88 +313,77 @@ function ClassesContent() {
     console.log('Initial data count:', classData.length);
     let filtered = [...classData];
     
-    // Filter out past classes
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Simple date filter: only show classes from today onwards
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
     
-    filtered = filtered.filter(classItem => {
-      if (!classItem.class_date) return false;
+    console.log('Today date:', todayDate);
+    console.log('Sample class dates before filter:', filtered.slice(0, 3).map(c => ({ 
+      id: c.id, 
+      date: c.class_date, 
+      parsed: new Date(c.class_date),
+      isTodayOrLater: new Date(c.class_date) >= todayDate
+    })));
+    
+    // More robust date filtering that continues even with invalid dates
+    const validClasses: Class[] = [];
+    const invalidClasses: Class[] = [];
+    
+    // Calculate 2 weeks from today
+    const twoWeeksFromToday = new Date(todayDate);
+    twoWeeksFromToday.setDate(todayDate.getDate() + 14);
+    
+    for (const classItem of filtered) {
+      if (!classItem.class_date) {
+        console.log('Class missing date:', classItem.id);
+        invalidClasses.push(classItem);
+        continue;
+      }
       
-      const classDate = new Date(classItem.class_date);
-      
-      // Create date-only version of the date to avoid timezone issues
-      const classLocalDate = new Date(
-        classDate.getUTCFullYear(), 
-        classDate.getUTCMonth(), 
-        classDate.getUTCDate()
-      );
-      
-      const todayLocalDate = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-      
-      return classLocalDate >= todayLocalDate;
-    });
+      try {
+        const classDate = new Date(classItem.class_date);
+        
+        // Check if the date is valid
+        if (isNaN(classDate.getTime())) {
+          console.log('Invalid date format:', classItem.class_date, 'for class ID:', classItem.id);
+          invalidClasses.push(classItem);
+          continue;
+        }
+        
+        // If a specific date is selected, only show classes on that date
+        if (selectedDate) {
+          // Normalize both dates to UTC midnight for accurate comparison
+          const selectedDateObj = new Date(selectedDate + 'T00:00:00.000Z');
+          const classDateNormalized = new Date(classDate.getFullYear(), classDate.getMonth(), classDate.getDate());
+          const selectedDateNormalized = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), selectedDateObj.getDate());
+          
+          const isOnSelectedDate = classDateNormalized.getTime() === selectedDateNormalized.getTime();
+          console.log(`Class ${classItem.id}: ${classItem.class_date} -> ${classDateNormalized.toDateString()} (== ${selectedDateNormalized.toDateString()}) = ${isOnSelectedDate}`);
+          
+          if (isOnSelectedDate) {
+            validClasses.push(classItem);
+          }
+        } else {
+          // Default: show classes within 2 weeks
+          const isWithinTwoWeeks = classDate >= todayDate && classDate <= twoWeeksFromToday;
+          console.log(`Class ${classItem.id}: ${classItem.class_date} -> ${classDate} (>= ${todayDate} AND <= ${twoWeeksFromToday}) = ${isWithinTwoWeeks}`);
+          
+          if (isWithinTwoWeeks) {
+            validClasses.push(classItem);
+          }
+        }
+      } catch (error) {
+        console.log('Error processing date for class:', classItem.id, error);
+        invalidClasses.push(classItem);
+      }
+    }
+    
+    console.log('Valid classes (within 2 weeks):', validClasses.length);
+    console.log('Invalid/missing date classes:', invalidClasses.length);
+    
+    filtered = validClasses;
     
     console.log('After filtering past classes:', filtered.length);
-    
-    // Apply date filter - week is default
-    if (dateFilter === 'today') {
-      filtered = filtered.filter(classItem => {
-        if (!classItem.class_date) return false;
-        
-        const classDate = new Date(classItem.class_date);
-        
-        // Create date-only version of the date to avoid timezone issues
-        const classLocalDate = new Date(
-          classDate.getUTCFullYear(), 
-          classDate.getUTCMonth(), 
-          classDate.getUTCDate()
-        );
-        
-        const todayLocalDate = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-        
-        return classLocalDate.getTime() === todayLocalDate.getTime();
-      });
-      console.log('After filtering for today:', filtered.length);
-    } else if (dateFilter === 'week') {
-      const endDate = new Date(today);
-      endDate.setDate(today.getDate() + 7);
-      
-      filtered = filtered.filter(classItem => {
-        if (!classItem.class_date) return false;
-        
-        const classDate = new Date(classItem.class_date);
-        
-        // Create date-only version of the date to avoid timezone issues
-        const classLocalDate = new Date(
-          classDate.getUTCFullYear(), 
-          classDate.getUTCMonth(), 
-          classDate.getUTCDate()
-        );
-        
-        const todayLocalDate = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-        
-        const endLocalDate = new Date(
-          endDate.getFullYear(),
-          endDate.getMonth(),
-          endDate.getDate()
-        );
-        
-        return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
-      });
-      console.log('After filtering for week:', filtered.length);
-    }
     
     // Apply other active filters if any
     if (danceStyle !== 'all') {
@@ -450,54 +435,77 @@ function ClassesContent() {
     let filtered = [...classes];
     console.log('Starting filter with classes count:', filtered.length);
     
-    // Check if any classes have invalid date format
-    const invalidDates = filtered.filter(c => !c.class_date || isNaN(new Date(c.class_date).getTime()));
-    if (invalidDates.length > 0) {
-      console.warn('Found classes with invalid dates:', invalidDates.length);
-      console.warn('Example invalid class:', JSON.stringify(invalidDates[0]));
-    }
+    // Simple date filter: only show classes from today onwards
+    const todayDate2 = new Date();
+    todayDate2.setHours(0, 0, 0, 0);
     
-    // Always filter out past classes (for all filter options)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    console.log('Today date in applyFilters:', todayDate2);
+    console.log('Sample class dates before filter in applyFilters:', filtered.slice(0, 3).map(c => ({ 
+      id: c.id, 
+      date: c.class_date, 
+      parsed: new Date(c.class_date),
+      isTodayOrLater: new Date(c.class_date) >= todayDate2
+    })));
     
-    filtered = filtered.filter(classItem => {
-      // Guard against missing date
+    // More robust date filtering that continues even with invalid dates
+    const validClasses2: Class[] = [];
+    const invalidClasses2: Class[] = [];
+    
+    // Calculate 2 weeks from today
+    const twoWeeksFromToday2 = new Date(todayDate2);
+    twoWeeksFromToday2.setDate(todayDate2.getDate() + 14);
+    
+    for (const classItem of filtered) {
       if (!classItem.class_date) {
-        console.warn('Class missing date:', classItem.id, classItem.class_name);
-        return false;
+        console.log('Class missing date in applyFilters:', classItem.id);
+        invalidClasses2.push(classItem);
+        continue;
       }
       
       try {
         const classDate = new Date(classItem.class_date);
         
-        // Check if date is valid
+        // Check if the date is valid
         if (isNaN(classDate.getTime())) {
-          console.warn('Invalid date format:', classItem.class_date, 'for class ID:', classItem.id);
-          return false;
+          console.log('Invalid date format in applyFilters:', classItem.class_date, 'for class ID:', classItem.id);
+          invalidClasses2.push(classItem);
+          continue;
         }
         
-        // Create date-only version of the date to avoid timezone issues
-        const classLocalDate = new Date(
-          classDate.getUTCFullYear(), 
-          classDate.getUTCMonth(), 
-          classDate.getUTCDate()
-        );
-        
-        const todayLocalDate = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-        
-        return classLocalDate >= todayLocalDate;
+        // If a specific date is selected, only show classes on that date
+        if (selectedDate) {
+          // Normalize both dates to UTC midnight for accurate comparison
+          const selectedDateObj = new Date(selectedDate + 'T00:00:00.000Z');
+          const classDateNormalized = new Date(classDate.getFullYear(), classDate.getMonth(), classDate.getDate());
+          const selectedDateNormalized = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), selectedDateObj.getDate());
+          
+          const isOnSelectedDate = classDateNormalized.getTime() === selectedDateNormalized.getTime();
+          console.log(`Class ${classItem.id} in applyFilters: ${classItem.class_date} -> ${classDateNormalized.toDateString()} (== ${selectedDateNormalized.toDateString()}) = ${isOnSelectedDate}`);
+          
+          if (isOnSelectedDate) {
+            validClasses2.push(classItem);
+          }
+        } else {
+          // Default: show classes within 2 weeks
+          const isWithinTwoWeeks = classDate >= todayDate2 && classDate <= twoWeeksFromToday2;
+          console.log(`Class ${classItem.id} in applyFilters: ${classItem.class_date} -> ${classDate} (>= ${todayDate2} AND <= ${twoWeeksFromToday2}) = ${isWithinTwoWeeks}`);
+          
+          if (isWithinTwoWeeks) {
+            validClasses2.push(classItem);
+          }
+        }
       } catch (error) {
-        console.error('Error processing date for class:', classItem.id, error);
-        return false;
+        console.log('Error processing date for class in applyFilters:', classItem.id, error);
+        invalidClasses2.push(classItem);
       }
-    });
+    }
     
-    console.log('After filtering past classes:', filtered.length);
+    console.log('Valid classes in applyFilters (within 2 weeks):', validClasses2.length);
+    console.log('Invalid/missing date classes in applyFilters:', invalidClasses2.length);
+    
+    filtered = validClasses2;
+    
+    console.log('After filtering past classes in applyFilters:', filtered.length);
     
     // Apply search filter
     if (searchTerm) {
@@ -576,55 +584,7 @@ function ClassesContent() {
       filtered = filtered.filter(classItem => !classItem.instructor_approval_required);
     }
     
-    // Apply specific date filters
-    if (dateFilter === 'today') {
-      filtered = filtered.filter(classItem => {
-        const classDate = new Date(classItem.class_date);
-        
-        // Create date-only version of the date to avoid timezone issues
-        const classLocalDate = new Date(
-          classDate.getUTCFullYear(), 
-          classDate.getUTCMonth(), 
-          classDate.getUTCDate()
-        );
-        
-        const todayLocalDate = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-        
-        return classLocalDate.getTime() === todayLocalDate.getTime();
-      });
-    } else if (dateFilter === 'week') {
-      const endDate = new Date(today);
-      endDate.setDate(today.getDate() + 7);
-      
-      filtered = filtered.filter(classItem => {
-        const classDate = new Date(classItem.class_date);
-        
-        // Create date-only version of the date to avoid timezone issues
-        const classLocalDate = new Date(
-          classDate.getUTCFullYear(), 
-          classDate.getUTCMonth(), 
-          classDate.getUTCDate()
-        );
-        
-        const todayLocalDate = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-        
-        const endLocalDate = new Date(
-          endDate.getFullYear(),
-          endDate.getMonth(),
-          endDate.getDate()
-        );
-        
-        return classLocalDate >= todayLocalDate && classLocalDate <= endLocalDate;
-      });
-    }
+    console.log('After filtering past classes:', filtered.length);
     
     // Apply company filter
     if (selectedCompany && selectedCompany !== 'all') {
@@ -641,7 +601,6 @@ function ClassesContent() {
     if (searchTerm) params.set('q', searchTerm);
     if (danceStyle && danceStyle !== 'all') params.set('style', danceStyle);
     if (location && location !== 'all') params.set('location', location);
-    if (dateFilter && dateFilter !== 'all') params.set('date', dateFilter);
     
     // Reset to first page when filters change
     setCurrentPage(1);
@@ -671,8 +630,8 @@ function ClassesContent() {
     showSeriesOnly,
     showDropInOnly,
     showOpenClassesOnly,
-    dateFilter,
-    selectedCompany
+    selectedCompany,
+    selectedDate
   ])
   
   // Handle page change
@@ -706,6 +665,7 @@ function ClassesContent() {
     setShowSeriesOnly(false)
     setShowDropInOnly(false)
     setShowOpenClassesOnly(false)
+    setSelectedDate('')
     
     // Use replaceState instead of router.push to avoid scrolling to top
     window.history.replaceState({}, '', '/classes');
@@ -888,50 +848,27 @@ function ClassesContent() {
                 </div>
                 
                 <div>
-                  <label className="mb-2 block text-sm font-medium">
-                    Date
+                  <label htmlFor="date-filter" className="mb-2 block text-sm font-medium">
+                    Specific Date (Optional)
                   </label>
-                  <div className="flex flex-col space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <input 
-                        type="radio" 
-                        id="date-all" 
-                        name="date-filter" 
-                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
-                        checked={dateFilter === 'all'}
-                        onChange={() => setDateFilter('all')}
-                      />
-                      <label htmlFor="date-all" className="text-sm">
-                        All Dates
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input 
-                        type="radio" 
-                        id="date-today" 
-                        name="date-filter" 
-                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
-                        checked={dateFilter === 'today'}
-                        onChange={() => setDateFilter('today')}
-                      />
-                      <label htmlFor="date-today" className="text-sm">
-                        Today
-                      </label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input 
-                        type="radio" 
-                        id="date-week" 
-                        name="date-filter" 
-                        className="h-4 w-4 text-[#F94C8D] border-gray-300 focus:ring-[#F94C8D]"
-                        checked={dateFilter === 'week'}
-                        onChange={() => setDateFilter('week')}
-                      />
-                      <label htmlFor="date-week" className="text-sm">
-                        Next 7 Days
-                      </label>
-                    </div>
-                  </div>
+                  <Input
+                    id="date-filter"
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="bg-white !bg-opacity-100"
+                    placeholder="Select a date"
+                  />
+                  {selectedDate && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDate('')}
+                      className="mt-2 text-sm text-[#FF3366] hover:underline"
+                    >
+                      Clear date filter
+                    </button>
+                  )}
                 </div>
                 
                 <div>
@@ -1052,86 +989,30 @@ function ClassesContent() {
             </h2>
             
             <div className="flex items-center gap-4">
-              {/* View Toggle */}
-              <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                <Button
-                  size="sm"
-                  variant={viewMode === 'list' ? 'default' : 'outline'}
-                  onClick={() => setViewMode('list')}
-                  className={`h-8 px-2 sm:px-3 ${
-                    viewMode === 'list'
-                      ? 'bg-[#EC407A] text-white hover:bg-[#EC407A]/90'
-                      : 'bg-transparent border-none hover:bg-gray-200'
-                  }`}
+              {/* Items per page */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Show:</span>
+                <Select 
+                  value={itemsPerPage.toString()} 
+                  onValueChange={(value) => setItemsPerPage(Number(value))}
                 >
-                  <List className="h-4 w-4 sm:mr-1" />
-                  <span className="hidden sm:inline">List View</span>
-                </Button>
-                <Button
-                  size="sm"
-                  variant={viewMode === 'map' ? 'default' : 'outline'}
-                  onClick={() => {
-                    setViewMode('map')
-                    setShowMap(true)
-                  }}
-                  className={`h-8 px-2 sm:px-3 ${
-                    viewMode === 'map'
-                      ? 'bg-[#EC407A] text-white hover:bg-[#EC407A]/90'
-                      : 'bg-transparent border-none hover:bg-gray-200'
-                  }`}
-                >
-                  <Map className="h-4 w-4 sm:mr-1" />
-                  <span className="hidden sm:inline">Map View</span>
-                </Button>
+                  <SelectTrigger className="w-[80px] bg-white !bg-opacity-100">
+                    <SelectValue placeholder="20" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white !bg-opacity-100">
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              
-              {/* Items per page - only show in list view */}
-              {viewMode === 'list' && (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">Show:</span>
-                  <Select 
-                    value={itemsPerPage.toString()} 
-                    onValueChange={(value) => setItemsPerPage(Number(value))}
-                  >
-                    <SelectTrigger className="w-[80px] bg-white !bg-opacity-100">
-                      <SelectValue placeholder="20" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white !bg-opacity-100">
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="20">20</SelectItem>
-                      <SelectItem value="50">50</SelectItem>
-                      <SelectItem value="100">100</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
             </div>
           </div>
           
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#F94C8D] border-t-transparent"></div>
-            </div>
-          ) : viewMode === 'map' ? (
-            <div className="text-center py-12">
-              <div className="flex flex-col items-center justify-center space-y-4">
-                <div className="w-16 h-16 bg-[#EC407A]/10 rounded-full flex items-center justify-center">
-                  <Map className="h-8 w-8 text-[#EC407A]" />
-                </div>
-                <div className="text-gray-900 text-lg font-medium">
-                  Map View Active
-                </div>
-                <p className="text-gray-600 max-w-md">
-                  Click the "Map View" button above to open the interactive map showing all class locations
-                </p>
-                <Button 
-                  onClick={() => setShowMap(true)}
-                  className="bg-[#EC407A] text-white hover:bg-[#EC407A]/90"
-                >
-                  <Map className="h-4 w-4 mr-2" />
-                  Open Map
-                </Button>
-              </div>
             </div>
           ) : (
             <>
@@ -1392,16 +1273,7 @@ function ClassesContent() {
         </div>
       </section>
       
-      {/* Map Modal */}
-      {showMap && (
-        <ClassesMap 
-          classes={filteredClasses} 
-          onClose={() => {
-            setShowMap(false)
-            setViewMode('list')
-          }} 
-        />
-      )}
+      {/* Map functionality removed for debugging */}
     </>
   )
 } 

@@ -41,11 +41,12 @@ export interface Company {
  */
 export async function getAllClasses(): Promise<Class[]> {
   try {
+    console.log('Fetching classes from Supabase...')
     const { data, error } = await supabase
       .from('classes')
       .select(`
         *,
-        company:company_id (*)
+        companies!company_id (*)
       `)
       .order('class_date', { ascending: true })
 
@@ -53,6 +54,8 @@ export async function getAllClasses(): Promise<Class[]> {
       console.error('Error fetching classes:', error)
       return []
     }
+
+    console.log('Raw data from Supabase:', data?.length || 0, 'records')
 
     // Further sort by date and start time for more precise ordering
     const sortedData = data?.sort((a, b) => {
@@ -74,7 +77,14 @@ export async function getAllClasses(): Promise<Class[]> {
       return minutesA - minutesB;
     }) || [];
 
-    return sortedData;
+    // Map the joined data to match our interface
+    const mappedData = sortedData.map(item => ({
+      ...item,
+      company: item.companies
+    }))
+
+    console.log('Final mapped data:', mappedData.length, 'classes')
+    return mappedData;
   } catch (error) {
     console.error('Exception fetching classes:', error)
     return []
@@ -90,7 +100,7 @@ export async function getClassesByCompany(companyId: string): Promise<Class[]> {
       .from('classes')
       .select(`
         *,
-        company:company_id (*)
+        companies!company_id (*)
       `)
       .eq('company_id', companyId)
       .order('class_date', { ascending: true })
@@ -159,7 +169,7 @@ export async function getClassesByStyle(style: string): Promise<Class[]> {
       .from('classes')
       .select(`
         *,
-        company:company_id (*)
+        companies!company_id (*)
       `)
       .order('class_date', { ascending: true })
 
