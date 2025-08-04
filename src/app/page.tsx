@@ -27,6 +27,7 @@ import { TestimonialCard } from "@/app/components/TestimonialCard"
 import { Testimonial } from "@/types/testimonial"
 import NewUserPopup from "@/app/components/NewUserPopup"
 import { Instructor } from '@/types/instructor'
+import { VideoBackground } from '@/components/VideoBackground'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -338,17 +339,16 @@ export default function Home() {
       <NewUserPopup />
 
       {/* Hero Section */}
-      <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A]/90 via-[#FF3366]/90 to-[#9933CC]/90 z-10" />
-        <div className="relative h-[600px] w-full bg-gray-300">
-          {/* Placeholder for hero image */}
+      <section className="relative h-[400px] md:h-[600px]">
+        <div className="absolute inset-0 z-10">
+          <VideoBackground videoId="9q-IlFG0fOQ" className="h-full w-full" />
         </div>
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
-          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl leading-tight">
-            Progress starts with the <br className="hidden sm:inline" />right teacher
+          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl leading-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            Feel confident, sexy, and unstoppable
           </h1>
-          <p className="mt-6 max-w-2xl text-lg">
-            Connect with top dance instructors who tailor every session to your style, pace, and purpose—so you actually grow every time you dance.
+          <p className="mt-6 max-w-2xl text-lg text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            Connect with top dance instructors who tailor every session to your style and pace.
           </p>
           <div className="mt-10 flex w-full max-w-md flex-col gap-4 sm:flex-row">
             <div className="relative w-full">
@@ -374,8 +374,8 @@ export default function Home() {
             </Button>
           </div>
           
-          {/* Value Proposition Callouts */}
-          <div className="mt-16 flex flex-wrap justify-center gap-4">
+          {/* Value Proposition Callouts - Hidden on mobile */}
+          <div className="mt-16 hidden md:flex flex-wrap justify-center gap-4">
             <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm">
               <Star className="h-4 w-4 text-white" />
               <span className="text-sm font-medium">Experienced Instructors</span>
