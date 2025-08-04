@@ -149,9 +149,9 @@ export default function ChicagoGuidePage() {
 
         {/* Value Props */}
         <div className="mt-16 space-y-6">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center">
             <div className="flex items-center space-x-4 text-lg">
-              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <CheckCircle className="w-4 h-4 text-white" />
               </div>
               <span className="font-semibold text-gray-800">
@@ -160,9 +160,9 @@ export default function ChicagoGuidePage() {
             </div>
           </div>
           
-          <div className="flex items-center justify-center">
+          <div className="flex items-center">
             <div className="flex items-center space-x-4 text-lg">
-              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <Users className="w-4 h-4 text-white" />
               </div>
               <span className="font-semibold text-gray-800">
@@ -171,23 +171,16 @@ export default function ChicagoGuidePage() {
             </div>
           </div>
           
-          <div className="flex items-center justify-center">
+          <div className="flex items-center">
             <div className="flex items-center space-x-4 text-lg">
-              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <Star className="w-4 h-4 text-white" />
               </div>
               <span className="font-semibold text-gray-800">
-                Access to the <span className="text-[#FF3366] font-bold">Nation's Best</span> Instructors
+                Access to <span className="text-[#FF3366] font-bold">Top Community Events</span>
               </span>
             </div>
           </div>
-        </div>
-
-        {/* Fine Print */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-gray-500">
-            No spam. No BS. Just pure value delivered to your inbox.
-          </p>
         </div>
       </div>
     </div>

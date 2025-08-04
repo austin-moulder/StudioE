@@ -10,9 +10,8 @@ export function VideoBackground({ videoId, className = "" }: VideoBackgroundProp
     <div className={`relative w-full h-full overflow-hidden ${className}`}>
       <iframe
         src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover scale-[1.8] md:scale-[1.5]"
         style={{
-          transform: 'scale(1.5)',
           transformOrigin: 'center center'
         }}
         frameBorder="0"
