@@ -64,7 +64,7 @@ function ComingSoonTooltip({ x, y }: { x: number; y: number }) {
   // Position the tooltip near the click position, with adjustments to center it
   return (
     <div 
-      className="fixed z-50 px-3 py-1.5 text-xs bg-gray-800/80 text-white rounded-md shadow-sm pointer-events-none
+      className="fixed z-50 px-3 py-1.5 text-xs bg-gray-800/80 text-white rounded-xl shadow-sm pointer-events-none
                  transition-opacity duration-200 ease-in-out"
       style={{ 
         left: `${x}px`, 
@@ -547,7 +547,7 @@ function InstructorsContent() {
 
               <div className="flex items-end">
                 <button 
-                  className="flex h-10 items-center justify-center rounded-md bg-[#F94C8D] px-4 py-2 text-sm font-medium text-white shadow hover:bg-[#F94C8D]/90"
+                  className="flex h-10 items-center justify-center rounded-xl bg-[#F94C8D] px-4 py-2 text-sm font-medium text-white shadow hover:bg-[#F94C8D]/90"
                   id="filter-button"
                 >
                   <Filter className="mr-2 h-4 w-4" />
@@ -701,7 +701,7 @@ function InstructorsContent() {
             <div className="flex items-center gap-2">
                 <button 
                   onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                  className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'}`}
+                  className={`flex h-9 w-9 items-center justify-center rounded-xl border border-input bg-background text-sm ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'}`}
                   disabled={currentPage === 1}
                 >
                   &lt;
@@ -774,7 +774,7 @@ function InstructorsContent() {
                       <button
                         key={`page-${pageNum}`}
                         onClick={() => handlePageChange(pageNum)}
-                        className={`flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm ${
+                        className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm ${
                           currentPage === pageNum
                             ? 'border border-[#F94C8D] bg-[#F94C8D] text-white hover:bg-[#F94C8D]/90'
                             : 'border border-input bg-background hover:bg-gray-100'
@@ -791,7 +791,7 @@ function InstructorsContent() {
                     const filteredTotalPages = Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE)
                     if (currentPage < filteredTotalPages) handlePageChange(currentPage + 1)
                   }}
-                  className={`flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background text-sm ${
+                  className={`flex h-9 w-9 items-center justify-center rounded-xl border border-input bg-background text-sm ${
                     currentPage === Math.ceil(filteredInstructors.length / ITEMS_PER_PAGE) 
                       ? 'opacity-50 cursor-not-allowed' 
                       : 'cursor-pointer hover:bg-gray-100'

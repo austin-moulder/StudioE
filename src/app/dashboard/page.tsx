@@ -341,7 +341,7 @@ export default function Dashboard() {
         {/* Main Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Upcoming Events Card */}
-          <div className="relative h-64 rounded-xl overflow-hidden shadow-lg group cursor-pointer">
+          <div className="relative h-64 rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
             <Link href="/dashboard/events">
               <div 
                 className="absolute inset-0 bg-cover bg-no-repeat transition-transform duration-300 group-hover:scale-105"
@@ -373,7 +373,7 @@ export default function Dashboard() {
           </div>
 
           {/* Past Events Card */}
-          <div className="relative h-64 rounded-xl overflow-hidden shadow-lg group cursor-pointer">
+          <div className="relative h-64 rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
             <Link href="/dashboard/events">
               <div 
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-300 group-hover:scale-105"
@@ -404,7 +404,7 @@ export default function Dashboard() {
           </div>
 
           {/* Reviews Card */}
-          <div className="relative h-64 rounded-xl overflow-hidden shadow-lg group cursor-pointer bg-gradient-to-br from-purple-600 to-pink-600">
+          <div className="relative h-64 rounded-3xl overflow-hidden shadow-lg group cursor-pointer bg-gradient-to-br from-purple-600 to-pink-600">
             <Link href="/dashboard/reviews">
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute top-4 left-4">
@@ -446,7 +446,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {/* Upcoming Classes */}
           <Link href="/dashboard/lessons">
-            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex items-center justify-between mb-2">
                 <BookOpen className="h-8 w-8 text-[#EC407A]" />
                 <ArrowRight className="h-4 w-4 text-gray-400" />
@@ -458,7 +458,7 @@ export default function Dashboard() {
 
           {/* Past Classes */}
           <Link href="/dashboard/lessons">
-            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex items-center justify-between mb-2">
                 <BookOpen className="h-8 w-8 text-green-600" />
                 <ArrowRight className="h-4 w-4 text-gray-400" />
@@ -470,7 +470,7 @@ export default function Dashboard() {
 
           {/* Messages */}
           <Link href="/dashboard/messages">
-            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex items-center justify-between mb-2">
                 <MessageCircle className="h-8 w-8 text-blue-600" />
                 <ArrowRight className="h-4 w-4 text-gray-400" />
@@ -482,7 +482,7 @@ export default function Dashboard() {
 
           {/* Profile */}
           <Link href="/profile">
-            <div className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex items-center justify-between mb-2">
                 <Users className="h-8 w-8 text-purple-600" />
                 <ArrowRight className="h-4 w-4 text-gray-400" />
@@ -494,11 +494,11 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg p-6 shadow-sm">
+        <div className="bg-white rounded-2xl p-6 shadow-sm">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link href="/classes">
-              <div className="flex items-center p-4 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors cursor-pointer">
+              <div className="flex items-center p-4 bg-pink-50 rounded-2xl hover:bg-pink-100 transition-colors cursor-pointer">
                 <BookOpen className="h-8 w-8 text-[#EC407A] mr-3" />
                 <div>
                   <div className="font-semibold text-gray-900">Find Classes</div>
@@ -508,7 +508,7 @@ export default function Dashboard() {
             </Link>
 
             <Link href="/events">
-              <div className="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">
+              <div className="flex items-center p-4 bg-blue-50 rounded-2xl hover:bg-blue-100 transition-colors cursor-pointer">
                 <Calendar className="h-8 w-8 text-blue-600 mr-3" />
                 <div>
                   <div className="font-semibold text-gray-900">Browse Events</div>
@@ -518,7 +518,7 @@ export default function Dashboard() {
             </Link>
 
             <Link href="/instructors">
-              <div className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors cursor-pointer">
+              <div className="flex items-center p-4 bg-purple-50 rounded-2xl hover:bg-purple-100 transition-colors cursor-pointer">
                 <Users className="h-8 w-8 text-purple-600 mr-3" />
                 <div>
                   <div className="font-semibold text-gray-900">Find Instructors</div>

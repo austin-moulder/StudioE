@@ -36,7 +36,7 @@ export default function UserProfileMenu() {
   if (isLoading) {
     return (
       <div className="relative ml-3">
-        <div className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium text-gray-400">
+        <div className="flex items-center gap-1 rounded-xl px-3 py-1.5 text-sm font-medium text-gray-400">
           <span>Loading...</span>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function UserProfileMenu() {
     <div className="relative ml-3">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2">
+          <button className="flex items-center gap-1 rounded-xl px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2">
             <span>{displayName}</span>
             <ChevronDown className="h-4 w-4" />
           </button>

@@ -109,7 +109,7 @@ export default function Navbar() {
           {!user && (
             <button 
               onClick={() => setShowSignInModal(true)}
-              className="hidden rounded-md bg-[#EC407A] px-3 py-1.5 text-sm font-medium text-white md:block hover:bg-[#D03A6C]"
+              className="hidden rounded-xl bg-[#EC407A] px-3 py-1.5 text-sm font-medium text-white md:block hover:bg-[#D03A6C]"
             >
               Get Started
             </button>
@@ -190,7 +190,7 @@ export default function Navbar() {
                     setShowSignInModal(true);
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full rounded-md bg-[#EC407A] px-4 py-3 text-sm font-bold text-white hover:bg-[#D03A6C] transition shadow-md"
+                  className="w-full rounded-xl bg-[#EC407A] px-4 py-3 text-sm font-bold text-white hover:bg-[#D03A6C] transition shadow-md"
                 >
                   Get Started
                 </button>

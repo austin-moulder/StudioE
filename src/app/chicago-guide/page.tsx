@@ -86,7 +86,7 @@ export default function ChicagoGuidePage() {
         </div>
 
         {/* Hero Image */}
-        <div className="relative rounded-lg mb-12 overflow-hidden w-full max-w-md mx-auto" style={{ aspectRatio: '8.5/11' }}>
+        <div className="relative rounded-3xl mb-12 overflow-hidden w-full max-w-md mx-auto" style={{ aspectRatio: '8.5/11' }}>
           <Image
             src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/Landing_page_1.png"
             alt="Confident social dancers in Chicago"
@@ -108,7 +108,7 @@ export default function ChicagoGuidePage() {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="h-14 text-lg border-2 border-gray-300 focus:border-[#FF3366] rounded-lg"
+                  className="h-14 text-lg border-2 border-gray-300 focus:border-[#FF3366] rounded-xl"
                 />
               </div>
               
@@ -120,7 +120,7 @@ export default function ChicagoGuidePage() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="h-14 text-lg border-2 border-gray-300 focus:border-[#FF3366] rounded-lg"
+                  className="h-14 text-lg border-2 border-gray-300 focus:border-[#FF3366] rounded-xl"
                 />
               </div>
               
@@ -132,14 +132,14 @@ export default function ChicagoGuidePage() {
                   value={formData.phone}
                   onChange={handleInputChange}
                   required
-                  className="h-14 text-lg border-2 border-gray-300 focus:border-[#FF3366] rounded-lg"
+                  className="h-14 text-lg border-2 border-gray-300 focus:border-[#FF3366] rounded-xl"
                 />
               </div>
               
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-16 text-xl font-bold bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#FF3366]/90 hover:to-[#9933CC]/90 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200"
+                className="w-full h-16 text-xl font-bold bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#FF3366]/90 hover:to-[#9933CC]/90 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
               >
                 {isSubmitting ? "Sending..." : "GET MY FREE GUIDE + CLASSES"}
               </Button>

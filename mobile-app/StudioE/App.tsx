@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator, Image, Modal } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { AuthProvider, useAuth } from './src/lib/auth/AuthContext';
+import LoginScreen from './src/screens/auth/LoginScreen';
 
 const { width } = Dimensions.get('window');
 
@@ -9,11 +11,199 @@ import { getAllInstructors } from './src/lib/instructors/instructorUtils';
 import { getAllClasses } from './src/lib/classes/classUtils';
 import { Instructor } from './src/types/instructor';
 import { Class } from './src/types/class';
+import { getDashboardStats } from './src/lib/dashboard/dashboardUtils';
+
+// Dashboard data interface
+interface DashboardData {
+  stats: {
+    upcomingEvents: number;
+    pastEvents: number;
+    upcomingClasses: number;
+    pastClasses: number;
+    reviewsGiven: number;
+  };
+  recentReview?: {
+    rating: number;
+    review_text: string;
+    event_title: string;
+  };
+  upcomingEvent?: {
+    title: string;
+    image_url: string;
+  };
+  pastEvent?: {
+    title: string;
+    image_url: string;
+  };
+}
 
 // Home Screen Component (existing homepage content)
 function HomeScreen() {
+  const { user, signOut } = useAuth();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardLoading, setDashboardLoading] = useState(true);
+  const [firstName, setFirstName] = useState('');
+
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      if (!user) return;
+      
+      try {
+        setDashboardLoading(true);
+        
+        // Set first name from user metadata or email
+        const fullName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+        if (fullName) {
+          setFirstName(fullName.split(' ')[0]);
+        } else if (user.email) {
+          setFirstName(user.email.split('@')[0]);
+        }
+
+        // Fetch real dashboard data from Supabase
+        const dashboardResult = await getDashboardStats(user.id);
+        
+        // Transform the data to match our component interface
+        const transformedData = {
+          stats: dashboardResult.stats,
+          recentReview: dashboardResult.recentReview ? {
+            rating: dashboardResult.recentReview.rating,
+            review_text: dashboardResult.recentReview.review_text,
+            event_title: dashboardResult.recentReview.event_title
+          } : undefined,
+          upcomingEvent: dashboardResult.upcomingEvent ? {
+            title: dashboardResult.upcomingEvent.title,
+            image_url: dashboardResult.upcomingEvent.image_url || 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png'
+          } : undefined,
+          pastEvent: dashboardResult.pastEvent ? {
+            title: dashboardResult.pastEvent.title,
+            image_url: dashboardResult.pastEvent.image_url || 'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/dashboard_1.jpg'
+          } : undefined
+        };
+        
+        setDashboardData(transformedData);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      } finally {
+        setDashboardLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, [user]);
+
+  const renderStars = (rating: number) => {
+    return (
+      <View style={styles.starsContainer}>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Text key={star} style={styles.star}>
+            {rating >= star ? '⭐' : '☆'}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      {/* Welcome Header for Authenticated Users */}
+      {user && (
+        <View style={styles.welcomeHeader}>
+          <Text style={styles.welcomeTitle}>Welcome back, {firstName}!</Text>
+          <Text style={styles.welcomeSubtitle}>Your dance journey continues</Text>
+          <TouchableOpacity style={styles.signOutButton} onPress={signOut}>
+            <Text style={styles.signOutButtonText}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Dashboard Cards for Authenticated Users */}
+      {user && dashboardData && (
+        <View style={styles.dashboardSection}>
+          <Text style={styles.dashboardTitle}>Your Activity</Text>
+          
+          {/* Main Dashboard Cards */}
+          <View style={styles.dashboardCards}>
+            {/* Upcoming Events Card */}
+            <TouchableOpacity style={styles.dashboardCard}>
+              <Image
+                source={{ 
+                  uri: dashboardData.upcomingEvent?.image_url || 
+                       'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Logos/Studio%20E%20Logo%20-%20Gradient.png'
+                }}
+                style={styles.cardBackground}
+              />
+              <View style={styles.cardOverlay} />
+              <View style={styles.cardContent}>
+                <Text style={styles.cardCategory}>📅 Upcoming Events</Text>
+                <Text style={styles.cardNumber}>{dashboardData.stats.upcomingEvents}</Text>
+                <Text style={styles.cardLabel}>RSVP'd</Text>
+                {dashboardData.upcomingEvent && (
+                  <Text style={styles.cardSubtext}>Next: {dashboardData.upcomingEvent.title}</Text>
+                )}
+              </View>
+            </TouchableOpacity>
+
+            {/* Past Events Card */}
+            <TouchableOpacity style={styles.dashboardCard}>
+              <Image
+                source={{ 
+                  uri: dashboardData.pastEvent?.image_url || 
+                       'https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/dashboard_1.jpg'
+                }}
+                style={styles.cardBackground}
+              />
+              <View style={styles.cardOverlay} />
+              <View style={styles.cardContent}>
+                <Text style={styles.cardCategory}>📅 Past Events</Text>
+                <Text style={styles.cardNumber}>{dashboardData.stats.pastEvents}</Text>
+                <Text style={styles.cardLabel}>Attended</Text>
+                {dashboardData.pastEvent && (
+                  <Text style={styles.cardSubtext}>Recent: {dashboardData.pastEvent.title}</Text>
+                )}
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* Reviews Card */}
+          <TouchableOpacity style={styles.reviewsCard}>
+            <Text style={styles.cardCategoryWhite}>⭐ Reviews</Text>
+            <Text style={styles.cardTitleWhite}>Your Feedback</Text>
+            {dashboardData.recentReview ? (
+              <View style={styles.reviewContent}>
+                {renderStars(dashboardData.recentReview.rating)}
+                <Text style={styles.reviewText}>
+                  "{dashboardData.recentReview.review_text.substring(0, 60)}..."
+                </Text>
+                <Text style={styles.reviewEvent}>
+                  {dashboardData.recentReview.event_title}
+                </Text>
+              </View>
+            ) : (
+              <Text style={styles.noReviewsText}>No reviews yet</Text>
+            )}
+            <View style={styles.reviewStats}>
+              <Text style={styles.cardNumberWhite}>{dashboardData.stats.reviewsGiven}</Text>
+              <Text style={styles.cardLabelWhite}>Total given</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Stats Grid */}
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
+              <Text style={styles.statIcon}>📚</Text>
+              <Text style={styles.statNumber}>{dashboardData.stats.upcomingClasses}</Text>
+              <Text style={styles.statDescription}>Upcoming Classes</Text>
+            </View>
+            
+            <View style={styles.statCard}>
+              <Text style={styles.statIcon}>✅</Text>
+              <Text style={styles.statNumber}>{dashboardData.stats.pastClasses}</Text>
+              <Text style={styles.statDescription}>Past Classes</Text>
+            </View>
+          </View>
+        </View>
+      )}
+
       {/* Hero Section */}
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>Feel confident, sexy, and unstoppable</Text>
@@ -745,45 +935,10 @@ function ChatScreen() {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('Home');
-
-  const tabs = [
-    { name: 'Home', icon: '🏠', component: HomeScreen },
-    { name: 'Instructors', icon: '👥', component: InstructorsScreen },
-    { name: 'Classes', icon: '🎯', component: ClassesScreen },
-    { name: 'Events', icon: '📅', component: EventsScreen },
-    { name: 'Chat', icon: '💬', component: ChatScreen },
-  ];
-
-  const ActiveComponent = tabs.find(tab => tab.name === activeTab)?.component || HomeScreen;
-
   return (
-    <View style={styles.container}>
-      <StatusBar style="light" />
-      
-      {/* Main Content */}
-      <View style={styles.mainContent}>
-        <ActiveComponent />
-      </View>
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        {tabs.map((tab) => (
-          <TouchableOpacity
-            key={tab.name}
-            style={[styles.tabButton, activeTab === tab.name && styles.activeTabButton]}
-            onPress={() => setActiveTab(tab.name)}
-          >
-            <Text style={[styles.tabIcon, activeTab === tab.name && styles.activeTabIcon]}>
-              {tab.icon}
-            </Text>
-            <Text style={[styles.tabLabel, activeTab === tab.name && styles.activeTabLabel]}>
-              {tab.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
@@ -1549,4 +1704,252 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
+  // Dashboard Styles
+  welcomeHeader: {
+    backgroundColor: '#FF3366',
+    paddingTop: 80,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  welcomeTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 8,
+  },
+  welcomeSubtitle: {
+    fontSize: 16,
+    color: 'white',
+    opacity: 0.9,
+    marginBottom: 24,
+  },
+  signOutButton: {
+    backgroundColor: 'white',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  signOutButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FF3366',
+  },
+  dashboardSection: {
+    backgroundColor: 'white',
+    paddingVertical: 32,
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  dashboardTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  dashboardCards: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  dashboardCard: {
+    width: '48%',
+    height: 180,
+    borderRadius: 12,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  cardBackground: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 12,
+  },
+  cardOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 12,
+  },
+  cardContent: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    zIndex: 1,
+  },
+  cardCategory: {
+    fontSize: 14,
+    color: 'white',
+    opacity: 0.9,
+    marginBottom: 4,
+  },
+  cardNumber: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  cardLabel: {
+    fontSize: 14,
+    color: 'white',
+    opacity: 0.8,
+  },
+  cardSubtext: {
+    fontSize: 12,
+    color: 'white',
+    opacity: 0.7,
+    marginTop: 4,
+  },
+  reviewsCard: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  cardCategoryWhite: {
+    fontSize: 14,
+    color: 'white',
+    opacity: 0.9,
+    marginBottom: 8,
+  },
+  cardTitleWhite: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 12,
+  },
+  reviewContent: {
+    marginBottom: 16,
+  },
+  reviewText: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+    marginBottom: 4,
+  },
+  reviewEvent: {
+    fontSize: 12,
+    color: '#999',
+    fontStyle: 'italic',
+  },
+  noReviewsText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+  },
+  reviewStats: {
+    alignItems: 'center',
+  },
+  cardNumberWhite: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  cardLabelWhite: {
+    fontSize: 12,
+    color: 'white',
+    opacity: 0.8,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+  },
+  statCard: {
+    alignItems: 'center',
+    width: '45%',
+  },
+  statIcon: {
+    fontSize: 36,
+    color: '#FF3366',
+    marginBottom: 8,
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  statDescription: {
+    fontSize: 12,
+    color: '#666',
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  star: {
+    fontSize: 18,
+  },
 });
+
+// App content that handles authentication state
+function AppContent() {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FF3366" />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!user) {
+    return <LoginScreen />;
+  }
+
+  return <AuthenticatedApp />;
+}
+
+// Authenticated App wrapper
+function AuthenticatedApp() {
+  const [activeTab, setActiveTab] = useState('Home');
+
+  const tabs = [
+    { name: 'Home', icon: '🏠', component: HomeScreen },
+    { name: 'Instructors', icon: '👥', component: InstructorsScreen },
+    { name: 'Classes', icon: '🎯', component: ClassesScreen },
+    { name: 'Events', icon: '📅', component: EventsScreen },
+    { name: 'Chat', icon: '💬', component: ChatScreen },
+  ];
+
+  const ActiveComponent = tabs.find(tab => tab.name === activeTab)?.component || HomeScreen;
+
+  return (
+    <View style={styles.container}>
+      <StatusBar style="light" />
+      
+      {/* Main Content */}
+      <View style={styles.mainContent}>
+        <ActiveComponent />
+      </View>
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNav}>
+        {tabs.map((tab) => (
+          <TouchableOpacity
+            key={tab.name}
+            style={[styles.tabButton, activeTab === tab.name && styles.activeTabButton]}
+            onPress={() => setActiveTab(tab.name)}
+          >
+            <Text style={[styles.tabIcon, activeTab === tab.name && styles.activeTabIcon]}>
+              {tab.icon}
+            </Text>
+            <Text style={[styles.tabLabel, activeTab === tab.name && styles.activeTabLabel]}>
+              {tab.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
+}

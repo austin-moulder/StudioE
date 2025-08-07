@@ -33,7 +33,7 @@ export const viewport = {
 };
 
 // Define the Studio E logo URL - use absolute URL to the logo in public folder
-const STUDIO_E_LOGO = 'https://www.joinstudioe.com/studio-e-logo.png';
+const STUDIO_E_LOGO = 'https://www.joinstudioe.com/favicon-generator.png';
 
 export const metadata: Metadata = {
   title: {

@@ -709,7 +709,7 @@ function ClassesContent() {
       {/* Filter Section */}
       <section className="py-8 bg-gray-50">
         <div className="container">
-          <div className="rounded-lg bg-white p-6 shadow-sm">
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Find Your Perfect Dance Class</h2>
               
@@ -1021,7 +1021,7 @@ function ClassesContent() {
                   {currentClasses.map((classItem) => (
                     <div 
                       key={classItem.id} 
-                      className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
+                      className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
                     >
                       <div className="p-4 md:p-6">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1229,7 +1229,7 @@ function ClassesContent() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
               <div className="w-12 h-12 bg-[#F94C8D]/10 text-[#F94C8D] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-6 w-6" />
               </div>
@@ -1239,7 +1239,7 @@ function ClassesContent() {
               </p>
             </div>
             
-            <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
               <div className="w-12 h-12 bg-[#9333EA]/10 text-[#9333EA] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Calendar className="h-6 w-6" />
               </div>
@@ -1249,7 +1249,7 @@ function ClassesContent() {
               </p>
             </div>
             
-            <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
               <div className="w-12 h-12 bg-[#06B6D4]/10 text-[#06B6D4] rounded-full flex items-center justify-center mx-auto mb-4">
                 <DollarSign className="h-6 w-6" />
               </div>

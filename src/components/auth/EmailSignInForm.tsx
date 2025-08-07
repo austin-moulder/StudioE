@@ -60,7 +60,7 @@ export default function EmailSignInForm({
   return (
     <div className={`w-full ${className}`}>
       {showSuccessMessage ? (
-        <div className="rounded-md bg-green-50 p-4 mb-4">
+        <div className="rounded-xl bg-green-50 p-4 mb-4">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
@@ -89,7 +89,7 @@ export default function EmailSignInForm({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#EC407A] focus:outline-none focus:ring-1 focus:ring-[#EC407A]"
+              className="mt-1 block w-full rounded-xl border border-gray-300 px-3 py-2 shadow-sm focus:border-[#EC407A] focus:outline-none focus:ring-1 focus:ring-[#EC407A]"
             />
           </div>
           
@@ -107,7 +107,7 @@ export default function EmailSignInForm({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#EC407A] focus:outline-none focus:ring-1 focus:ring-[#EC407A]"
+                className="mt-1 block w-full rounded-xl border border-gray-300 px-3 py-2 shadow-sm focus:border-[#EC407A] focus:outline-none focus:ring-1 focus:ring-[#EC407A]"
               />
             </div>
           )}
@@ -116,7 +116,7 @@ export default function EmailSignInForm({
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full justify-center rounded-md border border-transparent bg-[#EC407A] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#D81B60] focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full justify-center rounded-xl border border-transparent bg-[#EC407A] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#D81B60] focus:outline-none focus:ring-2 focus:ring-[#EC407A] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isLoading
                 ? 'Signing in...'

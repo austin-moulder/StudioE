@@ -585,7 +585,7 @@ function EventsContent() {
       <section className="py-16 bg-gray-50">
         <div className="container">
           <Tabs defaultValue="upcoming" className="w-full" ref={eventsTabsRef}>
-            <TabsList className="mb-8 grid w-full grid-cols-3 bg-white border rounded-lg text-center overflow-hidden">
+            <TabsList className="mb-8 grid w-full grid-cols-3 bg-white border rounded-2xl text-center overflow-hidden">
               <TabsTrigger 
                 value="upcoming" 
                 className="data-[state=active]:font-semibold relative transition-all py-2.5 h-11 hover:bg-gray-100 flex justify-center items-center after:content-[''] after:absolute after:h-[2px] after:bg-gray-400 after:bottom-0 after:left-0 after:right-0 after:opacity-0 data-[state=active]:after:opacity-100"
@@ -616,7 +616,7 @@ function EventsContent() {
                   })
                   .slice(indexOfFirstEvent, indexOfLastEvent)
                   .map((event, index) => (
-                    <Card key={event.id} className={`overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow ${event.is_featured ? 'border-2 border-[#F94C8D]' : ''}`}>
+                    <Card key={event.id} className={`overflow-hidden bg-white rounded-3xl shadow hover:shadow-md transition-shadow ${event.is_featured ? 'border-2 border-[#F94C8D]' : ''}`}>
                       <div className="aspect-square relative">
                         <Image 
                           src={event.image_url || "/placeholder.svg"} 
@@ -692,7 +692,7 @@ function EventsContent() {
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                    className={`flex h-9 w-9 items-center justify-center rounded-md border shadow-sm bg-white text-sm ${
+                    className={`flex h-9 w-9 items-center justify-center rounded-xl border shadow-sm bg-white text-sm ${
                       currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-100'
                     }`}
                     disabled={currentPage === 1}
@@ -726,7 +726,7 @@ function EventsContent() {
                         <button
                           key={`page-${pageNum}`}
                           onClick={() => handlePageChange(pageNum)}
-                          className={`flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm shadow-sm ${
+                          className={`flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm shadow-sm ${
                             currentPage === pageNum
                               ? 'border-2 border-[#F94C8D] bg-[#F94C8D] text-white font-medium hover:bg-[#F94C8D]/90'
                               : 'border bg-white hover:bg-gray-100'
@@ -752,7 +752,7 @@ function EventsContent() {
                         handlePageChange(currentPage + 1);
                       }
                     }}
-                    className={`flex h-9 w-9 items-center justify-center rounded-md border shadow-sm bg-white text-sm ${
+                    className={`flex h-9 w-9 items-center justify-center rounded-xl border shadow-sm bg-white text-sm ${
                       (() => {
                         const totalFilteredEvents = filteredEvents.filter(event => {
                           const now = new Date();
@@ -794,7 +794,7 @@ function EventsContent() {
                     return event.is_featured && isEventUpcoming(event, now) && new Date(event.event_date) >= fourteenDaysAgo;
                   })
                   .map((event) => (
-                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow border-2 border-[#F94C8D]/20">
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-3xl shadow hover:shadow-md transition-shadow border-2 border-[#F94C8D]/20">
                       <div className="aspect-square relative">
                         <Image
                           src={event.image_url || "/placeholder.svg"}
@@ -882,7 +882,7 @@ function EventsContent() {
                     return isEventPast(event, now) && eventDateToCheck >= fourteenDaysAgo && event.approved !== false;
                   })
                   .map((event) => (
-                    <Card key={event.id} className="overflow-hidden bg-white rounded-xl shadow hover:shadow-md transition-shadow opacity-70">
+                    <Card key={event.id} className="overflow-hidden bg-white rounded-3xl shadow hover:shadow-md transition-shadow opacity-70">
                       <div className="aspect-square relative">
                         <Image
                           src={event.image_url || "/placeholder.svg"}

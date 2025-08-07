@@ -12,7 +12,7 @@ export default function AuthNavbarSection() {
   // Show a loading skeleton if auth is loading
   if (isLoading) {
     return (
-      <div className="h-8 w-20 animate-pulse rounded-md bg-gray-200"></div>
+      <div className="h-8 w-20 animate-pulse rounded-xl bg-gray-200"></div>
     );
   }
 

@@ -394,13 +394,13 @@ export default function ClubPage() {
             <a 
               href="mailto:studioelatindance@gmail.com?subject=The Club Membership Application&body=Hello Studio E Team,%0A%0AI'm ready to join The Club movement! Here's my application:%0A%0A1. What draws you to The Club?%0A[Your answer here]%0A%0A2. How do you plan to actively contribute to our community?%0A[Your answer here]%0A%0A3. Which aspects excite you most? (Health, Wealth, Love)%0A[Your answer here]%0A%0A4. What dance experience do you have?%0A[Your answer here]%0A%0A5. What are your goals for personal growth and community involvement?%0A[Your answer here]%0A%0A6. Why is this more than just a hobby for you?%0A[Your answer here]%0A%0AThank you for considering my application. I'm ready to make The Club my second home.%0A%0ABest regards,%0A[Your name]"
             >
-              <Button size="lg" className="bg-white text-pink-600 hover:bg-gray-100 hover:text-pink-700 font-bold px-8 py-4 text-lg shadow-lg">
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-pink-600 font-bold px-8 py-4 text-lg">
                 Apply for Membership
               </Button>
             </a>
-            <Link href="/about">
+            <Link href="/membership">
               <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-pink-600 font-bold px-8 py-4 text-lg">
-                Learn More
+                View Membership Plans
               </Button>
             </Link>
           </div>

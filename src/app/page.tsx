@@ -61,7 +61,7 @@ function ComingSoonTooltip({ x, y, message }: { x: number; y: number; message: s
   // Position the tooltip near the click position, with adjustments to center it
   return (
     <div 
-      className="fixed z-50 px-3 py-1.5 text-xs bg-gray-800/80 text-white rounded-md shadow-sm pointer-events-none
+      className="fixed z-50 px-3 py-1.5 text-xs bg-gray-800/80 text-white rounded-xl shadow-sm pointer-events-none
                  transition-opacity duration-200 ease-in-out"
       style={{ 
         left: `${x}px`, 
@@ -376,15 +376,15 @@ export default function Home() {
           
           {/* Value Proposition Callouts - Hidden on mobile */}
           <div className="mt-16 hidden md:flex flex-wrap justify-center gap-4">
-            <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm">
+            <div className="flex items-center gap-2 bg-white/20 rounded-2xl px-4 py-2 backdrop-blur-sm">
               <Star className="h-4 w-4 text-white" />
               <span className="text-sm font-medium">Experienced Instructors</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm">
+            <div className="flex items-center gap-2 bg-white/20 rounded-2xl px-4 py-2 backdrop-blur-sm">
               <Calendar className="h-4 w-4 text-white" />
               <span className="text-sm font-medium">Proven Curriculums</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm">
+            <div className="flex items-center gap-2 bg-white/20 rounded-2xl px-4 py-2 backdrop-blur-sm">
               <Users className="h-4 w-4 text-white" />
               <span className="text-sm font-medium">Personalized Learning</span>
             </div>
@@ -439,9 +439,9 @@ export default function Home() {
                   <div key={index} className="flex-[0_0_100%] min-w-0">
                     <Link 
                       href={`/instructors?style=${style.name.toLowerCase()}`} 
-                      className="group relative overflow-hidden rounded-lg hover:shadow-lg transition-shadow duration-300 mx-2"
+                      className="group relative overflow-hidden rounded-2xl hover:shadow-lg transition-shadow duration-300 mx-2"
                     >
-                      <div className="aspect-square relative overflow-hidden rounded-lg">
+                                              <div className="aspect-square relative overflow-hidden rounded-2xl">
                         {danceStyleImages[style.name.toLowerCase()] ? (
                           <>
                             <Image
@@ -500,9 +500,9 @@ export default function Home() {
               <Link 
                 key={style.name} 
                 href={`/instructors?style=${style.name.toLowerCase()}`} 
-                className="group relative overflow-hidden rounded-lg hover:shadow-lg transition-shadow duration-300"
+                className="group relative overflow-hidden rounded-2xl hover:shadow-lg transition-shadow duration-300"
               >
-                <div className="aspect-square relative overflow-hidden rounded-lg">
+                                        <div className="aspect-square relative overflow-hidden rounded-2xl">
                   {danceStyleImages[style.name.toLowerCase()] ? (
                     <>
                       <Image
@@ -568,9 +568,9 @@ export default function Home() {
                         src={instructor.imageUrl}
                         alt={instructor.name}
                         fill
-                        className="object-cover rounded-lg"
+                        className="object-cover rounded-2xl"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-2xl" />
                       <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                         <h3 className="text-xl font-bold mb-1">{instructor.name}</h3>
                         <p className="text-sm opacity-90">{instructor.danceStyles.join(" & ")}</p>
@@ -600,7 +600,7 @@ export default function Home() {
               <Link 
                 key={instructor.id} 
                 href={`/instructors?style=${instructor.danceStyles[0].toLowerCase()}`}
-                className="relative group overflow-hidden rounded-lg"
+                className="relative group overflow-hidden rounded-2xl"
               >
                 <div className="relative h-[400px] w-full">
                   <Image
@@ -651,7 +651,7 @@ export default function Home() {
                 ) : (
                   testimonials.map((testimonial, index) => (
                     <div key={index} className="flex-[0_0_100%] min-w-0">
-                      <div className="bg-white rounded-xl shadow-xl border border-pink-100 p-8 mx-2 transform hover:scale-105 transition-transform duration-300">
+                      <div className="bg-white rounded-3xl shadow-xl border border-pink-100 p-8 mx-2 transform hover:scale-105 transition-transform duration-300">
                         <div className="flex items-center mb-6">
                           <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#FF3366] to-[#9933CC] mr-4 overflow-hidden p-0.5">
                             <div className="w-full h-full rounded-full bg-white overflow-hidden">
@@ -774,7 +774,7 @@ export default function Home() {
                 src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Main.png"
                 alt="Studio E Podcast Cover"
                 fill
-                className="object-cover rounded-lg"
+                className="object-cover rounded-2xl"
                 unoptimized
               />
             </div>
@@ -787,7 +787,7 @@ export default function Home() {
                 src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Podcast/Podcast_Cover_Main.png"
                 alt="Studio E Podcast Cover"
                 fill
-                className="object-cover rounded-lg"
+                className="object-cover rounded-2xl"
                 unoptimized
               />
             </div>
