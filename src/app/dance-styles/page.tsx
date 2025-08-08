@@ -35,17 +35,6 @@ export default function DanceStylesPage() {
     }
   ]);
 
-  const [otherStyles, setOtherStyles] = useState([
-    { name: "Hip Hop", count: 0 },
-    { name: "Reggaeton", count: 0 },
-    { name: "Jazz", count: 0 },
-    { name: "Mambo", count: 0 },
-    { name: "DJ", count: 0 },
-    { name: "Zumba", count: 0 },
-    { name: "Zouk", count: 0 },
-    { name: "Kizomba", count: 0 },
-  ]);
-
   const fetchInstructorCounts = useCallback(async () => {
     try {
       // Fetch counts for main dance styles
@@ -58,21 +47,10 @@ export default function DanceStylesPage() {
         };
       }
       setDanceStyles(updatedDanceStyles);
-
-      // Fetch counts for other dance styles
-      const updatedOtherStyles = [...otherStyles];
-      for (let i = 0; i < updatedOtherStyles.length; i++) {
-        const count = await getInstructorCountByStyle(updatedOtherStyles[i].name);
-        updatedOtherStyles[i] = { 
-          ...updatedOtherStyles[i], 
-          count 
-        };
-      }
-      setOtherStyles(updatedOtherStyles);
     } catch (error) {
       console.error("Error fetching instructor counts:", error);
     }
-  }, [danceStyles, otherStyles]);
+  }, [danceStyles]);
 
   useEffect(() => {
     fetchInstructorCounts();
@@ -141,22 +119,6 @@ export default function DanceStylesPage() {
                   />
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Other Styles Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container">
-          <h2 className="text-3xl font-bold tracking-tight text-center mb-12">Other Popular Styles</h2>
-          
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {otherStyles.map((style) => (
-              <Link key={style.name} href="/instructors?style=all" className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <h3 className="font-bold text-xl mb-2">{style.name}</h3>
-                <p className="text-sm text-gray-500">{style.count} Instructors</p>
-              </Link>
             ))}
           </div>
         </div>

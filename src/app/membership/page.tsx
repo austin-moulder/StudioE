@@ -193,11 +193,11 @@ export default function MembershipPage() {
             </div>
           </div>
 
-          {/* 5x Monthly Plan */}
+          {/* 4x Monthly Plan */}
           <div className="max-w-4xl mx-auto mb-16">
             <div className="bg-[#FF3366]/10 rounded-3xl p-1 border border-[#FF3366]/20">
               <div className="bg-white rounded-3xl p-8 text-center">
-                <h3 className="text-2xl font-black mb-4">5x Monthly Membership</h3>
+                <h3 className="text-2xl font-black mb-4">4x Monthly Membership</h3>
                 <div className="text-3xl font-black mb-2 text-gray-900">$59 PER MONTH</div>
                 <p className="text-gray-600 italic mb-8">Ideal for our 1x per week students.</p>
                 
@@ -205,7 +205,7 @@ export default function MembershipPage() {
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Five dance classes per month at our location</span>
+                      <span>Four dance classes per month at our location</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
@@ -217,10 +217,6 @@ export default function MembershipPage() {
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Pop-up classes included in monthly total (no extra fee)</span>
-                    </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                       <span>Enrollment in our exclusive rewards program</span>

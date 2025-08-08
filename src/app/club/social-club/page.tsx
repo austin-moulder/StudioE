@@ -224,7 +224,7 @@ export default function SocialClubPage() {
       </section>
 
       {/* Navigation Tabs */}
-      <section className="sticky top-16 z-40 bg-white/95 backdrop-blur-sm border-b">
+      <section className="bg-white/95 backdrop-blur-sm border-b">
         <div className="container px-4">
           <div className="flex justify-center">
             <div className="flex space-x-1 p-1 bg-gray-100 rounded-lg">
