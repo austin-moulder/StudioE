@@ -168,7 +168,7 @@ export default function Footer() {
           <div>
             <h3 className="mb-4 text-sm font-montserrat font-semibold">Contact</h3>
             <address className="not-italic text-sm text-gray-500">
-              <p>2613 W Evergreen Avenue</p>
+                              <p>2716 W Division Street</p>
               <p>Chicago, IL 60622</p>
               <p className="mt-2">Email: studioelatindance@gmail.com</p>
               <p>Phone: (816) 419-6279</p>

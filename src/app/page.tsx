@@ -344,7 +344,7 @@ export default function Home() {
           <VideoBackground videoId="9q-IlFG0fOQ" className="h-full w-full" />
         </div>
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
-          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl leading-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl leading-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] break-words">
             Feel confident, sexy, and unstoppable
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
@@ -417,11 +417,11 @@ export default function Home() {
       </section>
 
       {/* Featured Dance Styles */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-24">
         <div className="container">
-          <div className="mb-12 text-center">
+          <div className="mb-8 md:mb-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Popular Dance Styles</h2>
-            <p className="mt-4 text-lg text-gray-500">
+            <p className="mt-4 text-lg text-gray-500 break-words">
               Explore a variety of dance styles taught by our expert instructors
             </p>
           </div>
@@ -547,11 +547,11 @@ export default function Home() {
       </section>
 
       {/* Featured Teachers */}
-      <section className="bg-gray-50 py-16 md:py-24">
+      <section className="bg-gray-50 py-12 md:py-24">
         <div className="container">
-          <div className="mb-12 text-center">
+          <div className="mb-8 md:mb-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Featured Instructors</h2>
-            <p className="mt-4 text-lg text-gray-500">Learn from the best dance instructors in the industry</p>
+            <p className="mt-4 text-lg text-gray-500 break-words">Learn from the best dance instructors in the industry</p>
           </div>
 
           {/* Mobile Carousel */}
@@ -631,11 +631,11 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 via-pink-50 to-purple-50">
+      <section className="py-12 md:py-16 bg-gradient-to-br from-gray-50 via-pink-50 to-purple-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-[#FF3366] to-[#9933CC] bg-clip-text text-transparent mb-4">What Our Students Say</h2>
-            <p className="text-xl font-medium text-gray-700 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-[#FF3366] to-[#9933CC] bg-clip-text text-transparent mb-4 break-words">What Our Students Say</h2>
+            <p className="text-xl font-medium text-gray-700 max-w-2xl mx-auto break-words">
               Join our community of dancers who have transformed their lives through dance
             </p>
           </div>
@@ -793,7 +793,7 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">The Studio E Podcast</h2>
-              <p className="mt-4 text-lg text-gray-500">
+              <p className="mt-4 text-lg text-gray-500 break-words">
                 Join host Austin René for conversations with top dance instructors, performers, and industry experts.
               </p>
               <p className="mt-4 text-gray-500">
@@ -851,12 +851,12 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-16 md:py-24">
+      <section className="relative py-12 md:py-24">
         <div className="absolute inset-0 bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC]" />
         <div className="container relative z-10">
           <div className="mx-auto max-w-2xl text-center text-white">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Ready to Start Your Dance Journey?</h2>
-            <p className="mt-4 text-lg">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl break-words">Ready to Start Your Dance Journey?</h2>
+            <p className="mt-4 text-lg break-words">
               Join hundreds of students who have found their perfect dance instructor through Studio E.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
@@ -889,11 +889,11 @@ export default function Home() {
       </section>
 
       {/* Recent Blog Posts */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-24">
         <div className="container">
-          <div className="mb-12 text-center">
+          <div className="mb-8 md:mb-12 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">From Our Blog</h2>
-            <p className="mt-4 text-lg text-gray-500">
+            <p className="mt-4 text-lg text-gray-500 break-words">
               Latest articles, tips, and stories from the world of dance
             </p>
           </div>

@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { MapPin, Heart, DollarSign, Activity, Users, Calendar, Coffee, Shirt, User } from "lucide-react"
+import { MapPin, Heart, DollarSign, Activity, Users, Calendar, Coffee, Shirt, User, Lock } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function ClubPage() {
   const [activeTab, setActiveTab] = useState("health")
@@ -51,6 +52,18 @@ export default function ClubPage() {
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Blog/gentrification_humboldt_park.jpg"
+            alt="Puerto Rican Flag - Paseo Boricua"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+        
+        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-orange-900 opacity-90" />
         <div className="absolute inset-0 bg-black/30" />
         
@@ -65,7 +78,7 @@ export default function ClubPage() {
           <div className="max-w-4xl mx-auto text-center text-white">
             <div className="flex items-center justify-center gap-2 mb-6">
               <MapPin className="h-6 w-6 text-orange-400" />
-              <span className="text-orange-400 font-semibold">Humboldt Park • Puerto Rico Town</span>
+              <span className="text-orange-400 font-semibold">2716 W Division Street • Paseo Boricua</span>
             </div>
             
             <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
@@ -77,6 +90,28 @@ export default function ClubPage() {
             <p className="text-xl md:text-2xl mb-8 font-light">
               The world's first Latin dance social club in the heart of Puerto Rico Town
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Location Highlight Section */}
+      <section className="py-12 bg-gradient-to-r from-pink-50 to-orange-50">
+        <div className="container px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                The Only Latin Dance Studio Between the Flags
+              </h2>
+              <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                Located in the heart of Paseo Boricua, the cultural district of Puerto Rico Town, 
+                we're proud to hold our space just like Puerto Ricans "Plantar la Bandera" - 
+                planting our flag and claiming our cultural territory.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                This is more than a dance studio - it's a cultural anchor in the community, 
+                celebrating Latin dance and culture in the most authentic setting possible.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -266,20 +301,31 @@ export default function ClubPage() {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 gap-8">
-                {healthOfferings.map((offering, index) => (
-                  <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                    <h3 className="text-2xl font-bold text-green-600 mb-4">{offering.category}</h3>
-                    <p className="text-gray-600 mb-6">{offering.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {offering.items.map((item, i) => (
-                        <span key={i} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                          {item}
-                        </span>
-                      ))}
+              {/* Coming Soon Overlay */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center py-16">
+                  <Lock className="h-16 w-16 text-[#FF3366] mb-4" />
+                  <h3 className="text-2xl font-bold text-[#FF3366] mb-2">Coming Soon</h3>
+                  <p className="text-gray-600 max-w-md text-center">
+                    Our health programs are currently being developed. Join the waitlist to be notified when they launch.
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-8 opacity-30">
+                  {healthOfferings.map((offering, index) => (
+                    <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+                      <h3 className="text-2xl font-bold text-green-600 mb-4">{offering.category}</h3>
+                      <p className="text-gray-600 mb-6">{offering.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {offering.items.map((item, i) => (
+                          <span key={i} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -296,20 +342,31 @@ export default function ClubPage() {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 gap-8">
-                {wealthOfferings.map((offering, index) => (
-                  <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                    <h3 className="text-2xl font-bold text-yellow-600 mb-4">{offering.category}</h3>
-                    <p className="text-gray-600 mb-6">{offering.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {offering.items.map((item, i) => (
-                        <span key={i} className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                          {item}
-                        </span>
-                      ))}
+              {/* Coming Soon Overlay */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center py-16">
+                  <Lock className="h-16 w-16 text-[#FF3366] mb-4" />
+                  <h3 className="text-2xl font-bold text-[#FF3366] mb-2">Coming Soon</h3>
+                  <p className="text-gray-600 max-w-md text-center">
+                    Our wealth building programs are currently being developed. Join the waitlist to be notified when they launch.
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-8 opacity-30">
+                  {wealthOfferings.map((offering, index) => (
+                    <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+                      <h3 className="text-2xl font-bold text-yellow-600 mb-4">{offering.category}</h3>
+                      <p className="text-gray-600 mb-6">{offering.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {offering.items.map((item, i) => (
+                          <span key={i} className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -326,20 +383,31 @@ export default function ClubPage() {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 gap-8">
-                {loveOfferings.map((offering, index) => (
-                  <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                    <h3 className="text-2xl font-bold text-pink-600 mb-4">{offering.category}</h3>
-                    <p className="text-gray-600 mb-6">{offering.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {offering.items.map((item, i) => (
-                        <span key={i} className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm font-medium">
-                          {item}
-                        </span>
-                      ))}
+              {/* Coming Soon Overlay */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center py-16">
+                  <Lock className="h-16 w-16 text-[#FF3366] mb-4" />
+                  <h3 className="text-2xl font-bold text-[#FF3366] mb-2">Coming Soon</h3>
+                  <p className="text-gray-600 max-w-md text-center">
+                    Our love and connection programs are currently being developed. Join the waitlist to be notified when they launch.
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-8 opacity-30">
+                  {loveOfferings.map((offering, index) => (
+                    <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+                      <h3 className="text-2xl font-bold text-pink-600 mb-4">{offering.category}</h3>
+                      <p className="text-gray-600 mb-6">{offering.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {offering.items.map((item, i) => (
+                          <span key={i} className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm font-medium">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -404,12 +472,8 @@ export default function ClubPage() {
               </Button>
             </Link>
           </div>
-          
-          <div className="mt-8 text-sm opacity-90">
-            <p>📍 Coming to Humboldt Park - Puerto Rico Town</p>
-          </div>
         </div>
       </section>
     </div>
   )
-} 
+}

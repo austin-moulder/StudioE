@@ -109,7 +109,7 @@ export default function MenWhoDancePage() {
               <div className="mt-8 space-y-4">
                 <div className="flex items-center text-gray-500">
                   <MapPin className="h-5 w-5 mr-2 text-[#FF3366]" />
-                  <span>2613 W Evergreen Avenue, Chicago IL 60622</span>
+                  <span>2716 W Division Street, Chicago IL 60622</span>
                 </div>
                 <div className="flex items-center text-gray-500">
                   <Calendar className="h-5 w-5 mr-2 text-[#FF3366]" />

@@ -141,7 +141,7 @@ export default function ContactPage() {
                       <h3 className="font-semibold">Visit Us</h3>
                       <p className="text-sm text-gray-500 mt-1">Studio E Headquarters</p>
                       <address className="not-italic">
-                        2613 West Evergreen Avenue
+                        2716 W Division Street
                         <br />
                         Chicago, IL 60622
                         <br />

@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, MapPin, Users, Star } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export default function ChicagoGuidePage() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -38,7 +40,8 @@ export default function ChicagoGuidePage() {
       })
 
       if (response.ok) {
-        setIsSubmitted(true)
+        // Redirect to founder-deal page instead of showing success message
+        router.push('/founder-deal')
       } else {
         console.error('Form submission failed')
         // Handle error state here if needed
@@ -51,37 +54,25 @@ export default function ChicagoGuidePage() {
     }
   }
 
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center px-4">
-        <div className="max-w-md text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-8 h-8 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Check Your Email!
-          </h1>
-          <p className="text-lg text-gray-600 mb-6">
-            Your Chicago Dance Guide + 2 Free Classes are on their way to your inbox.
-          </p>
-          <p className="text-sm text-gray-500">
-            Don't see it? Check your spam folder and add us to your contacts.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-6 py-16">
+        {/* Top Header Banner */}
+        <div className="text-center mb-8">
+          <div className="bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white py-4 px-6 rounded-xl">
+            <h2 className="text-xl md:text-2xl font-bold">
+              Attention Humboldt and Wicker Park
+            </h2>
+          </div>
+        </div>
+
         {/* Headline */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
-            Discover the confident social dancer that you were meant to be
+            Stop feeling awkward at social events and start dancing with confidence
           </h1>
           <h2 className="text-xl md:text-2xl text-gray-700 font-medium leading-relaxed">
-            Get our <span className="font-bold text-[#FF3366]">FREE Digital Guide</span> to Chicago's top dance spots + <span className="font-bold text-[#FF3366]">2 FREE classes</span> with the city's best instructors
+            Get our <span className="font-bold text-[#FF3366]">FREE Digital Guide</span> to Chicago's top dance spots + <span className="font-bold text-[#FF3366]">2 FREE Classes</span> + <span className="font-bold text-[#FF3366]">1 FREE Smoothie from Rocksteady Wellness</span> + <span className="font-bold text-[#FF3366]">1 FREE Social Ticket</span> with the city's best instructors
           </h2>
         </div>
 
@@ -141,7 +132,7 @@ export default function ChicagoGuidePage() {
                 disabled={isSubmitting}
                 className="w-full h-16 text-xl font-bold bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#FF3366]/90 hover:to-[#9933CC]/90 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
               >
-                {isSubmitting ? "Sending..." : "GET MY FREE GUIDE + CLASSES"}
+                {isSubmitting ? "Sending..." : "GET MY FREE STUFF"}
               </Button>
             </form>
           </CardContent>
@@ -155,7 +146,7 @@ export default function ChicagoGuidePage() {
                 <CheckCircle className="w-4 h-4 text-white" />
               </div>
               <span className="font-semibold text-gray-800">
-                <span className="text-[#FF3366] font-bold">$99 Value</span> - Absolutely FREE
+                <span className="text-[#FF3366] font-bold">$199 Value</span> - Absolutely FREE
               </span>
             </div>
           </div>
@@ -166,7 +157,7 @@ export default function ChicagoGuidePage() {
                 <Users className="w-4 h-4 text-white" />
               </div>
               <span className="font-semibold text-gray-800">
-                <span className="text-[#FF3366] font-bold">150+ Students</span> Already Served
+                <span className="text-[#FF3366] font-bold">300+ Students</span> Already Served
               </span>
             </div>
           </div>
