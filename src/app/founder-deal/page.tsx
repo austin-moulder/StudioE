@@ -66,11 +66,11 @@ export default function FounderDealPage() {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 break-words">
             Thank you for investing in yourself
           </h1>
           <div className="max-w-2xl mx-auto">
-            <p className="text-lg text-gray-700 leading-relaxed">
+            <p className="text-lg text-gray-700 leading-relaxed break-words">
               Your classes, smoothie, and social ticket are waiting for you at our studio at <span className="font-semibold">2716 W Division Street</span>. Let us know that you filled out the form, and we'll take care of you. These free offers must be redeemed by <span className="font-semibold text-[#FF3366]">{deadlineFormatted}</span>.
             </p>
           </div>
@@ -110,10 +110,10 @@ export default function FounderDealPage() {
         <Card className="border-2 border-[#FF3366] shadow-xl mb-16">
           <CardContent className="p-8 md:p-12">
             <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Access up to 8 classes every month for life at a $49 discount FOR LIFE*
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 break-words">
+                Access up to 8 classes every month at a $49 discount FOR LIFE*
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-gray-600 mb-8 break-words">
                 Enrollment in our Silver Plan at a special founder's rate. Discounts only available for the first 100 members
               </p>
               
@@ -151,11 +151,11 @@ export default function FounderDealPage() {
           <CardContent className="p-8">
             <div className="flex items-center justify-center space-x-4 mb-4">
               <Clock className="w-8 h-8 text-red-500" />
-              <h3 className="text-2xl font-bold text-red-600">
+              <h3 className="text-2xl font-bold text-red-600 break-words">
                 Only 7 spots left as of {currentDate}
               </h3>
             </div>
-            <p className="text-center text-lg text-gray-700">
+            <p className="text-center text-lg text-gray-700 break-words">
               Once this deal is gone, it's gone forever.
             </p>
           </CardContent>
@@ -166,11 +166,11 @@ export default function FounderDealPage() {
           <CardContent className="p-8">
             <div className="flex items-center justify-center space-x-4 mb-4">
               <Shield className="w-8 h-8 text-green-500" />
-              <h3 className="text-2xl font-bold text-green-600">
+              <h3 className="text-2xl font-bold text-green-600 break-words">
                 Our Guarantee
               </h3>
             </div>
-            <p className="text-center text-lg text-gray-700">
+            <p className="text-center text-lg text-gray-700 break-words">
               We are so confident you'll love us that if you can't social dance a full song in the first 30 days, we will refund your first month.
             </p>
           </CardContent>
@@ -178,19 +178,13 @@ export default function FounderDealPage() {
 
         {/* Proof Section - Moved here */}
         <div className="text-center mb-16">
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 break-words">
             We've helped <span className="text-[#FF3366]">300+</span> students across the nation learn social dancing
           </h3>
-          <p className="text-lg text-gray-700 leading-relaxed">
-            We do it both simpler and faster than anyone else through our proprietary Studio E method.
-          </p>
         </div>
 
         {/* Testimonials Carousel */}
         <div className="mb-16">
-          <h3 className="text-3xl font-bold text-center text-gray-900 mb-8">
-            What Our Students Say
-          </h3>
           
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex">
