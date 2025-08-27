@@ -94,357 +94,81 @@ export default function ClubPage() {
         </div>
       </section>
 
-      {/* Location Highlight Section */}
-      <section className="py-12 bg-gradient-to-r from-pink-50 to-orange-50">
-        <div className="container px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                The Only Latin Dance Studio Between the Flags
-              </h2>
-              <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                Located in the heart of Paseo Boricua, the cultural district of Puerto Rico Town, 
-                we're proud to hold our space just like Puerto Ricans "Plantar la Bandera" - 
-                planting our flag and claiming our cultural territory.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                This is more than a dance studio - it's a cultural anchor in the community, 
-                celebrating Latin dance and culture in the most authentic setting possible.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* What Makes Us Different Section */}
+      {/* Combined Info Section */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="container px-4">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
-                BEYOND THE PLATFORM
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Studio E connects students to instructors worldwide. The Club is where we bring 
-                the best instructors to <span className="font-bold text-pink-600">one real location</span> to build something special.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
-              <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
-                  <h3 className="text-2xl font-bold text-gray-900">The Physical Hub</h3>
-                </div>
+          <div className="max-w-6xl mx-auto">
+            {/* Location & Method Combined */}
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  The Only Latin Dance Studio Between the Flags
+                </h2>
                 <p className="text-gray-700 mb-4">
-                  While Studio E connects you to instructors across the globe, The Club is our 
-                  <strong> physical storefront</strong> - a real space where community comes to life.
+                  Located in Paseo Boricua, the cultural district of Puerto Rico Town. 
+                  We hold our space just like Puerto Ricans "Plantar la Bandera" - 
+                  planting our flag and claiming our cultural territory.
                 </p>
                 <p className="text-gray-700">
-                  This is where we curate the best instructors, create lasting relationships, and develop 
-                  the next generation of dancers through our proven methodology.
+                  More than a dance studio - it's a cultural anchor celebrating Latin dance 
+                  in the most authentic setting possible.
                 </p>
               </div>
               
-              <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                  <h3 className="text-2xl font-bold text-gray-900">Studio E Method</h3>
+              <div className="bg-gradient-to-r from-pink-600 to-orange-600 p-8 rounded-2xl text-white">
+                <h3 className="text-2xl font-bold mb-2">The Studio E Method</h3>
+                <p className="text-lg italic mb-4">The easiest and quickest way to learn Salsa and Bachata</p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <span className="font-semibold">Learn Frameworks</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <span className="font-semibold">Stack Techniques</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <span className="font-semibold">Create On-the-Fly</span>
+                  </div>
                 </div>
-                <p className="text-gray-700 mb-4">
-                  Our <strong>proprietary training approach</strong> that structures the learning process 
-                  so you can start social dancing with confidence - faster.
-                </p>
-                <p className="text-gray-700">
-                  We skip the traditional combo memorization. Instead, we teach you <strong>frameworks</strong> that let you stack techniques and create your own combinations in real time.
-                </p>
               </div>
             </div>
             
-            <div className="bg-gradient-to-r from-pink-600 to-orange-600 p-8 rounded-2xl text-white text-center">
-              <h3 className="text-2xl font-bold mb-4">Framework-Based Learning</h3>
-              <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-6">
-                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                  <h4 className="font-bold mb-2">Learn Frameworks</h4>
-                  <p className="text-sm">Master the underlying principles, not just memorized sequences</p>
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                  <h4 className="font-bold mb-2">Stack Techniques</h4>
-                  <p className="text-sm">Build complexity by combining fundamental movements</p>
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-xl">
-                  <h4 className="font-bold mb-2">Create On-the-Fly</h4>
-                  <p className="text-sm">Improvise with confidence in any social dancing situation</p>
-                </div>
-              </div>
-              <div className="border-t border-white/30 pt-6">
-                <p className="text-lg font-medium">
-                  But we go beyond just dancing. We're building a complete lifestyle experience 
-                  that transforms how you move, think, and connect.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Who This Is For Section */}
-      <section className="py-16 bg-white">
-        <div className="container px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">
+            {/* What Makes Us Different - Simplified */}
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
                 THIS ISN'T FOR EVERYONE
               </h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-orange-500 mx-auto mb-6"></div>
-              <p className="text-lg text-gray-600 italic">
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 We're the world's first Latin Dance social club that treats dance as more than movement
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <div className="bg-gradient-to-r from-pink-50 to-orange-50 p-6 rounded-xl border-l-4 border-pink-500">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">Dance as a Life Tool</h3>
-                  <p className="text-gray-700">
-                    We believe dance unlocks a more fulfilling life. It's your gateway to mastering nonverbal communication, 
-                    building social skills, and connecting with people from every walk of life in a space that demands 
-                    cultural respect and critical thinking.
-                  </p>
-                </div>
-                
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border-l-4 border-purple-500">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">All-In-One Experience</h3>
-                  <p className="text-gray-700">
-                    Why separate the most important things in life? We fused health, wealth, and love into one space 
-                    because they're meant to work together. This is holistic living at its finest.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border-l-4 border-yellow-500">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">Active Membership Only</h3>
-                  <p className="text-gray-700">
-                    This is not a passive membership. We expect you to show up, engage, and treat this space as your 
-                    second home. Wallflowers need not apply.
-                  </p>
-                </div>
-                
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border-l-4 border-green-500">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">Building Something Greater</h3>
-                  <p className="text-gray-700">
-                    We're not just creating a space - we're building a movement. Come ready to contribute, 
-                    collaborate, and create something bigger than yourself.
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-12 text-center">
-              <a 
-                href="mailto:studioelatindance@gmail.com?subject=The Club Membership Application&body=Hello Studio E Team,%0A%0AI'm ready to commit to The Club lifestyle! Here's my application:%0A%0A1. What draws you to The Club?%0A[Your answer here]%0A%0A2. How do you plan to actively contribute to our community?%0A[Your answer here]%0A%0A3. Which aspects excite you most? (Health, Wealth, Love)%0A[Your answer here]%0A%0A4. What dance experience do you have?%0A[Your answer here]%0A%0A5. What are your goals for personal growth and community involvement?%0A[Your answer here]%0A%0A6. Why is this more than just a hobby for you?%0A[Your answer here]%0A%0AThank you for considering my application. I'm ready to make The Club my second home.%0A%0ABest regards,%0A[Your name]"
-                className="inline-flex items-center gap-4 bg-gray-900 text-white px-8 py-4 rounded-full hover:bg-gray-800 transition-colors cursor-pointer"
-              >
-                <span className="text-sm font-medium">ARE YOU READY TO COMMIT?</span>
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse"></div>
-                  <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse delay-100"></div>
-                  <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse delay-200"></div>
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Navigation Tabs */}
-      <section className="bg-white/95 backdrop-blur-sm border-b">
-        <div className="container px-4">
-          <div className="flex justify-center">
-            <div className="flex space-x-1 p-1 bg-gray-100 rounded-lg">
-              {[
-                { id: "health", label: "Health", icon: Activity, color: "text-green-600" },
-                { id: "wealth", label: "Wealth", icon: DollarSign, color: "text-yellow-600" },
-                { id: "love", label: "Love", icon: Heart, color: "text-pink-600" }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-md font-semibold transition-all ${
-                    activeTab === tab.id
-                      ? "bg-white shadow-md text-gray-900"
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  <tab.icon className={`h-4 w-4 ${activeTab === tab.id ? tab.color : ""}`} />
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Content Sections */}
-      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
-        <div className="container px-4">
-          {/* Health Section */}
-          {activeTab === "health" && (
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-black text-gray-900 mb-4">
-                  BODY & SOUL
-                </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Your temple deserves the best. Move with purpose, train with passion.
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-r from-pink-50 to-orange-50 p-6 rounded-xl border-l-4 border-pink-500">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Dance as a Life Tool</h3>
+                <p className="text-gray-700 text-sm">
+                  Unlock a more fulfilling life through dance. Master nonverbal communication, 
+                  build social skills, and connect with people from every walk of life.
                 </p>
               </div>
               
-              {/* Coming Soon Overlay */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center py-16">
-                  <Lock className="h-16 w-16 text-[#FF3366] mb-4" />
-                  <h3 className="text-2xl font-bold text-[#FF3366] mb-2">Coming Soon</h3>
-                  <p className="text-gray-600 max-w-md text-center">
-                    Our health programs are currently being developed. Join the waitlist to be notified when they launch.
-                  </p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-8 opacity-30">
-                  {healthOfferings.map((offering, index) => (
-                    <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                      <h3 className="text-2xl font-bold text-green-600 mb-4">{offering.category}</h3>
-                      <p className="text-gray-600 mb-6">{offering.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {offering.items.map((item, i) => (
-                          <span key={i} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Wealth Section */}
-          {activeTab === "wealth" && (
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-black text-gray-900 mb-4">
-                  SECURE THE BAG
-                </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Build your empire while building community. Success is better shared.
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border-l-4 border-purple-500">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">All-In-One Experience</h3>
+                <p className="text-gray-700 text-sm">
+                  Health, wealth, and love fused into one space because they're meant to work together. 
+                  This is holistic living at its finest.
                 </p>
               </div>
               
-              {/* Coming Soon Overlay */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center py-16">
-                  <Lock className="h-16 w-16 text-[#FF3366] mb-4" />
-                  <h3 className="text-2xl font-bold text-[#FF3366] mb-2">Coming Soon</h3>
-                  <p className="text-gray-600 max-w-md text-center">
-                    Our wealth building programs are currently being developed. Join the waitlist to be notified when they launch.
-                  </p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-8 opacity-30">
-                  {wealthOfferings.map((offering, index) => (
-                    <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                      <h3 className="text-2xl font-bold text-yellow-600 mb-4">{offering.category}</h3>
-                      <p className="text-gray-600 mb-6">{offering.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {offering.items.map((item, i) => (
-                          <span key={i} className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Love Section */}
-          {activeTab === "love" && (
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-black text-gray-900 mb-4">
-                  FAMILY VIBES
-                </h2>
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Real connections, authentic culture. This is where your tribe lives.
+              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border-l-4 border-yellow-500">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Active Membership Only</h3>
+                <p className="text-gray-700 text-sm">
+                  This is not a passive membership. We expect you to show up, engage, and treat this space as your 
+                  second home. Wallflowers need not apply.
                 </p>
               </div>
-              
-              {/* Coming Soon Overlay */}
-              <div className="relative">
-                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center py-16">
-                  <Lock className="h-16 w-16 text-[#FF3366] mb-4" />
-                  <h3 className="text-2xl font-bold text-[#FF3366] mb-2">Coming Soon</h3>
-                  <p className="text-gray-600 max-w-md text-center">
-                    Our love and connection programs are currently being developed. Join the waitlist to be notified when they launch.
-                  </p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-8 opacity-30">
-                  {loveOfferings.map((offering, index) => (
-                    <div key={index} className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                      <h3 className="text-2xl font-bold text-pink-600 mb-4">{offering.category}</h3>
-                      <p className="text-gray-600 mb-6">{offering.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {offering.items.map((item, i) => (
-                          <span key={i} className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm font-medium">
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Special Features */}
-      <section className="py-16 bg-gray-900 text-white">
-        <div className="container px-4">
-          <div className="max-w-4xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-black mb-4">EXCLUSIVE ACCESS</h2>
-            <p className="text-xl text-gray-300">Members-only perks that keep the culture alive</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shirt className="h-8 w-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Merch Drops</h3>
-              <p className="text-gray-400">Limited streetwear collections from local artists</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Calendar className="h-8 w-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Pop-Up Events</h3>
-              <p className="text-gray-400">Surprise performances, artist showcases, and cultural celebrations</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Community Network</h3>
-              <p className="text-gray-400">Connect with entrepreneurs, artists, and culture creators</p>
             </div>
           </div>
         </div>
