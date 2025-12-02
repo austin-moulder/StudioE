@@ -135,9 +135,8 @@ export default function MembershipPage() {
                   {/* Shine effect overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-pulse"></div>
                   <div className="relative z-10">
-                    <h3 className="text-2xl font-black mb-2">Gold Plan</h3>
-                    <div className="text-4xl font-black mb-2">$149 PER MONTH</div>
-                    <p className="text-white/80 italic">Includes all Silver Plan benefits PLUS...</p>
+                    <h3 className="text-4xl font-black mb-2">Gold Plan</h3>
+                    <p className="text-white/80 italic text-lg">Includes all Silver Plan benefits PLUS...</p>
                   </div>
                 </div>
                 <CardContent className="p-8 bg-white">
@@ -209,9 +208,8 @@ export default function MembershipPage() {
                   {/* Shine effect overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-pulse"></div>
                   <div className="relative z-10">
-                    <h3 className="text-2xl font-black mb-2">Silver Plan</h3>
-                    <div className="text-4xl font-black mb-2">$89 PER MONTH</div>
-                    <p className="text-white/80 italic">Our most popular plan.</p>
+                    <h3 className="text-4xl font-black mb-2">Silver Plan</h3>
+                    <p className="text-white/80 italic text-lg">Our most popular plan.</p>
                   </div>
                 </div>
                 <CardContent className="p-8 bg-white">
@@ -252,9 +250,8 @@ export default function MembershipPage() {
           <div className="max-w-4xl mx-auto mb-16">
             <div className="bg-[#CD7F32]/10 rounded-3xl p-1 border border-[#CD7F32]/20">
               <div className="bg-white rounded-3xl p-8 text-center">
-                <h3 className="text-2xl font-black mb-4">Bronze Plan</h3>
-                <div className="text-3xl font-black mb-2 text-gray-900">$59 PER MONTH</div>
-                <p className="text-gray-600 italic mb-8">Ideal for our 1x per week students.</p>
+                <h3 className="text-4xl font-black mb-4">Bronze Plan</h3>
+                <p className="text-gray-600 italic text-lg mb-8">Ideal for our 1x per week students.</p>
                 
                 <div className="grid md:grid-cols-2 gap-6 text-left mb-8">
                   <div className="space-y-3">
