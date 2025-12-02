@@ -21,7 +21,7 @@ export default function ClassesPage() {
     // Create and inject the script INSIDE the vagaro container
     const script = document.createElement('script')
     script.type = 'text/javascript'
-    script.src = 'https://www.vagaro.com//resources/WidgetPopupLoader/OZqqCJ0sC38cT3qmV35y6JuPlXiz3avV34mC2PlFK9lRsiWJcyxapkUcvCu7gevEhAJDXwOapcUbfY?v=kmWi5gzpH5p9c9MCSOoNRvnFRQCe6prge8vYVpas3B0#'
+    script.src = 'https://www.vagaro.com//resources/WidgetPopupLoader/OZqqCJ0sC38cT3qmV35y6JuPlXez3Ly6puSdBuOc1WJDvwXDxUra2StkvCxdfkJE1wZCBOvifCs7feJEPwMc8?v=lM0cldcacu6FLo73Drmsg62GrOuyXmgKVf9RnjIQWVe#'
     script.async = true
     
     script.onload = () => {
