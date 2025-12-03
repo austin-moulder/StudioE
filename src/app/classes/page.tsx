@@ -238,7 +238,7 @@ export default function ClassesPage() {
             </div>
             
             {/* Guarantee */}
-            <div className="mt-8 text-center">
+            <div className="mt-8 mb-12 text-center">
               <p className="text-gray-700 text-base break-words">
                 <span className="font-semibold">"Love Your First 2 Weeks" Guarantee</span> – if it's not the right fit after 2 classes, we convert your remaining tuition into credit for anything else at Studio E.
               </p>
