@@ -99,37 +99,333 @@ export default function ClassesPage() {
         
         <div className="container relative z-20 px-4 py-20 md:py-32">
           <div className="max-w-4xl mx-auto text-center text-white">
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <MapPin className="h-6 w-6 text-orange-400" />
-              <span className="text-orange-400 font-semibold">2716 W Division Street • Paseo Boricua</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-orange-400">
-                Studio E x Le Lo Lai
-              </span>
+            <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight break-words">
+              Go From Two Left Feet To Confident Latin Dancer In 8 Weeks
             </h1>
             
-            <p className="text-xl md:text-2xl mb-8 font-light">
-              The world's first Latin dance social club in the heart of Puerto Rico Town
+            <p className="text-lg md:text-xl mb-8 font-light break-words">
+              Beginner‑friendly salsa & bachata training inside Le Lo Lai Gallery on Paseo Boricua in Humboldt Park.
+            </p>
+            
+            <div className="flex flex-col items-center gap-4">
+              <a
+                href="https://www.vagaro.com/cl/ezNH1FcwCnvd8HN2P5J2w53~1Olzqyx002LmdXqQQK8="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg text-center"
+              >
+                Reserve My Spot In The January Beginner Academy
+              </a>
+              
+              <a
+                href="https://www.vagaro.com/joinstudioe/classes"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white/90 hover:text-white underline text-sm font-medium"
+              >
+                Or see all upcoming free pop‑up classes
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Is This You? Section */}
+      <section className="py-16 bg-white">
+        <div className="container px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-8 text-center break-words">
+              Feel awkward at parties when the music starts?
+            </h2>
+            
+            <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-2xl p-8 mb-6">
+              <p className="text-lg font-semibold text-gray-900 mb-4">Studio E is for people who:</p>
+              <ul className="space-y-3 text-gray-700">
+                <li className="flex items-start gap-3">
+                  <span className="text-[#FF3366] font-bold mt-1">•</span>
+                  <span>Freeze when salsa or bachata comes on</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#FF3366] font-bold mt-1">•</span>
+                  <span>Want to dance with their pareja without feeling embarrassed</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#FF3366] font-bold mt-1">•</span>
+                  <span>Are tired of random YouTube tutorials and overcrowded drop‑in classes</span>
+                </li>
+              </ul>
+            </div>
+            
+            <p className="text-lg text-gray-700 text-center break-words">
+              Our 8‑Week Latin Dance Academy gives you a clear path from "I don't dance" to "Let's go to the social."
             </p>
           </div>
         </div>
       </section>
 
-      {/* Vagaro Booking Widget - Popup Version - Moved to Top */}
-      <section className="py-8 bg-gray-50">
+      {/* The 8-Week Academy Offer */}
+      <section className="py-16 bg-white">
+        <div className="container px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 text-center break-words">
+              The Latin Dance Academy (January Cohort)
+            </h2>
+            <p className="text-xl text-gray-600 mb-12 text-center break-words">
+              One structured program. Two nights a week. A lifetime of confidence.
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              {/* What you get */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">What you get</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>8 weeks of beginner‑friendly salsa & bachata</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>2 classes per week at Le Lo Lai Gallery</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>Small group coaching so you never get lost</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>Graduation social where you actually dance what you learned</span>
+                  </li>
+                </ul>
+              </div>
+              
+              {/* Who it's for */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Who it's for</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>Total beginners</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>Rusty dancers starting over</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>Couples who want a fun, healthy "date night" routine</span>
+                  </li>
+                </ul>
+              </div>
+              
+              {/* Investment */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Investment</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>Founding Cohort Price: $199</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>Limited to 25 spots for January</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#FF3366] font-bold mt-1">•</span>
+                    <span>Payment plans available at checkout</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            {/* CTA Button */}
+            <div className="text-center">
+              <a
+                href="https://www.vagaro.com/cl/ezNH1FcwCnvd8HN2P5J2w53~1Olzqyx002LmdXqQQK8="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg"
+              >
+                Join the January Academy
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works (Step Strip) */}
+      <section className="py-16 bg-gray-50">
+        <div className="container px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-12 text-center break-words">
+              How it works
+            </h2>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Step 1 */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-[#FF3366] to-[#9933CC] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-white font-black text-2xl">1</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Reserve your spot
+                </h3>
+                <p className="text-gray-600 leading-relaxed break-words">
+                  Pick your start date and lock in one of the 25 seats in the Academy.
+                </p>
+              </div>
+              
+              {/* Step 2 */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-[#FF3366] to-[#9933CC] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-white font-black text-2xl">2</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Show up twice a week
+                </h3>
+                <p className="text-gray-600 leading-relaxed break-words">
+                  We handle the music, structure, and coaching. You just show up.
+                </p>
+              </div>
+              
+              {/* Step 3 */}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-[#FF3366] to-[#9933CC] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-white font-black text-2xl">3</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Dance at real socials
+                </h3>
+                <p className="text-gray-600 leading-relaxed break-words">
+                  By Week 8 you'll be dancing confidently at our Studio E socials and any Latin night in the city.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Studio E (Culture + Method) */}
+      <section className="py-16 bg-white">
+        <div className="container px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Left card - Between the Flags */}
+              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  The only Latin dance studio between the flags
+                </h2>
+                <p className="text-gray-700 mb-4 break-words">
+                  Located on Paseo Boricua, Studio E x Le Lo Lai is rooted in Puerto Rican culture.
+                </p>
+                <p className="text-gray-700 break-words">
+                  More than a studio, it's a cultural anchor celebrating salsa, bachata, and comunidad in the most authentic setting possible.
+                </p>
+              </div>
+              
+              {/* Right card - The Studio E Method */}
+              <div className="bg-gradient-to-r from-pink-600 to-orange-600 p-8 rounded-2xl text-white">
+                <h3 className="text-2xl font-bold mb-4">The Studio E Method</h3>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <span className="font-bold mt-1">•</span>
+                    <span>Learn simple frameworks, not random moves</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="font-bold mt-1">•</span>
+                    <span>Stack skills week by week</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="font-bold mt-1">•</span>
+                    <span>Leave every class with steps you can use the same night</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* "Not For Everyone" Reframe */}
+      <section className="py-16 bg-gray-50">
+        <div className="container px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-12 text-center break-words">
+              This isn't for everyone
+            </h2>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Card 1 */}
+              <div className="bg-white p-6 rounded-xl border-l-4 border-pink-500 shadow-sm">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Active Members Only</h3>
+                <p className="text-gray-700 text-sm break-words">
+                  We're a social club, not a punch‑card gym. We expect you to show up, dance, and be part of the community.
+                </p>
+              </div>
+              
+              {/* Card 2 */}
+              <div className="bg-white p-6 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Camera‑Shy Is Okay, Effort‑Shy Is Not</h3>
+                <p className="text-gray-700 text-sm break-words">
+                  You can be nervous. You can't be lazy. If you come and try, we'll handle the rest.
+                </p>
+              </div>
+              
+              {/* Card 3 */}
+              <div className="bg-white p-6 rounded-xl border-l-4 border-yellow-500 shadow-sm">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">From Academy to Club</h3>
+                <p className="text-gray-700 text-sm break-words">
+                  After 8 weeks you'll have the option to join our Latin Social Club membership for ongoing classes and socials.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Band */}
+      <section className="py-16 bg-gradient-to-r from-pink-600 to-orange-600 text-white">
+        <div className="container px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-black mb-4 break-words">
+            Ready to stop sitting down when the music starts?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto break-words">
+            Join the January Latin Dance Academy and make 2025 the year you actually dance.
+          </p>
+          
+          <div className="flex flex-col items-center gap-4">
+            <a
+              href="https://www.vagaro.com/cl/ezNH1FcwCnvd8HN2P5J2w53~1Olzqyx002LmdXqQQK8="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-white text-[#FF3366] font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg"
+            >
+              Save My Spot in the Academy
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Vagaro Booking Widget & Membership Plans - Merged & De-emphasized */}
+      <section className="py-12 bg-gray-100">
         <div className="container">
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="grid md:grid-cols-2 gap-8 items-center mb-8">
               {/* Left side - Text */}
               <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                  Check Out Our Class Schedule
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-700 mb-3">
+                  Want to peek at our class schedule?
                 </h2>
-                <p className="text-gray-600 text-lg">
+                <p className="text-gray-600 text-base mb-4">
                   Browse our full schedule of dance classes and book your spot directly through our booking system.
                 </p>
+                <div className="bg-gray-200 rounded-lg p-4 border-l-4 border-gray-400">
+                  <p className="text-gray-700 font-medium mb-2 text-sm">
+                    🎉 New students get their first two classes FREE!
+                  </p>
+                  <p className="text-gray-600 text-xs">
+                    Use code <span className="font-semibold text-gray-700">DANCE</span> at checkout. That's <span className="font-semibold">$50 of classes on the house</span>.
+                  </p>
+                </div>
               </div>
 
               {/* Right side - Vagaro widget */}
@@ -163,104 +459,20 @@ export default function ClassesPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Combined Info Section */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container px-4">
-          <div className="max-w-6xl mx-auto">
-            {/* Location & Method Combined */}
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  The Only Latin Dance Studio Between the Flags
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Located in Paseo Boricua, the cultural district of Puerto Rico Town. 
-                  We hold our space just like Puerto Ricans "Plantar la Bandera" - 
-                  planting our flag and claiming our cultural territory.
-                </p>
-                <p className="text-gray-700">
-                  More than a dance studio - it's a cultural anchor celebrating Latin dance 
-                  in the most authentic setting possible.
-                </p>
-              </div>
-              
-              <div className="bg-gradient-to-r from-pink-600 to-orange-600 p-8 rounded-2xl text-white">
-                <h3 className="text-2xl font-bold mb-2">The Studio E Method</h3>
-                <p className="text-lg italic mb-4">The easiest and quickest way to learn Salsa and Bachata</p>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                    <span className="font-semibold">Learn Frameworks</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                    <span className="font-semibold">Stack Techniques</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                    <span className="font-semibold">Create On-the-Fly</span>
-                  </div>
-                </div>
-              </div>
-            </div>
             
-            {/* What Makes Us Different - Simplified */}
-            <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
-                THIS ISN'T FOR EVERYONE
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                We're the world's first Latin Dance social club that treats dance as more than movement
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-gradient-to-r from-pink-50 to-orange-50 p-6 rounded-xl border-l-4 border-pink-500">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Dance as a Life Tool</h3>
-                <p className="text-gray-700 text-sm">
-                  Unlock a more fulfilling life through dance. Master nonverbal communication, 
-                  build social skills, and connect with people from every walk of life.
-                </p>
-              </div>
-              
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border-l-4 border-purple-500">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">All-In-One Experience</h3>
-                <p className="text-gray-700 text-sm">
-                  Health, wealth, and love fused into one space because they're meant to work together. 
-                  This is holistic living at its finest.
-                </p>
-              </div>
-              
-              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border-l-4 border-yellow-500">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Active Membership Only</h3>
-                <p className="text-gray-700 text-sm">
-                  This is not a passive membership. We expect you to show up, engage, and treat this space as your 
-                  second home. Wallflowers need not apply.
+            {/* Membership Plans CTA */}
+            <div className="text-center pt-6 border-t border-gray-300">
+              <div className="flex flex-col items-center gap-3">
+                <Link href="/membership">
+                  <Button size="lg" variant="outline" className="border-2 border-gray-400 text-gray-700 hover:bg-gray-200 hover:text-gray-900 font-semibold px-8 py-3 text-base">
+                    View Membership Plans
+                  </Button>
+                </Link>
+                <p className="text-sm text-gray-600">
+                  The Latin Dance Academy is included in the Gold Plan
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-pink-600 to-orange-600 text-white">
-        <div className="container px-4 text-center">
-          <h2 className="text-3xl font-black mb-4">READY TO JOIN THE CLUB?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            This isn't just a dance studio - it's a lifestyle. It's culture. It's home.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/membership">
-              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-pink-600 font-bold px-8 py-4 text-lg">
-                View Membership Plans
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
