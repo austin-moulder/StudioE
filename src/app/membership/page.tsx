@@ -273,6 +273,14 @@ export default function MembershipPage() {
           >
             Email Us
           </a>
+          <div className="mt-8">
+            <Link 
+              href="/latin-dance-star-package"
+              className="text-sm text-gray-500 hover:text-gray-700 underline"
+            >
+              Looking for something more intensive? Explore our Latin Dance Star Package
+            </Link>
+          </div>
         </div>
       </section>
 

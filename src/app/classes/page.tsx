@@ -114,7 +114,7 @@ export default function ClassesPage() {
                 rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg text-center"
               >
-                Reserve My Spot In The January Beginner Academy
+                Reserve My Spot In The March Beginner Academy
               </a>
               
               <a
@@ -168,7 +168,7 @@ export default function ClassesPage() {
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 text-center break-words">
-              The Latin Dance Academy (January Cohort)
+              The Latin Dance Academy (March Cohort)
             </h2>
             <p className="text-xl text-gray-600 mb-12 text-center break-words">
               One structured program. Two nights a week. A lifetime of confidence.
@@ -227,7 +227,7 @@ export default function ClassesPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>Limited to 25 spots for January</span>
+                    <span>Limited to 25 spots for March</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
@@ -252,7 +252,7 @@ export default function ClassesPage() {
                 rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg"
               >
-                Join the January Academy
+                Join the March Academy
               </a>
             </div>
           </div>
@@ -396,7 +396,7 @@ export default function ClassesPage() {
             Ready to stop sitting down when the music starts?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto break-words">
-            Join the January Latin Dance Academy and make 2025 the year you actually dance.
+            Join the March Latin Dance Academy and make 2025 the year you actually dance.
           </p>
           
           <div className="flex flex-col items-center gap-4">
