@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Star, Clock, Shield } from "lucide-react"
 import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
@@ -137,9 +136,12 @@ export default function FounderDealPage() {
                 </div>
               </div>
               
-              <Button className="w-full md:w-auto h-16 text-xl font-bold bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#FF3366]/90 hover:to-[#9933CC]/90 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200 px-12">
-                GET MY LIFETIME DISCOUNT
-              </Button>
+              <a
+                href="mailto:studioelatindance@gmail.com?subject=Claim%20Founder's%20Rate%20Discount&body=Hi%2C%0A%0AI'm%20interested%20in%20claiming%20the%20founder's%20rate%20discount.%0A%0AMy%20phone%20number%20is%3A%20"
+                className="inline-block w-full md:w-auto h-16 text-xl font-bold text-white bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#FF3366]/90 hover:to-[#9933CC]/90 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200 px-12 flex items-center justify-center"
+              >
+                Claim my Discount
+              </a>
             </div>
           </CardContent>
         </Card>
