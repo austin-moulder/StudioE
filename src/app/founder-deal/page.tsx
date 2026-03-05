@@ -71,26 +71,21 @@ export default function FounderDealPage() {
           </h1>
           <div className="max-w-2xl mx-auto">
             <p className="text-lg text-gray-700 leading-relaxed break-words">
-              Your classes, smoothie, and social ticket are waiting for you at our studio at <span className="font-semibold">2716 W Division Street</span>. Let us know that you filled out the form, and we'll take care of you. These free offers must be redeemed by <span className="font-semibold text-[#FF3366]">{deadlineFormatted}</span>.
+              Your class is waiting for you at our studio at <span className="font-semibold">2657 W Division Street</span>. Let us know that you filled out the form, and we'll take care of you. This free offer must be redeemed by <span className="font-semibold text-[#FF3366]">{deadlineFormatted}</span>.
             </p>
           </div>
         </div>
 
-        {/* Video Placeholder */}
+        {/* Embedded Google Form */}
         <div className="mb-16">
-          <div className="relative rounded-2xl overflow-hidden bg-gray-100" style={{ aspectRatio: '16/9' }}>
-            <Image
-              src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Dance_Styles/Landing_page_1.png"
-              alt="Studio E Method Video"
-              fill
-              className="object-cover"
-              unoptimized
+          <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-white">
+            <iframe
+              src="https://forms.gle/K6hYbzqSFKcNNUpe9"
+              title="Claim Your Free Class with Studio E"
+              className="w-full"
+              style={{ minHeight: "900px" }}
+              loading="lazy"
             />
-            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-              <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center">
-                <div className="w-0 h-0 border-l-[20px] border-l-[#FF3366] border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent ml-1"></div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -110,18 +105,21 @@ export default function FounderDealPage() {
         <Card className="border-2 border-[#FF3366] shadow-xl mb-16">
           <CardContent className="p-8 md:p-12">
             <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 break-words">
-                Access up to 8 classes every month at a $49 discount FOR LIFE*
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 break-words">
+                Access up to 10 classes every month at a $90 discount
               </h2>
+              <p className="text-sm text-gray-500 mb-4 break-words">
+                3‑month price lock on this founder's rate
+              </p>
               <p className="text-lg text-gray-600 mb-8 break-words">
-                Enrollment in our Silver Plan at a special founder's rate. Discounts only available for the first 100 members
+                Enrollment in our Gold Plan at a special founder's rate. Discount only available for the first 20 members.
               </p>
               
               {/* Price Anchoring */}
               <div className="mb-8">
                 <div className="flex items-center justify-center space-x-4 mb-4">
-                  <span className="text-2xl text-gray-400 line-through">$89/month</span>
-                  <span className="text-4xl font-bold text-[#FF3366]">$39/month</span>
+                  <span className="text-2xl text-gray-400 line-through">$149/month</span>
+                  <span className="text-4xl font-bold text-[#FF3366]">$59/month</span>
                 </div>
                 <div className="text-center text-gray-700">
                   <p className="text-lg font-semibold mb-2">Compare the value:</p>
@@ -133,7 +131,7 @@ export default function FounderDealPage() {
                     <div className="text-gray-400">vs</div>
                     <div className="text-center">
                       <p className="font-bold text-[#FF3366]">With Membership</p>
-                      <p className="text-[#FF3366]">~$5 per class</p>
+                      <p className="text-[#FF3366]">~$6 per class</p>
                     </div>
                   </div>
                 </div>
@@ -167,7 +165,7 @@ export default function FounderDealPage() {
             <div className="flex items-center justify-center space-x-4 mb-4">
               <Shield className="w-8 h-8 text-green-500" />
               <h3 className="text-2xl font-bold text-green-600 break-words">
-                Our Guarantee
+                Our Guarantee*
               </h3>
             </div>
             <p className="text-center text-lg text-gray-700 break-words">
@@ -262,19 +260,22 @@ export default function FounderDealPage() {
             <h4 className="font-bold text-lg text-gray-900 mb-4">Terms & Conditions</h4>
             <div className="text-sm text-gray-700 space-y-3">
               <p>
-                <strong>*Lifetime Discount Terms:</strong> The $49 discount is calculated based on the value of 8 classes per month at the standard monthly membership rate. 
-                This discount is available for the lifetime of your active membership, provided you maintain continuous membership without interruption.
+                <strong>*Discount Terms:</strong> The $90 discount is calculated based on the value of 10 classes per month at the standard monthly membership rate. 
+                This discounted founder rate is locked in for the first 3 months of your membership.
               </p>
               <p>
-                <strong>Membership Requirements:</strong> To maintain the discount, you must keep an active monthly membership. 
-                If your membership is cancelled or expires, the discount will no longer be available upon reactivation.
+                <strong>*Guarantee Eligibility:</strong> The 30‑day guarantee applies to members who enroll in our 28‑day Latin Dance Confidence Challenge as part of their membership.
               </p>
               <p>
-                <strong>Class Access:</strong> Up to 8 classes per month are included with your membership. 
+                <strong>Membership Requirements:</strong> To receive the full 3‑month price lock, you must keep an active monthly membership during that period. 
+                If your membership is cancelled or expires during the introductory period, the price lock will end and any future reactivation will be at the then‑current Gold Plan rate.
+              </p>
+              <p>
+                <strong>Class Access:</strong> Up to 10 classes per month are included with your membership. 
                 Additional classes may be available at a reduced rate for members.
               </p>
               <p>
-                <strong>Limited Time Offer:</strong> This Founder's Membership is only available for a limited time and is limited to the first 100 members.
+                <strong>Limited Time Offer:</strong> This Founder's Membership and 3‑month price lock are only available for a limited time and are limited to the first 20 members.
               </p>
             </div>
           </CardContent>

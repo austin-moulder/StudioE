@@ -23,7 +23,7 @@ export default function MembershipPage() {
         <div className="container relative z-10 px-4 text-center text-white">
           <div className="flex items-center justify-center gap-2 mb-6">
             <MapPin className="h-6 w-6 text-orange-200" />
-            <span className="text-orange-200 font-semibold">2716 W Division Street • Paseo Boricua</span>
+            <span className="text-orange-200 font-semibold">2657 W Division Street • Paseo Boricua</span>
           </div>
           
           <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight">

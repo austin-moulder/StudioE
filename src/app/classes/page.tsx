@@ -71,6 +71,14 @@ export default function ClassesPage() {
     }
   ]
 
+  const getUpcomingMonthName = () => {
+    const now = new Date()
+    const upcoming = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+    return upcoming.toLocaleString("en-US", { month: "long" })
+  }
+
+  const upcomingMonthName = getUpcomingMonthName()
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -104,17 +112,17 @@ export default function ClassesPage() {
             </h1>
             
             <p className="text-lg md:text-xl mb-8 font-light break-words">
-              Beginner‑friendly salsa & bachata training inside Le Lo Lai Gallery on Paseo Boricua in Humboldt Park.
+              Beginner‑friendly salsa & bachata training at our Studio E headquarters at 2657 W Division Street on Paseo Boricua in Humboldt Park.
             </p>
             
             <div className="flex flex-col items-center gap-4">
               <a
-                href="https://www.vagaro.com/cl/ezNH1FcwCnvd8HN2P5J2w53~1Olzqyx002LmdXqQQK8="
+                href="https://joinstudioe.com/founder-deal"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg text-center"
               >
-                Reserve My Spot In The March Beginner Academy
+                Reserve My Spot In The {upcomingMonthName} Beginner Academy
               </a>
               
               <a
@@ -168,7 +176,7 @@ export default function ClassesPage() {
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 text-center break-words">
-              The Latin Dance Academy (March Cohort)
+              The Latin Dance Academy ({upcomingMonthName} Cohort)
             </h2>
             <p className="text-xl text-gray-600 mb-12 text-center break-words">
               One structured program. Two nights a week. A lifetime of confidence.
@@ -185,7 +193,7 @@ export default function ClassesPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>2 classes per week at Le Lo Lai Gallery</span>
+                    <span>2 classes per week at our Studio E studio at 2657 W Division Street</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
@@ -227,7 +235,7 @@ export default function ClassesPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>Limited to 25 spots for March</span>
+                    <span>Limited to 25 spots for {upcomingMonthName}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
@@ -247,12 +255,12 @@ export default function ClassesPage() {
             {/* CTA Button */}
             <div className="text-center">
               <a
-                href="https://www.vagaro.com/cl/ezNH1FcwCnvd8HN2P5J2w53~1Olzqyx002LmdXqQQK8="
+                href="https://joinstudioe.com/founder-deal"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg"
               >
-                Join the March Academy
+                Join the {upcomingMonthName} Academy
               </a>
             </div>
           </div>
@@ -322,7 +330,7 @@ export default function ClassesPage() {
                   The only Latin dance studio between the flags
                 </h2>
                 <p className="text-gray-700 mb-4 break-words">
-                  Located on Paseo Boricua, Studio E x Le Lo Lai is rooted in Puerto Rican culture.
+                  Located at 2657 W Division Street on Paseo Boricua, Studio E is rooted in Puerto Rican culture.
                 </p>
                 <p className="text-gray-700 break-words">
                   More than a studio, it's a cultural anchor celebrating salsa, bachata, and comunidad in the most authentic setting possible.
@@ -396,12 +404,12 @@ export default function ClassesPage() {
             Ready to stop sitting down when the music starts?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto break-words">
-            Join the March Latin Dance Academy and make 2025 the year you actually dance.
+            Join the {upcomingMonthName} Latin Dance Academy and make 2025 the year you actually dance.
           </p>
           
           <div className="flex flex-col items-center gap-4">
             <a
-              href="https://www.vagaro.com/cl/ezNH1FcwCnvd8HN2P5J2w53~1Olzqyx002LmdXqQQK8="
+              href="https://joinstudioe.com/founder-deal"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-white text-[#FF3366] font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg"
