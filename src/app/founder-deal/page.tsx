@@ -71,7 +71,7 @@ export default function FounderDealPage() {
           </h1>
           <div className="max-w-2xl mx-auto">
             <p className="text-lg text-gray-700 leading-relaxed break-words">
-              Your class is waiting for you at our studio at <span className="font-semibold">2657 W Division Street</span>. Let us know that you filled out the form, and we'll take care of you. This free offer must be redeemed by <span className="font-semibold text-[#FF3366]">{deadlineFormatted}</span>.
+              Your class is waiting for you at our studio at <span className="font-semibold">2657 W Division Street</span>. This free offer must be redeemed by <span className="font-semibold text-[#FF3366]">{deadlineFormatted}</span>.
             </p>
           </div>
         </div>

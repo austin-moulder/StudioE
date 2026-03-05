@@ -12,7 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase/supabase"
-import SubscribeToCalendar from "@/components/SubscribeToCalendar"
 import EventRSVPButton from "@/components/EventRSVPButton"
 
 // Function to get event type badge color
@@ -486,16 +485,9 @@ function EventsContent() {
         <div className="container absolute inset-0 z-20 flex flex-col items-center justify-center text-center text-white">
           <div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Discover Dance Events</h1>
-            <p className="text-lg md:text-xl opacity-90 mb-6">
+            <p className="text-lg md:text-xl opacity-90">
               Workshops, showcases, competitions, and social events for dancers of all levels.
             </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <SubscribeToCalendar 
-                feedType="events" 
-                buttonVariant="outline" 
-                className="bg-transparent text-white border-white hover:bg-white/20" 
-              />
-            </div>
           </div>
         </div>
       </section>
