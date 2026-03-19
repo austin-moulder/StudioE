@@ -160,6 +160,10 @@ export default function PrivacyPage() {
           <li><strong>Protection of rights:</strong> We may disclose information where we believe it necessary to investigate, prevent, or take action regarding illegal activities, suspected fraud, situations involving potential threats to the safety of any person, violations of our Terms of Service, or as evidence in litigation.</li>
         </ul>
         
+        <p>
+          Mobile opt-in data: If you opt in to receive mobile communications (such as SMS or text messages), any information related to your mobile opt-in status (including your phone number and opt-in preferences) is used by Studio E to provide the communications you request and is not shared with third parties for their marketing purposes.
+        </p>
+        
         <h2 className="text-2xl font-bold mt-8 mb-4">6. How We Respond to 'Do Not Track' & Other Signals</h2>
         <p>
           We treat your browser's "do not track" signals and other similar mechanisms in accordance with our Cookie Policy and the applicable laws and regulations of your location. Depending on your location, you may be able to opt out of certain types of tracking technologies.
