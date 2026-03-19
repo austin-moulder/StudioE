@@ -3,12 +3,12 @@ import { Gift } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Win 2 Tickets: Romeo Santos & Prince Royce | Studio E Giveaway",
+  title: "Mambo Revival Giveaway | Studio E",
   description:
-    "Enter to win 2 tickets to the Better Late Than Never tour at Allstate Arena, plus 4 weeks of bachata for you and a friend at Studio E. Fill out the form to enter.",
+    "Mambo Revival attendees can enter to win 1 month of unlimited classes in April at Studio E plus a 1-hour private tune-up.",
 }
 
-const GIVEAWAY_FORM_URL = "https://forms.gle/vxRyf26phHYKmZgw5"
+const GIVEAWAY_FORM_URL = "https://forms.gle/TpyjSpdPDEqzt7Bk8"
 const MAILTO_CHALLENGE =
   "mailto:studioelatindance@gmail.com?subject=Tell%20me%20about%20the%2028-Day%20Latin%20Confidence%20Challenge&body=Hi%2C%0A%0AI'd%20like%20to%20hear%20more%20about%20the%2028-day%20Latin%20Confidence%20Challenge.%0A%0AMy%20phone%20number%20is%3A%20"
 
@@ -30,13 +30,13 @@ export default function GiveawayPage() {
               Studio E Giveaway
             </p>
             <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
-              Win 2 Tickets: Romeo Santos & Prince Royce
+              Mambo Revival Giveaway
             </h1>
             <p className="text-xl text-white/95 font-light">
-              One winner gets 2 tickets to the show plus 4 weeks of bachata for you and a friend at Studio E.
+              For Mambo Revival attendees on Sunday, March 22.
             </p>
             <p className="text-lg text-white/80 font-light mt-1">
-              Better Late Than Never Tour · Allstate Arena, Rosemont, IL · April 2nd, 8:00pm
+              One winner gets 1 month of unlimited classes at Studio E in April + a 1-hour private tune-up.
             </p>
           </div>
         </div>
@@ -53,8 +53,8 @@ export default function GiveawayPage() {
                 One winner receives both:
               </p>
               <ul className="text-gray-700 text-sm space-y-1">
-                <li>· 2 aisle tickets — Romeo Santos & Prince Royce, Allstate Arena (Rosemont, IL), April 2nd, 8:00pm</li>
-                <li>· 4 weeks of bachata classes for you and a friend at Studio E (2657 W Division St)</li>
+                <li>· 1 month of unlimited classes at Studio E for April (2657 W Division St)</li>
+                <li>· 1-hour private tune-up session</li>
               </ul>
             </div>
           </div>
@@ -66,7 +66,7 @@ export default function GiveawayPage() {
           <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-white">
             <iframe
               src={GIVEAWAY_FORM_URL}
-              title="2-Ticket Giveaway: Romeo Santos & Prince Royce"
+              title="Mambo Revival Giveaway: Unlimited Classes and a Free Private"
               className="w-full"
               style={{ minHeight: "800px" }}
               loading="lazy"
