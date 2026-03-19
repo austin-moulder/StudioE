@@ -21,7 +21,7 @@ export default function TermsPage() {
         </p>
         
         <p className="font-bold">
-          THE COMPANY DOES NOT PROVIDE DANCE INSTRUCTION SERVICES, AND THE COMPANY IS NOT A DANCE INSTRUCTION SERVICE PROVIDER. IT IS UP TO THE THIRD PARTY DANCE INSTRUCTORS TO OFFER DANCE INSTRUCTION SERVICES WHICH MAY BE SCHEDULED THROUGH USE OF THE SOFTWARE OR SERVICE. THE COMPANY OFFERS INFORMATION AND A METHOD TO OBTAIN SUCH THIRD PARTY DANCE INSTRUCTION SERVICES, BUT DOES NOT AND DOES NOT INTEND TO PROVIDE DANCE INSTRUCTION SERVICES OR ACT IN ANY WAY AS A DANCE INSTRUCTION SERVICE PROVIDER, AND HAS NO RESPONSIBILITY OR LIABILITY FOR ANY DANCE INSTRUCTION SERVICES PROVIDED TO YOU BY SUCH THIRD PARTIES.
+          THE COMPANY MAY CONNECT YOU WITH THIRD-PARTY DANCE INSTRUCTORS THROUGH THE SOFTWARE OR SERVICE (THE "MARKETPLACE"). EXCEPT FOR IN-PERSON CLASSES HELD AT STUDIO E'S LOCAL STUDIO LOCATION (2657 W DIVISION ST, CHICAGO, IL), THE COMPANY DOES NOT PROVIDE DANCE INSTRUCTION SERVICES, AND THE COMPANY IS NOT A DANCE INSTRUCTION SERVICE PROVIDER. IT IS UP TO THE THIRD PARTY DANCE INSTRUCTORS TO OFFER DANCE INSTRUCTION SERVICES WHICH MAY BE SCHEDULED THROUGH USE OF THE SOFTWARE OR SERVICE. FOR DANCE INSTRUCTION SERVICES PROVIDED BY THIRD PARTIES, THE COMPANY OFFERS INFORMATION AND A METHOD TO OBTAIN SUCH THIRD PARTY DANCE INSTRUCTION SERVICES, BUT HAS NO RESPONSIBILITY OR LIABILITY FOR ANY DANCE INSTRUCTION SERVICES PROVIDED TO YOU BY SUCH THIRD PARTIES.
         </p>
         
         <p className="font-bold">
@@ -86,6 +86,10 @@ export default function TermsPage() {
         <h2 className="text-2xl font-bold mt-8 mb-4">Studio E is Only a Venue</h2>
         <p>
           The Service is a communications platform for enabling the connection between individuals seeking to obtain dance instruction services and/or individuals seeking to provide dance instruction services and for facilitating a contractual relationship between such parties. The Company verifies the credentials of dance instruction service providers; however, the Company does not guarantee or warrant, and makes no representations regarding, the reliability, quality or suitability of such dance instruction service providers. When interacting with dance instruction service providers you should exercise caution and common sense to protect your personal safety and property, just as you would when interacting with other persons whom you don't know. By using the Service, you agree to hold the Company free from the responsibility for any liability or damage that might arise out of the transactions involved.
+        </p>
+
+        <p>
+          For clarity, when you enroll in an in-person class at Studio E's local studio at <strong>2657 W Division St</strong>, the dance instruction for that session is provided in connection with Studio E's local studio operations. In those cases, any relevant responsibilities and remedies relate to that in-person studio experience; when your class is provided by a third-party instructor through the marketplace, the terms above regarding third-party responsibility apply.
         </p>
         
         <p>
