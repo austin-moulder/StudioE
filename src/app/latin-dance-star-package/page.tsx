@@ -244,14 +244,12 @@ export default function LatinDanceStarPackagePage() {
           </p>
           
           <div className="flex flex-col items-center gap-4">
-            <a
-              href="https://www.vagaro.com/cl/BU85r3RraycnEblRmmVS2ksWYD5~6OOObPKNgeE14Ok="
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/schedule"
               className="inline-block bg-white text-purple-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg shadow-lg transform hover:scale-105 transition-all duration-200"
             >
               Book the Star Package
-            </a>
+            </Link>
             <Link 
               href="/membership"
               className="text-white/90 hover:text-white underline text-sm"

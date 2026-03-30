@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { MapPin, Heart, DollarSign, Activity, Users, Calendar, Coffee, Shirt, User, Lock } from "lucide-react"
 import Link from "next/link"
@@ -8,29 +8,6 @@ import Image from "next/image"
 
 export default function ClassesPage() {
   const [activeTab, setActiveTab] = useState("health")
-  const vagaroContainerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    // Inject the Vagaro popup script inside the container (as per Vagaro requirements)
-    if (!vagaroContainerRef.current) return
-
-    // Check if script already exists
-    const existingScript = vagaroContainerRef.current.querySelector('script[src*="WidgetPopupLoader"]')
-    if (existingScript) return
-
-    // Create and inject the script INSIDE the vagaro container
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.src = 'https://www.vagaro.com//resources/WidgetPopupLoader/OZqqCJ0sC38cT3qmV35y6JuPlXez3Ly6puSdBuOc1WJDvwXDxUra2StkvCxdfkJE1wZCBOvifCs7feJEPwMc8?v=lM0cldcacu6FLo73Drmsg62GrOuyXmgKVf9RnjIQWVe#'
-    script.async = true
-    
-    script.onload = () => {
-      console.log('Vagaro popup script loaded successfully')
-    }
-    
-    // Append script INSIDE the vagaro container
-    vagaroContainerRef.current.appendChild(script)
-  }, [])
 
   const healthOfferings = [
     {
@@ -125,14 +102,12 @@ export default function ClassesPage() {
                 Reserve My Spot In The {upcomingMonthName} Beginner Academy
               </a>
               
-              <a
-                href="https://www.vagaro.com/joinstudioe/classes"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/schedule"
                 className="text-white/90 hover:text-white underline text-sm font-medium"
               >
                 Or see all upcoming free pop‑up classes
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -420,7 +395,7 @@ export default function ClassesPage() {
         </div>
       </section>
 
-      {/* Vagaro Booking Widget & Membership Plans - Merged & De-emphasized */}
+      {/* Schedule booking & Membership Plans */}
       <section className="py-12 bg-gray-100">
         <div className="container">
           <div className="max-w-6xl mx-auto">
@@ -443,35 +418,16 @@ export default function ClassesPage() {
                 </div>
               </div>
 
-              {/* Right side - Vagaro widget */}
-              <div className="flex flex-col items-center md:items-end">
-                {/* Vagaro Popup Widget Container - Script will be injected inside */}
-                <div 
-                  ref={vagaroContainerRef}
-                  className="vagaro" 
-                  style={{
-                    width: '250px',
-                    padding: '0',
-                    border: '0',
-                    margin: '0 auto',
-                    textAlign: 'center'
-                  }}
-                >
-                  <style jsx global>{`
-                    .vagaro a {
-                      font-size: 14px;
-                      color: #AAA;
-                      text-decoration: none;
-                    }
-                  `}</style>
-                  <a href="https://www.vagaro.com/pro/">Powered by Vagaro</a>
-                  &nbsp;
-                  <a href="https://www.vagaro.com/pro/salon-software">Salon Software</a>
-                  ,&nbsp;
-                  <a href="https://www.vagaro.com/pro/spa-software">Spa Software</a>
-                  &nbsp;&amp;&nbsp;
-                  <a href="https://www.vagaro.com/pro/fitness-software">Fitness Software</a>
-                </div>
+              {/* Right side - Book schedule */}
+              <div className="flex flex-col items-center md:items-end justify-center">
+                <Link href="/schedule">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-semibold px-8 py-6 text-base hover:opacity-95"
+                  >
+                    View schedule &amp; book
+                  </Button>
+                </Link>
               </div>
             </div>
             
