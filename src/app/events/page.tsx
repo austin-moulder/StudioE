@@ -488,6 +488,14 @@ function EventsContent() {
             <p className="text-lg md:text-xl opacity-90">
               Workshops, showcases, competitions, and social events for dancers of all levels.
             </p>
+            <div className="mt-6">
+              <Link
+                href="/social"
+                className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 font-bold text-gray-900 shadow-lg transition-opacity hover:opacity-95"
+              >
+                Friday Happy Hour Social
+              </Link>
+            </div>
           </div>
         </div>
       </section>
