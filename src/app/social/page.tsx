@@ -22,9 +22,29 @@ const reviewLinks = [
   "https://maps.app.goo.gl/SxfKnQnBZmfk67ua6",
 ]
 
+function getNextHappyHourLabel() {
+  const today = new Date()
+  const dayOfWeek = today.getDay()
+  const daysUntilFriday = (5 - dayOfWeek + 7) % 7
+  const nextFriday = new Date(today)
+  nextFriday.setDate(today.getDate() + daysUntilFriday)
+
+  const formatted = nextFriday.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  })
+
+  return `Next Happy Hour: Friday, ${formatted}, 6:30-10:00 pm`
+}
+
 export default function SocialPage() {
+  const nextHappyHourLabel = getNextHappyHourLabel()
+
   return (
     <div className="min-h-screen bg-white">
+      <Script id="social-scroll-top" strategy="afterInteractive">
+        {`window.scrollTo({ top: 0, left: 0, behavior: 'auto' });`}
+      </Script>
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
@@ -49,6 +69,9 @@ export default function SocialPage() {
               <p className="mt-5 max-w-2xl text-lg text-white/90 md:text-2xl">
                 Free beginner lesson + social dancing every Friday at Studio E. No partner needed.
               </p>
+              <p className="mt-3 text-base font-semibold text-white/85 md:text-lg">
+                {nextHappyHourLabel}
+              </p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
@@ -70,7 +93,9 @@ export default function SocialPage() {
                     <Ticket className="h-4 w-4" />
                     <span className="text-sm font-semibold">Cover</span>
                   </div>
-                  <p className="text-sm font-medium">Free before 7:30 pm, $15 after</p>
+                  <p className="text-sm font-medium">
+                    Free before 7:30 pm, <span className="font-black">$15 after</span>
+                  </p>
                 </div>
               </div>
 
@@ -79,12 +104,15 @@ export default function SocialPage() {
                   href="#rsvp"
                   className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-lg font-bold text-gray-900 shadow-lg transition-opacity hover:opacity-95"
                 >
-                  Reserve Your Spot
+                  RSVP for This Friday
                 </a>
+                <p className="mt-3 text-sm text-white/80">
+                  Hosted by Studio E - hundreds of locals have already danced with us.
+                </p>
               </div>
             </div>
 
-            <div className="mx-auto w-full max-w-md">
+            <div className="mx-auto hidden w-full max-w-md md:block">
               <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-sm">
                 <Image
                   src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/Flyers-38.png"
@@ -199,12 +227,18 @@ export default function SocialPage() {
               <p className="mt-3 text-gray-600">
                 Check in, grab some water, and get ready for the beginner class.
               </p>
+              <p className="mt-3 text-sm text-gray-500">
+                Free parking available on Washtenaw and Rockwell, and in the park · Doors open at 6:15 pm.
+              </p>
             </div>
             <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
               <Music3 className="h-8 w-8 text-[#FF7A5A]" />
               <h3 className="mt-4 text-xl font-bold text-gray-900">Dance the night away</h3>
               <p className="mt-3 text-gray-600">
-                Stay for social dancing, meet people, and if you love it, ask about our 28-day challenge. We have special intro deals for people that buy on the night of the social.
+                Stay for social dancing, meet people, and if you love it, ask about our 28-day Latin Confidence Challenge.
+              </p>
+              <p className="mt-3 text-sm font-semibold text-[#FF3366]">
+                Bonus: Get special intro pricing when you join on social night.
               </p>
             </div>
           </div>
