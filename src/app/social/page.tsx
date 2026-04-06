@@ -3,6 +3,7 @@ import Link from "next/link"
 import Script from "next/script"
 import { Calendar, MapPin, Ticket, CheckCircle2, Users, Music3, MessageCircleHeart } from "lucide-react"
 import type { Metadata } from "next"
+import NextHappyHourLabel from "@/components/social/NextHappyHourLabel"
 
 export const metadata: Metadata = {
   title: "Latin Dance Happy Hour in Humboldt Park | Studio E",
@@ -22,24 +23,7 @@ const reviewLinks = [
   "https://maps.app.goo.gl/SxfKnQnBZmfk67ua6",
 ]
 
-function getNextHappyHourLabel() {
-  const today = new Date()
-  const dayOfWeek = today.getDay()
-  const daysUntilFriday = (5 - dayOfWeek + 7) % 7
-  const nextFriday = new Date(today)
-  nextFriday.setDate(today.getDate() + daysUntilFriday)
-
-  const formatted = nextFriday.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-  })
-
-  return `Next Happy Hour: Friday, ${formatted}, 6:30-10:00 pm`
-}
-
 export default function SocialPage() {
-  const nextHappyHourLabel = getNextHappyHourLabel()
-
   return (
     <div className="min-h-screen bg-white">
       <Script id="social-scroll-top" strategy="afterInteractive">
@@ -69,9 +53,7 @@ export default function SocialPage() {
               <p className="mt-5 max-w-2xl text-lg text-white/90 md:text-2xl">
                 Free beginner lesson + social dancing every Friday at Studio E. No partner needed.
               </p>
-              <p className="mt-3 text-base font-semibold text-white/85 md:text-lg">
-                {nextHappyHourLabel}
-              </p>
+              <NextHappyHourLabel />
 
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
@@ -91,10 +73,10 @@ export default function SocialPage() {
                 <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
                     <Ticket className="h-4 w-4" />
-                    <span className="text-sm font-semibold">Cover</span>
+                    <span className="text-sm font-semibold">Social dancer pass</span>
                   </div>
-                  <p className="text-sm font-medium">
-                    Free before 7:30 pm, <span className="font-black">$15 after</span>
+                  <p className="text-sm font-medium leading-snug text-white/90">
+                    $10 per social. Social Dancer membership required—sign up when you RSVP or at check-in.
                   </p>
                 </div>
               </div>
@@ -323,6 +305,11 @@ export default function SocialPage() {
                 {
                   question: "Is there an age limit?",
                   answer: "18+.",
+                },
+                {
+                  question: "What is the Social Dancer Pass?",
+                  answer:
+                    "Friday socials use Social Dancer membership at $10 per social. Sign up when you RSVP or at check-in.",
                 },
               ].map((faq) => (
                 <div key={faq.question} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
