@@ -75,9 +75,25 @@ export default function SocialPage() {
                     <Ticket className="h-4 w-4" />
                     <span className="text-sm font-semibold">Social dancer pass</span>
                   </div>
-                  <p className="text-sm font-medium leading-snug text-white/90">
-                    $10 per social. Social Dancer membership required—sign up when you RSVP or at check-in.
-                  </p>
+                  <div className="space-y-2 text-sm leading-snug text-white/90">
+                    <p>
+                      <span className="font-semibold text-white">Social Dancer Pass:</span> $25 for the first 10
+                      passes, then standard pricing. Includes 4 weeks of socials + 1 complimentary class.
+                    </p>
+                    <p>
+                      <span className="font-semibold text-white">VIP Social Dancer Pass:</span> $120 includes 8
+                      weeks of socials + 2 complimentary classes + 1 private tune-up.
+                    </p>
+                    <p className="text-white/80">Included in Gold Membership.</p>
+                    <a
+                      href="https://square.link/u/yqUnN9HB"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block text-white underline underline-offset-2 hover:text-white/90"
+                    >
+                      Purchase your pass ahead of time
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -309,7 +325,7 @@ export default function SocialPage() {
                 {
                   question: "What is the Social Dancer Pass?",
                   answer:
-                    "Friday socials use Social Dancer membership at $10 per social. Sign up when you RSVP or at check-in.",
+                    "Social Dancer Pass includes 4 weeks of socials + 1 complimentary class ($25 for the first 10 passes, then standard pricing). VIP Social Dancer Pass is $120 and includes 8 weeks of socials + 2 complimentary classes + 1 private tune-up. Buy ahead: https://square.link/u/yqUnN9HB",
                 },
               ].map((faq) => (
                 <div key={faq.question} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
