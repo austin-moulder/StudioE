@@ -97,7 +97,7 @@ export default function SocialPage() {
             <div className="mx-auto hidden w-full max-w-md md:block">
               <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-sm">
                 <Image
-                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/Flyers-38.png"
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/Flyers-38%20(2).png"
                   alt="Studio E Friday happy hour social flyer"
                   width={900}
                   height={1200}
