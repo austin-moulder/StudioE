@@ -1,9 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
 import Script from "next/script"
+import type { ReactNode } from "react"
 import { Calendar, MapPin, Ticket, CheckCircle2, Users, Music3, MessageCircleHeart } from "lucide-react"
 import type { Metadata } from "next"
 import NextHappyHourLabel from "@/components/social/NextHappyHourLabel"
+
+const SQUARE_PASS_URL = "https://square.link/u/yqUnN9HB"
 
 export const metadata: Metadata = {
   title: "Latin Dance Happy Hour in Humboldt Park | Studio E",
@@ -21,6 +24,43 @@ const reviewLinks = [
   "https://maps.app.goo.gl/9GS6sBGT2XaBC58LA",
   "https://maps.app.goo.gl/HPLEJRjhfzVNs5jp9",
   "https://maps.app.goo.gl/SxfKnQnBZmfk67ua6",
+]
+
+const socialFaqs: { question: string; answer: ReactNode }[] = [
+  {
+    question: "Do I need a partner?",
+    answer: "No.",
+  },
+  {
+    question: "I’ve never danced before.",
+    answer: "That’s exactly who the beginner class is for.",
+  },
+  {
+    question: "What should I wear?",
+    answer: "Comfortable clothes and shoes you can move in.",
+  },
+  {
+    question: "Is there an age limit?",
+    answer: "18+.",
+  },
+  {
+    question: "How does the drop-in + 4 free socials offer work?",
+    answer: (
+      <>
+        <p>
+          Buy one drop-in and you get access to four Friday socials free. Your window starts the day you
+          purchase—it&apos;s not based on a calendar month.
+        </p>
+        <p className="mt-2">
+          If you arrive after 7:30 pm, you&apos;ll need a dancer pass to enter unless you&apos;re already a member.
+        </p>
+        <p className="mt-2 text-gray-600">
+          Purchase ahead anytime with the <span className="font-semibold text-gray-800">Buy pass ahead</span>{" "}
+          button in the hero section.
+        </p>
+      </>
+    ),
+  },
 ]
 
 export default function SocialPage() {
@@ -73,25 +113,27 @@ export default function SocialPage() {
                 <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
                     <Ticket className="h-4 w-4" />
-                    <span className="text-sm font-semibold">Social dancer pass</span>
+                    <span className="text-sm font-semibold">The offer</span>
                   </div>
-                  <div className="space-y-2 text-sm leading-snug text-white/90">
-                    <p>
-                      <span className="font-semibold text-white">Social Dancer Pass:</span> $25 for the first 10
-                      passes, then standard pricing. Includes 4 weeks of socials + 1 complimentary class.
+                  <div className="space-y-3 text-sm leading-snug text-white/90">
+                    <p className="font-semibold text-white">
+                      Buy 1 drop-in, get access to 4 socials FREE that month.
                     </p>
-                    <p>
-                      <span className="font-semibold text-white">VIP Social Dancer Pass:</span> $120 includes 8
-                      weeks of socials + 2 complimentary classes + 1 private tune-up.
+                    <p className="text-white/85">
+                      Your free social window starts the day you purchase—not a calendar month.
                     </p>
-                    <p className="text-white/80">Included in Gold Membership.</p>
+                    <p className="text-white/85">
+                      Arriving after 7:30 pm? You&apos;ll need a dancer pass to enter unless you&apos;re already a
+                      member.
+                    </p>
                     <a
-                      href="https://square.link/u/yqUnN9HB"
+                      id="buy-pass"
+                      href={SQUARE_PASS_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block text-white underline underline-offset-2 hover:text-white/90"
+                      className="inline-flex w-full items-center justify-center rounded-full border-2 border-white bg-white/15 px-4 py-3 text-center text-sm font-bold text-white shadow-sm transition-colors hover:bg-white/25 sm:w-auto"
                     >
-                      Purchase your pass ahead of time
+                      Buy pass ahead
                     </a>
                   </div>
                 </div>
@@ -138,7 +180,7 @@ export default function SocialPage() {
               <ul className="mt-6 space-y-4 text-gray-700">
                 <li className="flex gap-3">
                   <CheckCircle2 className="mt-1 h-5 w-5 flex-shrink-0 text-[#FF3366]" />
-                  <span>30-minute beginner class (Salsa / Bachata basics) so you’re not lost on the floor</span>
+                  <span>30-minute beginner salsa class so you’re not lost on the floor</span>
                 </li>
                 <li className="flex gap-3">
                   <CheckCircle2 className="mt-1 h-5 w-5 flex-shrink-0 text-[#FF3366]" />
@@ -236,7 +278,8 @@ export default function SocialPage() {
                 Stay for social dancing, meet people, and if you love it, ask about our 28-day Latin Confidence Challenge.
               </p>
               <p className="mt-3 text-sm font-semibold text-[#FF3366]">
-                Bonus: Get special intro pricing when you join on social night.
+                Bonus: if you purchase a Gold Membership at the social, we credit the price of the dancer pass to
+                your first month.
               </p>
             </div>
           </div>
@@ -305,32 +348,10 @@ export default function SocialPage() {
           <div className="mx-auto max-w-4xl">
             <h2 className="text-center text-3xl font-black text-gray-900 md:text-4xl">FAQ</h2>
             <div className="mt-10 space-y-4">
-              {[
-                {
-                  question: "Do I need a partner?",
-                  answer: "No.",
-                },
-                {
-                  question: "I’ve never danced before.",
-                  answer: "That’s exactly who the beginner class is for.",
-                },
-                {
-                  question: "What should I wear?",
-                  answer: "Comfortable clothes and shoes you can move in.",
-                },
-                {
-                  question: "Is there an age limit?",
-                  answer: "18+.",
-                },
-                {
-                  question: "What is the Social Dancer Pass?",
-                  answer:
-                    "Social Dancer Pass includes 4 weeks of socials + 1 complimentary class ($25 for the first 10 passes, then standard pricing). VIP Social Dancer Pass is $120 and includes 8 weeks of socials + 2 complimentary classes + 1 private tune-up. Buy ahead: https://square.link/u/yqUnN9HB",
-                },
-              ].map((faq) => (
+              {socialFaqs.map((faq) => (
                 <div key={faq.question} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                   <h3 className="text-lg font-bold text-gray-900">{faq.question}</h3>
-                  <p className="mt-2 text-gray-600">{faq.answer}</p>
+                  <div className="mt-2 text-gray-600 [&_p+p]:mt-2">{faq.answer}</div>
                 </div>
               ))}
             </div>
