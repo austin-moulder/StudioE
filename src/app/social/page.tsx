@@ -1,12 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
 import Script from "next/script"
-import type { ReactNode } from "react"
-import { Calendar, MapPin, Ticket, CheckCircle2, Users, Music3, MessageCircleHeart } from "lucide-react"
+import { Calendar, MapPin, CheckCircle2, Users, Music3, MessageCircleHeart } from "lucide-react"
 import type { Metadata } from "next"
 import NextHappyHourLabel from "@/components/social/NextHappyHourLabel"
-
-const SQUARE_PASS_URL = "https://square.link/u/yqUnN9HB"
+import SocialHeroOfferCard from "@/components/social/SocialHeroOfferCard"
+import SocialHowItWorksBonus from "@/components/social/SocialHowItWorksBonus"
+import SocialDancerPassFaq from "@/components/social/SocialDancerPassFaq"
 
 export const metadata: Metadata = {
   title: "Latin Dance Happy Hour in Humboldt Park | Studio E",
@@ -26,7 +26,7 @@ const reviewLinks = [
   "https://maps.app.goo.gl/SxfKnQnBZmfk67ua6",
 ]
 
-const socialFaqs: { question: string; answer: ReactNode }[] = [
+const socialFaqs = [
   {
     question: "Do I need a partner?",
     answer: "No.",
@@ -43,25 +43,7 @@ const socialFaqs: { question: string; answer: ReactNode }[] = [
     question: "Is there an age limit?",
     answer: "18+.",
   },
-  {
-    question: "How does the drop-in + 4 free socials offer work?",
-    answer: (
-      <>
-        <p>
-          Buy one drop-in and you get access to four Friday socials free. Your window starts the day you
-          purchase—it&apos;s not based on a calendar month.
-        </p>
-        <p className="mt-2">
-          If you arrive after 7:30 pm, you&apos;ll need a dancer pass to enter unless you&apos;re already a member.
-        </p>
-        <p className="mt-2 text-gray-600">
-          Purchase ahead anytime with the <span className="font-semibold text-gray-800">Buy pass ahead</span>{" "}
-          button in the hero section.
-        </p>
-      </>
-    ),
-  },
-]
+] as const
 
 export default function SocialPage() {
   return (
@@ -110,33 +92,7 @@ export default function SocialPage() {
                   </div>
                   <p className="text-sm font-medium">Studio E · 2657 W Division St · Humboldt Park</p>
                 </div>
-                <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
-                  <div className="mb-2 flex items-center gap-2 text-white/80">
-                    <Ticket className="h-4 w-4" />
-                    <span className="text-sm font-semibold">The offer</span>
-                  </div>
-                  <div className="space-y-3 text-sm leading-snug text-white/90">
-                    <p className="font-semibold text-white">
-                      Buy 1 drop-in, get access to 4 socials FREE that month.
-                    </p>
-                    <p className="text-white/85">
-                      Your free social window starts the day you purchase—not a calendar month.
-                    </p>
-                    <p className="text-white/85">
-                      Arriving after 7:30 pm? You&apos;ll need a dancer pass to enter unless you&apos;re already a
-                      member.
-                    </p>
-                    <a
-                      id="buy-pass"
-                      href={SQUARE_PASS_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex w-full items-center justify-center rounded-full border-2 border-white bg-white/15 px-4 py-3 text-center text-sm font-bold text-white shadow-sm transition-colors hover:bg-white/25 sm:w-auto"
-                    >
-                      Buy pass ahead
-                    </a>
-                  </div>
-                </div>
+                <SocialHeroOfferCard />
               </div>
 
               <div className="mt-8">
@@ -277,10 +233,7 @@ export default function SocialPage() {
               <p className="mt-3 text-gray-600">
                 Stay for social dancing, meet people, and if you love it, ask about our 28-day Latin Confidence Challenge.
               </p>
-              <p className="mt-3 text-sm font-semibold text-[#FF3366]">
-                Bonus: if you purchase a Gold Membership at the social, we credit the price of the dancer pass to
-                your first month.
-              </p>
+              <SocialHowItWorksBonus />
             </div>
           </div>
         </div>
@@ -351,9 +304,17 @@ export default function SocialPage() {
               {socialFaqs.map((faq) => (
                 <div key={faq.question} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                   <h3 className="text-lg font-bold text-gray-900">{faq.question}</h3>
-                  <div className="mt-2 text-gray-600 [&_p+p]:mt-2">{faq.answer}</div>
+                  <p className="mt-2 text-gray-600">{faq.answer}</p>
                 </div>
               ))}
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-gray-900">
+                  How does the drop-in + 4 free socials offer work?
+                </h3>
+                <div className="mt-2 text-gray-600 [&_p+p]:mt-2">
+                  <SocialDancerPassFaq />
+                </div>
+              </div>
             </div>
           </div>
         </div>

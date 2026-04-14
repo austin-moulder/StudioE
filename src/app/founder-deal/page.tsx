@@ -105,7 +105,7 @@ export default function FounderDealPage() {
           <CardContent className="p-8 md:p-12">
             <div className="text-center">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 break-words">
-                Access up to 10 classes every month at a $70 discount
+                Access up to 10 classes every month at a $50 discount
               </h2>
               <p className="text-sm text-gray-500 mb-4 break-words">
                 3‑month price lock on this founder's rate
@@ -118,7 +118,7 @@ export default function FounderDealPage() {
               <div className="mb-8">
                 <div className="flex items-center justify-center space-x-4 mb-4">
                   <span className="text-2xl text-gray-400 line-through">$149/month</span>
-                  <span className="text-4xl font-bold text-[#FF3366]">$79/month</span>
+                  <span className="text-4xl font-bold text-[#FF3366]">$99/month</span>
                 </div>
                 <div className="text-center text-gray-700">
                   <p className="text-lg font-semibold mb-2">Compare the value:</p>
@@ -130,7 +130,7 @@ export default function FounderDealPage() {
                     <div className="text-gray-400">vs</div>
                     <div className="text-center">
                       <p className="font-bold text-[#FF3366]">With Membership</p>
-                      <p className="text-[#FF3366]">~$8 per class</p>
+                      <p className="text-[#FF3366]">~$10 per class</p>
                     </div>
                   </div>
                 </div>
@@ -262,7 +262,7 @@ export default function FounderDealPage() {
             <h4 className="font-bold text-lg text-gray-900 mb-4">Terms & Conditions</h4>
             <div className="text-sm text-gray-700 space-y-3">
               <p>
-                <strong>*Discount Terms:</strong> The $70 discount is calculated based on the value of 10 classes per month at the standard monthly membership rate. 
+                <strong>*Discount Terms:</strong> The $50 discount is calculated based on the value of 10 classes per month at the standard monthly membership rate. 
                 This discounted founder rate is locked in for the first 3 months of your membership.
               </p>
               <p>
