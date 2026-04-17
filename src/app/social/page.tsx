@@ -83,7 +83,7 @@ export default function SocialPage() {
                     <Calendar className="h-4 w-4" />
                     <span className="text-sm font-semibold">When</span>
                   </div>
-                  <p className="text-sm font-medium">Fridays · 6:30-10:00 pm</p>
+                  <p className="text-sm font-medium">Fridays · doors 6:45 pm · lesson 7–10 pm</p>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
@@ -111,7 +111,7 @@ export default function SocialPage() {
             <div className="mx-auto hidden w-full max-w-md md:block">
               <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-sm">
                 <Image
-                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/Flyers-38%20(2).png"
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Socials/Flyers-43%20(2).png"
                   alt="Studio E Friday happy hour social flyer"
                   width={900}
                   height={1200}
@@ -219,12 +219,12 @@ export default function SocialPage() {
             </div>
             <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
               <Users className="h-8 w-8 text-[#9933CC]" />
-              <h3 className="mt-4 text-xl font-bold text-gray-900">Arrive between 6:15-6:30 pm</h3>
+              <h3 className="mt-4 text-xl font-bold text-gray-900">Arrive between 6:45–7:00 pm</h3>
               <p className="mt-3 text-gray-600">
-                Check in, grab some water, and get ready for the beginner class.
+                Check in, grab some water, and get ready for the beginner class at 7 pm.
               </p>
               <p className="mt-3 text-sm text-gray-500">
-                Free parking available on Washtenaw and Rockwell, and in the park · Doors open at 6:15 pm.
+                Free parking available on Washtenaw and Rockwell, and in the park · Doors open at 6:45 pm.
               </p>
             </div>
             <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
