@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, Star, Clock, Shield } from "lucide-react"
+import { CheckCircle, Star } from "lucide-react"
 import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { Testimonial } from "@/types/testimonial"
 import useEmblaCarousel from 'embla-carousel-react'
@@ -40,12 +40,6 @@ export default function FounderDealPage() {
   const scrollTo = (index: number) => {
     emblaApi && emblaApi.scrollTo(index);
   };
-
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
 
   // Calculate redemption deadline (current date + 7 days)
   const redemptionDeadline = new Date()
@@ -88,98 +82,10 @@ export default function FounderDealPage() {
           </div>
         </div>
 
-        {/* Founder's Membership Callout */}
-        <div className="text-center mb-8">
-          <div className="bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white py-6 px-8 rounded-2xl shadow-lg">
-            <h2 className="text-2xl md:text-3xl font-bold">
-              Founder's Membership
-            </h2>
-            <p className="text-lg mt-2 opacity-90">
-              Only available for a limited time
-            </p>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <Card className="border-2 border-[#FF3366] shadow-xl mb-16">
-          <CardContent className="p-8 md:p-12">
-            <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 break-words">
-                Access up to 10 classes every month at a $50 discount
-              </h2>
-              <p className="text-sm text-gray-500 mb-4 break-words">
-                3‑month price lock on this founder's rate
-              </p>
-              <p className="text-lg text-gray-600 mb-8 break-words">
-                Enrollment in our Gold Plan at a special founder's rate. Discount only available for the first 20 members.
-              </p>
-              
-              {/* Price Anchoring */}
-              <div className="mb-8">
-                <div className="flex items-center justify-center space-x-4 mb-4">
-                  <span className="text-2xl text-gray-400 line-through">$149/month</span>
-                  <span className="text-4xl font-bold text-[#FF3366]">$99/month</span>
-                </div>
-                <div className="text-center text-gray-700">
-                  <p className="text-lg font-semibold mb-2">Compare the value:</p>
-                  <div className="flex justify-center items-center space-x-6 text-sm">
-                    <div className="text-center">
-                      <p className="font-bold text-gray-900">Drop-in Class</p>
-                      <p className="text-gray-600">$25 per class</p>
-                    </div>
-                    <div className="text-gray-400">vs</div>
-                    <div className="text-center">
-                      <p className="font-bold text-[#FF3366]">With Membership</p>
-                      <p className="text-[#FF3366]">~$10 per class</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <a
-                href="mailto:studioelatindance@gmail.com?subject=Claim%20Founder's%20Rate%20Discount&body=Hi%2C%0A%0AI'm%20interested%20in%20claiming%20the%20founder's%20rate%20discount.%0A%0AMy%20phone%20number%20is%3A%20"
-                className="inline-block w-full md:w-auto h-16 text-xl font-bold text-white bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#FF3366]/90 hover:to-[#9933CC]/90 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200 px-12 flex items-center justify-center"
-              >
-                Claim my Discount
-              </a>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Urgency Section */}
-        <Card className="border-2 border-red-500 shadow-xl mb-8">
-          <CardContent className="p-8">
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <Clock className="w-8 h-8 text-red-500" />
-              <h3 className="text-2xl font-bold text-red-600 break-words">
-                Only 7 spots left as of {currentDate}
-              </h3>
-            </div>
-            <p className="text-center text-lg text-gray-700 break-words">
-              Once this deal is gone, it's gone forever.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Guarantee Section */}
-        <Card className="border-2 border-green-500 shadow-xl mb-16">
-          <CardContent className="p-8">
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <Shield className="w-8 h-8 text-green-500" />
-              <h3 className="text-2xl font-bold text-green-600 break-words">
-                Our Guarantee*
-              </h3>
-            </div>
-            <p className="text-center text-lg text-gray-700 break-words">
-              We are so confident you'll love us that if you can't social dance a full song in the first 30 days, we will refund your first month.
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Proof Section - Moved here */}
+        {/* Proof Section */}
         <div className="text-center mb-16">
           <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 break-words">
-            We've helped <span className="text-[#FF3366]">300+</span> students across the nation learn social dancing
+            We've helped <span className="text-[#FF3366]">1,000+</span> students across the nation learn social dancing
           </h3>
         </div>
 
@@ -255,33 +161,6 @@ export default function FounderDealPage() {
             </div>
           )}
         </div>
-
-        {/* Terms Section */}
-        <Card className="border border-gray-200 shadow-sm">
-          <CardContent className="p-6">
-            <h4 className="font-bold text-lg text-gray-900 mb-4">Terms & Conditions</h4>
-            <div className="text-sm text-gray-700 space-y-3">
-              <p>
-                <strong>*Discount Terms:</strong> The $50 discount is calculated based on the value of 10 classes per month at the standard monthly membership rate. 
-                This discounted founder rate is locked in for the first 3 months of your membership.
-              </p>
-              <p>
-                <strong>*Guarantee Eligibility:</strong> The 30‑day guarantee applies to members who enroll in our 28‑day Latin Dance Confidence Challenge as part of their membership.
-              </p>
-              <p>
-                <strong>Membership Requirements:</strong> To receive the full 3‑month price lock, you must keep an active monthly membership during that period. 
-                If your membership is cancelled or expires during the introductory period, the price lock will end and any future reactivation will be at the then‑current Gold Plan rate.
-              </p>
-              <p>
-                <strong>Class Access:</strong> Up to 10 classes per month are included with your membership. 
-                Additional classes may be available at a reduced rate for members.
-              </p>
-              <p>
-                <strong>Limited Time Offer:</strong> This Founder's Membership and 3‑month price lock are only available for a limited time and are limited to the first 20 members.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   )
