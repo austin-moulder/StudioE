@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, Star } from "lucide-react"
+import { CheckCircle, Clock, Star } from "lucide-react"
 import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { Testimonial } from "@/types/testimonial"
 import useEmblaCarousel from 'embla-carousel-react'
@@ -13,6 +13,7 @@ export default function FounderDealPage() {
   const [testimonialsLoading, setTestimonialsLoading] = useState(true)
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [timeLeft, setTimeLeft] = useState(10 * 60)
 
   useEffect(() => {
     if (emblaApi) {
@@ -37,9 +38,22 @@ export default function FounderDealPage() {
     loadTestimonials()
   }, [])
 
+  useEffect(() => {
+    if (timeLeft <= 0) return
+
+    const countdown = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
+    }, 1000)
+
+    return () => clearInterval(countdown)
+  }, [timeLeft])
+
   const scrollTo = (index: number) => {
     emblaApi && emblaApi.scrollTo(index);
   };
+
+  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0")
+  const seconds = String(timeLeft % 60).padStart(2, "0")
 
   // Calculate redemption deadline (current date + 7 days)
   const redemptionDeadline = new Date()
@@ -81,6 +95,27 @@ export default function FounderDealPage() {
             />
           </div>
         </div>
+
+        {/* Urgency Section */}
+        <Card className="border-2 border-red-500 shadow-xl mb-16">
+          <CardContent className="p-8 text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Clock className="w-7 h-7 text-red-500" />
+              <h3 className="text-2xl md:text-3xl font-bold text-red-600 break-words">
+                Only 7 vouchers left this week to come in and try a FREE class on us
+              </h3>
+            </div>
+            <p className="text-gray-700 text-lg mb-6">
+              Claim your spot before this week&apos;s vouchers are gone.
+            </p>
+            <div className="inline-flex items-center justify-center rounded-xl bg-red-50 border border-red-200 px-8 py-4">
+              <span className="text-sm font-semibold uppercase tracking-wide text-red-500 mr-3">Time left</span>
+              <span className="text-3xl md:text-4xl font-black text-red-600 tabular-nums">
+                {minutes}:{seconds}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Proof Section */}
         <div className="text-center mb-16">
