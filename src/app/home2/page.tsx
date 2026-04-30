@@ -40,7 +40,16 @@ export default function Home2Page() {
   return (
     <div className="min-h-screen bg-[#0f0f14] text-white">
       <section className="relative overflow-hidden bg-gradient-to-br from-[#1a1a2e] via-[#2d1b3d] to-[#FF3366]/35">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FF3366]/20 via-transparent to-transparent" />
+        <Image
+          src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/Wide_group.jpg"
+          alt="Studio E class in session"
+          fill
+          className="object-cover"
+          unoptimized
+          priority
+        />
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FF3366]/25 via-transparent to-transparent" />
         <div className="container relative z-10 px-4 py-16 md:py-24">
           <div className="mx-auto max-w-4xl text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/60">Studio E</p>
