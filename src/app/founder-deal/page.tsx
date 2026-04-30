@@ -102,11 +102,11 @@ export default function FounderDealPage() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <Clock className="w-7 h-7 text-red-500" />
               <h3 className="text-2xl md:text-3xl font-bold text-red-600 break-words">
-                Only 7 vouchers left this week to come in and try a FREE class on us
+                Only 6 vouchers left over the next 2 weeks to come in and try a FREE class on us
               </h3>
             </div>
             <p className="text-gray-700 text-lg mb-6">
-              Claim your spot before this week&apos;s vouchers are gone.
+              Claim your spot before these vouchers are gone.
             </p>
             <div className="inline-flex items-center justify-center rounded-xl bg-red-50 border border-red-200 px-8 py-4">
               <span className="text-sm font-semibold uppercase tracking-wide text-red-500 mr-3">Time left</span>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowRight, CheckCircle2, Users } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -78,6 +79,47 @@ export default function Home2Page() {
         </div>
       </section>
 
+      <section className="bg-white text-gray-900 py-16 md:py-20">
+        <div className="container px-4">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+                New classes every month
+              </p>
+              <h2 className="mt-4 text-5xl font-black uppercase leading-[0.95] md:text-6xl">
+                Train,
+                <br />
+                Retain,
+                <br />
+                Evolve
+              </h2>
+              <p className="mt-6 max-w-xl text-lg text-gray-700">
+                We do the planning for you to make your learning journey the fastest and easiest possible.
+              </p>
+              <p className="mt-3 max-w-xl text-lg text-gray-700">
+                We tailor instruction to your learning styling and adjust every week to make sure you see results
+                week-in, week-out.
+              </p>
+              <div className="mt-8">
+                <FreeClassButton className="bg-[#3A53E8] hover:opacity-90" />
+              </div>
+            </div>
+            <div className="mx-auto w-full max-w-md">
+              <div className="overflow-hidden rounded-2xl shadow-xl">
+                <Image
+                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/Brandon_Smile.jpg"
+                  alt="Studio E student smiling in class"
+                  width={900}
+                  height={1200}
+                  className="h-full w-full object-cover"
+                  unoptimized
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-16 md:py-20">
         <div className="container px-4">
           <h2 className="text-center text-3xl font-black md:text-4xl">Our 3 Pillar System</h2>
@@ -102,20 +144,34 @@ export default function Home2Page() {
       <section className="bg-[#14141c] py-16 md:py-20">
         <div className="container px-4">
           <div className="mx-auto max-w-5xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 md:p-10">
-            <div className="flex items-start gap-4">
-              <Users className="mt-1 h-8 w-8 flex-shrink-0 text-[#FF7A5A]" aria-hidden />
+            <div className="grid items-center gap-8 md:grid-cols-[1.1fr_0.9fr]">
+              <div className="flex items-start gap-4">
+                <Users className="mt-1 h-8 w-8 flex-shrink-0 text-[#FF7A5A]" aria-hidden />
+                <div>
+                  <h2 className="text-3xl font-black leading-tight md:text-4xl">Stronger Together</h2>
+                  <p className="mt-4 text-lg leading-relaxed text-white/80">
+                    At Studio E, you are not learning alone. You are joining a local movement of people who show up for
+                    each other, practice together, and celebrate each other&apos;s growth.
+                  </p>
+                  <p className="mt-3 text-white/75">
+                    From your first class to your first social dance, our instructors and community help you feel welcome
+                    and supported every step of the way.
+                  </p>
+                  <div className="mt-8">
+                    <FreeClassButton />
+                  </div>
+                </div>
+              </div>
               <div>
-                <h2 className="text-3xl font-black leading-tight md:text-4xl">Stronger Together</h2>
-                <p className="mt-4 text-lg leading-relaxed text-white/80">
-                  At Studio E, you are not learning alone. You are joining a local movement of people who show up for
-                  each other, practice together, and celebrate each other&apos;s growth.
-                </p>
-                <p className="mt-3 text-white/75">
-                  From your first class to your first social dance, our instructors and community help you feel welcome
-                  and supported every step of the way.
-                </p>
-                <div className="mt-8">
-                  <FreeClassButton />
+                <div className="overflow-hidden rounded-2xl border border-white/10 shadow-xl">
+                  <Image
+                    src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/DSC05837.jpg"
+                    alt="Studio E community group photo"
+                    width={1200}
+                    height={900}
+                    className="h-full w-full object-cover"
+                    unoptimized
+                  />
                 </div>
               </div>
             </div>
