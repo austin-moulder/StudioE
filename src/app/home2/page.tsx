@@ -179,6 +179,29 @@ export default function Home2Page() {
         </div>
       </section>
 
+      <section className="bg-white py-16 text-gray-900 md:py-20">
+        <div className="container px-4">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500">Find Studio E</p>
+              <h2 className="mt-3 text-3xl font-black md:text-4xl">2657 W Division St, Chicago, IL</h2>
+              <p className="mt-4 text-lg text-gray-600">
+                Visit us in Humboldt Park and start your free class at Studio E.
+              </p>
+            </div>
+            <div className="mt-8 overflow-hidden rounded-3xl border border-gray-200 shadow-lg">
+              <iframe
+                src="https://maps.google.com/maps?q=2657%20W%20Division%20St%2C%20Chicago%2C%20IL&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                title="Studio E map at 2657 W Division St"
+                className="h-[420px] w-full"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-gradient-to-r from-[#FF3366] to-[#9933CC] py-16">
         <div className="container px-4 text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-white/80">Studio E · Chicago</p>
