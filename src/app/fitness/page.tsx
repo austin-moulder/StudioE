@@ -8,7 +8,9 @@ import {
   UserRound,
   Users,
 } from "lucide-react"
-import FitnessFoundersForm from "@/components/fitness/FitnessFoundersForm"
+
+const FITNESS_ORIENTATION_FORM_SRC =
+  "https://forms.gle/c3pKpnUa4CeTatLi7"
 
 export const metadata: Metadata = {
   title: "Studio E Fitness | Small-Group Training Next to Studio E Dance",
@@ -120,8 +122,16 @@ export default function FitnessPage() {
             </a>
           </div>
 
-          <div id="founders-apply" className="scroll-mt-24 mx-auto mt-12 max-w-xl">
-            <FitnessFoundersForm />
+          <div id="founders-apply" className="scroll-mt-24 mx-auto mt-12 max-w-4xl">
+            <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-white">
+              <iframe
+                src={FITNESS_ORIENTATION_FORM_SRC}
+                title="Claim your free transformation orientation — Studio E Fitness"
+                className="w-full"
+                style={{ minHeight: "900px" }}
+                loading="lazy"
+              />
+            </div>
           </div>
         </div>
       </section>
