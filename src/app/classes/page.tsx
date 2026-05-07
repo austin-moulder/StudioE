@@ -85,7 +85,7 @@ export default function ClassesPage() {
         <div className="container relative z-20 px-4 py-20 md:py-32">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-6xl font-black mb-6 leading-tight break-words">
-              Go From Two Left Feet To Confident Latin Dancer In 8 Weeks
+              Go From Two Left Feet To Confident Latin Dancer In 28 Days
             </h1>
             
             <p className="text-lg md:text-xl mb-8 font-light break-words">
@@ -99,7 +99,7 @@ export default function ClassesPage() {
                 rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg text-center"
               >
-                Reserve My Spot In The {upcomingMonthName} Beginner Academy
+                Reserve My Spot In The 28-Day Challenge
               </a>
               
               <Link
@@ -140,21 +140,21 @@ export default function ClassesPage() {
             </div>
             
             <p className="text-lg text-gray-700 text-center break-words">
-              Our 8‑Week Latin Dance Academy gives you a clear path from "I don't dance" to "Let's go to the social."
+              Our 28‑Day Latin Dance Challenge gives you a clear path from "I don't dance" to "Let's go to the social."
             </p>
           </div>
         </div>
       </section>
 
-      {/* The 8-Week Academy Offer */}
+      {/* The 28-Day Challenge Offer */}
       <section className="py-16 bg-white">
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 text-center break-words">
-              The Latin Dance Academy ({upcomingMonthName} Cohort)
+              The 28-Day Latin Dance Challenge
             </h2>
             <p className="text-xl text-gray-600 mb-12 text-center break-words">
-              One structured program. Two nights a week. A lifetime of confidence.
+              One structured program. Four focused weeks. A lifetime of confidence.
             </p>
             
             <div className="grid md:grid-cols-3 gap-8 mb-12">
@@ -164,19 +164,19 @@ export default function ClassesPage() {
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>8 weeks of beginner‑friendly salsa & bachata</span>
+                    <span>4 weeks of beginner-friendly salsa & bachata</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>2 classes per week at our Studio E studio at 2657 W Division Street</span>
+                    <span>1 private per week</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>Small group coaching so you never get lost</span>
+                    <span>Accountability tracking</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>Graduation social where you actually dance what you learned</span>
+                    <span>A graduation social at the end of the 4 weeks</span>
                   </li>
                 </ul>
               </div>
@@ -206,11 +206,7 @@ export default function ClassesPage() {
                 <ul className="space-y-3 text-gray-700">
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>Founding Cohort Price: $199</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-[#FF3366] font-bold mt-1">•</span>
-                    <span>Limited to 25 spots for {upcomingMonthName}</span>
+                    <span>Limited to 25 spots in each challenge group</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#FF3366] font-bold mt-1">•</span>
@@ -235,7 +231,7 @@ export default function ClassesPage() {
                 rel="noopener noreferrer"
                 className="inline-block bg-gradient-to-r from-[#FF3366] to-[#9933CC] text-white font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg"
               >
-                Join the {upcomingMonthName} Academy
+                Join the 28-Day Challenge
               </a>
             </div>
           </div>
@@ -260,7 +256,7 @@ export default function ClassesPage() {
                   Reserve your spot
                 </h3>
                 <p className="text-gray-600 leading-relaxed break-words">
-                  Pick your start date and lock in one of the 25 seats in the Academy.
+                  Pick your start date and lock in one of the 25 seats in the challenge group.
                 </p>
               </div>
               
@@ -286,7 +282,7 @@ export default function ClassesPage() {
                   Dance at real socials
                 </h3>
                 <p className="text-gray-600 leading-relaxed break-words">
-                  By Week 8 you'll be dancing confidently at our Studio E socials and any Latin night in the city.
+                  By Week 4 you'll be dancing confidently at our Studio E socials and any Latin night in the city.
                 </p>
               </div>
             </div>
@@ -362,9 +358,9 @@ export default function ClassesPage() {
               
               {/* Card 3 */}
               <div className="bg-white p-6 rounded-xl border-l-4 border-yellow-500 shadow-sm">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">From Academy to Club</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">From Challenge to Club</h3>
                 <p className="text-gray-700 text-sm break-words">
-                  After 8 weeks you'll have the option to join our Latin Social Club membership for ongoing classes and socials.
+                  After 4 weeks you'll have the option to join our Latin Social Club membership for ongoing classes and socials.
                 </p>
               </div>
             </div>
@@ -379,7 +375,7 @@ export default function ClassesPage() {
             Ready to stop sitting down when the music starts?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto break-words">
-            Join the {upcomingMonthName} Latin Dance Academy and make 2025 the year you actually dance.
+            Join the 28-Day Latin Dance Challenge and make this your year to actually dance.
           </p>
           
           <div className="flex flex-col items-center gap-4">
@@ -389,7 +385,7 @@ export default function ClassesPage() {
               rel="noopener noreferrer"
               className="inline-block bg-white text-[#FF3366] font-bold py-4 px-8 rounded-full text-lg hover:opacity-90 transition-opacity shadow-lg"
             >
-              Save My Spot in the Academy
+              Save My Spot in the Challenge
             </a>
           </div>
         </div>
@@ -408,14 +404,6 @@ export default function ClassesPage() {
                 <p className="text-gray-600 text-base mb-4">
                   Browse our full schedule of dance classes and book your spot directly through our booking system.
                 </p>
-                <div className="bg-gray-200 rounded-lg p-4 border-l-4 border-gray-400">
-                  <p className="text-gray-700 font-medium mb-2 text-sm">
-                    🎉 New students get their first two classes FREE!
-                  </p>
-                  <p className="text-gray-600 text-xs">
-                    Use code <span className="font-semibold text-gray-700">DANCE</span> at checkout. That's <span className="font-semibold">$50 of classes on the house</span>.
-                  </p>
-                </div>
               </div>
 
               {/* Right side - Book schedule */}
@@ -440,7 +428,7 @@ export default function ClassesPage() {
                   </Button>
                 </Link>
                 <p className="text-sm text-gray-600">
-                  The Latin Dance Academy is included in the Gold Plan
+                  The 28-Day Challenge is included in the Gold Plan
                 </p>
               </div>
             </div>
