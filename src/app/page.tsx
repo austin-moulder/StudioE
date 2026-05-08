@@ -338,6 +338,45 @@ export default function Home() {
       {/* New User Popup Form */}
       <NewUserPopup />
 
+      {/* Chicago / free-class hero — same footprint as main video hero for QR traffic */}
+      <section
+        id="book-free-class"
+        aria-label="Book a free class at Studio E in Chicago"
+        className="relative z-30 flex h-[400px] md:h-[600px] items-center justify-center overflow-hidden border-b border-white/20 bg-gradient-to-br from-[#FF3366] via-[#c42a8c] to-[#9933CC]"
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_20%,rgba(255,255,255,0.22),transparent_55%)]" aria-hidden />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+          aria-hidden
+        />
+        <div className="container relative z-10 flex h-full flex-col items-center justify-center px-4 py-10 text-center md:py-14">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-white/85 drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] md:text-base">
+            Chicago · Studio E Headquarters
+          </p>
+          <h2 className="mt-4 max-w-4xl text-4xl font-black leading-tight tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] sm:text-5xl md:text-6xl md:leading-[1.08]">
+            Do you live in Chicago and want to level up your dancing at our studio headquarters?
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)] md:text-xl">
+            Reserve your first class on us—meet the team, feel the vibe, and get on the floor with confidence.
+          </p>
+          <div className="mt-10 flex w-full max-w-2xl flex-col items-center gap-4 sm:max-w-3xl">
+            <Link
+              href="/founder-deal"
+              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-white px-10 py-5 text-center text-base font-black uppercase tracking-wide text-gray-900 shadow-[0_12px_40px_rgba(0,0,0,0.25)] transition-opacity hover:opacity-95 sm:text-lg md:py-6 md:text-xl"
+            >
+              Click here to book your first class free
+              <ArrowRight className="h-6 w-6 shrink-0 md:h-7 md:w-7" aria-hidden />
+            </Link>
+            <p className="text-sm font-medium text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)] md:text-base">
+              2657 W Division St · Humboldt Park
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="relative h-[400px] md:h-[600px]">
         <div className="absolute inset-0 z-10">
