@@ -338,11 +338,11 @@ export default function Home() {
       {/* New User Popup Form */}
       <NewUserPopup />
 
-      {/* Chicago / free-class hero — same footprint as main video hero for QR traffic */}
+      {/* Chicago / free-class hero — shorter on desktop; fluid height on mobile so nothing clips */}
       <section
         id="book-free-class"
         aria-label="Book a free class at Studio E in Chicago"
-        className="relative z-30 flex h-[400px] md:h-[600px] items-center justify-center overflow-hidden border-b border-white/20 bg-gradient-to-br from-[#FF3366] via-[#c42a8c] to-[#9933CC]"
+        className="relative z-10 flex flex-col justify-center overflow-hidden border-b border-white/20 bg-gradient-to-br from-[#FF3366] via-[#c42a8c] to-[#9933CC] py-11 sm:py-12 md:h-[480px] md:min-h-[480px] md:py-0"
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_20%,rgba(255,255,255,0.22),transparent_55%)]" aria-hidden />
         <div
@@ -352,25 +352,25 @@ export default function Home() {
           }}
           aria-hidden
         />
-        <div className="container relative z-10 flex h-full flex-col items-center justify-center px-4 py-10 text-center md:py-14">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-white/85 drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] md:text-base">
+        <div className="container relative z-10 flex w-full flex-col items-center px-4 text-center md:h-full md:justify-center md:py-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/85 drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] sm:text-sm md:text-base">
             Chicago · Studio E Headquarters
           </p>
-          <h2 className="mt-4 max-w-4xl text-4xl font-black leading-tight tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] sm:text-5xl md:text-6xl md:leading-[1.08]">
+          <h2 className="mt-3 max-w-4xl text-3xl font-black leading-[1.12] tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] sm:mt-4 sm:text-4xl sm:leading-tight md:mt-4 md:text-5xl lg:text-6xl lg:leading-[1.08]">
             Do you live in Chicago and want to level up your dancing at our studio headquarters?
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)] md:text-xl">
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-snug text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)] sm:mt-5 sm:text-lg md:mt-5 md:text-xl">
             Reserve your first class on us—meet the team, feel the vibe, and get on the floor with confidence.
           </p>
-          <div className="mt-10 flex w-full max-w-2xl flex-col items-center gap-4 sm:max-w-3xl">
+          <div className="mt-7 flex w-full max-w-xl flex-col items-center gap-3 sm:mt-9 sm:max-w-2xl md:mt-10">
             <Link
               href="/founder-deal"
-              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-white px-10 py-5 text-center text-base font-black uppercase tracking-wide text-gray-900 shadow-[0_12px_40px_rgba(0,0,0,0.25)] transition-opacity hover:opacity-95 sm:text-lg md:py-6 md:text-xl"
+              className="inline-flex w-full max-w-lg items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-center text-sm font-black uppercase tracking-wide text-gray-900 shadow-[0_12px_40px_rgba(0,0,0,0.25)] transition-opacity hover:opacity-95 sm:gap-3 sm:px-10 sm:py-5 sm:text-base md:max-w-2xl md:py-[1.375rem] md:text-lg lg:text-xl"
             >
               Click here to book your first class free
-              <ArrowRight className="h-6 w-6 shrink-0 md:h-7 md:w-7" aria-hidden />
+              <ArrowRight className="h-5 w-5 shrink-0 sm:h-6 sm:w-6 md:h-7 md:w-7" aria-hidden />
             </Link>
-            <p className="text-sm font-medium text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)] md:text-base">
+            <p className="pb-1 text-xs font-medium text-white/80 drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)] sm:text-sm md:text-base">
               2657 W Division St · Humboldt Park
             </p>
           </div>
@@ -378,7 +378,7 @@ export default function Home() {
       </section>
 
       {/* Hero Section */}
-      <section className="relative h-[400px] md:h-[600px]">
+      <section className="relative isolate z-0 h-[400px] md:h-[600px]">
         <div className="absolute inset-0 z-10">
           <VideoBackground videoId="9q-IlFG0fOQ" className="h-full w-full" />
         </div>
