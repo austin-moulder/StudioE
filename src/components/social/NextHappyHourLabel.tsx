@@ -14,7 +14,7 @@ function getNextHappyHourLabel() {
     day: "numeric",
   })
 
-  return `Next Happy Hour: Friday, ${formatted}, doors 6:45 pm · lesson 7–10 pm`
+  return `Next Happy Hour: Friday, ${formatted}, doors 7:00 pm · lesson 7:15–7:45 pm · social dancing 7:45–10:00 pm`
 }
 
 export default function NextHappyHourLabel() {
@@ -26,7 +26,7 @@ export default function NextHappyHourLabel() {
 
   return (
     <p className="mt-3 text-base font-semibold text-white/85 md:text-lg">
-      {label ?? "Next Happy Hour: Fridays · doors 6:45 pm · lesson 7–10 pm"}
+      {label ?? "Next Happy Hour: Fridays · doors 7:00 pm · lesson 7:15–7:45 pm · social dancing 7:45–10:00 pm"}
     </p>
   )
 }
