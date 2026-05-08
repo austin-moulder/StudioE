@@ -83,7 +83,7 @@ export default function SocialPage() {
                     <Calendar className="h-4 w-4" />
                     <span className="text-sm font-semibold">When</span>
                   </div>
-                  <p className="text-sm font-medium">Fridays · doors 6:45 pm · lesson 7–10 pm</p>
+                  <p className="text-sm font-medium">Fridays · doors 7:00 pm · lesson 7:15–7:45 pm · social dancing 7:45–10:00 pm</p>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
                   <div className="mb-2 flex items-center gap-2 text-white/80">
@@ -219,19 +219,19 @@ export default function SocialPage() {
             </div>
             <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
               <Users className="h-8 w-8 text-[#9933CC]" />
-              <h3 className="mt-4 text-xl font-bold text-gray-900">Arrive between 6:45–7:00 pm</h3>
+              <h3 className="mt-4 text-xl font-bold text-gray-900">Arrive between 7:00–7:15 pm</h3>
               <p className="mt-3 text-gray-600">
-                Check in, grab some water, and get ready for the beginner class at 7 pm.
+                Doors open at 7:00 pm. Check in, grab some water, and get ready for the beginner lesson from 7:15–7:45 pm.
               </p>
               <p className="mt-3 text-sm text-gray-500">
-                Free parking available on Washtenaw and Rockwell, and in the park · Doors open at 6:45 pm.
+                Free parking available on Washtenaw and Rockwell, and in the park.
               </p>
             </div>
             <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
               <Music3 className="h-8 w-8 text-[#FF7A5A]" />
               <h3 className="mt-4 text-xl font-bold text-gray-900">Dance the night away</h3>
               <p className="mt-3 text-gray-600">
-                Stay for social dancing, meet people, and if you love it, ask about our 28-day Latin Confidence Challenge.
+                Social dancing runs from 7:45–10:00 pm. Meet people, have fun, and if you love it, ask about our 28-day Latin Confidence Challenge.
               </p>
               <SocialHowItWorksBonus />
             </div>
