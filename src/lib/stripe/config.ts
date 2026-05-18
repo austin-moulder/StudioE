@@ -51,7 +51,27 @@ export const PRODUCTS = {
       'Experience diverse teaching styles',
       'Comprehensive progress tracking'
     ]
-  }
+  },
+  PR_FEST_PASS: {
+    name: 'Puerto Rican Fest Dance Pass',
+    description: '30 days of unlimited beginner-friendly salsa, bachata & cumbia classes at Studio E',
+    price: 4900, // $49.00 one-time
+    features: [
+      'Unlimited classes for 30 days',
+      'Evening & weekend options in Humboldt Park',
+      'Friday socials included',
+    ],
+  },
+  PR_FEST_FITNESS_PASS: {
+    name: 'Puerto Rican Fest Fitness Pass',
+    description: '30 days of unlimited Latin-inspired fitness classes at Studio E Fitness',
+    price: 4900, // $49.00 one-time — no processing fees
+    features: [
+      'Unlimited fitness classes for 30 days',
+      'Evening & weekend options in Humboldt Park',
+      'Beginner-friendly coaching',
+    ],
+  },
 } as const
 
 export type ProductKey = keyof typeof PRODUCTS 
