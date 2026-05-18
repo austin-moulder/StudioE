@@ -7,8 +7,9 @@ import FestWeeklyScheduleTable from "@/components/fest-pass/FestWeeklyScheduleTa
 import StudioMap from "@/components/fest-pass/StudioMap"
 import {
   ACUITY_SCHEDULE_URL,
+  FITNESS_STUDIO_ADDRESS,
+  FITNESS_STUDIO_MAP_EMBED_URL,
   SQUARE_FITNESS_PASS_URL,
-  STUDIO_ADDRESS,
 } from "@/lib/fest-pass/constants"
 import {
   FITNESS_MORNING_SLOTS,
@@ -101,7 +102,7 @@ export default function PuertoRicanFestFitnessContent() {
               </button>
               <p className="flex items-center gap-1.5 text-sm text-white/70">
                 <MapPin className="h-4 w-4 shrink-0" aria-hidden />
-                2659 W Division St · next to Studio E Dance ({STUDIO_ADDRESS})
+                {FITNESS_STUDIO_ADDRESS}
               </p>
             </div>
           </div>
@@ -135,7 +136,7 @@ export default function PuertoRicanFestFitnessContent() {
                 <h2 className="text-2xl font-black text-gray-900 md:text-3xl">When are classes?</h2>
               </div>
               <p className="mb-8 text-lg text-gray-600">
-                We run most fitness classes on weeknights 6–9 pm plus Saturday mornings.
+                We run most fitness classes on weekday mornings 7–9 am plus Saturday mornings.
               </p>
               <FestWeeklyScheduleTable
                 studioLabel="Studio E Fitness • 2659 W Division St"
@@ -192,7 +193,7 @@ export default function PuertoRicanFestFitnessContent() {
           </div>
         </section>
 
-        <StudioMap />
+        <StudioMap address={FITNESS_STUDIO_ADDRESS} embedUrl={FITNESS_STUDIO_MAP_EMBED_URL} />
 
         <section className="py-14 md:py-16">
           <div className="container px-4">
