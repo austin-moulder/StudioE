@@ -37,20 +37,45 @@ export default function TermsPage() {
           The Company, at its sole discretion, may make promotional offers with different features and different rates to any of our customers. These promotional offers, unless made to you, shall have no bearing whatsoever on your offer or contract. You may be charged $40 if you cancel within 6 hours of the appointment start subject to our Last Minute Cancellation Policy. If your instructor is unable to conduct the session as a result of being unable to access the specified location or venue, you may be charged for your appointment in full. Please see our Help Center for Last Minute Cancellation Policy and No-Show Policy. The Company may change the fees for our Service as we deem necessary for our business. We encourage you to check back at our website periodically if you are interested about how we charge for the Service.
         </p>
         
-        <h2 className="text-2xl font-bold mt-8 mb-4">Premium Membership Autorenewal and Cancellation Terms</h2>
+        <h2 className="text-2xl font-bold mt-8 mb-4">Membership Autorenewal and Cancellation Terms</h2>
         <p className="font-bold">AUTORENEWAL TERMS:</p>
         <p>
-          Premium memberships will automatically renew on a monthly basis and your credit or debit card will be charged your monthly membership fee (taxes may apply) unless you cancel prior to your next billing cycle. Membership fees are due immediately upon renewal and are non-refundable. Thus, if you cancel after your membership is renewed, you will be charged for the entire month regardless of when you cancel your Premium membership.
+          Memberships will automatically renew on a monthly basis and your credit or debit card will be charged your monthly membership fee (taxes may apply) unless you cancel prior to your next billing cycle. Membership fees are due immediately upon renewal and are non-refundable. If you cancel after your membership is renewed, you will be charged for the entire month regardless of when you cancel your membership.
         </p>
-        
+
         <p className="font-bold">CANCELLATION TERMS:</p>
         <p>
-          Premium memberships can be canceled anytime online under your 'Account Settings' or by submitting a help ticket at our help center. However, canceling your Premium membership before your initial commitment term will result in your first instruction session being charged at full price at standard rates ("early termination fee"). For avoidance of doubt, the early termination fee is calculated as the difference between the full price of your first session at standard rates and the discounted price of your first session (taxes may apply).
+          Memberships may be canceled by texting &ldquo;cancel&rdquo; to <a href="sms:8164196279" className="text-[#FF3366] hover:underline">816-419-6279</a> or by canceling in person at the studio. We require 30 days&apos; notice before your membership ends.
         </p>
-        
+
         <p>
-          The "no refund policy" discussed in this section shall apply at all times regardless of your decision to terminate your usage, the Company's decision to terminate your usage, disruption caused to our Software or Service either planned, accidental or intentional, or any reason whatsoever.
+          The &ldquo;no refund policy&rdquo; discussed in this section shall apply at all times regardless of your decision to terminate your usage, the Company&apos;s decision to terminate your usage, disruption caused to our Software or Service either planned, accidental or intentional, or any reason whatsoever.
         </p>
+
+        <p className="font-bold">CHARGEBACKS AND DISPUTED PAYMENTS:</p>
+        <p>
+          Client agrees not to dispute or initiate chargebacks with their bank or credit provider. Any chargeback or disputed payment may result in:
+        </p>
+        <ul className="list-disc pl-6 mb-4">
+          <li>Immediate voiding of any guarantees or credits</li>
+          <li>Reinstatement of waived fees</li>
+          <li>Additional collection actions if necessary</li>
+        </ul>
+
+        <p className="font-bold">MEDIA RELEASE:</p>
+        <p>
+          Client grants Studio E LLC permission to capture photos, videos, and testimonials and to use such content for marketing, promotional, and commercial purposes. Client waives any right to compensation or approval of final materials.
+        </p>
+
+        <p className="font-bold">ASSUMPTION OF RISK AND LIABILITY WAIVER:</p>
+        <p>
+          Client acknowledges that participation in dance activities involves inherent risks, including but not limited to injury, illness, or death. Client:
+        </p>
+        <ul className="list-disc pl-6 mb-4">
+          <li>Assumes full responsibility for participation</li>
+          <li>Confirms they are physically able to participate or have consulted a medical professional</li>
+          <li>Releases and holds harmless Studio E LLC, its owners, staff, and contractors from any and all liability</li>
+        </ul>
         
         <h2 className="text-2xl font-bold mt-8 mb-4">Damage and Injury Policy</h2>
         <p>
