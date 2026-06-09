@@ -4,7 +4,7 @@ import PuertoRicanFestContent from "./PuertoRicanFestContent"
 export const metadata: Metadata = {
   title: "Puerto Rican Fest Dance Pass | Studio E Chicago",
   description:
-    "30 days of unlimited beginner-friendly salsa, bachata & cumbia for $49. Evening & weekend classes in Humboldt Park. No partner needed.",
+    "Discover your dance confidence for $49. 30 days of unlimited salsa, bachata & cumbia with a welcoming Latino dance community in Humboldt Park.",
 }
 
 export default function PuertoRicanFestPage() {
