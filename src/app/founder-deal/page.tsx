@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
+import Script from "next/script"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Clock, Star } from "lucide-react"
 import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
@@ -83,17 +84,28 @@ export default function FounderDealPage() {
           </div>
         </div>
 
-        {/* Embedded Google Form */}
+        {/* Embedded claim form */}
         <div className="mb-16">
-          <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-md bg-white">
+          <div className="h-[863px] min-h-[863px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md">
             <iframe
-              src="https://forms.gle/K6hYbzqSFKcNNUpe9"
-              title="Claim Your Free Class with Studio E"
-              className="w-full"
-              style={{ minHeight: "900px" }}
-              loading="lazy"
+              src="https://api.leadconnectorhq.com/widget/form/OU2vv09aDBS3oIC9PB9j"
+              id="inline-OU2vv09aDBS3oIC9PB9j"
+              title="Founder-Deal-Page"
+              data-layout="{'id':'INLINE'}"
+              data-trigger-type="alwaysShow"
+              data-trigger-value=""
+              data-activation-type="alwaysActivated"
+              data-activation-value=""
+              data-deactivation-type="neverDeactivate"
+              data-deactivation-value=""
+              data-form-name="Founder-Deal-Page"
+              data-height="863"
+              data-layout-iframe-id="inline-OU2vv09aDBS3oIC9PB9j"
+              data-form-id="OU2vv09aDBS3oIC9PB9j"
+              className="h-full w-full rounded-lg border-0"
             />
           </div>
+          <Script src="https://link.msgsndr.com/js/form_embed.js" strategy="lazyOnload" />
         </div>
 
         {/* Urgency Section */}
