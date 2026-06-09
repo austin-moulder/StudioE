@@ -187,7 +187,7 @@ export default function Footer() {
                 Admin
               </Link>
             )}
-            <Link href="/code-of-conduct" className="hover:text-gray-800">
+            <Link href="/codeofconduct" className="hover:text-gray-800">
               Code of Conduct
             </Link>
             <Link href="/privacy" className="hover:text-gray-800">
