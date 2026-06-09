@@ -1,12 +1,14 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Calendar, CheckCircle2, Dumbbell, MapPin, Users } from "lucide-react"
+import { ArrowRight, Calendar, CheckCircle2, Dumbbell, Gift, MapPin, Users } from "lucide-react"
 import FestCheckoutLink from "@/components/fest-pass/FestCheckoutLink"
 import FestWeeklyScheduleTable from "@/components/fest-pass/FestWeeklyScheduleTable"
 import StudioMap from "@/components/fest-pass/StudioMap"
 import {
   ACUITY_SCHEDULE_URL,
+  FITNESS_BONUS_1ON1_BOOKING_URL,
   FITNESS_STUDIO_ADDRESS,
   FITNESS_STUDIO_MAP_EMBED_URL,
   SQUARE_FITNESS_PASS_URL,
@@ -16,9 +18,12 @@ import {
   FITNESS_SCHEDULE_GRID,
 } from "@/lib/fest-pass/fitnessScheduleFlyer"
 
+const HERO_IMAGE =
+  "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/DSC05892%20(1).jpg"
+
 const HERO_BULLETS = [
   "Unlimited Latin‑inspired fitness classes for 30 days",
-  "Evening & weekend options in Humboldt Park",
+  "Morning classes to get your day started right",
   "Beginner‑friendly coaches and community",
 ] as const
 
@@ -71,14 +76,23 @@ export default function PuertoRicanFestFitnessContent() {
   return (
     
       <div className="min-h-screen bg-white">
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#1a1a2e] via-[#2d1b3d] to-[#FF3366]/35 text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FF3366]/20 via-transparent to-transparent" />
+        <section className="relative min-h-[480px] overflow-hidden text-white md:min-h-[540px]">
+          <Image
+            src={HERO_IMAGE}
+            alt="Studio E fitness class group photo"
+            fill
+            className="object-cover"
+            unoptimized
+            priority
+          />
+          <div className="absolute inset-0 bg-black/65" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FF3366]/25 via-transparent to-transparent" />
           <div className="container relative z-10 px-4 py-14 md:py-20">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-white/75">
               Puerto Rican Fest · Studio E Fitness
             </p>
             <h1 className="mt-4 max-w-3xl text-3xl font-black leading-tight sm:text-4xl md:text-5xl">
-              Puerto Rican Fest Fitness Pass – 30 Days for $49
+              Puerto Rican Fest Fitness Pass – Meet your new confident self for just $49
             </h1>
             <p className="mt-5 max-w-2xl text-xl font-medium leading-snug text-white/95 md:text-2xl">
               Feel stronger, tighter, and more energized in 30 days. No experience needed.
@@ -248,6 +262,33 @@ export default function PuertoRicanFestFitnessContent() {
               </a>
               .
             </p>
+          </div>
+        </section>
+
+        <section className="border-t border-[#FF3366]/20 bg-gradient-to-br from-[#1a1a2e] via-[#2d1b3d] to-[#FF3366]/20 py-14 text-white md:py-16">
+          <div className="container px-4">
+            <div className="mx-auto max-w-2xl text-center">
+              <div className="mb-4 inline-flex items-center justify-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-[#FF7A5A]">
+                <Gift className="h-4 w-4 shrink-0" aria-hidden />
+                Member bonus
+              </div>
+              <h2 className="text-2xl font-black leading-tight md:text-3xl">
+                You found our special free training session
+              </h2>
+              <p className="mt-4 text-lg leading-relaxed text-white/90">
+                Scan and book your 30-minute 1:1 session after you checkout. This personal training session is
+                normally $50+, but you&apos;ll get it included as a member.
+              </p>
+              <a
+                href={FITNESS_BONUS_1ON1_BOOKING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-flex w-full max-w-md items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-base font-black uppercase tracking-wide text-gray-900 shadow-xl transition-opacity hover:opacity-95 md:text-lg"
+              >
+                Book my free 1:1 session
+                <ArrowRight className="h-5 w-5 shrink-0" aria-hidden />
+              </a>
+            </div>
           </div>
         </section>
       </div>

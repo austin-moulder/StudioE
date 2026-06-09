@@ -48,7 +48,7 @@ export default function FestWeeklyScheduleTable({
                 </td>
                 {grid[rowIndex]?.map((cell, colIndex) => {
                   const isBeginner = beginnerGrid?.[rowIndex]?.[colIndex]
-                  const isPrivate = cell === "PRIVATES"
+                  const isPrivate = cell === "PRIVATES" || cell === "1:1 TRAINING"
                   return (
                     <td
                       key={`${time}-${colIndex}`}
