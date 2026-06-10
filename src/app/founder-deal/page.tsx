@@ -9,6 +9,42 @@ import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { Testimonial } from "@/types/testimonial"
 import useEmblaCarousel from 'embla-carousel-react'
 
+const BOOKING_EMBED_SRC = "https://api.leadconnectorhq.com/widget/booking/HVRneuos1EUmzgEKLAha"
+const BOOKING_IFRAME_ID = "HVRneuos1EUmzgEKLAha_1781027635554"
+
+type IFrameResizeWindow = Window & {
+  iFrameResize?: (options: Record<string, unknown>, target: HTMLIFrameElement) => void
+}
+
+function initBookingEmbed() {
+  const iframe = document.getElementById(BOOKING_IFRAME_ID) as HTMLIFrameElement | null
+  if (!iframe || iframe.getAttribute("data-iframe-resizer-initialized") === "true") return true
+
+  const { iFrameResize } = window as IFrameResizeWindow
+  if (typeof iFrameResize !== "function") return false
+
+  const isMobile = window.matchMedia("(max-width: 768px)").matches
+
+  iFrameResize(
+    {
+      autoResize: true,
+      scrolling: isMobile,
+      checkOrigin: false,
+      heightCalculationMethod: "max",
+      minHeight: isMobile ? 600 : 900,
+    },
+    iframe
+  )
+
+  if (isMobile) {
+    iframe.style.minHeight = "85vh"
+    iframe.style.overflow = "auto"
+    iframe.setAttribute("scrolling", "yes")
+  }
+
+  return true
+}
+
 export default function FounderDealPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [testimonialsLoading, setTestimonialsLoading] = useState(true)
@@ -49,6 +85,29 @@ export default function FounderDealPage() {
     return () => clearInterval(countdown)
   }, [timeLeft])
 
+  useEffect(() => {
+    let attempts = 0
+    const maxAttempts = 50
+
+    const tryInit = () => {
+      attempts += 1
+      if (initBookingEmbed() || attempts >= maxAttempts) {
+        clearInterval(interval)
+      }
+    }
+
+    tryInit()
+    const interval = setInterval(tryInit, 200)
+
+    const onResize = () => initBookingEmbed()
+    window.addEventListener("resize", onResize)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener("resize", onResize)
+    }
+  }, [])
+
   const scrollTo = (index: number) => {
     emblaApi && emblaApi.scrollTo(index);
   };
@@ -84,28 +143,23 @@ export default function FounderDealPage() {
           </div>
         </div>
 
-        {/* Embedded claim form */}
+        {/* Embedded booking calendar */}
         <div className="mb-16">
-          <div className="h-[863px] min-h-[863px] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md">
+          <div className="founder-deal-booking rounded-2xl border border-gray-200 bg-white shadow-md md:min-h-[900px]">
             <iframe
-              src="https://api.leadconnectorhq.com/widget/form/OU2vv09aDBS3oIC9PB9j"
-              id="inline-OU2vv09aDBS3oIC9PB9j"
-              title="Founder-Deal-Page"
-              data-layout="{'id':'INLINE'}"
-              data-trigger-type="alwaysShow"
-              data-trigger-value=""
-              data-activation-type="alwaysActivated"
-              data-activation-value=""
-              data-deactivation-type="neverDeactivate"
-              data-deactivation-value=""
-              data-form-name="Founder-Deal-Page"
-              data-height="863"
-              data-layout-iframe-id="inline-OU2vv09aDBS3oIC9PB9j"
-              data-form-id="OU2vv09aDBS3oIC9PB9j"
-              className="h-full w-full rounded-lg border-0"
+              src={BOOKING_EMBED_SRC}
+              id={BOOKING_IFRAME_ID}
+              title="Book your free class with Studio E"
+              scrolling="yes"
+              className="block w-full min-h-[85vh] border-0 md:min-h-[900px]"
+              style={{ width: "100%", border: "none", WebkitOverflowScrolling: "touch" }}
             />
           </div>
-          <Script src="https://link.msgsndr.com/js/form_embed.js" strategy="lazyOnload" />
+          <Script
+            src="https://link.msgsndr.com/js/form_embed.js"
+            strategy="afterInteractive"
+            onLoad={initBookingEmbed}
+          />
         </div>
 
         {/* Urgency Section */}
