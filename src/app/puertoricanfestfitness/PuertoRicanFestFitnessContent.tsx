@@ -30,7 +30,7 @@ const STEPS = [
   {
     step: "1",
     title: "Grab your $49 Fitness Pass online",
-    body: "Secure checkout takes about a minute. One-time payment—no subscription.",
+    body: "Secure checkout takes about a minute.",
   },
   {
     step: "2",
@@ -62,8 +62,8 @@ const FAQS = [
     a: "No. Every class is coached for individuals and small groups.",
   },
   {
-    q: "Is this a subscription?",
-    a: "No. One‑time $49 pass. No auto‑renew.",
+    q: "Is this a membership?",
+    a: "Yes. A monthly membership at Studio E Fitness.",
   },
 ] as const
 
@@ -232,7 +232,7 @@ export default function PuertoRicanFestFitnessContent() {
           className="scroll-mt-6 bg-gradient-to-r from-[#FF3366] to-[#9933CC] py-16 text-white md:py-20"
         >
           <div className="container px-4 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/85">One-time · $49</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/85">Membership · $49</p>
             <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-black leading-tight md:text-4xl">
               Claim your $49 Fest Fitness Pass
             </h2>
@@ -241,9 +241,6 @@ export default function PuertoRicanFestFitnessContent() {
             </p>
             <div className="mt-10 flex flex-col items-center">
               <FestCheckoutLink href={SQUARE_FITNESS_PASS_URL} label="Checkout" size="large" />
-              <p className="mt-5 max-w-md text-sm text-white/85">
-                Secure checkout. One-time payment. No auto‑renew.
-              </p>
             </div>
             <p className="mx-auto mt-8 max-w-sm text-xs text-white/70">
               Questions?{" "}

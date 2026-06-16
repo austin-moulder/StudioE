@@ -6,7 +6,7 @@ import type { Metadata } from "next"
 import NextHappyHourLabel from "@/components/social/NextHappyHourLabel"
 import SocialHeroOfferCard from "@/components/social/SocialHeroOfferCard"
 import SocialHowItWorksBonus from "@/components/social/SocialHowItWorksBonus"
-import SocialDancerPassFaq from "@/components/social/SocialDancerPassFaq"
+import SocialDonationFaq from "@/components/social/SocialDonationFaq"
 
 export const metadata: Metadata = {
   title: "Latin Dance Happy Hour in Humboldt Park | Studio E",
@@ -309,10 +309,10 @@ export default function SocialPage() {
               ))}
               <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                 <h3 className="text-lg font-bold text-gray-900">
-                  How does the drop-in + 4 free socials offer work?
+                  Are socials really free? How do donations work?
                 </h3>
                 <div className="mt-2 text-gray-600 [&_p+p]:mt-2">
-                  <SocialDancerPassFaq />
+                  <SocialDonationFaq />
                 </div>
               </div>
             </div>
