@@ -8,7 +8,6 @@ import FestWeeklyScheduleTable from "@/components/fest-pass/FestWeeklyScheduleTa
 import StudioMap from "@/components/fest-pass/StudioMap"
 import {
   ACUITY_SCHEDULE_URL,
-  FITNESS_BONUS_1ON1_BOOKING_URL,
   FITNESS_STUDIO_ADDRESS,
   FITNESS_STUDIO_MAP_EMBED_URL,
   SQUARE_FITNESS_PASS_URL,
@@ -273,21 +272,12 @@ export default function PuertoRicanFestFitnessContent() {
                 Member bonus
               </div>
               <h2 className="text-2xl font-black leading-tight md:text-3xl">
-                You found our special free training session
+                Free 30-minute private training session
               </h2>
               <p className="mt-4 text-lg leading-relaxed text-white/90">
-                Scan and book your 30-minute 1:1 session after you checkout. This personal training session is
-                normally $50+, but you&apos;ll get it included as a member.
+                During your first class, ask your trainer about claiming your free 30-minute private training
+                session. This training session is normally $50+, but the first 50 members get one for free.
               </p>
-              <a
-                href={FITNESS_BONUS_1ON1_BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 inline-flex w-full max-w-md items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-base font-black uppercase tracking-wide text-gray-900 shadow-xl transition-opacity hover:opacity-95 md:text-lg"
-              >
-                Book my free 1:1 session
-                <ArrowRight className="h-5 w-5 shrink-0" aria-hidden />
-              </a>
             </div>
           </div>
         </section>

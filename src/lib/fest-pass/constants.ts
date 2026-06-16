@@ -10,10 +10,7 @@ export const ACUITY_SCHEDULE_URL =
   "https://app.acuityscheduling.com/schedule/76f316b6/?template=class"
 
 export const SQUARE_DANCE_PASS_URL = "https://square.link/u/XiB4krZT"
-export const SQUARE_FITNESS_PASS_URL = "https://square.link/u/3S5ogGf8"
-
-export const FITNESS_BONUS_1ON1_BOOKING_URL =
-  "https://link.localbestgyms.com/widget/booking/UCEj369SaVzluaoH00Ie"
+export const SQUARE_FITNESS_PASS_URL = "https://square.link/u/TYCoEV2B"
 
 export const FEST_DAYS = ["M", "T", "W", "Th", "F"] as const
 export type FestDay = (typeof FEST_DAYS)[number]
