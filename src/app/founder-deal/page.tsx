@@ -9,16 +9,17 @@ import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { Testimonial } from "@/types/testimonial"
 import useEmblaCarousel from 'embla-carousel-react'
 
-const BOOKING_EMBED_SRC = "https://api.leadconnectorhq.com/widget/booking/HVRneuos1EUmzgEKLAha"
-const BOOKING_IFRAME_ID = "HVRneuos1EUmzgEKLAha_1781027635554"
+const FORM_EMBED_SRC = "https://api.leadconnectorhq.com/widget/form/OU2vv09aDBS3oIC9PB9j"
+const FORM_IFRAME_ID = "inline-OU2vv09aDBS3oIC9PB9j"
 
 type IFrameResizeWindow = Window & {
   iFrameResize?: (options: Record<string, unknown>, target: HTMLIFrameElement) => void
 }
 
-function initBookingEmbed() {
-  const iframe = document.getElementById(BOOKING_IFRAME_ID) as HTMLIFrameElement | null
-  if (!iframe || iframe.getAttribute("data-iframe-resizer-initialized") === "true") return true
+function initFormEmbed() {
+  const iframe = document.getElementById(FORM_IFRAME_ID) as HTMLIFrameElement | null
+  if (!iframe) return false
+  if (iframe.getAttribute("data-iframe-resizer-initialized") === "true") return true
 
   const { iFrameResize } = window as IFrameResizeWindow
   if (typeof iFrameResize !== "function") return false
@@ -28,21 +29,25 @@ function initBookingEmbed() {
   iFrameResize(
     {
       autoResize: true,
-      scrolling: isMobile,
+      scrolling: false,
       checkOrigin: false,
       heightCalculationMethod: "max",
-      minHeight: isMobile ? 600 : 900,
+      minHeight: isMobile ? 520 : 700,
     },
     iframe
   )
 
-  if (isMobile) {
-    iframe.style.minHeight = "85vh"
-    iframe.style.overflow = "auto"
-    iframe.setAttribute("scrolling", "yes")
-  }
-
   return true
+}
+
+function enableFormEmbedScrollFallback() {
+  const iframe = document.getElementById(FORM_IFRAME_ID) as HTMLIFrameElement | null
+  if (!iframe || iframe.getAttribute("data-iframe-resizer-initialized") === "true") return
+
+  iframe.setAttribute("scrolling", "yes")
+  iframe.style.minHeight = "70vh"
+  iframe.style.overflow = "auto"
+  iframe.style.webkitOverflowScrolling = "touch"
 }
 
 export default function FounderDealPage() {
@@ -91,7 +96,12 @@ export default function FounderDealPage() {
 
     const tryInit = () => {
       attempts += 1
-      if (initBookingEmbed() || attempts >= maxAttempts) {
+      if (initFormEmbed()) {
+        clearInterval(interval)
+        return
+      }
+      if (attempts >= maxAttempts) {
+        enableFormEmbedScrollFallback()
         clearInterval(interval)
       }
     }
@@ -99,7 +109,7 @@ export default function FounderDealPage() {
     tryInit()
     const interval = setInterval(tryInit, 200)
 
-    const onResize = () => initBookingEmbed()
+    const onResize = () => initFormEmbed()
     window.addEventListener("resize", onResize)
 
     return () => {
@@ -143,22 +153,32 @@ export default function FounderDealPage() {
           </div>
         </div>
 
-        {/* Embedded booking calendar */}
+        {/* Embedded claim form */}
         <div className="mb-16">
-          <div className="founder-deal-booking rounded-2xl border border-gray-200 bg-white shadow-md md:min-h-[900px]">
+          <div className="founder-deal-form overflow-visible rounded-2xl border border-gray-200 bg-white shadow-md">
             <iframe
-              src={BOOKING_EMBED_SRC}
-              id={BOOKING_IFRAME_ID}
-              title="Book your free class with Studio E"
-              scrolling="yes"
-              className="block w-full min-h-[85vh] border-0 md:min-h-[900px]"
-              style={{ width: "100%", border: "none", WebkitOverflowScrolling: "touch" }}
+              src={FORM_EMBED_SRC}
+              id={FORM_IFRAME_ID}
+              title="Founder-Deal-Page"
+              data-layout="{'id':'INLINE'}"
+              data-trigger-type="alwaysShow"
+              data-trigger-value=""
+              data-activation-type="alwaysActivated"
+              data-activation-value=""
+              data-deactivation-type="neverDeactivate"
+              data-deactivation-value=""
+              data-form-name="Founder-Deal-Page"
+              data-height="863"
+              data-layout-iframe-id={FORM_IFRAME_ID}
+              data-form-id="OU2vv09aDBS3oIC9PB9j"
+              className="block w-full min-h-[520px] border-0"
+              style={{ width: "100%", height: "100%", border: "none", borderRadius: "8px" }}
             />
           </div>
           <Script
             src="https://link.msgsndr.com/js/form_embed.js"
             strategy="afterInteractive"
-            onLoad={initBookingEmbed}
+            onLoad={initFormEmbed}
           />
         </div>
 
