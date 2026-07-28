@@ -63,6 +63,15 @@ const nextConfig = {
     }
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: '/professional-development-lab',
+        destination: '/career-accelerator',
+        permanent: true,
+      },
+    ]
+  },
   async rewrites() {
     return [
       {
