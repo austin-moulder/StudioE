@@ -26,6 +26,7 @@ export async function GET() {
       { url: 'blog', priority: '0.8', changefreq: 'weekly' },
       { url: 'dance-business-consulting', priority: '0.7', changefreq: 'monthly' },
       { url: 'dance-certifications', priority: '0.7', changefreq: 'monthly' },
+      { url: 'instructor-lab', priority: '0.8', changefreq: 'weekly' },
       { url: 'contact', priority: '0.6', changefreq: 'monthly' },
     ]
 
