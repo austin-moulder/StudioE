@@ -78,7 +78,8 @@ const danceStyles = [
   {
     title: "Cumbia",
     fundamentals: "4 Fundamentals",
-    detail: "Built for the Chicago / Puerto Rican social floor.",
+    detail:
+      "Master the 4 Cumbia fundamentals and regional variations like sonidera, texana, guaracha, and wepa.",
   },
 ]
 
@@ -253,7 +254,7 @@ export default function InstructorLabClient() {
               What is the LDIC Program
             </p>
             <h2 className="mt-3 font-montserrat text-3xl font-black text-stone-900 md:text-4xl">
-              8 weeks of training. The interview is the program.
+              8 weeks of training at Chicago&apos;s top social dance instructor lab
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">
               The LDIC Program (Latin Dance Instructor Certification) is Studio E’s 8-week,
@@ -264,7 +265,7 @@ export default function InstructorLabClient() {
           <ul className="mx-auto mt-10 grid max-w-3xl gap-3 sm:grid-cols-2">
             {[
               "Learn Studio E’s proprietary teaching method",
-              "Practice on real Studio E students",
+              "Practice with real Studio E students",
               "Earn the official Studio E Latin Dance Instructor Certification",
               "Get the chance to join our paid instructor team",
             ].map((item) => (
@@ -470,10 +471,17 @@ export default function InstructorLabClient() {
               <p className="text-sm font-semibold uppercase tracking-wider text-[#8B1538]">
                 Investment
               </p>
-              <p className="mt-2 font-montserrat text-5xl font-black text-[#FF3366] md:text-6xl">
+              <p className="mt-3 font-montserrat text-2xl font-bold text-stone-400 line-through md:text-3xl">
+                $2,499
+              </p>
+              <p className="mt-1 font-montserrat text-5xl font-black text-[#FF3366] md:text-6xl">
                 $249
               </p>
               <p className="mt-2 text-lg font-medium text-stone-700">Refundable deposit</p>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-stone-600">
+                Each lab session is typically a $500 28-day challenge we run for our students—$2,499
+                in training value. Your commitment is a $249 refundable deposit.
+              </p>
             </div>
 
             <div className="space-y-6 px-6 py-8 md:px-10">
