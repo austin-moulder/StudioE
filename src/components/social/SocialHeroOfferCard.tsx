@@ -10,7 +10,7 @@ export default function SocialHeroOfferCard() {
         <span className="text-sm font-semibold">The offer</span>
       </div>
       <div className="space-y-3 text-sm leading-snug text-white/90">
-        <p className="font-semibold text-white">Free with RSVP. Donations highly encouraged.</p>
+        <p className="font-semibold text-white">$10–$25 donations at the door.</p>
         <p className="text-white/85">
           Most attendees donate $15–$25 and can choose to support instructor pay, our current mural buildout, or
           installation of our sign.

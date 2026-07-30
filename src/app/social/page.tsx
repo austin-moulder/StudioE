@@ -1,5 +1,4 @@
 import Image from "next/image"
-import Link from "next/link"
 import Script from "next/script"
 import { Calendar, MapPin, CheckCircle2, Users, Music3, MessageCircleHeart } from "lucide-react"
 import type { Metadata } from "next"
@@ -11,7 +10,7 @@ import SocialDonationFaq from "@/components/social/SocialDonationFaq"
 export const metadata: Metadata = {
   title: "Latin Dance Happy Hour in Humboldt Park | Studio E",
   description:
-    "Free beginner lesson plus social dancing every Friday at Studio E in Humboldt Park. No partner needed.",
+    "Beginner Latin dance class plus social dancing every Friday at Studio E in Humboldt Park. $10–$25 donations at the door. No partner needed.",
 }
 
 const ACUITY_IFRAME_SRC =
@@ -64,60 +63,49 @@ export default function SocialPage() {
         </div>
 
         <div className="container relative z-10 px-4 py-14 md:py-20">
-          <div className="grid gap-10 lg:grid-cols-[1.3fr_0.9fr] lg:items-center">
-            <div className="text-white">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
-                Every Friday at Studio E
-              </p>
-              <h1 className="max-w-3xl text-4xl font-black leading-tight md:text-6xl">
-                Latin Dance Happy Hour in Humboldt Park
-              </h1>
-              <p className="mt-5 max-w-2xl text-lg text-white/90 md:text-2xl">
-                Free beginner lesson + social dancing every Friday at Studio E. No partner needed.
-              </p>
-              <NextHappyHourLabel />
+          <div className="mx-auto max-w-3xl text-white">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
+              Every Friday at Studio E
+            </p>
+            <h1 className="max-w-3xl text-4xl font-black leading-tight md:text-6xl">
+              Latin Dance Happy Hour in Humboldt Park
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg text-white/90 md:text-2xl">
+              Beginner Latin dance class + social dancing every Friday at Studio E. $10–$25 donations
+              at the door. No partner needed.
+            </p>
+            <NextHappyHourLabel />
 
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
-                  <div className="mb-2 flex items-center gap-2 text-white/80">
-                    <Calendar className="h-4 w-4" />
-                    <span className="text-sm font-semibold">When</span>
-                  </div>
-                  <p className="text-sm font-medium">Fridays · doors 7:00 pm · lesson 7:15–7:45 pm · social dancing 7:45–10:00 pm</p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
+                <div className="mb-2 flex items-center gap-2 text-white/80">
+                  <Calendar className="h-4 w-4" />
+                  <span className="text-sm font-semibold">When</span>
                 </div>
-                <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
-                  <div className="mb-2 flex items-center gap-2 text-white/80">
-                    <MapPin className="h-4 w-4" />
-                    <span className="text-sm font-semibold">Where</span>
-                  </div>
-                  <p className="text-sm font-medium">Studio E · 2657 W Division St · Humboldt Park</p>
-                </div>
-                <SocialHeroOfferCard />
-              </div>
-
-              <div className="mt-8">
-                <a
-                  href="#rsvp"
-                  className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-lg font-bold text-gray-900 shadow-lg transition-opacity hover:opacity-95"
-                >
-                  RSVP for This Friday
-                </a>
-                <p className="mt-3 text-sm text-white/80">
-                  Hosted by Studio E - hundreds of locals have already danced with us.
+                <p className="text-sm font-medium">
+                  Fridays · lesson ~7:00–7:30 pm · social dancing 7:30–10:00 pm
                 </p>
               </div>
+              <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm border border-white/10">
+                <div className="mb-2 flex items-center gap-2 text-white/80">
+                  <MapPin className="h-4 w-4" />
+                  <span className="text-sm font-semibold">Where</span>
+                </div>
+                <p className="text-sm font-medium">Studio E · 2657 W Division St · Humboldt Park</p>
+              </div>
+              <SocialHeroOfferCard />
             </div>
 
-            <div className="mx-auto hidden w-full max-w-md md:block">
-              <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-sm">
-                <Image
-                  src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Socials/Flyers-43%20(2).png"
-                  alt="Studio E Friday happy hour social flyer"
-                  width={900}
-                  height={1200}
-                  className="h-auto w-full object-cover"
-                />
-              </div>
+            <div className="mt-8">
+              <a
+                href="#rsvp"
+                className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-lg font-bold text-gray-900 shadow-lg transition-opacity hover:opacity-95"
+              >
+                RSVP for This Friday
+              </a>
+              <p className="mt-3 text-sm text-white/80">
+                Hosted by Studio E - hundreds of locals have already danced with us.
+              </p>
             </div>
           </div>
         </div>
@@ -136,11 +124,11 @@ export default function SocialPage() {
               <ul className="mt-6 space-y-4 text-gray-700">
                 <li className="flex gap-3">
                   <CheckCircle2 className="mt-1 h-5 w-5 flex-shrink-0 text-[#FF3366]" />
-                  <span>30-minute beginner salsa class so you’re not lost on the floor</span>
+                  <span>Beginner Latin dance class so you’re not lost on the floor</span>
                 </li>
                 <li className="flex gap-3">
                   <CheckCircle2 className="mt-1 h-5 w-5 flex-shrink-0 text-[#FF3366]" />
-                  <span>3 hours of social dancing with Latin music and good vibes</span>
+                  <span>Social dancing from 7:30–10:00 pm with Latin music and good vibes</span>
                 </li>
                 <li className="flex gap-3">
                   <CheckCircle2 className="mt-1 h-5 w-5 flex-shrink-0 text-[#FF3366]" />
@@ -219,9 +207,10 @@ export default function SocialPage() {
             </div>
             <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
               <Users className="h-8 w-8 text-[#9933CC]" />
-              <h3 className="mt-4 text-xl font-bold text-gray-900">Arrive between 7:00–7:15 pm</h3>
+              <h3 className="mt-4 text-xl font-bold text-gray-900">Arrive by 7:00 pm</h3>
               <p className="mt-3 text-gray-600">
-                Doors open at 7:00 pm. Check in, grab some water, and get ready for the beginner lesson from 7:15–7:45 pm.
+                Check in, grab some water, and join the Beginner Latin dance class from about 7:00 pm
+                to a little after 7:30 pm.
               </p>
               <p className="mt-3 text-sm text-gray-500">
                 Free parking available on Washtenaw and Rockwell, and in the park.
@@ -231,7 +220,8 @@ export default function SocialPage() {
               <Music3 className="h-8 w-8 text-[#FF7A5A]" />
               <h3 className="mt-4 text-xl font-bold text-gray-900">Dance the night away</h3>
               <p className="mt-3 text-gray-600">
-                Social dancing runs from 7:45–10:00 pm. Meet people, have fun, and if you love it, ask about our 28-day Latin Confidence Challenge.
+                Social dancing runs from 7:30–10:00 pm. Meet people, have fun, and if you love it, ask
+                about our 28-day Latin Confidence Challenge.
               </p>
               <SocialHowItWorksBonus />
             </div>
@@ -266,7 +256,7 @@ export default function SocialPage() {
               <div key={index} className="rounded-3xl bg-white p-6 shadow-sm border border-gray-100">
                 <div className="text-yellow-500">★★★★★</div>
                 <p className="mt-4 text-gray-700">
-                  "{review.quote}"
+                  &ldquo;{review.quote}&rdquo;
                 </p>
                 <p className="mt-4 font-semibold text-gray-900">{review.name}</p>
                 <a
@@ -309,7 +299,7 @@ export default function SocialPage() {
               ))}
               <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                 <h3 className="text-lg font-bold text-gray-900">
-                  Are socials really free? How do donations work?
+                  How do donations work?
                 </h3>
                 <div className="mt-2 text-gray-600 [&_p+p]:mt-2">
                   <SocialDonationFaq />

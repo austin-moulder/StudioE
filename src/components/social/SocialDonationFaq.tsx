@@ -4,9 +4,9 @@ export default function SocialDonationFaq() {
   return (
     <>
       <p>
-        Friday socials are <strong className="text-gray-800">free with RSVP</strong>. Donations are highly
-        encouraged—most attendees give $15–$25. When you donate, you can choose to support instructor pay, our
-        current mural buildout, or installation of our sign.
+        Friday socials ask for a <strong className="text-gray-800">$10–$25 donation at the door</strong>. Most
+        attendees give $15–$25. When you donate, you can choose to support instructor pay, our current mural
+        buildout, or installation of our sign.
       </p>
       <p className="mt-2">
         <strong className="text-gray-800">Where donations go:</strong> every dollar goes to help pay our instructors.

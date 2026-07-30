@@ -111,9 +111,14 @@ const faqs = [
       "The upcoming cohort is planned for Sunday evenings, 6:00 – 7:30 PM at Studio E (2657 W Division St). We’ll confirm the final schedule based on accepted applicants’ availability.",
   },
   {
+    question: "Do I need to know how to dance salsa, bachata, or cumbia to participate?",
+    answer:
+      "No. We welcome dancers trained in other genres—ballroom, hip hop, contemporary, and more. The learning pace is fast, so previous dance experience of any kind will help you keep up. We’ll train you on the Studio E Latin method.",
+  },
+  {
     question: "Do I need prior teaching experience?",
     answer:
-      "No. You need solid social dance experience in at least one Latin style and a real desire to lead and teach. We’ll train you on the Studio E method.",
+      "No. You need solid dance experience and a real desire to lead and teach. We’ll train you on the Studio E method.",
   },
   {
     question: "Is this a paid job?",
@@ -417,7 +422,8 @@ export default function InstructorLabClient() {
               </h3>
               <ul className="mt-5 space-y-3">
                 {[
-                  "You already dance Salsa / Bachata / Cumbia socially and want to teach.",
+                  "You have dance experience (Latin social, ballroom, hip hop, contemporary, or similar) and want to teach.",
+                  "You’re open to learning Studio E’s Latin method at a fast pace.",
                   "You care about the Puerto Rican and broader Latin community in Chicago.",
                   "You’re ready to show up, be coached, and lead from the front.",
                 ].map((item) => (
