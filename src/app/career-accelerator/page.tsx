@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Script from "next/script"
+import GoogleTag from "@/components/analytics/GoogleTag"
 import CareerAcceleratorClient from "./CareerAcceleratorClient"
 
 const META_PIXEL_ID = "1976276599649833"
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
 export default function CareerAcceleratorPage() {
   return (
     <>
+      <GoogleTag />
       <Script id="meta-pixel-career-accelerator" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s)

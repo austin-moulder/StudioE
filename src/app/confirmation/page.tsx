@@ -2,6 +2,7 @@ import Link from "next/link"
 import Script from "next/script"
 import { CheckCircle2, Instagram, Sparkles } from "lucide-react"
 import type { Metadata } from "next"
+import GoogleTag from "@/components/analytics/GoogleTag"
 
 const META_PIXEL_ID = "1976276599649833"
 
@@ -19,6 +20,7 @@ const MAILTO_CHALLENGE =
 export default function ConfirmationPage() {
   return (
     <>
+      <GoogleTag />
       <Script id="meta-pixel-confirmation" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s)

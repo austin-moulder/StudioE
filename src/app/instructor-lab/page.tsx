@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Script from "next/script"
+import GoogleTag from "@/components/analytics/GoogleTag"
 import InstructorLabClient from "./InstructorLabClient"
 
 const META_PIXEL_ID = "1976276599649833"
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
 export default function InstructorLabPage() {
   return (
     <>
+      <GoogleTag />
       <Script id="meta-pixel-instructor-lab" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s)

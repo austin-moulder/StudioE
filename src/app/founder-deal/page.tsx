@@ -8,6 +8,7 @@ import { CheckCircle, Clock, Star } from "lucide-react"
 import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { Testimonial } from "@/types/testimonial"
 import useEmblaCarousel from 'embla-carousel-react'
+import GoogleTag from "@/components/analytics/GoogleTag"
 
 const FORM_EMBED_SRC = "https://api.leadconnectorhq.com/widget/form/OU2vv09aDBS3oIC9PB9j"
 const FORM_IFRAME_ID = "inline-OU2vv09aDBS3oIC9PB9j"
@@ -136,6 +137,7 @@ export default function FounderDealPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <GoogleTag />
       <div className="max-w-4xl mx-auto px-6 py-16">
         
         {/* Thank You Section */}

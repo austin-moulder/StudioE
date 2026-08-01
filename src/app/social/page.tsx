@@ -2,6 +2,7 @@ import Image from "next/image"
 import Script from "next/script"
 import { Calendar, MapPin, CheckCircle2, Users, Music3, MessageCircleHeart } from "lucide-react"
 import type { Metadata } from "next"
+import GoogleTag from "@/components/analytics/GoogleTag"
 import NextHappyHourLabel from "@/components/social/NextHappyHourLabel"
 import SocialHeroOfferCard from "@/components/social/SocialHeroOfferCard"
 import SocialHowItWorksBonus from "@/components/social/SocialHowItWorksBonus"
@@ -47,6 +48,7 @@ const socialFaqs = [
 export default function SocialPage() {
   return (
     <div className="min-h-screen bg-white">
+      <GoogleTag />
       <Script id="social-scroll-top" strategy="afterInteractive">
         {`window.scrollTo({ top: 0, left: 0, behavior: 'auto' });`}
       </Script>
