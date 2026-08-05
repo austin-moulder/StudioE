@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, MapPin, Clock, Users, Search, Filter, CalendarPlus } from "lucide-react"
+import { Calendar, MapPin, Clock, Users, Search, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -12,7 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase/supabase"
-import EventRSVPButton from "@/components/EventRSVPButton"
 
 // Function to get event type badge color
 const getEventTypeColor = (eventType: string | undefined) => {
@@ -568,13 +567,6 @@ function EventsContent() {
                   <Filter className="h-4 w-4" />
                   Filter
                 </Button>
-
-                <Link href="/submit-event">
-                  <Button className="flex items-center gap-2 h-10 bg-[#9933CC] text-white hover:bg-[#9933CC]/90">
-                    <CalendarPlus className="h-4 w-4" />
-                    Submit Event
-                  </Button>
-                </Link>
               </div>
             </div>
           </div>
@@ -596,7 +588,7 @@ function EventsContent() {
                 value="featured" 
                 className="data-[state=active]:font-semibold relative transition-all py-2.5 h-11 hover:bg-gray-100 flex justify-center items-center after:content-[''] after:absolute after:h-[2px] after:bg-gray-400 after:bottom-0 after:left-0 after:right-0 after:opacity-0 data-[state=active]:after:opacity-100"
               >
-                Featured
+                Members Only
               </TabsTrigger>
               <TabsTrigger 
                 value="past" 
@@ -634,7 +626,7 @@ function EventsContent() {
                         />
                         {event.is_featured && (
                           <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-3 py-0.5 rounded-full text-xs font-medium">
-                            Featured
+                            Members Only
                           </div>
                         )}
                       </div>
@@ -662,14 +654,7 @@ function EventsContent() {
                             {event.price === "0" ? "Free" : `$${event.price}`}
                           </span>
                           <div className="flex gap-2">
-                            <EventRSVPButton 
-                              eventId={event.id}
-                              eventName={event.title}
-                              buttonVariant="outline"
-                              buttonSize="sm"
-                              buttonClassName="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10 text-xs px-3 py-1 h-7"
-                            />
-                            {event.cta_url && (
+                            {event.cta_url ? (
                               <Link 
                                 href={event.cta_url} 
                                 target="_blank" 
@@ -679,6 +664,15 @@ function EventsContent() {
                                   Register
                                 </Button>
                               </Link>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                disabled
+                                className="border-gray-300 text-gray-500 text-xs px-3 py-1 h-7 cursor-default"
+                              >
+                                No RSVP required
+                              </Button>
                             )}
                           </div>
                         </div>
@@ -811,7 +805,7 @@ function EventsContent() {
                           }}
                         />
                         <div className="absolute top-2 right-2 bg-[#F94C8D] text-white px-3 py-0.5 rounded-full text-xs font-medium">
-                          Featured
+                          Members Only
                         </div>
                       </div>
                       <CardContent className="p-4 space-y-3">
@@ -839,16 +833,7 @@ function EventsContent() {
                             {event.price === "0" ? "Free" : `$${event.price}`}
                           </span>
                           <div className="flex gap-2">
-                            {isEventUpcoming(event, new Date()) && (
-                              <EventRSVPButton 
-                                eventId={event.id}
-                                eventName={event.title}
-                                buttonVariant="outline"
-                                buttonSize="sm"
-                                buttonClassName="border-[#F94C8D] text-[#F94C8D] hover:bg-[#F94C8D]/10 text-xs px-3 py-1 h-7"
-                              />
-                            )}
-                            {event.cta_url && (
+                            {event.cta_url ? (
                               <Link 
                                 href={event.cta_url} 
                                 target="_blank" 
@@ -858,6 +843,15 @@ function EventsContent() {
                                   Register
                                 </Button>
                               </Link>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                disabled
+                                className="border-gray-300 text-gray-500 text-xs px-3 py-1 h-7 cursor-default"
+                              >
+                                No RSVP required
+                              </Button>
                             )}
                           </div>
                         </div>

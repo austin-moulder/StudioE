@@ -112,7 +112,6 @@ export default function SubmitEventPage() {
           event_type: formData.event_type,
           status: 'pending', // Default to pending for admin approval
           is_featured: false, // Default to not featured
-          approved: false, // New field - default to not approved
           cta_url: formData.cta_url,
           first_name: formData.first_name,
           last_name: formData.last_name,
