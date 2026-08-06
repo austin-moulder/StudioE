@@ -327,8 +327,9 @@ function EventsContent() {
       // Check if the date is valid
       if (isNaN(date.getTime())) return 'Date unavailable';
       
-      // Format the date
+      // Format the date with day of week
       return date.toLocaleDateString('en-US', { 
+        weekday: 'long',
         month: 'long', 
         day: 'numeric',
         timeZone: 'UTC' // Use UTC to avoid timezone issues
@@ -397,8 +398,9 @@ function EventsContent() {
       // Check if the date is valid
       if (isNaN(date.getTime())) return null;
       
-      // Format the date in the event's timezone
+      // Format the date with day of week in the event's timezone
       const formattedDate = date.toLocaleDateString('en-US', { 
+        weekday: 'long',
         month: 'long', 
         day: 'numeric',
         timeZone: timezone
