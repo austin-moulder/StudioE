@@ -94,27 +94,28 @@ export default function FounderDealPage() {
   useEffect(() => {
     let attempts = 0
     const maxAttempts = 50
+    let interval: ReturnType<typeof setInterval> | null = null
 
     const tryInit = () => {
       attempts += 1
       if (initFormEmbed()) {
-        clearInterval(interval)
+        if (interval) clearInterval(interval)
         return
       }
       if (attempts >= maxAttempts) {
         enableFormEmbedScrollFallback()
-        clearInterval(interval)
+        if (interval) clearInterval(interval)
       }
     }
 
+    interval = setInterval(tryInit, 200)
     tryInit()
-    const interval = setInterval(tryInit, 200)
 
     const onResize = () => initFormEmbed()
     window.addEventListener("resize", onResize)
 
     return () => {
-      clearInterval(interval)
+      if (interval) clearInterval(interval)
       window.removeEventListener("resize", onResize)
     }
   }, [])
