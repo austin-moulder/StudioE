@@ -2,10 +2,13 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import ChoreoGoogleAds from "@/components/analytics/ChoreoGoogleAds"
 import ChoreoLeadForm from "@/components/forms/ChoreoLeadForm"
 
 export default function WeddingDancePage() {
   return (
+    <>
+    <ChoreoGoogleAds />
     <div className="flex flex-col">
       <section className="relative">
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#FF7A5A]/90 via-[#FF3366]/90 to-[#9933CC]/90" />
@@ -268,5 +271,6 @@ export default function WeddingDancePage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

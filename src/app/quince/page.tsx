@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import ChoreoGoogleAds from "@/components/analytics/ChoreoGoogleAds"
 import QuinceClient from "./QuinceClient"
 
 export const metadata: Metadata = {
@@ -15,5 +16,10 @@ export const metadata: Metadata = {
 }
 
 export default function QuincePage() {
-  return <QuinceClient />
+  return (
+    <>
+      <ChoreoGoogleAds />
+      <QuinceClient />
+    </>
+  )
 }
