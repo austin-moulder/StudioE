@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { CheckCircle2, Instagram, Sparkles } from "lucide-react"
 import type { Metadata } from "next"
+import Script from "next/script"
 import ChoreoGoogleAds from "@/components/analytics/ChoreoGoogleAds"
 import GoogleTag from "@/components/analytics/GoogleTag"
 
@@ -17,6 +18,13 @@ export default function ChoreoFormSubmittedPage() {
     <>
       <GoogleTag />
       <ChoreoGoogleAds />
+      <Script id="choreo-ads-conversion-purchase" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('event', 'ads_conversion_Purchase_1', {});
+        `}
+      </Script>
 
       <div className="flex min-h-screen flex-col bg-white">
         <section className="relative overflow-hidden">
