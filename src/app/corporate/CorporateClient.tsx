@@ -17,7 +17,7 @@ const PHOTO_SECONDARY =
   "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/IMG_2876.JPG"
 
 const CTA_HREF =
-  "mailto:collab@joinstudioe.com?subject=Corporate%20Latin%20Dance%20Event%20-%20%5BCompany%20Name%5D"
+  "mailto:studioelatindance@gmail.com?subject=Corporate%20Latin%20Dance%20Event%20-%20%5BCompany%20Name%5D"
 
 const problems = [
   "Hybrid work and constant change have made it hard for teams to feel truly connected",
@@ -565,7 +565,7 @@ export default function CorporateClient() {
               href={CTA_HREF}
               className="mt-12 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-[#FF7A5A] via-[#FF3366] to-[#9933CC] px-10 py-4 text-lg font-bold text-white shadow-lg transition hover:opacity-95"
             >
-              Email collab@joinstudioe.com
+              Email studioelatindance@gmail.com
             </a>
             <p className="mt-4 text-sm text-white/55">
               Subject line: Corporate Latin Dance Event - [Company Name]
