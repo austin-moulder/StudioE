@@ -17,6 +17,9 @@ const PLANS = {
   },
 } as const
 
+const payButtonClassName =
+  "inline-flex w-full items-center justify-center rounded-2xl py-4 text-lg font-bold text-white shadow-lg transition-all duration-200 transform hover:scale-105"
+
 export default function MembershipPage() {
   const handleOtherPurchase = (plan: string) => {
     window.location.href = `mailto:studioelatindance@gmail.com?subject=Studio E Membership - ${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan&body=Hi Studio E Team,%0A%0AI'm interested in the ${plan.charAt(0).toUpperCase() + plan.slice(1)} membership plan.%0A%0APlease send me more information about getting started.%0A%0AThank you!`
@@ -52,6 +55,7 @@ export default function MembershipPage() {
             </h2>
             <p className="text-xl text-gray-600">
               Dance memberships, packages, and plans for every lifestyle, schedule, and budget.
+              Memberships renew every 4 weeks (28 days).
             </p>
           </div>
 
@@ -89,14 +93,14 @@ export default function MembershipPage() {
                       <span>No recurring charges</span>
                     </div>
                   </div>
-                  <Button
-                    asChild
-                    className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-4 text-lg rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
+                  <a
+                    href={PLANS.noMembership.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${payButtonClassName} bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700`}
                   >
-                    <a href={PLANS.noMembership.href} target="_blank" rel="noopener noreferrer">
-                      Purchase Now
-                    </a>
-                  </Button>
+                    Purchase Now
+                  </a>
                 </CardContent>
               </Card>
             </div>
@@ -115,7 +119,7 @@ export default function MembershipPage() {
                     <h3 className="text-4xl font-black mb-2">Gold Plan</h3>
                     <p className="text-white/80 italic text-lg mb-4">This is where dancers become great!</p>
                     <div className="text-5xl font-black">
-                      $149<span className="text-2xl font-bold">/mo</span>
+                      $149<span className="text-xl font-bold"> / every 4 weeks</span>
                     </div>
                   </div>
                 </div>
@@ -123,7 +127,7 @@ export default function MembershipPage() {
                   <div className="space-y-4 mb-8">
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>8 classes per month</span>
+                      <span>8 classes every 4 weeks</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
@@ -139,17 +143,17 @@ export default function MembershipPage() {
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>1 guest pass per month</span>
+                      <span>1 guest pass every 4 weeks</span>
                     </div>
                   </div>
-                  <Button
-                    asChild
-                    className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold py-4 text-lg rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
+                  <a
+                    href={PLANS.gold.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${payButtonClassName} bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700`}
                   >
-                    <a href={PLANS.gold.href} target="_blank" rel="noopener noreferrer">
-                      Join Now
-                    </a>
-                  </Button>
+                    Join Now
+                  </a>
                 </CardContent>
               </Card>
             </div>
@@ -165,7 +169,7 @@ export default function MembershipPage() {
                     <h3 className="text-4xl font-black mb-2">Bronze Plan</h3>
                     <p className="text-white/80 italic text-lg mb-4">Steady progress, flexible commitment</p>
                     <div className="text-5xl font-black">
-                      $89<span className="text-2xl font-bold">/mo</span>
+                      $89<span className="text-xl font-bold"> / every 4 weeks</span>
                     </div>
                   </div>
                 </div>
@@ -173,7 +177,7 @@ export default function MembershipPage() {
                   <div className="space-y-4 mb-8">
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>4 classes per month</span>
+                      <span>4 classes every 4 weeks</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
@@ -185,17 +189,17 @@ export default function MembershipPage() {
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>1 guest pass per month</span>
+                      <span>1 guest pass every 4 weeks</span>
                     </div>
                   </div>
-                  <Button
-                    asChild
-                    className="w-full bg-[#CD7F32] hover:bg-[#CD7F32]/90 text-white font-bold py-4 text-lg rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
+                  <a
+                    href={PLANS.bronze.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${payButtonClassName} bg-[#CD7F32] hover:bg-[#CD7F32]/90`}
                   >
-                    <a href={PLANS.bronze.href} target="_blank" rel="noopener noreferrer">
-                      Join Now
-                    </a>
-                  </Button>
+                    Join Now
+                  </a>
                 </CardContent>
               </Card>
             </div>
