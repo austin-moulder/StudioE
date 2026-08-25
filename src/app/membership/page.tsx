@@ -1,17 +1,24 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, Star, Users, Calendar, MapPin, Heart, DollarSign, Activity } from "lucide-react"
+import { CheckCircle, MapPin } from "lucide-react"
 import Link from "next/link"
 
-export default function MembershipPage() {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+const PLANS = {
+  noMembership: {
+    href: "https://link.fastpaydirect.com/payment-link/6a8db50df9c8c807930b9f2e",
+  },
+  gold: {
+    href: "https://link.fastpaydirect.com/payment-link/6a8db489f9c8c807930b9f2b",
+  },
+  bronze: {
+    href: "https://link.fastpaydirect.com/payment-link/6a8db4c6d6768df054447dd0",
+  },
+} as const
 
-  const handlePlanSelection = (plan: string) => {
-    setSelectedPlan(plan)
-    // Direct to email contact
+export default function MembershipPage() {
+  const handleOtherPurchase = (plan: string) => {
     window.location.href = `mailto:studioelatindance@gmail.com?subject=Studio E Membership - ${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan&body=Hi Studio E Team,%0A%0AI'm interested in the ${plan.charAt(0).toUpperCase() + plan.slice(1)} membership plan.%0A%0APlease send me more information about getting started.%0A%0AThank you!`
   }
 
@@ -31,7 +38,7 @@ export default function MembershipPage() {
           </h1>
           
           <p className="text-xl md:text-2xl mb-8 font-light max-w-3xl mx-auto">
-            This isn't just a dance studio - it's a lifestyle. It's culture. It's home.
+            This isn&apos;t just a dance studio - it&apos;s a lifestyle. It&apos;s culture. It&apos;s home.
           </p>
         </div>
       </section>
@@ -48,57 +55,47 @@ export default function MembershipPage() {
             </p>
           </div>
 
-          {/* Platinum Plan - Premium */}
+          {/* No Membership Plan */}
           <div className="max-w-2xl mx-auto mb-16">
             <div className="relative">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg z-20">
-                Premium Plan
+                No Recurring Charges
               </div>
               <Card className="border-2 border-gray-500 shadow-2xl rounded-3xl overflow-hidden">
                 <div className="bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 text-white p-8 text-center relative overflow-hidden">
-                  {/* Shine effect overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-pulse"></div>
                   <div className="relative z-10">
-                    <h3 className="text-4xl font-black mb-2">Platinum Plan</h3>
-                    <p className="text-white/80 italic text-lg">For those who live and breathe Latin dance</p>
+                    <h3 className="text-4xl font-black mb-2">No Membership Plan</h3>
+                    <p className="text-white/80 italic text-lg mb-4">Pay once. Dance more.</p>
+                    <div className="text-5xl font-black">$399</div>
                   </div>
                 </div>
                 <CardContent className="p-8 bg-white">
                   <div className="space-y-4 mb-8">
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Unlimited group classes, including the Latin Dance Academy</span>
+                      <span>20 classes (must be used within 90 days of purchase)</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Access to our on-demand library of recorded classes</span>
+                      <span>Happy hour social</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Two guest passes per month</span>
+                      <span>1 guest pass</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>One FREE towel rental per class</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>FREE storage locker at the studio</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>20% off all Studio E merchandise and workshops</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Priority registration for special events and retreats</span>
+                      <span>No recurring charges</span>
                     </div>
                   </div>
-                  <Button 
+                  <Button
+                    asChild
                     className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-4 text-lg rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
-                    onClick={() => handlePlanSelection('platinum')}
                   >
-                    Join Now
+                    <a href={PLANS.noMembership.href} target="_blank" rel="noopener noreferrer">
+                      Purchase Now
+                    </a>
                   </Button>
                 </CardContent>
               </Card>
@@ -109,82 +106,49 @@ export default function MembershipPage() {
           <div className="max-w-2xl mx-auto mb-16">
             <div className="relative">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg z-20">
-                Premium Plan
+                Most Popular Plan
               </div>
               <Card className="border-2 border-yellow-500 shadow-2xl rounded-3xl overflow-hidden">
                 <div className="bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 text-white p-8 text-center relative overflow-hidden">
-                  {/* Shine effect overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-pulse"></div>
                   <div className="relative z-10">
                     <h3 className="text-4xl font-black mb-2">Gold Plan</h3>
-                    <p className="text-white/80 italic text-lg">This is where dancers become great!</p>
+                    <p className="text-white/80 italic text-lg mb-4">This is where dancers become great!</p>
+                    <div className="text-5xl font-black">
+                      $149<span className="text-2xl font-bold">/mo</span>
+                    </div>
                   </div>
                 </div>
                 <CardContent className="p-8 bg-white">
                   <div className="space-y-4 mb-8">
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>All 8 monthly Latin Dance Academy classes</span>
+                      <span>8 classes per month</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>2 additional group classes per month</span>
+                      <span>Exclusive member events</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Access to our on-demand library of recorded classes</span>
+                      <span>Happy hour social</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>One guest pass per month</span>
+                      <span>1:1 weekly support</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>1 guest pass per month</span>
                     </div>
                   </div>
-                  <Button 
+                  <Button
+                    asChild
                     className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold py-4 text-lg rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
-                    onClick={() => handlePlanSelection('gold')}
                   >
-                    Join Now
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Silver Plan - Most Popular */}
-          <div className="max-w-2xl mx-auto mb-16">
-            <div className="relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-pink-400 via-[#FF3366] to-pink-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg z-20">
-                Most Popular Plan
-              </div>
-              <Card className="border-2 border-[#FF3366] shadow-2xl rounded-3xl overflow-hidden">
-                <div className="bg-gradient-to-br from-pink-400 via-[#FF3366] to-pink-600 text-white p-8 text-center relative overflow-hidden">
-                  {/* Shine effect overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-pulse"></div>
-                  <div className="relative z-10">
-                    <h3 className="text-4xl font-black mb-2">Silver Plan</h3>
-                    <p className="text-white/80 italic text-lg">Our most popular plan following the Latin Dance Academy!</p>
-                  </div>
-                </div>
-                <CardContent className="p-8 bg-white">
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>6 group classes per month</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Access to an on-demand library of recorded classes</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>One guest pass per month</span>
-                    </div>
-                  </div>
-                  <Button 
-                    className="w-full bg-gradient-to-r from-[#FF3366] to-pink-600 hover:from-pink-600 hover:to-[#FF3366] text-white font-bold py-4 text-lg rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
-                    onClick={() => handlePlanSelection('silver')}
-                  >
-                    Join Now
+                    <a href={PLANS.gold.href} target="_blank" rel="noopener noreferrer">
+                      Join Now
+                    </a>
                   </Button>
                 </CardContent>
               </Card>
@@ -192,34 +156,48 @@ export default function MembershipPage() {
           </div>
 
           {/* Bronze Plan */}
-          <div className="max-w-4xl mx-auto mb-16">
-            <div className="bg-[#CD7F32]/10 rounded-3xl p-1 border border-[#CD7F32]/20">
-              <div className="bg-white rounded-3xl p-8 text-center">
-                <h3 className="text-4xl font-black mb-4">Bronze Plan</h3>
-                <p className="text-gray-600 italic text-lg mb-8">Recommended for seasoned dancers in maintenance mode</p>
-                
-                <div className="space-y-4 text-left mb-8 max-w-md mx-auto">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>4 group classes per month</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Access to an on-demand library of recorded classes</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span>Additional classes discounted to $15 each</span>
+          <div className="max-w-2xl mx-auto mb-16">
+            <div className="relative">
+              <Card className="border-2 border-[#CD7F32] shadow-2xl rounded-3xl overflow-hidden">
+                <div className="bg-gradient-to-br from-[#CD7F32] via-[#B87333] to-[#8B5A2B] text-white p-8 text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-pulse"></div>
+                  <div className="relative z-10">
+                    <h3 className="text-4xl font-black mb-2">Bronze Plan</h3>
+                    <p className="text-white/80 italic text-lg mb-4">Steady progress, flexible commitment</p>
+                    <div className="text-5xl font-black">
+                      $89<span className="text-2xl font-bold">/mo</span>
+                    </div>
                   </div>
                 </div>
-                
-                <Button 
-                  className="bg-[#CD7F32] hover:bg-[#CD7F32]/90 text-white font-bold py-3 px-8 rounded-2xl"
-                  onClick={() => handlePlanSelection('bronze')}
-                >
-                  Join Now
-                </Button>
-              </div>
+                <CardContent className="p-8 bg-white">
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>4 classes per month</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>Exclusive member events</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>Happy hour social</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>1 guest pass per month</span>
+                    </div>
+                  </div>
+                  <Button
+                    asChild
+                    className="w-full bg-[#CD7F32] hover:bg-[#CD7F32]/90 text-white font-bold py-4 text-lg rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    <a href={PLANS.bronze.href} target="_blank" rel="noopener noreferrer">
+                      Join Now
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
@@ -229,13 +207,13 @@ export default function MembershipPage() {
             <Card className="rounded-3xl shadow-lg overflow-hidden flex flex-col h-full">
               <CardContent className="p-6 text-center flex flex-col flex-1">
                 <h3 className="font-black text-lg mb-4">Drop-In Single Class Pass</h3>
-                <div className="text-3xl font-black mb-4">$25</div>
+                <div className="text-3xl font-black mb-4">$30</div>
                 <p className="text-sm text-gray-600 mb-6 flex-1">
                   Use for any class on our schedule. Valid within 30 days of purchase.
                 </p>
                 <Button 
                   className="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-2xl"
-                  onClick={() => handlePlanSelection('single')}
+                  onClick={() => handleOtherPurchase('single')}
                 >
                   Purchase Now
                 </Button>
@@ -245,14 +223,14 @@ export default function MembershipPage() {
             {/* Out-Of-Towner's Pass */}
             <Card className="rounded-3xl shadow-lg overflow-hidden flex flex-col h-full">
               <CardContent className="p-6 text-center flex flex-col flex-1">
-                <h3 className="font-black text-lg mb-4">Out-Of-Towner's One-Week Unlimited Pass</h3>
+                <h3 className="font-black text-lg mb-4">Out-Of-Towner&apos;s One-Week Unlimited Pass</h3>
                 <div className="text-3xl font-black mb-4">$54</div>
                 <p className="text-sm text-gray-600 mb-6 flex-1">
                   The perfect way to maintain your practice while visiting Chicago! Enjoy 7 consecutive days of unlimited classes.
                 </p>
                 <Button 
                   className="w-full bg-green-500 hover:bg-green-600 text-white font-bold rounded-2xl"
-                  onClick={() => handlePlanSelection('visitor')}
+                  onClick={() => handleOtherPurchase('visitor')}
                 >
                   Purchase Now
                 </Button>
