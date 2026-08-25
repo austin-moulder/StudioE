@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { Check, MapPin, X } from "lucide-react"
 
@@ -9,6 +10,8 @@ type Cell =
   | { kind: "no" }
   | { kind: "list"; items: string[] }
 
+type StudioKey = "studioE" | "latinRhythms" | "latinStreet" | "mayambo"
+
 type Row = {
   feature: string
   studioE: Cell
@@ -16,6 +19,12 @@ type Row = {
   latinStreet: Cell
   mayambo: Cell
 }
+
+const competitors = [
+  { key: "latinRhythms" as const, name: "Latin Rhythms", short: "Rhythms" },
+  { key: "latinStreet" as const, name: "Latin Street", short: "Street" },
+  { key: "mayambo" as const, name: "Mayambo", short: "Mayambo" },
+]
 
 const studios = [
   { key: "studioE" as const, name: "Studio E", highlight: true },
@@ -122,7 +131,15 @@ const rows: Row[] = [
   },
 ]
 
-function CellContent({ cell, highlight }: { cell: Cell; highlight: boolean }) {
+function CellContent({
+  cell,
+  highlight,
+  compact = false,
+}: {
+  cell: Cell
+  highlight: boolean
+  compact?: boolean
+}) {
   if (cell.kind === "yes") {
     return (
       <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-600">
@@ -147,7 +164,7 @@ function CellContent({ cell, highlight }: { cell: Cell; highlight: boolean }) {
 
   if (cell.kind === "list") {
     return (
-      <ul className="space-y-1.5">
+      <ul className={compact ? "space-y-1" : "space-y-1.5"}>
         {cell.items.map((item) => (
           <li key={item} className="flex items-start gap-2 text-sm leading-snug">
             <span
@@ -166,7 +183,7 @@ function CellContent({ cell, highlight }: { cell: Cell; highlight: boolean }) {
 
   return (
     <p
-      className={`text-sm leading-relaxed ${
+      className={`leading-relaxed ${compact ? "text-[13px]" : "text-sm"} ${
         highlight && cell.emphasis
           ? "font-semibold text-stone-900"
           : highlight
@@ -179,10 +196,149 @@ function CellContent({ cell, highlight }: { cell: Cell; highlight: boolean }) {
   )
 }
 
+function MobileCompare() {
+  const [selected, setSelected] = useState<(typeof competitors)[number]["key"]>("latinRhythms")
+  const competitor = competitors.find((c) => c.key === selected)!
+
+  return (
+    <div className="lg:hidden">
+      <p className="mb-3 text-sm font-semibold text-stone-600">Compare Studio E with:</p>
+      <div
+        className="mb-5 grid grid-cols-3 gap-2 rounded-2xl bg-stone-100 p-1.5"
+        role="tablist"
+        aria-label="Choose a studio to compare"
+      >
+        {competitors.map((studio) => {
+          const active = selected === studio.key
+          return (
+            <button
+              key={studio.key}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setSelected(studio.key)}
+              className={`rounded-xl px-2 py-2.5 text-center text-xs font-bold transition sm:text-sm ${
+                active
+                  ? "bg-white text-stone-900 shadow-sm"
+                  : "text-stone-500 hover:text-stone-700"
+              }`}
+            >
+              <span className="sm:hidden">{studio.short}</span>
+              <span className="hidden sm:inline">{studio.name}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="mb-4 overflow-hidden rounded-2xl border border-[#FF3366]/25 bg-gradient-to-r from-[#FF3366]/10 to-[#9933CC]/10 px-3 py-3">
+        <div className="grid grid-cols-2 gap-2 text-center">
+          <div>
+            <span className="mb-1 inline-block rounded-full bg-[#FF3366] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+              Best overall
+            </span>
+            <p className="font-montserrat text-base font-black text-[#FF3366]">Studio E</p>
+          </div>
+          <div className="flex flex-col items-center justify-end">
+            <p className="font-montserrat text-base font-bold text-stone-700">{competitor.name}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {rows.map((row) => (
+          <article
+            key={row.feature}
+            className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm"
+          >
+            <div className="border-b border-stone-100 bg-stone-50 px-4 py-2.5">
+              <h3 className="font-montserrat text-sm font-bold text-stone-800">{row.feature}</h3>
+            </div>
+            <div className="grid grid-cols-2 divide-x divide-stone-100">
+              <div className="bg-[#FF3366]/[0.04] px-3 py-3">
+                <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-[#FF3366]">
+                  Studio E
+                </p>
+                <CellContent cell={row.studioE} highlight compact />
+              </div>
+              <div className="px-3 py-3">
+                <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-stone-400">
+                  {competitor.short}
+                </p>
+                <CellContent cell={row[selected as StudioKey]} highlight={false} compact />
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DesktopTable() {
+  return (
+    <div className="hidden overflow-hidden rounded-3xl border border-stone-200/80 bg-white shadow-[0_20px_60px_-30px_rgba(255,51,102,0.35)] lg:block">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[860px] border-collapse text-left">
+          <thead>
+            <tr>
+              <th className="sticky left-0 z-20 w-44 bg-stone-50 px-5 py-5 text-xs font-bold uppercase tracking-wider text-stone-500 md:w-52">
+                Feature
+              </th>
+              {studios.map((studio) => (
+                <th
+                  key={studio.key}
+                  className={`px-5 py-5 align-bottom ${
+                    studio.highlight
+                      ? "bg-gradient-to-b from-[#FF3366]/12 to-[#FF3366]/5"
+                      : "bg-stone-50"
+                  }`}
+                >
+                  {studio.highlight ? (
+                    <div className="inline-flex flex-col gap-2">
+                      <span className="w-fit rounded-full bg-[#FF3366] px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+                        Best overall
+                      </span>
+                      <span className="font-montserrat text-xl font-black text-[#FF3366]">
+                        {studio.name}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="font-montserrat text-lg font-bold text-stone-700">
+                      {studio.name}
+                    </span>
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={row.feature} className={index % 2 === 0 ? "bg-white" : "bg-stone-50/70"}>
+                <th className="sticky left-0 z-10 border-t border-stone-100 bg-inherit px-5 py-5 align-top font-montserrat text-sm font-bold text-stone-800">
+                  <span className="block max-w-[10rem] leading-snug">{row.feature}</span>
+                </th>
+                {studios.map((studio) => (
+                  <td
+                    key={studio.key}
+                    className={`border-t border-stone-100 px-5 py-5 align-top ${
+                      studio.highlight ? "bg-[#FF3366]/[0.04]" : ""
+                    }`}
+                  >
+                    <CellContent cell={row[studio.key]} highlight={studio.highlight} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 export default function ComparePlansClient() {
   return (
     <div className="min-h-screen bg-[#faf7f5]">
-      {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#FF7A5A] via-[#FF3366] to-[#9933CC] text-white">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.18),transparent_55%)]" />
         <div className="container relative px-4 py-16 md:py-24">
@@ -202,80 +358,16 @@ export default function ComparePlansClient() {
         </div>
       </section>
 
-      {/* Table */}
       <section className="container px-4 py-12 md:py-16">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#FF3366]">
-              Side-by-side
-            </p>
-            <h2 className="mt-1 font-montserrat text-2xl font-black text-stone-900 md:text-3xl">
-              Compare plans & offerings
-            </h2>
-          </div>
-          <p className="text-sm text-stone-500 md:hidden">Swipe sideways to see all studios →</p>
+        <div className="mb-6">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#FF3366]">Side-by-side</p>
+          <h2 className="mt-1 font-montserrat text-2xl font-black text-stone-900 md:text-3xl">
+            Compare plans & offerings
+          </h2>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border border-stone-200/80 bg-white shadow-[0_20px_60px_-30px_rgba(255,51,102,0.35)]">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[860px] border-collapse text-left">
-              <thead>
-                <tr>
-                  <th className="sticky left-0 z-20 w-44 bg-stone-50 px-5 py-5 text-xs font-bold uppercase tracking-wider text-stone-500 md:w-52">
-                    Feature
-                  </th>
-                  {studios.map((studio) => (
-                    <th
-                      key={studio.key}
-                      className={`px-5 py-5 align-bottom ${
-                        studio.highlight
-                          ? "bg-gradient-to-b from-[#FF3366]/12 to-[#FF3366]/5"
-                          : "bg-stone-50"
-                      }`}
-                    >
-                      {studio.highlight ? (
-                        <div className="inline-flex flex-col gap-2">
-                          <span className="w-fit rounded-full bg-[#FF3366] px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
-                            Best overall
-                          </span>
-                          <span className="font-montserrat text-xl font-black text-[#FF3366]">
-                            {studio.name}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="font-montserrat text-lg font-bold text-stone-700">
-                          {studio.name}
-                        </span>
-                      )}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row, index) => (
-                  <tr
-                    key={row.feature}
-                    className={index % 2 === 0 ? "bg-white" : "bg-stone-50/70"}
-                  >
-                    <th className="sticky left-0 z-10 border-t border-stone-100 bg-inherit px-5 py-5 align-top font-montserrat text-sm font-bold text-stone-800">
-                      <span className="block max-w-[10rem] leading-snug">{row.feature}</span>
-                    </th>
-                    {studios.map((studio) => (
-                      <td
-                        key={studio.key}
-                        className={`border-t border-stone-100 px-5 py-5 align-top ${
-                          studio.highlight ? "bg-[#FF3366]/[0.04]" : ""
-                        }`}
-                      >
-                        <CellContent cell={row[studio.key]} highlight={studio.highlight} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <MobileCompare />
+        <DesktopTable />
 
         <p className="mt-4 text-center text-xs text-stone-400">
           Competitor information based on publicly available offerings and may change. Confirm
@@ -283,7 +375,6 @@ export default function ComparePlansClient() {
         </p>
       </section>
 
-      {/* Highlights */}
       <section className="border-y border-stone-200 bg-white py-16 md:py-20">
         <div className="container px-4">
           <div className="mx-auto max-w-3xl text-center">
@@ -306,7 +397,7 @@ export default function ComparePlansClient() {
               },
               {
                 title: "Community included",
-                body: "Free socials, weekly 1:1 guidance, and member-only hangouts that keep you connected.",
+                body: "Included socials, weekly 1:1 guidance, and member-only hangouts that keep you connected.",
               },
             ].map((item) => (
               <div
@@ -321,7 +412,6 @@ export default function ComparePlansClient() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16 md:py-20">
         <div className="container px-4">
           <div className="mx-auto max-w-3xl overflow-hidden rounded-3xl bg-gradient-to-br from-[#FF7A5A] via-[#FF3366] to-[#9933CC] px-8 py-12 text-center text-white shadow-xl md:px-12">
