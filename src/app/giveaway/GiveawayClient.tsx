@@ -231,12 +231,35 @@ export default function GiveawayClient() {
             </div>
           </div>
 
-          <p className="mb-8 text-center text-gray-600">
-            Complete the form below for your official entry. Bonus entries (below) stack on top—
-            they are not a substitute for submitting the form once.
+          <p className="mb-6 text-center text-gray-600">
+            Complete the form below to enter. After submitting, scroll down to see how to earn
+            bonus entries.
           </p>
 
-          <div className="mb-10 rounded-2xl border border-[#9933CC]/25 bg-gradient-to-br from-[#9933CC]/5 to-[#FF3366]/5 p-6 md:p-8">
+          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md">
+            <iframe
+              src={FORM_EMBED_SRC}
+              id={FORM_IFRAME_ID}
+              title="Year of Dance Giveaway Entry"
+              data-layout="{'id':'INLINE'}"
+              data-trigger-type="alwaysShow"
+              data-activation-type="alwaysActivated"
+              data-deactivation-type="neverDeactivate"
+              data-form-name="Year-of-Dance-Giveaway"
+              data-layout-iframe-id={FORM_IFRAME_ID}
+              data-form-id={FORM_ID}
+              className="block w-full min-h-[520px] border-0"
+              style={{ width: "100%", height: "100%", border: "none", borderRadius: "8px" }}
+            />
+            <Script
+              src="https://link.msgsndr.com/js/form_embed.js"
+              strategy="afterInteractive"
+              onLoad={initFormEmbed}
+            />
+          </div>
+
+          {/* Bonus entries */}
+          <div className="mt-10 rounded-2xl border border-[#9933CC]/25 bg-gradient-to-br from-[#9933CC]/5 to-[#FF3366]/5 p-6 md:p-8">
             <div className="mb-5 flex items-center gap-2">
               <TrendingUp className="h-6 w-6 text-[#9933CC]" aria-hidden />
               <h2 className="text-xl font-black text-gray-900 md:text-2xl">
@@ -244,9 +267,9 @@ export default function GiveawayClient() {
               </h2>
             </div>
             <p className="mb-6 text-sm text-gray-600 leading-relaxed">
-              Your one form submission is required. These bonus actions can add extra entries on top
-              of that—they do <span className="font-semibold text-gray-800">not</span> mean filling
-              out the form again.
+              Already submitted? Great. These bonus actions stack extra entries on top—they do{" "}
+              <span className="font-semibold text-gray-800">not</span> mean filling out the form
+              again.
             </p>
             <div className="space-y-4">
               <div className="flex gap-4 rounded-xl border border-white/80 bg-white/80 p-4 shadow-sm">
@@ -273,9 +296,9 @@ export default function GiveawayClient() {
                   <p className="mt-1 text-sm text-gray-600 leading-relaxed">
                     Each friend you tag on the official Studio E giveaway post counts as one{" "}
                     <span className="font-semibold text-gray-800">bonus entry</span>—up to{" "}
-                    <span className="font-semibold text-gray-800">5 additional entries</span>. Tagging
-                    is separate from submitting this form; your friend still needs to enter here to be
-                    eligible.
+                    <span className="font-semibold text-gray-800">5 additional entries</span>.
+                    Tagging is separate from submitting this form; your friend still needs to enter
+                    here to be eligible.
                   </p>
                   <a
                     href="https://www.instagram.com/the_studio_e/"
@@ -288,28 +311,6 @@ export default function GiveawayClient() {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md">
-            <iframe
-              src={FORM_EMBED_SRC}
-              id={FORM_IFRAME_ID}
-              title="Year of Dance Giveaway Entry"
-              data-layout="{'id':'INLINE'}"
-              data-trigger-type="alwaysShow"
-              data-activation-type="alwaysActivated"
-              data-deactivation-type="neverDeactivate"
-              data-form-name="Year-of-Dance-Giveaway"
-              data-layout-iframe-id={FORM_IFRAME_ID}
-              data-form-id={FORM_ID}
-              className="block w-full min-h-[520px] border-0"
-              style={{ width: "100%", height: "100%", border: "none", borderRadius: "8px" }}
-            />
-            <Script
-              src="https://link.msgsndr.com/js/form_embed.js"
-              strategy="afterInteractive"
-              onLoad={initFormEmbed}
-            />
           </div>
 
           {/* Disclaimers */}
