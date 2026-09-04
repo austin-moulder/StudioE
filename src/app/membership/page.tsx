@@ -6,8 +6,8 @@ import { CheckCircle, MapPin } from "lucide-react"
 import Link from "next/link"
 
 const PLANS = {
-  noMembership: {
-    href: "https://link.fastpaydirect.com/payment-link/6a8db50df9c8c807930b9f2e",
+  challenge: {
+    href: "https://link.fastpaydirect.com/payment-link/6a95dce1d6768df054448f36",
   },
   gold: {
     href: "https://link.fastpaydirect.com/payment-link/6a8db489f9c8c807930b9f2b",
@@ -59,34 +59,42 @@ export default function MembershipPage() {
             </p>
           </div>
 
-          {/* No Membership Plan */}
+          {/* 28-Day Challenge */}
           <div className="max-w-2xl mx-auto mb-16">
             <div className="relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg z-20">
-                No Recurring Charges
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#FF3366] via-[#FF3366] to-[#9933CC] text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg z-20">
+                Most Popular Plan
               </div>
-              <Card className="border-2 border-gray-500 shadow-2xl rounded-3xl overflow-hidden">
-                <div className="bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 text-white p-8 text-center relative overflow-hidden">
+              <Card className="border-2 border-[#FF3366] shadow-2xl rounded-3xl overflow-hidden">
+                <div className="bg-gradient-to-br from-[#FF3366] via-[#E62E5C] to-[#9933CC] text-white p-8 text-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-pulse"></div>
                   <div className="relative z-10">
-                    <h3 className="text-4xl font-black mb-2">No Membership Plan</h3>
-                    <p className="text-white/80 italic text-lg mb-4">Pay once. Dance more.</p>
-                    <div className="text-5xl font-black">$399</div>
+                    <h3 className="text-4xl font-black mb-2">28-Day Challenge</h3>
+                    <p className="text-white/80 italic text-lg mb-4">No recurring charges. Results in 28 days.</p>
+                    <div className="text-5xl font-black">$500</div>
                   </div>
                 </div>
                 <CardContent className="p-8 bg-white">
                   <div className="space-y-4 mb-8">
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>20 classes (must be used within 90 days of purchase)</span>
+                      <span>4 private lessons <span className="text-gray-500">(typically $150/hr)</span></span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>Happy hour social</span>
+                      <span>Unlimited classes</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>1 guest pass</span>
+                      <span>Happy hour socials</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>Exclusive member events</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>1 guest per class</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
@@ -94,10 +102,10 @@ export default function MembershipPage() {
                     </div>
                   </div>
                   <a
-                    href={PLANS.noMembership.href}
+                    href={PLANS.challenge.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${payButtonClassName} bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700`}
+                    className={`${payButtonClassName} bg-gradient-to-r from-[#FF3366] to-[#9933CC] hover:from-[#E62E5C] hover:to-[#7A29A3]`}
                   >
                     Purchase Now
                   </a>
@@ -109,9 +117,6 @@ export default function MembershipPage() {
           {/* Gold Plan */}
           <div className="max-w-2xl mx-auto mb-16">
             <div className="relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg z-20">
-                Most Popular Plan
-              </div>
               <Card className="border-2 border-yellow-500 shadow-2xl rounded-3xl overflow-hidden">
                 <div className="bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 text-white p-8 text-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full animate-pulse"></div>
@@ -205,36 +210,18 @@ export default function MembershipPage() {
             </div>
           </div>
 
-          {/* Class Packages */}
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto items-end">
-            {/* Drop-In Single Class */}
-            <Card className="rounded-3xl shadow-lg overflow-hidden flex flex-col h-full">
-              <CardContent className="p-6 text-center flex flex-col flex-1">
-                <h3 className="font-black text-lg mb-4">Drop-In Single Class Pass</h3>
-                <div className="text-3xl font-black mb-4">$30</div>
-                <p className="text-sm text-gray-600 mb-6 flex-1">
-                  Use for any class on our schedule. Valid within 30 days of purchase.
-                </p>
-                <Button 
-                  className="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-2xl"
-                  onClick={() => handleOtherPurchase('single')}
-                >
-                  Purchase Now
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Out-Of-Towner's Pass */}
-            <Card className="rounded-3xl shadow-lg overflow-hidden flex flex-col h-full">
-              <CardContent className="p-6 text-center flex flex-col flex-1">
+          {/* Out-Of-Towner's Pass */}
+          <div className="max-w-md mx-auto">
+            <Card className="rounded-3xl shadow-lg overflow-hidden">
+              <CardContent className="p-6 text-center">
                 <h3 className="font-black text-lg mb-4">Out-Of-Towner&apos;s One-Week Unlimited Pass</h3>
                 <div className="text-3xl font-black mb-4">$54</div>
-                <p className="text-sm text-gray-600 mb-6 flex-1">
+                <p className="text-sm text-gray-600 mb-6">
                   The perfect way to maintain your practice while visiting Chicago! Enjoy 7 consecutive days of unlimited classes.
                 </p>
-                <Button 
+                <Button
                   className="w-full bg-green-500 hover:bg-green-600 text-white font-bold rounded-2xl"
-                  onClick={() => handleOtherPurchase('visitor')}
+                  onClick={() => handleOtherPurchase("visitor")}
                 >
                   Purchase Now
                 </Button>
