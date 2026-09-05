@@ -21,8 +21,8 @@ type Row = {
 }
 
 const competitors = [
-  { key: "latinRhythms" as const, name: "Latin Rhythms", short: "Rhythms" },
-  { key: "latinStreet" as const, name: "Latin Street", short: "Street" },
+  { key: "latinRhythms" as const, name: "Latin Rhythms", short: "Latin Rhythms" },
+  { key: "latinStreet" as const, name: "Latin Street", short: "Latin Street" },
   { key: "mayambo" as const, name: "Mayambo", short: "Mayambo" },
 ]
 
@@ -90,7 +90,7 @@ const rows: Row[] = [
     },
     latinRhythms: { kind: "text", value: "$100 / 4-week session of the same class" },
     latinStreet: { kind: "text", value: "$69 / 4-week session of the same class" },
-    mayambo: { kind: "text", value: "$120 / 4-week session of the same class" },
+    mayambo: { kind: "text", value: "$149 / 4-week session of the same class" },
   },
   {
     feature: "Privates",
@@ -113,9 +113,6 @@ const rows: Row[] = [
         "Cumbia",
         "Merengue",
         "Cha-cha",
-        "Reggaeton",
-        "Twerk",
-        "Afro-Cuban",
       ],
     },
     latinRhythms: { kind: "list", items: ["Salsa", "Bachata", "Cha-cha"] },

@@ -15,16 +15,15 @@ const PLANS = {
   bronze: {
     href: "https://link.fastpaydirect.com/payment-link/6a8db4c6d6768df054447dd0",
   },
+  visitor: {
+    href: "https://link.fastpaydirect.com/payment-link/6a9c0d42ceb12d9fc1a8b434",
+  },
 } as const
 
 const payButtonClassName =
   "inline-flex w-full items-center justify-center rounded-2xl py-4 text-lg font-bold text-white shadow-lg transition-all duration-200 transform hover:scale-105"
 
 export default function MembershipPage() {
-  const handleOtherPurchase = (plan: string) => {
-    window.location.href = `mailto:studioelatindance@gmail.com?subject=Studio E Membership - ${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan&body=Hi Studio E Team,%0A%0AI'm interested in the ${plan.charAt(0).toUpperCase() + plan.slice(1)} membership plan.%0A%0APlease send me more information about getting started.%0A%0AThank you!`
-  }
-
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -55,7 +54,8 @@ export default function MembershipPage() {
             </h2>
             <p className="text-xl text-gray-600">
               Dance memberships, packages, and plans for every lifestyle, schedule, and budget.
-              Memberships renew every 4 weeks (28 days).
+              Memberships renew every 4 weeks (28 days). Sign up before your first class to lock in
+              the discounted rates below.
             </p>
           </div>
 
@@ -71,7 +71,11 @@ export default function MembershipPage() {
                   <div className="relative z-10">
                     <h3 className="text-4xl font-black mb-2">28-Day Challenge</h3>
                     <p className="text-white/80 italic text-lg mb-4">No recurring charges. Results in 28 days.</p>
-                    <div className="text-5xl font-black">$500</div>
+                    <div className="flex items-baseline justify-center gap-3">
+                      <span className="text-2xl font-bold text-white/60 line-through">$600</span>
+                      <span className="text-5xl font-black">$399</span>
+                    </div>
+                    <p className="mt-2 text-sm text-white/80">When you sign up before your first class</p>
                   </div>
                 </div>
                 <CardContent className="p-8 bg-white">
@@ -123,9 +127,13 @@ export default function MembershipPage() {
                   <div className="relative z-10">
                     <h3 className="text-4xl font-black mb-2">Gold Plan</h3>
                     <p className="text-white/80 italic text-lg mb-4">This is where dancers become great!</p>
-                    <div className="text-5xl font-black">
-                      $149<span className="text-xl font-bold"> / every 4 weeks</span>
+                    <div className="flex flex-wrap items-baseline justify-center gap-3">
+                      <span className="text-2xl font-bold text-white/60 line-through">$169</span>
+                      <span className="text-5xl font-black">
+                        $124<span className="text-xl font-bold"> / every 4 weeks</span>
+                      </span>
                     </div>
+                    <p className="mt-2 text-sm text-white/80">When you sign up before your first class</p>
                   </div>
                 </div>
                 <CardContent className="p-8 bg-white">
@@ -173,9 +181,13 @@ export default function MembershipPage() {
                   <div className="relative z-10">
                     <h3 className="text-4xl font-black mb-2">Bronze Plan</h3>
                     <p className="text-white/80 italic text-lg mb-4">Steady progress, flexible commitment</p>
-                    <div className="text-5xl font-black">
-                      $89<span className="text-xl font-bold"> / every 4 weeks</span>
+                    <div className="flex flex-wrap items-baseline justify-center gap-3">
+                      <span className="text-2xl font-bold text-white/60 line-through">$119</span>
+                      <span className="text-5xl font-black">
+                        $89<span className="text-xl font-bold"> / every 4 weeks</span>
+                      </span>
                     </div>
+                    <p className="mt-2 text-sm text-white/80">When you sign up before your first class</p>
                   </div>
                 </div>
                 <CardContent className="p-8 bg-white">
@@ -211,20 +223,25 @@ export default function MembershipPage() {
           </div>
 
           {/* Out-Of-Towner's Pass */}
-          <div className="max-w-md mx-auto">
-            <Card className="rounded-3xl shadow-lg overflow-hidden">
-              <CardContent className="p-6 text-center">
-                <h3 className="font-black text-lg mb-4">Out-Of-Towner&apos;s One-Week Unlimited Pass</h3>
-                <div className="text-3xl font-black mb-4">$54</div>
-                <p className="text-sm text-gray-600 mb-6">
+          <div className="max-w-2xl mx-auto">
+            <Card className="rounded-3xl border-2 border-green-500 shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-br from-green-400 via-green-500 to-green-600 text-white p-8 text-center">
+                <h3 className="text-4xl font-black mb-2">Out-Of-Towner&apos;s Pass</h3>
+                <p className="text-white/80 italic text-lg mb-4">One week of unlimited classes</p>
+                <div className="text-5xl font-black">$54</div>
+              </div>
+              <CardContent className="p-8 bg-white text-center">
+                <p className="mb-8 text-gray-600">
                   The perfect way to maintain your practice while visiting Chicago! Enjoy 7 consecutive days of unlimited classes.
                 </p>
-                <Button
-                  className="w-full bg-green-500 hover:bg-green-600 text-white font-bold rounded-2xl"
-                  onClick={() => handleOtherPurchase("visitor")}
+                <a
+                  href={PLANS.visitor.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${payButtonClassName} bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700`}
                 >
                   Purchase Now
-                </Button>
+                </a>
               </CardContent>
             </Card>
           </div>
