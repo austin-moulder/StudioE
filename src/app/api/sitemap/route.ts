@@ -31,6 +31,7 @@ export async function GET() {
       { url: 'wedding-dance', priority: '0.7', changefreq: 'monthly' },
       { url: 'quince', priority: '0.8', changefreq: 'weekly' },
       { url: 'merch', priority: '0.8', changefreq: 'weekly' },
+      { url: 'referrals', priority: '0.8', changefreq: 'weekly' },
       { url: 'contact', priority: '0.6', changefreq: 'monthly' },
     ]
 
