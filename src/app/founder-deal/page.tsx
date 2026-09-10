@@ -16,6 +16,58 @@ const FORM_EMBED_SRC = "https://api.leadconnectorhq.com/widget/form/OU2vv09aDBS3
 const FORM_IFRAME_ID = "inline-OU2vv09aDBS3oIC9PB9j"
 const FIRST_CLASS_VIDEO =
   "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/Welcome_to_first_class.mp4"
+const VOUCHER_STORAGE_KEY = "studioe_founder_deal_vouchers"
+/** How long before a revisit can lower the voucher count (ms). */
+const VOUCHER_DECAY_MS = 6 * 60 * 60 * 1000
+
+type VoucherState = {
+  count: number
+  updatedAt: number
+}
+
+function getVoucherCount(): number {
+  if (typeof window === "undefined") return 6
+
+  try {
+    const raw = window.localStorage.getItem(VOUCHER_STORAGE_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw) as VoucherState
+      if (
+        typeof parsed?.count === "number" &&
+        parsed.count >= 1 &&
+        parsed.count <= 6 &&
+        typeof parsed?.updatedAt === "number"
+      ) {
+        let count = Math.floor(parsed.count)
+        let updatedAt = parsed.updatedAt
+        const elapsed = Date.now() - updatedAt
+        if (elapsed >= VOUCHER_DECAY_MS && count > 1) {
+          const steps = Math.min(count - 1, Math.floor(elapsed / VOUCHER_DECAY_MS))
+          count = Math.max(1, count - steps)
+          updatedAt = Date.now()
+          window.localStorage.setItem(
+            VOUCHER_STORAGE_KEY,
+            JSON.stringify({ count, updatedAt } satisfies VoucherState)
+          )
+        }
+        return count
+      }
+    }
+  } catch {
+    /* ignore and seed a new value */
+  }
+
+  const count = Math.floor(Math.random() * 6) + 1
+  try {
+    window.localStorage.setItem(
+      VOUCHER_STORAGE_KEY,
+      JSON.stringify({ count, updatedAt: Date.now() } satisfies VoucherState)
+    )
+  } catch {
+    /* ignore */
+  }
+  return count
+}
 
 type IFrameResizeWindow = Window & {
   iFrameResize?: (options: Record<string, unknown>, target: HTMLIFrameElement) => void
@@ -61,6 +113,11 @@ export default function FounderDealPage() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [timeLeft, setTimeLeft] = useState(10 * 60)
+  const [vouchersLeft, setVouchersLeft] = useState<number | null>(null)
+
+  useEffect(() => {
+    setVouchersLeft(getVoucherCount())
+  }, [])
 
   useEffect(() => {
     if (emblaApi) {
@@ -207,7 +264,8 @@ export default function FounderDealPage() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <Clock className="w-7 h-7 text-red-500" />
               <h3 className="text-2xl md:text-3xl font-bold text-red-600 break-words">
-                Only 6 vouchers left over the next 2 weeks to come in and try a FREE class on us
+                Only {vouchersLeft ?? "—"} voucher{vouchersLeft === 1 ? "" : "s"} left over the next
+                2 weeks to come in and try a FREE class on us
               </h3>
             </div>
             <p className="text-gray-700 text-lg mb-6">
