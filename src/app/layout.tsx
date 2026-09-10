@@ -11,8 +11,7 @@ import { Toaster } from "sonner";
 import { AnalyticsDebugger } from "@/components/analytics/AnalyticsDebugger";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import SiteChrome from "@/components/SiteChrome";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -111,9 +110,7 @@ export default function RootLayout({
       <body className={cn(inter.variable, montserrat.variable, "min-h-screen flex flex-col bg-white text-black")}>
         <Providers>
           <ScrollToTop />
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <SiteChrome>{children}</SiteChrome>
           <Analytics />
           <SpeedInsights />
           <Toaster />
