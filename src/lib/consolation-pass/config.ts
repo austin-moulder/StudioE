@@ -7,8 +7,12 @@
  * - GHL: add custom webhook or GTM listener on the same event names, or embed this page URL in a GHL funnel
  */
 
-/** Acuity checkout / class booking link for the $25 2-week unlimited pass. */
+/** FastPay link for claiming the $25 2-week unlimited pass. */
 export const CHECKOUT_URL =
+  "https://link.fastpaydirect.com/payment-link/6a975b4fd6768df05444938c" as const
+
+/** Acuity link for booking the first class (starts the 14-day window). */
+export const BOOKING_URL =
   "https://app.acuityscheduling.com/schedule/76f316b6/?template=class" as const
 
 export const OFFER = {
@@ -31,10 +35,13 @@ export const UTM = {
   utm_campaign: "consolation_offer",
 } as const
 
+/** Shared poster used across consolation, founder-deal, and newmemberdeal videos. */
+export const SHARED_VIDEO_POSTER =
+  "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/Screenshot%202026-09-10%20at%2012.40.20%20PM.png" as const
+
 export const VIDEO = {
   src: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/Giveaway_Second_Place.mp4",
-  poster:
-    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/Screenshot%202026-09-10%20at%2012.14.08%20PM.png",
+  poster: SHARED_VIDEO_POSTER,
 } as const
 
 export const OFFER_STACK = [
@@ -70,7 +77,7 @@ export const FAQS: FaqItem[] = [
   {
     question: "When does the 14-day period begin?",
     answer: "The 14-day period begins when you book your first class.",
-    linkHref: CHECKOUT_URL,
+    linkHref: BOOKING_URL,
     linkLabel: "Book your first class here",
   },
   {

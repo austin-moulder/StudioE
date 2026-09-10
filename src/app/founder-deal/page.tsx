@@ -9,9 +9,13 @@ import { getFeaturedTestimonials } from "@/lib/testimonials/testimonialUtils"
 import { Testimonial } from "@/types/testimonial"
 import useEmblaCarousel from 'embla-carousel-react'
 import GoogleTag from "@/components/analytics/GoogleTag"
+import OfferVideo from "@/components/OfferVideo"
+import { SHARED_VIDEO_POSTER } from "@/lib/consolation-pass/config"
 
 const FORM_EMBED_SRC = "https://api.leadconnectorhq.com/widget/form/OU2vv09aDBS3oIC9PB9j"
 const FORM_IFRAME_ID = "inline-OU2vv09aDBS3oIC9PB9j"
+const FIRST_CLASS_VIDEO =
+  "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/Welcome_to_first_class.mp4"
 
 type IFrameResizeWindow = Window & {
   iFrameResize?: (options: Record<string, unknown>, target: HTMLIFrameElement) => void
@@ -154,6 +158,18 @@ export default function FounderDealPage() {
               Your class is waiting for you at our studio at <span className="font-semibold">2657 W Division Street</span>. This free offer must be redeemed by <span className="font-semibold text-[#FF3366]">{deadlineFormatted}</span>.
             </p>
           </div>
+        </div>
+
+        {/* Welcome / first-class logistics video */}
+        <div className="mb-16">
+          <h2 className="mb-6 text-center text-2xl font-bold text-gray-900 md:text-3xl">
+            Your journey starts here
+          </h2>
+          <OfferVideo
+            src={FIRST_CLASS_VIDEO}
+            poster={SHARED_VIDEO_POSTER}
+            title="Welcome to your first Studio E class"
+          />
         </div>
 
         {/* Embedded claim form */}

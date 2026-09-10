@@ -1,7 +1,8 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Check, ChevronDown, Play } from "lucide-react"
+import { Check, ChevronDown } from "lucide-react"
+import OfferVideo from "@/components/OfferVideo"
 import {
   FAQS,
   FOOTER,
@@ -37,12 +38,6 @@ function trackEvent(name: string, props: Record<string, unknown> = {}) {
   if (typeof window.gtag === "function") {
     window.gtag("event", name, props)
   }
-
-  // Meta Pixel — uncomment / ensure fbq is loaded site-wide:
-  // if (typeof window.fbq === "function") window.fbq("trackCustom", name, props)
-
-  // GHL — optional: postMessage / fetch to a webhook when connected
-  // fetch("/api/track-activity", { method: "POST", body: JSON.stringify({ name, props }) })
 }
 
 function getExpiryTimestamp(): number {
@@ -97,15 +92,14 @@ function pad(n: number) {
   return String(n).padStart(2, "0")
 }
 
+const ctaClass =
+  "w-full rounded-xl bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] px-6 py-4 text-center font-montserrat text-base font-black uppercase tracking-wide text-white shadow-lg transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+
 export default function ConsolationPassClient() {
   const [expiresAt, setExpiresAt] = useState<number | null>(null)
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ hours: 24, minutes: 0, seconds: 0 })
   const [expired, setExpired] = useState(false)
   const [openFaq, setOpenFaq] = useState<number | null>(0)
-  const [videoPlaying, setVideoPlaying] = useState(false)
-  const [showPlayOverlay, setShowPlayOverlay] = useState(true)
-
-  const videoRef = useRef<HTMLVideoElement>(null)
   const milestones = useRef({ p25: false, p50: false, p75: false, complete: false })
 
   useEffect(() => {
@@ -135,86 +129,33 @@ export default function ConsolationPassClient() {
     window.location.href = buildCheckoutUrl({ placement })
   }, [])
 
-  const handlePlayClick = () => {
-    const video = videoRef.current
-    if (!video) return
-    setShowPlayOverlay(false)
-    video
-      .play()
-      .then(() => setVideoPlaying(true))
-      .catch(() => {
-        setShowPlayOverlay(true)
-        setVideoPlaying(false)
-      })
-  }
-
-  const onVideoPlay = () => {
-    setVideoPlaying(true)
-    setShowPlayOverlay(false)
-    trackEvent("video_start", { video: "Giveaway_Second_Place" })
-  }
-
-  const onVideoTimeUpdate = () => {
-    const video = videoRef.current
-    if (!video || !video.duration) return
-    const pct = (video.currentTime / video.duration) * 100
-    if (pct >= 25 && !milestones.current.p25) {
-      milestones.current.p25 = true
-      trackEvent("video_25")
-    }
-    if (pct >= 50 && !milestones.current.p50) {
-      milestones.current.p50 = true
-      trackEvent("video_50")
-    }
-    if (pct >= 75 && !milestones.current.p75) {
-      milestones.current.p75 = true
-      trackEvent("video_75")
-    }
-  }
-
-  const onVideoEnded = () => {
-    if (!milestones.current.complete) {
-      milestones.current.complete = true
-      trackEvent("video_complete")
-    }
-    setVideoPlaying(false)
-    setShowPlayOverlay(true)
-  }
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#F5F0E6] font-sans antialiased">
+    <div className="min-h-screen bg-white text-gray-900 font-sans antialiased">
       {/* 1. Hero */}
-      <header className="relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-30"
-          aria-hidden
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse at top, rgba(201,162,39,0.35), transparent 55%), radial-gradient(ellipse at bottom right, rgba(185,28,28,0.4), transparent 50%)",
-          }}
-        />
+      <header className="relative overflow-hidden bg-gradient-to-br from-[#FF7A5A] via-[#FF3366] to-[#9933CC] text-white">
+        <div className="absolute inset-0 bg-black/15" aria-hidden />
         <div className="relative mx-auto max-w-xl px-4 pb-12 pt-10 sm:px-6 sm:pt-14">
-          <p className="mb-4 text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-[#D4AF37]">
+          <p className="mb-4 text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-white/90">
             Studio E · Chicago
           </p>
-          <h1 className="text-center font-montserrat text-[1.65rem] font-black leading-[1.15] tracking-tight text-[#F5F0E6] sm:text-4xl">
+          <h1 className="text-center font-montserrat text-[1.65rem] font-black leading-[1.15] tracking-tight sm:text-4xl">
             {OFFER.headline}
           </h1>
-          <p className="mx-auto mt-5 max-w-md text-center text-base leading-relaxed text-[#F5F0E6]/85 sm:text-lg">
+          <p className="mx-auto mt-5 max-w-md text-center text-base leading-relaxed text-white/90 sm:text-lg">
             {OFFER.subheadline}
           </p>
 
           <div
-            className="mx-auto mt-8 max-w-sm rounded-2xl border border-[#D4AF37]/40 bg-black/50 px-4 py-5 text-center"
+            className="mx-auto mt-8 max-w-sm rounded-2xl border border-white/30 bg-white/15 px-4 py-5 text-center backdrop-blur-sm"
             role="timer"
             aria-live="polite"
             aria-label={OFFER.countdownLabel}
           >
-            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37]">
+            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-white">
               {OFFER.countdownLabel}
             </p>
             {expired ? (
-              <p className="mt-3 font-montserrat text-2xl font-black text-[#F5F0E6]">Offer expired</p>
+              <p className="mt-3 font-montserrat text-2xl font-black">Offer expired</p>
             ) : (
               <div className="mt-3 flex items-center justify-center gap-2 sm:gap-3">
                 {(
@@ -224,11 +165,14 @@ export default function ConsolationPassClient() {
                     ["Sec", timeLeft.seconds],
                   ] as const
                 ).map(([label, value]) => (
-                  <div key={label} className="min-w-[4.25rem] rounded-xl bg-[#F5F0E6] px-2 py-2 text-[#0a0a0a]">
+                  <div
+                    key={label}
+                    className="min-w-[4.25rem] rounded-xl bg-white px-2 py-2 text-gray-900"
+                  >
                     <div className="font-montserrat text-2xl font-black tabular-nums sm:text-3xl">
                       {pad(value)}
                     </div>
-                    <div className="text-[10px] font-bold uppercase tracking-wide text-[#0a0a0a]/60">
+                    <div className="text-[10px] font-bold uppercase tracking-wide text-gray-500">
                       {label}
                     </div>
                   </div>
@@ -242,11 +186,11 @@ export default function ConsolationPassClient() {
               type="button"
               disabled={expired}
               onClick={() => goToCheckout("hero")}
-              className="w-full rounded-xl bg-[#B91C1C] px-6 py-4 text-center font-montserrat text-base font-black uppercase tracking-wide text-white shadow-[0_8px_30px_rgba(185,28,28,0.45)] transition hover:bg-[#991B1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-xl bg-white px-6 py-4 text-center font-montserrat text-base font-black uppercase tracking-wide text-[#FF3366] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#FF3366] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {OFFER.ctaPrimary}
             </button>
-            <p className="mt-3 text-center text-xs leading-relaxed text-[#F5F0E6]/65">
+            <p className="mt-3 text-center text-xs leading-relaxed text-white/80">
               {OFFER.finePrint}
             </p>
           </div>
@@ -254,46 +198,40 @@ export default function ConsolationPassClient() {
       </header>
 
       {/* 2. VSL */}
-      <section className="border-t border-white/10 bg-[#111111] px-4 py-12 sm:px-6" aria-labelledby="vsl-heading">
+      <section className="border-b border-gray-100 bg-gray-50 px-4 py-12 sm:px-6" aria-labelledby="vsl-heading">
         <div className="mx-auto max-w-xl">
           <h2
             id="vsl-heading"
-            className="mb-6 text-center font-montserrat text-2xl font-black tracking-tight text-[#F5F0E6] sm:text-3xl"
+            className="mb-6 text-center font-montserrat text-2xl font-black tracking-tight text-gray-900 sm:text-3xl"
           >
             Watch this next
           </h2>
-          <div className="relative aspect-video overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black">
-            <video
-              ref={videoRef}
-              className="h-full w-full object-cover"
-              playsInline
-              preload="metadata"
-              poster={VIDEO.poster}
-              controls={videoPlaying}
-              onPlay={onVideoPlay}
-              onTimeUpdate={onVideoTimeUpdate}
-              onEnded={onVideoEnded}
-              aria-label="Studio E giveaway follow-up video about the 2-week unlimited pass"
-            >
-              <source src={VIDEO.src} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            {showPlayOverlay ? (
-              <button
-                type="button"
-                onClick={handlePlayClick}
-                className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/45 transition hover:bg-black/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#D4AF37]"
-                aria-label="Play video"
-              >
-                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#B91C1C] text-white shadow-lg">
-                  <Play className="ml-1 h-7 w-7 fill-current" aria-hidden />
-                </span>
-                <span className="font-montserrat text-sm font-bold uppercase tracking-wide text-white">
-                  Tap to play
-                </span>
-              </button>
-            ) : null}
-          </div>
+          <OfferVideo
+            src={VIDEO.src}
+            poster={VIDEO.poster}
+            title="Studio E giveaway follow-up video about the 2-week unlimited pass"
+            onPlayStart={() => trackEvent("video_start", { video: "Giveaway_Second_Place" })}
+            onTimeUpdate={(pct) => {
+              if (pct >= 25 && !milestones.current.p25) {
+                milestones.current.p25 = true
+                trackEvent("video_25")
+              }
+              if (pct >= 50 && !milestones.current.p50) {
+                milestones.current.p50 = true
+                trackEvent("video_50")
+              }
+              if (pct >= 75 && !milestones.current.p75) {
+                milestones.current.p75 = true
+                trackEvent("video_75")
+              }
+            }}
+            onComplete={() => {
+              if (!milestones.current.complete) {
+                milestones.current.complete = true
+                trackEvent("video_complete")
+              }
+            }}
+          />
         </div>
       </section>
 
@@ -302,7 +240,7 @@ export default function ConsolationPassClient() {
         <div className="mx-auto max-w-xl">
           <h2
             id="stack-heading"
-            className="text-center font-montserrat text-2xl font-black tracking-tight text-[#F5F0E6] sm:text-3xl"
+            className="text-center font-montserrat text-2xl font-black tracking-tight text-gray-900 sm:text-3xl"
           >
             What’s included
           </h2>
@@ -310,10 +248,10 @@ export default function ConsolationPassClient() {
             {OFFER_STACK.map((item) => (
               <li
                 key={item}
-                className="flex items-start gap-3 rounded-xl border border-white/10 bg-[#161616] px-4 py-3.5"
+                className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3.5 shadow-sm"
               >
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#D4AF37]" aria-hidden />
-                <span className="text-base leading-snug text-[#F5F0E6]">{item}</span>
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#FF3366]" aria-hidden />
+                <span className="text-base leading-snug text-gray-800">{item}</span>
               </li>
             ))}
           </ul>
@@ -321,7 +259,7 @@ export default function ConsolationPassClient() {
             type="button"
             disabled={expired}
             onClick={() => goToCheckout("offer_stack")}
-            className="mt-8 w-full rounded-xl bg-[#B91C1C] px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-white transition hover:bg-[#991B1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-50"
+            className={`mt-8 ${ctaClass}`}
           >
             {OFFER.ctaPrimary}
           </button>
@@ -329,19 +267,19 @@ export default function ConsolationPassClient() {
       </section>
 
       {/* 4. CTA */}
-      <section className="border-y border-[#D4AF37]/30 bg-gradient-to-br from-[#1a1208] via-[#0a0a0a] to-[#2a0a0a] px-4 py-14 sm:px-6">
+      <section className="bg-gradient-to-br from-[#FF7A5A] via-[#FF3366] to-[#9933CC] px-4 py-14 text-white sm:px-6">
         <div className="mx-auto max-w-xl text-center">
-          <h2 className="font-montserrat text-3xl font-black tracking-tight text-[#F5F0E6] sm:text-4xl">
+          <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
             Start Dancing This Week
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-[#F5F0E6]/75">
+          <p className="mx-auto mt-3 max-w-md text-white/90">
             Lock in 14 days of unlimited eligible classes for ${OFFER.price}.
           </p>
           <button
             type="button"
             disabled={expired}
             onClick={() => goToCheckout("mid_cta")}
-            className="mt-8 w-full rounded-xl bg-[#D4AF37] px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-[#0a0a0a] transition hover:bg-[#E0C04A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-50 sm:text-lg"
+            className="mt-8 w-full rounded-xl bg-white px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-[#FF3366] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#FF3366] disabled:cursor-not-allowed disabled:opacity-50 sm:text-lg"
           >
             {OFFER.ctaSecondary}
           </button>
@@ -349,15 +287,15 @@ export default function ConsolationPassClient() {
       </section>
 
       {/* 5. FAQ */}
-      <section className="px-4 py-12 sm:px-6" aria-labelledby="faq-heading">
+      <section className="bg-gray-50 px-4 py-12 sm:px-6" aria-labelledby="faq-heading">
         <div className="mx-auto max-w-xl">
           <h2
             id="faq-heading"
-            className="mb-6 text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
+            className="mb-6 text-center font-montserrat text-2xl font-black tracking-tight text-gray-900 sm:text-3xl"
           >
             FAQ
           </h2>
-          <div className="divide-y divide-white/10 rounded-2xl border border-white/10 bg-[#161616]">
+          <div className="divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-white">
             {FAQS.map((item, index) => {
               const open = openFaq === index
               const panelId = `consolation-faq-${index}`
@@ -371,13 +309,13 @@ export default function ConsolationPassClient() {
                       aria-expanded={open}
                       aria-controls={panelId}
                       onClick={() => setOpenFaq(open ? null : index)}
-                      className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#D4AF37]"
+                      className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF3366]"
                     >
-                      <span className="font-montserrat text-sm font-bold text-[#F5F0E6] sm:text-base">
+                      <span className="font-montserrat text-sm font-bold text-gray-900 sm:text-base">
                         {item.question}
                       </span>
                       <ChevronDown
-                        className={`h-5 w-5 shrink-0 text-[#D4AF37] transition ${open ? "rotate-180" : ""}`}
+                        className={`h-5 w-5 shrink-0 text-[#FF3366] transition ${open ? "rotate-180" : ""}`}
                         aria-hidden
                       />
                     </button>
@@ -389,11 +327,11 @@ export default function ConsolationPassClient() {
                     hidden={!open}
                     className="px-4 pb-4"
                   >
-                    <p className="text-sm leading-relaxed text-[#F5F0E6]/75">{item.answer}</p>
+                    <p className="text-sm leading-relaxed text-gray-600">{item.answer}</p>
                     {item.linkHref ? (
                       <a
                         href={item.linkHref}
-                        className="mt-2 inline-block text-sm font-semibold text-[#D4AF37] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                        className="mt-2 inline-block text-sm font-semibold text-[#FF3366] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366]"
                       >
                         {item.linkLabel ?? item.linkHref}
                       </a>
@@ -408,7 +346,7 @@ export default function ConsolationPassClient() {
             type="button"
             disabled={expired}
             onClick={() => goToCheckout("faq")}
-            className="mt-8 w-full rounded-xl bg-[#B91C1C] px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-white transition hover:bg-[#991B1B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-50"
+            className={`mt-8 ${ctaClass}`}
           >
             {OFFER.ctaPrimary}
           </button>
@@ -416,21 +354,21 @@ export default function ConsolationPassClient() {
       </section>
 
       {/* 6. Footer */}
-      <footer className="border-t border-white/10 bg-black px-4 py-10 text-center text-sm text-[#F5F0E6]/65 sm:px-6">
+      <footer className="border-t border-gray-200 bg-white px-4 py-10 text-center text-sm text-gray-600 sm:px-6">
         <div className="mx-auto max-w-xl space-y-3">
-          <p className="font-montserrat text-base font-bold text-[#F5F0E6]">{FOOTER.businessName}</p>
+          <p className="font-montserrat text-base font-bold text-gray-900">{FOOTER.businessName}</p>
           <p>{FOOTER.address}</p>
           <p>
             <a
               href={`mailto:${FOOTER.email}`}
-              className="underline-offset-2 hover:text-[#D4AF37] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              className="text-[#FF3366] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366]"
             >
               {FOOTER.email}
             </a>
             {" · "}
             <a
               href={`tel:+18164196279`}
-              className="underline-offset-2 hover:text-[#D4AF37] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              className="text-[#FF3366] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366]"
             >
               {FOOTER.phone}
             </a>
@@ -438,38 +376,38 @@ export default function ConsolationPassClient() {
           <p className="pt-2">
             <a
               href={FOOTER.officialRulesHref}
-              className="underline-offset-2 hover:text-[#D4AF37] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              className="underline-offset-2 hover:text-[#FF3366] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366]"
             >
               Official rules
             </a>
             {" · "}
             <a
               href={FOOTER.termsHref}
-              className="underline-offset-2 hover:text-[#D4AF37] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              className="underline-offset-2 hover:text-[#FF3366] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366]"
             >
               Terms
             </a>
             {" · "}
             <a
               href={FOOTER.privacyHref}
-              className="underline-offset-2 hover:text-[#D4AF37] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              className="underline-offset-2 hover:text-[#FF3366] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366]"
             >
               Privacy
             </a>
           </p>
-          <p className="pt-2 text-xs leading-relaxed">
+          <p className="pt-2 text-xs leading-relaxed text-gray-500">
             {FOOTER.residencyNote} {FOOTER.eligibilityNote}
           </p>
         </div>
       </footer>
 
       {/* Sticky mobile CTA */}
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[#D4AF37]/30 bg-black/95 p-3 backdrop-blur sm:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-200 bg-white/95 p-3 backdrop-blur sm:hidden">
         <button
           type="button"
           disabled={expired}
           onClick={() => goToCheckout("sticky")}
-          className="w-full rounded-xl bg-[#B91C1C] px-4 py-3.5 font-montserrat text-sm font-black uppercase tracking-wide text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] disabled:opacity-50"
+          className={ctaClass}
         >
           {OFFER.ctaSecondary}
         </button>

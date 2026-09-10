@@ -3,9 +3,13 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Clock, Sparkles, Users, Zap } from "lucide-react"
+import OfferVideo from "@/components/OfferVideo"
+import { SHARED_VIDEO_POSTER } from "@/lib/consolation-pass/config"
 
 const CHECKOUT_URL = "https://link.fastpaydirect.com/payment-link/6a8dba67d6768df054447de5"
 const OFFER_SECONDS = 5 * 60
+const BOGO_VIDEO =
+  "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/VSL_Upsell_BOGO_Private.mp4"
 
 export default function NewMemberDealClient() {
   const [timeLeft, setTimeLeft] = useState(OFFER_SECONDS)
@@ -44,6 +48,14 @@ export default function NewMemberDealClient() {
             How badly do you want to learn{" "}
             <span className="text-[#FF3366]">FAST</span>?
           </p>
+        </div>
+
+        <div className="mb-10">
+          <OfferVideo
+            src={BOGO_VIDEO}
+            poster={SHARED_VIDEO_POSTER}
+            title="Studio E BOGO private lesson offer video"
+          />
         </div>
 
         <Card className="mb-10 overflow-hidden border-2 border-red-500 shadow-xl">

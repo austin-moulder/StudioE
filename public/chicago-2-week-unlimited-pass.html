@@ -24,19 +24,19 @@
   -->
   <style>
     :root {
-      --black: #0a0a0a;
-      --cream: #f5f0e6;
-      --red: #b91c1c;
-      --red-dark: #991b1b;
-      --gold: #d4af37;
-      --panel: #161616;
+      --black: #111827;
+      --cream: #ffffff;
+      --red: #FF3366;
+      --red-dark: #E62E5C;
+      --gold: #FF7A5A;
+      --panel: #f9fafb;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: var(--black);
-      color: var(--cream);
+      background: #ffffff;
+      color: #111827;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
@@ -117,7 +117,7 @@
     .faq-item + .faq-item { border-top: 1px solid rgba(255,255,255,.1); }
     .faq-btn {
       width: 100%; display: flex; justify-content: space-between; gap: 1rem; align-items: center;
-      background: transparent; border: 0; color: var(--cream); text-align: left; padding: 1rem;
+      background: transparent; border: 0; color: #111827; text-align: left; padding: 1rem;
       font-weight: 700; font-size: .95rem; cursor: pointer;
     }
     .faq-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
@@ -172,7 +172,7 @@
           id="vsl"
           playsinline
           preload="metadata"
-          poster="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/Screenshot%202026-09-10%20at%2012.14.08%20PM.png"
+          poster="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/Screenshot%202026-09-10%20at%2012.40.20%20PM.png"
           aria-label="Studio E giveaway follow-up video about the 2-week unlimited pass"
         >
           <source src="https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Videos/Giveaway_Second_Place.mp4" type="video/mp4" />
@@ -234,7 +234,8 @@
 
   <script>
     // ===== CHECKOUT / BOOKING =====
-    const CHECKOUT_URL = "https://app.acuityscheduling.com/schedule/76f316b6/?template=class";
+    const CHECKOUT_URL = "https://link.fastpaydirect.com/payment-link/6a975b4fd6768df05444938c";
+    const BOOKING_URL = "https://app.acuityscheduling.com/schedule/76f316b6/?template=class";
     const UTM = { utm_source: "giveaway", utm_medium: "vsl", utm_campaign: "consolation_offer" };
     const STORAGE_KEY = "studioe_consolation_offer_expires_at";
     const EXPIRY_HOURS = 24;
@@ -244,7 +245,7 @@
       { q: "Who is this for?", a: "Only eligible for new students. Existing members cannot redeem this purchase." },
       { q: "Where are classes located?", a: "Studio E, 2657 W Division Street, Humboldt Park, Chicago, IL 60622." },
       { q: "What classes are included?", a: "Unlimited eligible classes include salsa, bachata, merengue, cumbia, and cha-cha." },
-      { q: "When does the 14-day period begin?", a: 'The 14-day period begins when you book your first class. <a href="https://app.acuityscheduling.com/schedule/76f316b6/?template=class" style="color:#d4af37;">Book your first class here</a>.' },
+      { q: "When does the 14-day period begin?", a: 'The 14-day period begins when you book your first class. <a href="https://app.acuityscheduling.com/schedule/76f316b6/?template=class" style="color:#FF3366;">Book your first class here</a>.' },
       { q: "Is there a long-term commitment?", a: "No. This pass is a one-time 14-day offer with no membership required to redeem it." },
       { q: "What happens after the 14 days?", a: "After the 14 days, you’ll have the option to join a 28-day challenge or a membership at a very special price not available to the rest of the public." },
       { q: "What is the refund/cancellation policy?", a: "There are no refunds for the unlimited pass." }
