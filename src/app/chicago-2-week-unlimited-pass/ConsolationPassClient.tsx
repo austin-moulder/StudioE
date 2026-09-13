@@ -8,9 +8,9 @@ import {
   FOOTER,
   OFFER,
   OFFER_STACK,
-  STORAGE_KEY,
   VIDEO,
   buildCheckoutUrl,
+  getFixedOfferExpiryMs,
 } from "@/lib/consolation-pass/config"
 
 type TimeLeft = { hours: number; minutes: number; seconds: number }
@@ -41,41 +41,7 @@ function trackEvent(name: string, props: Record<string, unknown> = {}) {
 }
 
 function getExpiryTimestamp(): number {
-  if (typeof window === "undefined") return Date.now() + OFFER.expiryHours * 60 * 60 * 1000
-
-  const params = new URLSearchParams(window.location.search)
-  const expiresParam = params.get("expires")
-  const deliveredParam = params.get("delivered") || params.get("delivered_at")
-
-  if (expiresParam) {
-    const parsed = Date.parse(expiresParam)
-    if (!Number.isNaN(parsed)) return parsed
-  }
-
-  if (deliveredParam) {
-    const delivered = Date.parse(deliveredParam)
-    if (!Number.isNaN(delivered)) {
-      return delivered + OFFER.expiryHours * 60 * 60 * 1000
-    }
-  }
-
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      const n = Number(stored)
-      if (!Number.isNaN(n)) return n
-    }
-  } catch {
-    /* ignore */
-  }
-
-  const expiresAt = Date.now() + OFFER.expiryHours * 60 * 60 * 1000
-  try {
-    window.localStorage.setItem(STORAGE_KEY, String(expiresAt))
-  } catch {
-    /* ignore */
-  }
-  return expiresAt
+  return getFixedOfferExpiryMs()
 }
 
 function calcTimeLeft(expiresAt: number): TimeLeft {

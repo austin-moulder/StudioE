@@ -18,16 +18,22 @@ export const BOOKING_URL =
 export const OFFER = {
   price: 25,
   durationDays: 14,
-  expiryHours: 24,
+  /** Fixed deadline: Monday, Sep 14, 2026 at 11:59pm America/Chicago (CDT). */
+  expiresAtIso: "2026-09-14T23:59:00-05:00",
   headline:
     "You Didn’t Win the Free Year. But You Still Get 2 Weeks Unlimited for $25.",
   subheadline:
     "Try Chicago’s Latin dance community, meet great people, and take as many eligible classes as you want for 14 days.",
   ctaPrimary: "Claim My 2-Week Pass for $25",
   ctaSecondary: "Claim My Pass for $25",
-  finePrint: "Chicago residents only. Offer expires 24 hours after delivery.",
+  finePrint: "Chicago residents only. Offer expires Monday at 11:59pm.",
   countdownLabel: "Your $25 offer expires in",
 } as const
+
+/** Epoch ms for the fixed offer deadline. */
+export function getFixedOfferExpiryMs() {
+  return Date.parse(OFFER.expiresAtIso)
+}
 
 export const UTM = {
   utm_source: "giveaway",
@@ -107,8 +113,6 @@ export const FOOTER = {
   residencyNote: "Chicago residents only.",
   eligibilityNote: "This offer is available only to eligible giveaway entrants.",
 } as const
-
-export const STORAGE_KEY = "studioe_consolation_offer_expires_at" as const
 
 export function buildCheckoutUrl(extraParams?: Record<string, string>) {
   const url = new URL(CHECKOUT_URL)
