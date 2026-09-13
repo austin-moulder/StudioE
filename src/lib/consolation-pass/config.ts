@@ -26,8 +26,13 @@ export const OFFER = {
     "Try Chicago’s Latin dance community, meet great people, and take as many eligible classes as you want for 14 days.",
   ctaPrimary: "Claim My 2-Week Pass for $25",
   ctaSecondary: "Claim My Pass for $25",
-  finePrint: "Chicago residents only. Offer expires Tuesday at 12pm.",
-  countdownLabel: "Your $25 offer expires in",
+  /** Purchase must happen before the countdown ends; redemption is separate. */
+  purchaseUrgency:
+    "You must purchase in the next 24 hours. You can redeem anytime before November 15 by booking your first class.",
+  finePrint:
+    "Chicago residents only. Purchase before the timer ends. Redeem anytime before November 15 by booking your first class.",
+  countdownLabel: "Purchase in the next 24 hours — offer expires in",
+  redeemBy: "November 15, 2026",
 } as const
 
 /** Epoch ms for the fixed offer deadline. */
@@ -52,10 +57,27 @@ export const VIDEO = {
 
 export const OFFER_STACK = [
   "14 days of unlimited eligible Latin dance classes",
+  "Redeem anytime before November 15 by booking your first class",
   "Beginner-friendly instruction",
   "Meet and dance with the Chicago Puerto Rican community",
   "No long-term commitment",
   "Simple online booking",
+] as const
+
+/** Clear purchase vs. redeem steps shown on the page. */
+export const HOW_IT_WORKS = [
+  {
+    title: "1. Purchase in the next 24 hours",
+    body: "This $25 offer only lasts while the timer is running. Once it hits zero, the deal is gone.",
+  },
+  {
+    title: "2. Redeem anytime before November 15",
+    body: "You don’t have to start right away. Book your first class whenever you’re ready before November 15.",
+  },
+  {
+    title: "3. Your 14 days start when you book",
+    body: "Redeeming is booking your first class. That’s when your unlimited 14-day pass begins.",
+  },
 ] as const
 
 export type FaqItem = {
@@ -81,8 +103,16 @@ export const FAQS: FaqItem[] = [
       "Unlimited eligible classes include salsa, bachata, merengue, cumbia, and cha-cha.",
   },
   {
+    question: "Do I have to start the pass right away?",
+    answer:
+      "No. You must purchase while the 24-hour offer is live, but you can redeem anytime before November 15. You redeem by booking your first class — that’s when your 14 days begin.",
+    linkHref: BOOKING_URL,
+    linkLabel: "Book your first class here",
+  },
+  {
     question: "When does the 14-day period begin?",
-    answer: "The 14-day period begins when you book your first class.",
+    answer:
+      "The 14-day period begins when you book your first class (not when you purchase). You must book that first class before November 15.",
     linkHref: BOOKING_URL,
     linkLabel: "Book your first class here",
   },

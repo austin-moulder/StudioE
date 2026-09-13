@@ -85,6 +85,25 @@
     .btn-gold { background: var(--gold); color: var(--black); }
     .btn:disabled { opacity: .5; cursor: not-allowed; }
     .fine { margin: .75rem 0 0; text-align: center; font-size: .75rem; color: rgba(245,240,230,.65); }
+    .urgency {
+      margin: 1.5rem auto 0; max-width: 28rem; text-align: center;
+      font-size: .95rem; font-weight: 700; color: #fff; line-height: 1.45;
+    }
+    .how-lead {
+      margin: 0 auto 1.5rem; max-width: 28rem; text-align: center;
+      color: #4b5563; font-size: 1rem;
+    }
+    .how-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+    .how-steps li {
+      border: 1px solid #e5e7eb; border-radius: .75rem; background: #fff;
+      padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    }
+    .how-steps strong {
+      display: block; font-family: Montserrat, system-ui, sans-serif;
+      font-size: .8rem; font-weight: 900; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--red); margin-bottom: .35rem;
+    }
+    .how-steps p { margin: 0; color: #374151; font-size: 1rem; }
     section { padding: 3rem 0; }
     .panel { background: #111; border-top: 1px solid rgba(255,255,255,.1); }
     h2 { margin: 0 0 1.5rem; text-align: center; font-size: clamp(1.5rem, 5vw, 1.85rem); font-weight: 900; }
@@ -148,8 +167,8 @@
       <p class="brand">Studio E · Chicago</p>
       <h1>You Didn’t Win the Free Year. But You Still Get 2 Weeks Unlimited for $25.</h1>
       <p class="sub">Try Chicago’s Latin dance community, meet great people, and take as many eligible classes as you want for 14 days.</p>
-      <div class="timer" role="timer" aria-live="polite" aria-label="Your $25 offer expires in">
-        <p class="timer-label">Your $25 offer expires in</p>
+      <div class="timer" role="timer" aria-live="polite" aria-label="Purchase in the next 24 hours — offer expires in">
+        <p class="timer-label">Purchase in the next 24 hours — offer expires in</p>
         <div class="timer-grid" id="countdown">
           <div class="timer-unit"><strong id="h">24</strong><span>Hours</span></div>
           <div class="timer-unit"><strong id="m">00</strong><span>Min</span></div>
@@ -157,12 +176,34 @@
         </div>
         <p id="expiredMsg" style="display:none;margin:.75rem 0 0;font-weight:900;font-size:1.25rem;">Offer expired</p>
       </div>
+      <p class="urgency">You must purchase in the next 24 hours. You can redeem anytime before November 15 by booking your first class.</p>
       <div style="margin-top:2rem;">
         <button class="btn btn-red" type="button" data-cta="hero">Claim My 2-Week Pass for $25</button>
-        <p class="fine">Chicago residents only. Offer expires Tuesday at 12pm.</p>
+        <p class="fine">Chicago residents only. Purchase before the timer ends. Redeem anytime before November 15 by booking your first class.</p>
       </div>
     </div>
   </header>
+
+  <section aria-labelledby="how-heading">
+    <div class="wrap">
+      <h2 id="how-heading">Purchase now. Redeem later.</h2>
+      <p class="how-lead">Buy in the next 24 hours. Start dancing anytime before November 15, 2026 by booking your first class.</p>
+      <ol class="how-steps">
+        <li>
+          <strong>1. Purchase in the next 24 hours</strong>
+          <p>This $25 offer only lasts while the timer is running. Once it hits zero, the deal is gone.</p>
+        </li>
+        <li>
+          <strong>2. Redeem anytime before November 15</strong>
+          <p>You don’t have to start right away. Book your first class whenever you’re ready before November 15.</p>
+        </li>
+        <li>
+          <strong>3. Your 14 days start when you book</strong>
+          <p>Redeeming is booking your first class. That’s when your unlimited 14-day pass begins.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
 
   <section class="panel" aria-labelledby="vsl-heading">
     <div class="wrap">
@@ -190,6 +231,7 @@
       <h2 id="stack-heading">What’s included</h2>
       <ul class="stack">
         <li><span class="check" aria-hidden="true">✓</span><span>14 days of unlimited eligible Latin dance classes</span></li>
+        <li><span class="check" aria-hidden="true">✓</span><span>Redeem anytime before November 15 by booking your first class</span></li>
         <li><span class="check" aria-hidden="true">✓</span><span>Beginner-friendly instruction</span></li>
         <li><span class="check" aria-hidden="true">✓</span><span>Meet and dance with the Chicago Puerto Rican community</span></li>
         <li><span class="check" aria-hidden="true">✓</span><span>No long-term commitment</span></li>
@@ -201,8 +243,8 @@
 
   <section class="cta-band">
     <div class="wrap">
-      <h2>Start Dancing This Week</h2>
-      <p style="margin:0 auto;max-width:28rem;color:rgba(245,240,230,.75);">Lock in 14 days of unlimited eligible classes for $25.</p>
+      <h2>Lock It In Before the Timer Ends</h2>
+      <p style="margin:0 auto;max-width:28rem;color:rgba(245,240,230,.75);">Purchase in the next 24 hours for $25. Redeem anytime before November 15, 2026 by booking your first class.</p>
       <button class="btn btn-gold" type="button" data-cta="mid_cta" style="margin-top:2rem;">Claim My Pass for $25</button>
     </div>
   </section>
@@ -244,7 +286,8 @@
       { q: "Who is this for?", a: "Only eligible for new students. Existing members cannot redeem this purchase." },
       { q: "Where are classes located?", a: "Studio E, 2657 W Division Street, Humboldt Park, Chicago, IL 60622." },
       { q: "What classes are included?", a: "Unlimited eligible classes include salsa, bachata, merengue, cumbia, and cha-cha." },
-      { q: "When does the 14-day period begin?", a: 'The 14-day period begins when you book your first class. <a href="https://app.acuityscheduling.com/schedule/76f316b6/?template=class" style="color:#FF3366;">Book your first class here</a>.' },
+      { q: "Do I have to start the pass right away?", a: 'No. You must purchase while the 24-hour offer is live, but you can redeem anytime before November 15. You redeem by booking your first class — that’s when your 14 days begin. <a href="https://app.acuityscheduling.com/schedule/76f316b6/?template=class" style="color:#FF3366;">Book your first class here</a>.' },
+      { q: "When does the 14-day period begin?", a: 'The 14-day period begins when you book your first class (not when you purchase). You must book that first class before November 15. <a href="https://app.acuityscheduling.com/schedule/76f316b6/?template=class" style="color:#FF3366;">Book your first class here</a>.' },
       { q: "Is there a long-term commitment?", a: "No. This pass is a one-time 14-day offer with no membership required to redeem it." },
       { q: "What happens after the 14 days?", a: "After the 14 days, you’ll have the option to join a 28-day challenge or a membership at a very special price not available to the rest of the public." },
       { q: "What is the refund/cancellation policy?", a: "There are no refunds for the unlimited pass." }

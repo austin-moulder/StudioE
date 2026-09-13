@@ -6,6 +6,7 @@ import OfferVideo from "@/components/OfferVideo"
 import {
   FAQS,
   FOOTER,
+  HOW_IT_WORKS,
   OFFER,
   OFFER_STACK,
   VIDEO,
@@ -147,6 +148,10 @@ export default function ConsolationPassClient() {
             )}
           </div>
 
+          <p className="mx-auto mt-6 max-w-md text-center text-sm font-semibold leading-relaxed text-white sm:text-base">
+            {OFFER.purchaseUrgency}
+          </p>
+
           <div className="mt-8">
             <button
               type="button"
@@ -163,7 +168,32 @@ export default function ConsolationPassClient() {
         </div>
       </header>
 
-      {/* 2. VSL */}
+      {/* 2. How it works — purchase vs redeem */}
+      <section className="border-b border-gray-100 px-4 py-12 sm:px-6" aria-labelledby="how-heading">
+        <div className="mx-auto max-w-xl">
+          <h2
+            id="how-heading"
+            className="text-center font-montserrat text-2xl font-black tracking-tight text-gray-900 sm:text-3xl"
+          >
+            Purchase now. Redeem later.
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-center text-base leading-relaxed text-gray-600">
+            Buy in the next 24 hours. Start dancing anytime before {OFFER.redeemBy} by booking your first class.
+          </p>
+          <ol className="mt-8 space-y-4">
+            {HOW_IT_WORKS.map((step) => (
+              <li key={step.title} className="rounded-xl border border-gray-200 bg-white px-4 py-4 shadow-sm">
+                <p className="font-montserrat text-sm font-black uppercase tracking-wide text-[#FF3366]">
+                  {step.title}
+                </p>
+                <p className="mt-1.5 text-base leading-relaxed text-gray-700">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 3. VSL */}
       <section className="border-b border-gray-100 bg-gray-50 px-4 py-12 sm:px-6" aria-labelledby="vsl-heading">
         <div className="mx-auto max-w-xl">
           <h2
@@ -201,7 +231,7 @@ export default function ConsolationPassClient() {
         </div>
       </section>
 
-      {/* 3. Offer stack */}
+      {/* 4. Offer stack */}
       <section className="px-4 py-12 sm:px-6" aria-labelledby="stack-heading">
         <div className="mx-auto max-w-xl">
           <h2
@@ -232,14 +262,15 @@ export default function ConsolationPassClient() {
         </div>
       </section>
 
-      {/* 4. CTA */}
+      {/* 5. CTA */}
       <section className="bg-gradient-to-br from-[#FF7A5A] via-[#FF3366] to-[#9933CC] px-4 py-14 text-white sm:px-6">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            Start Dancing This Week
+            Lock It In Before the Timer Ends
           </h2>
           <p className="mx-auto mt-3 max-w-md text-white/90">
-            Lock in 14 days of unlimited eligible classes for ${OFFER.price}.
+            Purchase in the next 24 hours for ${OFFER.price}. Redeem anytime before{" "}
+            {OFFER.redeemBy} by booking your first class.
           </p>
           <button
             type="button"
@@ -252,7 +283,7 @@ export default function ConsolationPassClient() {
         </div>
       </section>
 
-      {/* 5. FAQ */}
+      {/* 6. FAQ */}
       <section className="bg-gray-50 px-4 py-12 sm:px-6" aria-labelledby="faq-heading">
         <div className="mx-auto max-w-xl">
           <h2
@@ -319,7 +350,7 @@ export default function ConsolationPassClient() {
         </div>
       </section>
 
-      {/* 6. Footer */}
+      {/* 7. Footer */}
       <footer className="border-t border-gray-200 bg-white px-4 py-10 text-center text-sm text-gray-600 sm:px-6">
         <div className="mx-auto max-w-xl space-y-3">
           <p className="font-montserrat text-base font-bold text-gray-900">{FOOTER.businessName}</p>
