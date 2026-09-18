@@ -8,6 +8,7 @@ const HIDE_CHROME_PATHS = [
   "/chicago-2-week-unlimited-pass",
   "/challenge",
   "/twerk-thursday",
+  "/reggaeton",
 ]
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {

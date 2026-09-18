@@ -1,4 +1,7 @@
-import { EVENT } from "./config"
+/**
+ * Shared upcoming-weekday event scheduling for popup class landings.
+ * Uses America/Chicago wall-clock times.
+ */
 
 type ZoneParts = {
   year: number
@@ -8,6 +11,14 @@ type ZoneParts = {
   minute: number
   second: number
   weekday: number // 0 Sun … 6 Sat
+}
+
+export type EventSchedule = {
+  timeZone: string
+  /** Weekday: 0 = Sunday … 6 = Saturday */
+  weekday: number
+  startHour: number
+  startMinute: number
 }
 
 const WEEKDAY_MAP: Record<string, number> = {
@@ -50,9 +61,6 @@ function getZoneParts(date: Date, timeZone: string): ZoneParts {
   }
 }
 
-/**
- * Convert a wall-clock date/time in `timeZone` to a UTC epoch ms.
- */
 export function zonedWallTimeToUtcMs(
   year: number,
   month: number,
@@ -93,43 +101,49 @@ function addCalendarDays(
 }
 
 /**
- * Upcoming Twerk Thursday start (Thursday 8:30 PM America/Chicago).
- * If now is before that Thursday 8:30 PM Chicago → that Thursday.
- * If now is at/after Thursday 8:30 PM Chicago → the following Thursday.
+ * If now is before that weekday's start time → that occurrence.
+ * If now is at/after start → the following week.
  */
-export function getUpcomingEventStartMs(now: Date = new Date()): number {
-  const tz = EVENT.timeZone
+export function getUpcomingEventStartMs(
+  schedule: EventSchedule,
+  now: Date = new Date()
+): number {
+  const tz = schedule.timeZone
   const parts = getZoneParts(now, tz)
-  const daysUntilThursday = (EVENT.weekday - parts.weekday + 7) % 7
-  const thisThu = addCalendarDays(parts.year, parts.month, parts.day, daysUntilThursday)
-  const thisThuStart = zonedWallTimeToUtcMs(
-    thisThu.year,
-    thisThu.month,
-    thisThu.day,
-    EVENT.startHour,
-    EVENT.startMinute,
+  const daysUntil = (schedule.weekday - parts.weekday + 7) % 7
+  const thisOccurrence = addCalendarDays(parts.year, parts.month, parts.day, daysUntil)
+  const thisStart = zonedWallTimeToUtcMs(
+    thisOccurrence.year,
+    thisOccurrence.month,
+    thisOccurrence.day,
+    schedule.startHour,
+    schedule.startMinute,
     tz
   )
 
-  if (now.getTime() < thisThuStart) {
-    return thisThuStart
+  if (now.getTime() < thisStart) {
+    return thisStart
   }
 
-  const nextThu = addCalendarDays(thisThu.year, thisThu.month, thisThu.day, 7)
+  const nextOccurrence = addCalendarDays(
+    thisOccurrence.year,
+    thisOccurrence.month,
+    thisOccurrence.day,
+    7
+  )
   return zonedWallTimeToUtcMs(
-    nextThu.year,
-    nextThu.month,
-    nextThu.day,
-    EVENT.startHour,
-    EVENT.startMinute,
+    nextOccurrence.year,
+    nextOccurrence.month,
+    nextOccurrence.day,
+    schedule.startHour,
+    schedule.startMinute,
     tz
   )
 }
 
-/** Readable date like "Thursday, September 24" in America/Chicago. */
-export function formatEventDateLabel(eventStartMs: number): string {
+export function formatEventDateLabel(eventStartMs: number, timeZone: string): string {
   return new Intl.DateTimeFormat("en-US", {
-    timeZone: EVENT.timeZone,
+    timeZone,
     weekday: "long",
     month: "long",
     day: "numeric",

@@ -5,23 +5,23 @@ import {
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
-export const TWERK_THURSDAY_CONFIG: PopupClassLandingConfig = {
-  id: "twerk-thursday",
-  checkoutUrl: "https://link.fastpaydirect.com/payment-link/6aad73969f7ff2c808a76607",
-  spotsStorageKey: "studioe_twerk_thursday_spots_left_v2",
+export const REGGAETON_CONFIG: PopupClassLandingConfig = {
+  id: "reggaeton",
+  checkoutUrl: "https://link.fastpaydirect.com/payment-link/6aadc331f426560dbc2f11a8",
+  spotsStorageKey: "studioe_reggaeton_spots_left_v1",
   utm: {
     utm_source: "meta",
     utm_medium: "paid_social",
-    utm_campaign: "twerk_thursday",
+    utm_campaign: "reggaeton_wednesday",
   },
   event: {
-    name: "Twerk Thursday",
-    format: "Ladies-only beginner twerk class",
-    startHour: 20,
+    name: "Reggaeton Wednesday",
+    format: "Beginner-friendly reggaeton class",
+    startHour: 19,
     startMinute: 30,
     timeZone: "America/Chicago",
-    weekday: 4,
-    durationLabel: "8:30 PM to 9:30 PM",
+    weekday: 3,
+    durationLabel: "7:30 PM to 8:30 PM",
     price: 25,
     capacity: 20,
     venueName: "Studio E",
@@ -33,13 +33,13 @@ export const TWERK_THURSDAY_CONFIG: PopupClassLandingConfig = {
   },
   assets: {
     flyer:
-      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Twerk_popup.png",
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Reggaeton_popup.png",
     video:
-      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Twerk_vid.mp4",
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Reggaeton_vid.mp4",
   },
   copy: {
-    accentLabel: "Ladies Only",
-    heroHeadline: "Twerk Thursday: A Ladies-Only Dance Night in Humboldt Park",
+    accentLabel: "Open to All",
+    heroHeadline: "Reggaeton Night: A High-Energy Dance Class in Humboldt Park",
     heroSubheadline:
       "Learn fun, confident movement in a judgment-free room, bring your best friend for free, and leave feeling amazing.",
     primaryCta: "Reserve My Spot for $25",
@@ -50,28 +50,28 @@ export const TWERK_THURSDAY_CONFIG: PopupClassLandingConfig = {
     offerHeadline: "Your $25 Gets You In",
     friendHeadline: "Bring Your Best Friend Free",
     friendBody:
-      "Your ticket includes one free spot for a female friend who is new to the studio. Come together, learn together, and make Thursday night more fun.",
+      "Your ticket includes one free spot for a friend who is new to the studio. Come together, learn together, and make Wednesday night more fun.",
     priceFriendLine: "$25 · Bring a friend free",
     limitedHeadline: "Only 20 Tickets Available",
     limitedBody:
       "We keep the class small so the instructor can give you real attention and everyone has enough mirror space to learn comfortably.",
-    communityHeadline: "A Women-Only Affirmation Space",
+    communityHeadline: "A Judgment-Free Dance Space",
     communityBody:
-      "This class is designed as a supportive space where women can move, learn, laugh, and build confidence without feeling judged.",
-    communityBadge: "Women only. No men allowed.",
-    finalHeadline: "Your Thursday Night Plans Are Set.",
+      "This class is designed as a supportive space where anyone can move, learn, laugh, and build confidence without feeling judged.",
+    communityBadge: null,
+    finalHeadline: "Your Wednesday Night Plans Are Set.",
     finalBody: "Grab your ticket, bring your friend, and come move with us in Humboldt Park.",
     countdownEnded: "Class is starting soon.",
     stickyCta: "Reserve My Spot — $25",
-    flyerAlt: "Twerk Thursday ladies-only workshop flyer — bring a friend for free, $25",
-    videoAriaLabel: "Twerk Thursday class energy at Studio E",
+    flyerAlt: "Reggaeton class flyer at Studio E — bring a friend for free, $25",
+    videoAriaLabel: "Reggaeton class energy at Studio E",
   },
   offerBullets: [
-    "60-minute beginner-friendly twerk class",
-    "A fun, welcoming women-only environment",
-    "Bring one female friend free",
+    "60-minute beginner-friendly reggaeton class",
+    "A fun, welcoming environment open to all",
+    "Bring one friend free",
     "Personalized instruction in a capped 20-person class",
-    "A high-energy Thursday night experience in Humboldt Park",
+    "A high-energy Wednesday night experience in Humboldt Park",
   ],
   offerTerms: [
     "The paying customer and free friend must attend together.",
@@ -83,20 +83,21 @@ export const TWERK_THURSDAY_CONFIG: PopupClassLandingConfig = {
     {
       question: "Do I need dance experience?",
       answer:
-        "No. The class is beginner-friendly and designed for women who want to try something fun in a supportive environment.",
+        "No. The class is beginner-friendly and designed for anyone who wants to try something fun in a supportive environment.",
     },
     {
       question: "What does my ticket include?",
-      answer: "One spot in the 60-minute Twerk Thursday class at Studio E.",
+      answer: "One spot in the 60-minute Reggaeton class at Studio E.",
     },
     {
       question: "Can I bring a friend?",
       answer:
-        "Yes. Each paid ticket includes one free female friend who is new to the studio. You must attend together.",
+        "Yes. Each paid ticket includes one free friend who is new to the studio. You must attend together.",
     },
     {
-      question: "Is the class really women-only?",
-      answer: "Yes. This is a women-only class and no men are allowed.",
+      question: "Who is this class for?",
+      answer:
+        "This class is open to all. Come as you are — beginners are welcome.",
     },
     {
       question: "Where is the class?",

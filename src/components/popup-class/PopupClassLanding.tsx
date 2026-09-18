@@ -4,20 +4,15 @@ import Image from "next/image"
 import { useCallback, useEffect, useState } from "react"
 import { Check, ChevronDown, MapPin, Users } from "lucide-react"
 import {
-  ASSETS,
-  COPY,
-  EVENT,
-  FAQS,
-  OFFER_BULLETS,
-  OFFER_TERMS,
-  buildCheckoutUrl,
-} from "@/lib/twerk-thursday/config"
-import {
   formatEventDateLabel,
   getCountdownParts,
   getUpcomingEventStartMs,
   type CountdownParts,
-} from "@/lib/twerk-thursday/event-time"
+} from "@/lib/popup-class/event-time"
+import {
+  buildPopupCheckoutUrl,
+  type PopupClassLandingConfig,
+} from "@/lib/popup-class/types"
 
 declare global {
   interface Window {
@@ -26,14 +21,13 @@ declare global {
   }
 }
 
-const SPOTS_STORAGE_KEY = "studioe_twerk_thursday_spots_left_v2"
 const SPOTS_MIN = 3
 const SPOTS_MAX = 12
 
-function getSpotsLeft(): number {
+function getSpotsLeft(storageKey: string): number {
   if (typeof window === "undefined") return 7
   try {
-    const raw = window.localStorage.getItem(SPOTS_STORAGE_KEY)
+    const raw = window.localStorage.getItem(storageKey)
     if (raw) {
       const n = Number(raw)
       if (Number.isInteger(n) && n >= SPOTS_MIN && n <= SPOTS_MAX) return n
@@ -43,7 +37,7 @@ function getSpotsLeft(): number {
   }
   const count = Math.floor(Math.random() * (SPOTS_MAX - SPOTS_MIN + 1)) + SPOTS_MIN
   try {
-    window.localStorage.setItem(SPOTS_STORAGE_KEY, String(count))
+    window.localStorage.setItem(storageKey, String(count))
   } catch {
     /* ignore */
   }
@@ -69,15 +63,15 @@ const ctaClass =
 function Countdown({
   parts,
   ended,
+  endedLabel,
 }: {
   parts: CountdownParts
   ended: boolean
+  endedLabel: string
 }) {
   if (ended) {
     return (
-      <p className="font-montserrat text-xl font-black text-[#FF2D6A] sm:text-2xl">
-        {COPY.countdownEnded}
-      </p>
+      <p className="font-montserrat text-xl font-black text-[#FF2D6A] sm:text-2xl">{endedLabel}</p>
     )
   }
 
@@ -96,7 +90,11 @@ function Countdown({
         ]
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3" role="timer" aria-live="polite">
+    <div
+      className="flex flex-wrap items-center justify-center gap-2 sm:gap-3"
+      role="timer"
+      aria-live="polite"
+    >
       {units.map(([label, value]) => (
         <div
           key={label}
@@ -112,7 +110,8 @@ function Countdown({
   )
 }
 
-export default function TwerkThursdayClient() {
+export default function PopupClassLanding({ config }: { config: PopupClassLandingConfig }) {
+  const { event, assets, copy, offerBullets, offerTerms, faqs } = config
   const [eventStartMs, setEventStartMs] = useState<number | null>(null)
   const [dateLabel, setDateLabel] = useState("")
   const [parts, setParts] = useState<CountdownParts>({
@@ -127,17 +126,17 @@ export default function TwerkThursdayClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   useEffect(() => {
-    const start = getUpcomingEventStartMs()
+    const start = getUpcomingEventStartMs(event)
     setEventStartMs(start)
-    setDateLabel(formatEventDateLabel(start))
-    setSpotsLeft(getSpotsLeft())
+    setDateLabel(formatEventDateLabel(start, event.timeZone))
+    setSpotsLeft(getSpotsLeft(config.spotsStorageKey))
     trackMeta("ViewContent", {
-      content_name: EVENT.name,
+      content_name: event.name,
       content_category: "event",
-      value: EVENT.price,
+      value: event.price,
       currency: "USD",
     })
-  }, [])
+  }, [config.spotsStorageKey, event])
 
   useEffect(() => {
     if (!eventStartMs) return
@@ -151,24 +150,26 @@ export default function TwerkThursdayClient() {
     return () => window.clearInterval(id)
   }, [eventStartMs])
 
-  const goCheckout = useCallback((placement: string) => {
-    trackMeta("InitiateCheckout", {
-      content_name: EVENT.name,
-      value: EVENT.price,
-      currency: "USD",
-      placement,
-    })
-    window.location.href = buildCheckoutUrl({ placement })
-  }, [])
+  const goCheckout = useCallback(
+    (placement: string) => {
+      trackMeta("InitiateCheckout", {
+        content_name: event.name,
+        value: event.price,
+        currency: "USD",
+        placement,
+      })
+      window.location.href = buildPopupCheckoutUrl(config.checkoutUrl, config.utm, { placement })
+    },
+    [config.checkoutUrl, config.utm, event.name, event.price]
+  )
 
   return (
-    <div className="min-h-screen scroll-smooth bg-[#1A0508] text-white antialiased pb-24 sm:pb-0">
-      {/* Hero */}
+    <div className="min-h-screen scroll-smooth bg-[#1A0508] pb-24 text-white antialiased sm:pb-0">
       <header className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src={ASSETS.flyer}
-            alt="Twerk Thursday ladies-only workshop at Studio E"
+            src={assets.flyer}
+            alt={copy.flyerAlt}
             fill
             priority
             className="object-cover object-center opacity-35"
@@ -183,23 +184,23 @@ export default function TwerkThursdayClient() {
           </p>
           <p
             className="mt-3 text-center text-2xl text-[#FF2D6A]"
-            style={{ fontFamily: "var(--font-twerk-script), cursive" }}
+            style={{ fontFamily: "var(--font-popup-script), cursive" }}
           >
-            Ladies Only
+            {copy.accentLabel}
           </p>
 
           <h1 className="mt-3 text-center font-montserrat text-[1.7rem] font-black leading-[1.12] tracking-tight sm:text-4xl">
-            {COPY.heroHeadline}
+            {copy.heroHeadline}
           </h1>
           <p className="mx-auto mt-4 max-w-md text-center text-base leading-relaxed text-white/85 sm:text-lg">
-            {COPY.heroSubheadline}
+            {copy.heroSubheadline}
           </p>
 
           <div className="mx-auto mt-6 max-w-sm overflow-hidden rounded-2xl border border-white/15 bg-black/30 shadow-xl">
             <div className="relative aspect-square">
               <Image
-                src={ASSETS.flyer}
-                alt="Twerk Thursday flyer — bring a friend for free, $25"
+                src={assets.flyer}
+                alt={copy.flyerAlt}
                 fill
                 priority
                 className="object-cover"
@@ -212,41 +213,38 @@ export default function TwerkThursdayClient() {
             <p className="font-montserrat text-base font-black text-white">
               {dateLabel || "Loading date…"}
             </p>
-            <p className="text-white/85">{EVENT.durationLabel}</p>
+            <p className="text-white/85">{event.durationLabel}</p>
             <p className="text-white/85">
-              {EVENT.venueName} · {EVENT.addressLine}
+              {event.venueName} · {event.addressLine}
             </p>
-            <p className="font-montserrat text-lg font-black text-[#FF2D6A]">
-              ${EVENT.price} · Bring a friend free
-            </p>
+            <p className="font-montserrat text-lg font-black text-[#FF2D6A]">{copy.priceFriendLine}</p>
           </div>
 
           <div className="mt-6 text-center">
             <p className="mb-3 font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-white/70">
               Starts in
             </p>
-            <Countdown parts={parts} ended={ended} />
+            <Countdown parts={parts} ended={ended} endedLabel={copy.countdownEnded} />
           </div>
 
           <div className="mt-8 flex flex-col items-center">
             <button type="button" onClick={() => goCheckout("hero")} className={ctaClass}>
-              {COPY.primaryCta}
+              {copy.primaryCta}
             </button>
             <p className="mt-3 max-w-md text-center text-xs leading-relaxed text-white/70">
-              {COPY.capacityNote}
+              {copy.capacityNote}
             </p>
           </div>
         </div>
       </header>
 
-      {/* Video */}
       <section className="border-t border-white/10 px-4 py-12 sm:px-6" aria-labelledby="video-heading">
         <div className="mx-auto max-w-xl">
           <h2
             id="video-heading"
             className="mb-6 text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
           >
-            {COPY.videoHeadline}
+            {copy.videoHeadline}
           </h2>
           <div className="mx-auto mt-6 flex max-w-[280px] justify-center overflow-hidden rounded-2xl border border-white/15 bg-black shadow-lg sm:max-w-[320px]">
             <video
@@ -257,26 +255,25 @@ export default function TwerkThursdayClient() {
               playsInline
               controls
               preload="metadata"
-              poster={ASSETS.flyer}
-              aria-label="Twerk Thursday class energy at Studio E"
+              poster={assets.flyer}
+              aria-label={copy.videoAriaLabel}
             >
-              <source src={ASSETS.video} type="video/mp4" />
+              <source src={assets.video} type="video/mp4" />
             </video>
           </div>
         </div>
       </section>
 
-      {/* Offer */}
       <section className="bg-[#2A0A12] px-4 py-12 sm:px-6" aria-labelledby="offer-heading">
         <div className="mx-auto max-w-xl">
           <h2
             id="offer-heading"
             className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
           >
-            {COPY.offerHeadline}
+            {copy.offerHeadline}
           </h2>
           <ul className="mt-8 space-y-3">
-            {OFFER_BULLETS.map((item) => (
+            {offerBullets.map((item) => (
               <li
                 key={item}
                 className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5"
@@ -287,84 +284,82 @@ export default function TwerkThursdayClient() {
             ))}
           </ul>
           <ul className="mt-6 space-y-2 text-sm text-white/65">
-            {OFFER_TERMS.map((term) => (
+            {offerTerms.map((term) => (
               <li key={term}>• {term}</li>
             ))}
           </ul>
           <div className="mt-8 flex justify-center">
             <button type="button" onClick={() => goCheckout("offer")} className={ctaClass}>
-              {COPY.primaryCta}
+              {copy.primaryCta}
             </button>
           </div>
         </div>
       </section>
 
-      {/* Friend offer */}
       <section className="px-4 py-12 sm:px-6" aria-labelledby="friend-heading">
         <div className="mx-auto max-w-xl text-center">
           <h2
             id="friend-heading"
             className="font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
           >
-            {COPY.friendHeadline}
+            {copy.friendHeadline}
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
-            {COPY.friendBody}
+            {copy.friendBody}
           </p>
           <div className="mt-8 flex justify-center">
             <button type="button" onClick={() => goCheckout("friend")} className={ctaClass}>
-              {COPY.secondaryCta}
+              {copy.secondaryCta}
             </button>
           </div>
         </div>
       </section>
 
-      {/* Limited capacity */}
       <section className="bg-[#2A0A12] px-4 py-12 sm:px-6" aria-labelledby="limited-heading">
         <div className="mx-auto max-w-xl text-center">
           <h2
             id="limited-heading"
             className="font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
           >
-            {COPY.limitedHeadline}
+            {copy.limitedHeadline}
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
-            {COPY.limitedBody}
+            {copy.limitedBody}
           </p>
           <div className="mx-auto mt-8 max-w-sm rounded-2xl border border-[#FF2D6A]/40 bg-[#FF2D6A]/10 px-5 py-6">
             <Users className="mx-auto h-8 w-8 text-[#FF2D6A]" aria-hidden />
             <p className="mt-3 font-montserrat text-sm font-bold uppercase tracking-[0.18em] text-[#FF8FB3]">
-              Limited to {EVENT.capacity} attendees
+              Limited to {event.capacity} attendees
             </p>
             {spotsLeft !== null ? (
               <p className="mt-3 font-montserrat text-3xl font-black text-white">
                 {spotsLeft} spot{spotsLeft === 1 ? "" : "s"} left
               </p>
             ) : null}
-            <p className="mt-2 text-xs text-white/60">Cap of {EVENT.capacity} total tickets</p>
+            <p className="mt-2 text-xs text-white/60">Cap of {event.capacity} total tickets</p>
           </div>
         </div>
       </section>
 
-      {/* Women only */}
-      <section className="px-4 py-12 sm:px-6" aria-labelledby="women-heading">
+      <section className="px-4 py-12 sm:px-6" aria-labelledby="community-heading">
         <div className="mx-auto max-w-xl text-center">
           <h2
-            id="women-heading"
+            id="community-heading"
             className="font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
           >
-            {COPY.womenHeadline}
+            {copy.communityHeadline}
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
-            {COPY.womenBody}
+            {copy.communityBody}
           </p>
-          <p className="mt-6 inline-block rounded-full border border-[#FF2D6A] bg-[#FF2D6A]/15 px-5 py-2.5 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF2D6A]">
-            {COPY.womenOnlyLine}
-          </p>
+          {copy.communityBadge ? (
+            <p className="mt-6 inline-block rounded-full border border-[#FF2D6A] bg-[#FF2D6A]/15 px-5 py-2.5 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF2D6A]">
+              {copy.communityBadge}
+            </p>
+          ) : null}
         </div>
       </section>
 
-      {/* Location */}
       <section className="bg-[#2A0A12] px-4 py-12 sm:px-6" aria-labelledby="location-heading">
         <div className="mx-auto max-w-xl">
           <h2
@@ -375,15 +370,15 @@ export default function TwerkThursdayClient() {
           </h2>
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
             <MapPin className="mx-auto h-6 w-6 text-[#FF2D6A]" aria-hidden />
-            <p className="mt-3 font-montserrat text-lg font-black">{EVENT.venueName}</p>
-            <p className="mt-1 text-white/85">{EVENT.addressLine}</p>
-            <p className="text-white/85">{EVENT.cityLine}</p>
-            <p className="mt-1 text-sm text-[#FF8FB3]">{EVENT.neighborhood}</p>
+            <p className="mt-3 font-montserrat text-lg font-black">{event.venueName}</p>
+            <p className="mt-1 text-white/85">{event.addressLine}</p>
+            <p className="text-white/85">{event.cityLine}</p>
+            <p className="mt-1 text-sm text-[#FF8FB3]">{event.neighborhood}</p>
           </div>
           <div className="mt-5 overflow-hidden rounded-2xl border border-white/10">
             <iframe
               title="Map to Studio E on Division Street"
-              src={EVENT.mapsEmbedSrc}
+              src={event.mapsEmbedSrc}
               className="h-48 w-full grayscale-[30%] contrast-125"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -391,13 +386,12 @@ export default function TwerkThursdayClient() {
           </div>
           <div className="mt-8 flex justify-center">
             <button type="button" onClick={() => goCheckout("location")} className={ctaClass}>
-              {COPY.primaryCta}
+              {copy.primaryCta}
             </button>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
       <section className="px-4 py-12 sm:px-6" aria-labelledby="faq-heading">
         <div className="mx-auto max-w-xl">
           <h2
@@ -407,10 +401,10 @@ export default function TwerkThursdayClient() {
             FAQ
           </h2>
           <div className="divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/5">
-            {FAQS.map((item, index) => {
+            {faqs.map((item, index) => {
               const open = openFaq === index
-              const panelId = `twerk-faq-${index}`
-              const buttonId = `twerk-faq-btn-${index}`
+              const panelId = `${config.id}-faq-${index}`
+              const buttonId = `${config.id}-faq-btn-${index}`
               return (
                 <div key={item.question}>
                   <h3>
@@ -447,24 +441,23 @@ export default function TwerkThursdayClient() {
         </div>
       </section>
 
-      {/* Final CTA */}
       <section className="border-t border-white/10 bg-gradient-to-br from-[#FF2D6A] via-[#C4184E] to-[#4A0A1C] px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            {COPY.finalHeadline}
+            {copy.finalHeadline}
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-white/90">{COPY.finalBody}</p>
+          <p className="mx-auto mt-3 max-w-md text-white/90">{copy.finalBody}</p>
           <div className="mt-6 space-y-1 text-sm text-white/90">
-            <p className="font-montserrat text-lg font-black">${EVENT.price} · Bring one female friend free</p>
+            <p className="font-montserrat text-lg font-black">{copy.priceFriendLine}</p>
             <p>{dateLabel}</p>
-            <p>{EVENT.durationLabel}</p>
+            <p>{event.durationLabel}</p>
           </div>
           <div className="mt-6">
-            <Countdown parts={parts} ended={ended} />
+            <Countdown parts={parts} ended={ended} endedLabel={copy.countdownEnded} />
           </div>
           {spotsLeft !== null ? (
             <p className="mt-5 font-montserrat text-sm font-bold text-white">
-              Only {spotsLeft} ticket{spotsLeft === 1 ? "" : "s"} left · Cap of {EVENT.capacity}
+              Only {spotsLeft} ticket{spotsLeft === 1 ? "" : "s"} left · Cap of {event.capacity}
             </p>
           ) : null}
           <div className="mt-8 flex justify-center">
@@ -473,23 +466,22 @@ export default function TwerkThursdayClient() {
               onClick={() => goCheckout("final")}
               className="mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-white px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-[#FF2D6A] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#C4184E] sm:text-lg"
             >
-              {COPY.primaryCta}
+              {copy.primaryCta}
             </button>
           </div>
         </div>
       </section>
 
       <footer className="px-4 py-8 text-center text-xs text-white/50 sm:px-6">
-        <p className="font-montserrat font-bold text-white/70">{EVENT.venueName}</p>
+        <p className="font-montserrat font-bold text-white/70">{event.venueName}</p>
         <p className="mt-1">
-          {EVENT.addressLine}, {EVENT.cityLine}
+          {event.addressLine}, {event.cityLine}
         </p>
       </footer>
 
-      {/* Sticky mobile CTA */}
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[#1A0508]/95 p-3 backdrop-blur sm:hidden">
         <button type="button" onClick={() => goCheckout("sticky")} className={`${ctaClass} max-w-none`}>
-          {COPY.stickyCta}
+          {copy.stickyCta}
         </button>
       </div>
     </div>

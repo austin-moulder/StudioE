@@ -3,7 +3,7 @@ import Script from "next/script"
 import { Great_Vibes } from "next/font/google"
 import GoogleTag from "@/components/analytics/GoogleTag"
 import PopupClassLanding from "@/components/popup-class/PopupClassLanding"
-import { META_PIXEL_ID, TWERK_THURSDAY_CONFIG } from "@/lib/twerk-thursday/config"
+import { META_PIXEL_ID, REGGAETON_CONFIG } from "@/lib/reggaeton/config"
 
 const scriptFont = Great_Vibes({
   weight: "400",
@@ -12,24 +12,24 @@ const scriptFont = Great_Vibes({
   display: "swap",
 })
 
-const { assets, event } = TWERK_THURSDAY_CONFIG
+const { assets, event } = REGGAETON_CONFIG
 
 export const metadata: Metadata = {
-  title: "Twerk Thursday | Ladies-Only Class at Studio E Chicago",
+  title: "Reggaeton Class | Studio E Chicago Humboldt Park",
   description:
-    "Ladies-only beginner twerk class in Humboldt Park. $25 ticket, bring a female friend free. Only 20 spots. Thursday 8:30–9:30 PM at Studio E.",
+    "Beginner-friendly reggaeton class in Humboldt Park. $25 ticket, bring a friend free. Only 20 spots. Wednesday 7:30–8:30 PM at Studio E.",
   openGraph: {
-    title: "Twerk Thursday — Ladies Only at Studio E",
+    title: "Reggaeton Night at Studio E",
     description:
-      "Judgment-free, women-only twerk night in Humboldt Park. $25, bring a friend free. Cap of 20.",
-    url: "https://www.joinstudioe.com/twerk-thursday",
+      "High-energy reggaeton class in Humboldt Park. $25, bring a friend free. Cap of 20.",
+    url: "https://www.joinstudioe.com/reggaeton",
     type: "website",
     images: [
       {
         url: assets.flyer,
         width: 1080,
         height: 1080,
-        alt: "Twerk Thursday ladies-only workshop flyer",
+        alt: "Reggaeton class flyer at Studio E",
       },
     ],
   },
@@ -39,11 +39,11 @@ export const metadata: Metadata = {
   },
 }
 
-export default function TwerkThursdayPage() {
+export default function ReggaetonPage() {
   return (
     <div className={scriptFont.variable}>
       <GoogleTag />
-      <Script id="meta-pixel-twerk-thursday" strategy="afterInteractive">
+      <Script id="meta-pixel-reggaeton" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -67,7 +67,7 @@ export default function TwerkThursdayPage() {
           alt=""
         />
       </noscript>
-      <PopupClassLanding config={TWERK_THURSDAY_CONFIG} />
+      <PopupClassLanding config={REGGAETON_CONFIG} />
       <p className="sr-only">
         {event.name} at {event.venueName}, {event.addressLine}, {event.cityLine}.
       </p>
