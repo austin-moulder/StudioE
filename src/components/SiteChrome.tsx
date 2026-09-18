@@ -4,7 +4,11 @@ import { usePathname } from "next/navigation"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 
-const HIDE_CHROME_PATHS = ["/chicago-2-week-unlimited-pass", "/challenge"]
+const HIDE_CHROME_PATHS = [
+  "/chicago-2-week-unlimited-pass",
+  "/challenge",
+  "/twerk-thursday",
+]
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
