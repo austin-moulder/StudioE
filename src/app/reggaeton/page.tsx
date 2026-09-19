@@ -15,13 +15,13 @@ const scriptFont = Great_Vibes({
 const { assets, event } = REGGAETON_CONFIG
 
 export const metadata: Metadata = {
-  title: "Reggaeton Class | Studio E Chicago Humboldt Park",
+  title: "Reggaeton Friday | Studio E Chicago Humboldt Park",
   description:
-    "Beginner-friendly reggaeton class in Humboldt Park. $25 ticket, bring a friend free. Only 20 spots. Wednesday 7:30–8:30 PM at Studio E.",
+    "Beginner-friendly reggaeton class + club pre-game in Humboldt Park. $25, bring a friend free. Friday 9–10 PM at Studio E, then we head to a local club together.",
   openGraph: {
-    title: "Reggaeton Night at Studio E",
+    title: "Reggaeton Friday at Studio E",
     description:
-      "High-energy reggaeton class in Humboldt Park. $25, bring a friend free. Cap of 20.",
+      "Learn the moves, meet people, then hit a reggaeton club together. $25, bring a friend free. Cap of 20.",
     url: "https://www.joinstudioe.com/reggaeton",
     type: "website",
     images: [
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
         url: assets.flyer,
         width: 1080,
         height: 1080,
-        alt: "Reggaeton class flyer at Studio E",
+        alt: "Reggaeton Friday flyer at Studio E",
       },
     ],
   },
