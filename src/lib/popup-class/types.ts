@@ -8,6 +8,8 @@ export type FaqItem = {
 export type PopupClassLandingConfig = {
   id: string
   checkoutUrl: string
+  /** When true, CTAs scroll to an on-page iframe of checkoutUrl instead of navigating away. */
+  embedCheckout?: boolean
   spotsStorageKey: string
   utm: {
     utm_source: string

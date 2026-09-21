@@ -7,7 +7,8 @@ export const META_PIXEL_ID = "1976276599649833" as const
 
 export const TWERK_THURSDAY_CONFIG: PopupClassLandingConfig = {
   id: "twerk-thursday",
-  checkoutUrl: "https://link.fastpaydirect.com/payment-link/6aad73969f7ff2c808a76607",
+  checkoutUrl: "https://studioe-danceclassestraining.com/twerkclass",
+  embedCheckout: true,
   spotsStorageKey: "studioe_twerk_thursday_spots_left_v3",
   utm: {
     utm_source: "meta",

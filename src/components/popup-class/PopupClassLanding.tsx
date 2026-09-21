@@ -112,6 +112,7 @@ function Countdown({
 
 export default function PopupClassLanding({ config }: { config: PopupClassLandingConfig }) {
   const { event, assets, copy, offerBullets, offerTerms, faqs } = config
+  const embedCheckout = Boolean(config.embedCheckout)
   const [eventStartMs, setEventStartMs] = useState<number | null>(null)
   const [dateLabel, setDateLabel] = useState("")
   const [parts, setParts] = useState<CountdownParts>({
@@ -124,6 +125,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
   const [ended, setEnded] = useState(false)
   const [spotsLeft, setSpotsLeft] = useState<number | null>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const [checkoutSrc, setCheckoutSrc] = useState<string | null>(null)
 
   useEffect(() => {
     const start = getUpcomingEventStartMs(event)
@@ -137,6 +139,11 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
       currency: "USD",
     })
   }, [config.spotsStorageKey, event])
+
+  useEffect(() => {
+    if (!embedCheckout) return
+    setCheckoutSrc(buildPopupCheckoutUrl(config.checkoutUrl, config.utm, { placement: "embed" }))
+  }, [config.checkoutUrl, config.utm, embedCheckout])
 
   useEffect(() => {
     if (!eventStartMs) return
@@ -158,9 +165,13 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         currency: "USD",
         placement,
       })
+      if (embedCheckout) {
+        document.getElementById("checkout")?.scrollIntoView({ behavior: "smooth", block: "start" })
+        return
+      }
       window.location.href = buildPopupCheckoutUrl(config.checkoutUrl, config.utm, { placement })
     },
-    [config.checkoutUrl, config.utm, event.name, event.price]
+    [config.checkoutUrl, config.utm, embedCheckout, event.name, event.price]
   )
 
   return (
@@ -460,17 +471,70 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
               Only {spotsLeft} ticket{spotsLeft === 1 ? "" : "s"} left · Cap of {event.capacity}
             </p>
           ) : null}
-          <div className="mt-8 flex justify-center">
-            <button
-              type="button"
-              onClick={() => goCheckout("final")}
-              className="mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-white px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-[#FF2D6A] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#C4184E] sm:text-lg"
-            >
-              {copy.primaryCta}
-            </button>
-          </div>
+          {!embedCheckout ? (
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() => goCheckout("final")}
+                className="mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-white px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-[#FF2D6A] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#C4184E] sm:text-lg"
+              >
+                {copy.primaryCta}
+              </button>
+            </div>
+          ) : null}
         </div>
       </section>
+
+      {embedCheckout ? (
+        <section
+          id="checkout"
+          className="scroll-mt-6 border-t border-white/10 bg-[#1A0508] px-4 py-14 sm:px-6"
+          aria-labelledby="checkout-heading"
+        >
+          <div className="mx-auto max-w-xl">
+            <h2
+              id="checkout-heading"
+              className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
+            >
+              Reserve Your Spot
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-center text-base text-white/80">
+              Complete checkout below. {copy.priceFriendLine}.
+            </p>
+            <div className="mt-8 overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
+              {checkoutSrc ? (
+                <iframe
+                  src={checkoutSrc}
+                  title={`${event.name} checkout`}
+                  className="block min-h-[820px] w-full border-0 bg-white"
+                  loading="lazy"
+                  allow="payment *"
+                />
+              ) : (
+                <div className="flex min-h-[240px] items-center justify-center px-6 text-sm text-stone-500">
+                  Loading checkout…
+                </div>
+              )}
+            </div>
+            <p className="mt-4 text-center text-sm text-white/65">
+              If the form doesn&apos;t load,{" "}
+              {checkoutSrc ? (
+                <a
+                  href={checkoutSrc}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-[#FF8FB3] underline underline-offset-2"
+                >
+                  open checkout in a new tab
+                </a>
+              ) : (
+                "open checkout in a new tab"
+              )}
+              .
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       <footer className="px-4 py-8 text-center text-xs text-white/50 sm:px-6">
         <p className="font-montserrat font-bold text-white/70">{event.venueName}</p>
