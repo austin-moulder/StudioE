@@ -34,7 +34,7 @@ export const AGE_GROUPS = [
   },
   {
     id: "juniors",
-    ages: "Ages 9–14",
+    ages: "Ages 9–17",
     time: "5:15 – 6:15 PM",
     body: "Stronger foundations in salsa, bachata, and Latin social dance—with room to grow technique, musicality, and self-expression.",
   },
@@ -73,7 +73,7 @@ export const PLANS = [
 ] as const
 
 export const COPY = {
-  announcement: "STARTS OCT 12 | MON–THU · PICK 1–2 DAYS | AGES 5–14",
+  announcement: "STARTS OCT 12 | MON–THU · PICK 1–2 DAYS | AGES 5–17",
   heroHeadline: "Chicago Latin Dance Youth Program",
   heroSubheadline:
     "Give your child a joyful after-school place to move, make friends, and grow through Latin dance—right in the heart of Humboldt Park. Classes officially start October 12, Monday through Thursday.",
@@ -112,7 +112,7 @@ export const FAQS = [
   {
     question: "What days are youth classes?",
     answer:
-      "Monday through Thursday—four class days available each week per age group. Parents choose the 1–2 days that best fit their child’s schedule. Ages 5–8 meet 4:15–5:15 PM and ages 9–14 meet 5:15–6:15 PM.",
+      "Monday through Thursday—four class days available each week per age group. Parents choose the 1–2 days that best fit their child’s schedule. Ages 5–8 meet 4:15–5:15 PM and ages 9–17 meet 5:15–6:15 PM.",
   },
   {
     question: "What’s the difference between Bronze and Gold?",
@@ -131,7 +131,7 @@ export const FAQS = [
   },
   {
     question: "What ages is the youth program for?",
-    answer: "We have a class for ages 5–8 (4:15–5:15 PM) and a class for ages 9–14 (5:15–6:15 PM).",
+    answer: "We have a class for ages 5–8 (4:15–5:15 PM) and a class for ages 9–17 (5:15–6:15 PM).",
   },
   {
     question: "Does my child need dance experience?",
