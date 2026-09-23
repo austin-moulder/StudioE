@@ -22,11 +22,11 @@ export const ASSETS = {
 } as const
 
 export const COPY = {
-  announcement: "FRIDAY OCT 23 · HUMBOLDT PARK · FREE RSVP",
+  announcement: "FRIDAY OCT 23 · FREE RSVP · $1,000+ RAFFLE",
   heroBrand: "Studio E",
   heroHeadline: "Official Grand Opening",
   heroSubheadline:
-    "One night of bomba, workshops, two-room social, performances, merch runway, and food—celebrating our home on Division Street.",
+    "One night of bomba, workshops, two-room social, performances, merch runway, and food—celebrating our home on Division Street. Every free RSVP is entered into a special raffle worth $1,000+.",
   primaryCta: "RSVP FREE",
   stickyCta: "RSVP For Grand Opening",
   nightHeadline: "The Night, Hour By Hour",
@@ -36,10 +36,11 @@ export const COPY = {
   lineupHeadline: "Performances & Runway",
   foodHeadline: "Fuel Up With Local Favorites",
   rsvpHeadline: "Save Your Spot",
-  rsvpBody: "RSVP free so we can plan the room and welcome you in on October 23.",
+  rsvpBody:
+    "RSVP free so we can plan the room and welcome you in on October 23. All RSVPs are entered into a special raffle worth $1,000+.",
   finalHeadline: "Be There When Studio E Officially Opens.",
   finalBody:
-    "Bombazo, workshops, social dancing until 1AM, live performances, merch runway, and food from Dope Drip Café and Reina’s Cakes.",
+    "Bombazo, workshops, social dancing until 1AM, live performances, merch runway, and food from Dope Drip Café and Reina’s Cakes. RSVP free—and get entered into the $1,000+ raffle.",
 } as const
 
 export const SCHEDULE = [
@@ -82,7 +83,13 @@ export const FOOD = ["Dope Drip Café", "Reina’s Cakes"] as const
 export const FAQS = [
   {
     question: "Is RSVP required?",
-    answer: "Yes—RSVP free so we can plan capacity and welcome you smoothly at the door.",
+    answer:
+      "Yes—RSVP free so we can plan capacity and welcome you smoothly at the door. Every RSVP is also entered into a special raffle worth $1,000+.",
+  },
+  {
+    question: "What’s the raffle?",
+    answer:
+      "All free RSVPs are entered into a special raffle worth $1,000+. Details will be shared at the Grand Opening.",
   },
   {
     question: "Do I need a partner?",

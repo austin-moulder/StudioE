@@ -7,11 +7,11 @@ import GrandOpeningClient from "./GrandOpeningClient"
 export const metadata: Metadata = {
   title: "Studio E Official Grand Opening",
   description:
-    "Friday, October 23 at Studio E in Humboldt Park. Bombazo, salsa workshops, two-room social, performances, merch runway, and food. Free RSVP.",
+    "Friday, October 23 at Studio E in Humboldt Park. Bombazo, workshops, two-room social, performances, merch runway, and food. Free RSVP—every RSVP enters a special raffle worth $1,000+.",
   openGraph: {
     title: "Studio E Official Grand Opening | Friday, October 23",
     description:
-      "Celebrate Studio E’s official grand opening: Bompleneras, workshops with Austin & Arik, social until 1AM, Una Bulla, Enclave Dance, and more.",
+      "Celebrate Studio E’s official grand opening. Free RSVP enters you into a special raffle worth $1,000+.",
     url: "https://www.joinstudioe.com/grand-opening",
     type: "website",
     images: [

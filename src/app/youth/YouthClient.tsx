@@ -197,6 +197,9 @@ export default function YouthClient() {
                 <h3 className="font-montserrat text-2xl font-black uppercase tracking-wide text-[#1C1410]">
                   {plan.name}
                 </h3>
+                <p className="mt-1 font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#FF3366]">
+                  {plan.frequency}
+                </p>
                 <div className="mt-3 flex flex-wrap items-baseline gap-2">
                   <span className="font-montserrat text-xl font-bold text-stone-400 line-through">
                     ${plan.regular}
@@ -207,7 +210,7 @@ export default function YouthClient() {
                   <span className="text-sm text-stone-500">/ {plan.cadence}</span>
                 </div>
                 <p className="mt-2 text-xs text-stone-500">
-                  When you sign up before the first class
+                  Billed every 4 weeks · full 16-week session
                 </p>
                 <ul className="mt-6 flex-1 space-y-2.5">
                   {plan.includes.map((item) => (
