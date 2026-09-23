@@ -182,6 +182,7 @@ export default function YouthClient() {
           <p className="mx-auto mt-3 max-w-xl text-center text-base text-stone-600">
             {COPY.pricingBody}
           </p>
+          <p className="mt-2 text-center text-sm font-semibold text-[#FF3366]">{COPY.setupFeeNote}</p>
           <p className="mt-2 text-center text-sm text-stone-500">{COPY.pricingNote}</p>
 
           <div className="mt-10 grid gap-5 md:grid-cols-2">
