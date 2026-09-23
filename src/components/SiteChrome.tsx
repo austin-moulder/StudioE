@@ -13,6 +13,7 @@ const HIDE_CHROME_PATHS = [
   "/weekend-salsa-bachata",
   "/class-confirmation",
   "/youth",
+  "/grand-opening",
 ]
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {

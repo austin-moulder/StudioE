@@ -1,36 +1,35 @@
 import type { Metadata } from "next"
 import Script from "next/script"
 import GoogleTag from "@/components/analytics/GoogleTag"
-import { ASSETS, META_PIXEL_ID, OFFER } from "@/lib/weekend-salsa-bachata/config"
-import WeekendSalsaBachataClient from "./WeekendSalsaBachataClient"
-import WeekendSalsaBachataTracker from "./WeekendSalsaBachataTracker"
+import { ASSETS, EVENT, META_PIXEL_ID } from "@/lib/grand-opening/config"
+import GrandOpeningClient from "./GrandOpeningClient"
 
 export const metadata: Metadata = {
-  title: "Saturday Salsa and Bachata Classes in Chicago",
+  title: "Studio E Official Grand Opening",
   description:
-    "Two Saturday classes at Studio E: Salsa at 11AM and Bachata at 12PM. Your $15 first-class ticket can be used for either. Beginner-friendly, no partner required.",
+    "Friday, October 23 at Studio E in Humboldt Park. Bombazo, salsa workshops, two-room social, performances, merch runway, and food. Free RSVP.",
   openGraph: {
-    title: "Saturday Salsa and Bachata Classes in Chicago | Studio E",
+    title: "Studio E Official Grand Opening | Friday, October 23",
     description:
-      "Salsa at 11AM and Bachata at 12PM every Saturday at Studio E. One $15 first-class ticket works for either class.",
-    url: "https://www.joinstudioe.com/weekend-salsa-bachata",
+      "Celebrate Studio E’s official grand opening: Bompleneras, workshops with Austin & Arik, social until 1AM, Una Bulla, Enclave Dance, and more.",
+    url: "https://www.joinstudioe.com/grand-opening",
     type: "website",
     images: [
       {
         url: ASSETS.hero,
         width: 1200,
         height: 800,
-        alt: "Studio E community gathered for social dancing",
+        alt: "Studio E Official Grand Opening",
       },
     ],
   },
 }
 
-export default function WeekendSalsaBachataPage() {
+export default function GrandOpeningPage() {
   return (
     <>
       <GoogleTag />
-      <Script id="meta-pixel-weekend-salsa-bachata" strategy="afterInteractive">
+      <Script id="meta-pixel-grand-opening" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -54,11 +53,9 @@ export default function WeekendSalsaBachataPage() {
           alt=""
         />
       </noscript>
-      <WeekendSalsaBachataTracker />
-      <WeekendSalsaBachataClient />
+      <GrandOpeningClient />
       <p className="sr-only">
-        {OFFER.name} at {OFFER.venueName}, {OFFER.addressLine}, {OFFER.cityLine}. Saturday{" "}
-        {OFFER.classBlock}.
+        {EVENT.name} on {EVENT.dateLabel} at {EVENT.venueName}, {EVENT.addressLine}, {EVENT.cityLine}.
       </p>
     </>
   )

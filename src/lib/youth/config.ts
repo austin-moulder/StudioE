@@ -11,6 +11,9 @@ export const PROGRAM = {
   addressLine: "2657 W Division St",
   cityLine: "Chicago, IL",
   neighborhood: "Humboldt Park · Paseo Boricua",
+  startDateLabel: "October 12",
+  daysLabel: "Monday – Thursday",
+  enrollmentWindow: "October and November",
 } as const
 
 export const ASSETS = {
@@ -69,14 +72,17 @@ export const PLANS = [
 ] as const
 
 export const COPY = {
-  announcement: "AFTER-SCHOOL LATIN DANCE | AGES 5–14 | STUDIO E CHICAGO",
+  announcement: "STARTS OCT 12 | MON–THU AFTER SCHOOL | AGES 5–14",
   heroHeadline: "Chicago Latin Dance Youth Program",
   heroSubheadline:
-    "Give your child a joyful after-school place to move, make friends, and grow through Latin dance—right in the heart of Humboldt Park.",
+    "Give your child a joyful after-school place to move, make friends, and grow through Latin dance—right in the heart of Humboldt Park. Classes officially start October 12, Monday through Thursday.",
   primaryCta: "ENROLL IN YOUTH PROGRAM",
-  scheduleHeadline: "Two Age Groups. Two Perfect Hours.",
+  scheduleHeadline: "Two Age Groups. Monday Through Thursday.",
   scheduleBody:
-    "Weekday afternoons at Studio E. Pick the class that matches your child’s age.",
+    "Classes run Monday–Thursday at Studio E. Pick the hour that matches your child’s age.",
+  startHeadline: "Official Start: October 12",
+  startBody:
+    "Students can enroll anytime in October and November before we begin cohort programming. Jump in when you’re ready—spots fill as families lock in their after-school routine.",
   whyHeadline: "Why Families Choose Studio E",
   pricingHeadline: "Same Studio E Membership Pricing",
   pricingBody:
@@ -84,7 +90,7 @@ export const COPY = {
   pricingNote: "Memberships renew every 4 weeks (28 days).",
   finalHeadline: "Ready For After-School Dance?",
   finalBody:
-    "Enroll your dancer in the Chicago Latin Dance Youth Program and give them rhythm, confidence, and community.",
+    "Enroll your dancer in the Chicago Latin Dance Youth Program—classes start October 12, Monday through Thursday.",
 } as const
 
 export const WHY_POINTS = [
@@ -96,6 +102,16 @@ export const WHY_POINTS = [
 ] as const
 
 export const FAQS = [
+  {
+    question: "When do classes start?",
+    answer:
+      "Youth classes officially start October 12. You can enroll anytime in October and November before we begin cohort programming.",
+  },
+  {
+    question: "What days are youth classes?",
+    answer:
+      "Monday through Thursday. Ages 5–8 meet 4:00–5:00 PM and ages 9–14 meet 5:00–6:00 PM.",
+  },
   {
     question: "What ages is the youth program for?",
     answer: "We have a class for ages 5–8 (4:00–5:00 PM) and a class for ages 9–14 (5:00–6:00 PM).",

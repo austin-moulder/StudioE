@@ -7,11 +7,11 @@ import YouthClient from "./YouthClient"
 export const metadata: Metadata = {
   title: "Chicago Latin Dance Youth Program",
   description:
-    "After-school Latin dance for ages 5–8 (4–5 PM) and 9–14 (5–6 PM) at Studio E in Humboldt Park. Same Bronze and Gold membership pricing. No partner required.",
+    "After-school Latin dance starting October 12, Monday–Thursday. Ages 5–8 (4–5 PM) and 9–14 (5–6 PM) at Studio E. Enroll anytime in October and November. Same Bronze and Gold membership pricing.",
   openGraph: {
     title: "Chicago Latin Dance Youth Program | Studio E",
     description:
-      "After-school Latin dance for kids and teens at Studio E. Ages 5–8 and 9–14. Same membership pricing as the rest of Studio E.",
+      "Youth Latin dance at Studio E starts October 12, Monday–Thursday. Ages 5–8 and 9–14. Enroll anytime in October and November before cohort programming.",
     url: "https://www.joinstudioe.com/youth",
     type: "website",
     images: [

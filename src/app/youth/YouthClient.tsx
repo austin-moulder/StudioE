@@ -103,6 +103,35 @@ export default function YouthClient() {
               </article>
             ))}
           </div>
+          <p className="mx-auto mt-8 max-w-lg text-center font-montserrat text-sm font-bold uppercase tracking-[0.14em] text-[#1C1410]">
+            {PROGRAM.daysLabel}
+          </p>
+        </div>
+      </section>
+
+      {/* Start date + enrollment window */}
+      <section
+        className="bg-gradient-to-br from-[#FF7A5A] via-[#FF3366] to-[#9933CC] px-4 py-14 text-white sm:px-6 sm:py-16"
+        aria-labelledby="start-heading"
+      >
+        <div className="mx-auto max-w-xl text-center">
+          <h2
+            id="start-heading"
+            className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
+          >
+            {COPY.startHeadline}
+          </h2>
+          <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-white/90">
+            {COPY.startBody}
+          </p>
+          <div className="mt-8">
+            <a
+              href="#pricing"
+              className="mx-auto inline-flex w-full max-w-md items-center justify-center rounded-2xl bg-white px-6 py-4 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF3366] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#FF3366] sm:text-base"
+            >
+              {COPY.primaryCta}
+            </a>
+          </div>
         </div>
       </section>
 

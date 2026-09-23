@@ -10,7 +10,7 @@ export const META_PIXEL_ID = "1976276599649833" as const
 export const OFFER = {
   name: "Saturday Salsa and Bachata",
   firstClassPrice: 15,
-  classBlock: "11AM to 1PM",
+  classBlock: "Salsa 11AM · Bachata 12PM",
   day: "Saturday",
   venueName: "Studio E",
   addressLine: "2657 W Division St",
@@ -35,7 +35,7 @@ export const MEMBERSHIPS = [
     featured: false,
     includes: [
       "One Saturday class each week",
-      "Choose Salsa or Bachata",
+      "Choose Salsa (11AM) or Bachata (12PM)",
       "2 rollover classes if you miss a Saturday",
       "Your $15 first-class payment can be applied toward membership",
     ],
@@ -49,7 +49,7 @@ export const MEMBERSHIPS = [
     featured: true,
     includes: [
       "Both Saturday classes each week",
-      "Salsa and Bachata",
+      "Salsa at 11AM and Bachata at 12PM",
       "4 rollover classes if you miss a Saturday",
       "Your $15 first-class payment can be applied toward membership",
     ],
@@ -63,16 +63,17 @@ export const UTM = {
 } as const
 
 export const COPY = {
-  announcement: "SATURDAY CLASSES | SALSA + BACHATA | BEGINNER-FRIENDLY",
+  announcement: "SATURDAY CLASSES | SALSA 11AM · BACHATA 12PM | BEGINNER-FRIENDLY",
   heroHeadline: "Your Weekend Just Got More Fun.",
   heroSubheadline:
-    "Learn Salsa and Bachata at Studio E every Saturday from 11AM to 1PM. No partner required. No weekday evenings needed. Start with your first class for just $15, then roll that payment into your Studio E membership.",
+    "Two separate Saturday classes at Studio E: Salsa at 11AM and Bachata at 12PM. Your $15 first-class ticket can be used for either. No partner required. Start with one class, then roll that payment into your Studio E membership.",
   primaryCta: "TRY YOUR FIRST CLASS FOR $15",
   claimCta: "CLAIM MY $15 FIRST CLASS",
   stickyCta: "Try Your First Class For $15",
-  ctaMicro: "Your $15 is credited toward membership.",
-  twoWaysHeadline: "One Saturday. Two Ways To Dance.",
-  twoWaysNote: "Choose one class or take both during the same Saturday block.",
+  ctaMicro: "Your $15 is credited toward membership. One ticket = either class.",
+  twoWaysHeadline: "Two Classes. One Ticket Gets You Into Either.",
+  twoWaysNote:
+    "Salsa and Bachata are separate classes. Your first-class ticket can be used for Salsa at 11AM or Bachata at 12PM—pick the one you want to try.",
   howHeadline: "How The Weekend Program Works",
   membershipHeadline: "Choose Your Membership",
   rolloverHeadline: "Your Classes Do Not Disappear If You Miss A Saturday.",
@@ -82,17 +83,17 @@ export const COPY = {
   expectHeadline: "What To Expect On Saturday",
   firstClassHeadline: "Start With Your First Class For $15",
   firstClassBody:
-    "You do not need to commit before you know if Studio E is right for you. Come experience a Saturday class for $15. If you decide to continue, that $15 rolls directly into your Bronze or Gold membership.",
+    "You do not need to commit before you know if Studio E is right for you. Come try Salsa at 11AM or Bachata at 12PM for $15—your ticket works for either class. If you decide to continue, that $15 rolls directly into your Bronze or Gold membership.",
   finalHeadline: "Make Saturday Your Dance Day.",
   finalBody:
-    "Try your first class for $15, find your rhythm, and decide whether Salsa, Bachata, or both belong in your weekend routine.",
+    "Try your first class for $15—Salsa at 11AM or Bachata at 12PM—then decide whether one class or both belong in your weekend routine.",
   disclaimer:
     "Class availability and membership terms are subject to Studio E’s current schedule and policies.",
 } as const
 
 export const HERO_POINTS = [
-  "Saturday mornings from 11AM to 1PM",
-  "Learn Salsa, Bachata, or both",
+  "Two classes: Salsa at 11AM, Bachata at 12PM",
+  "Your $15 ticket works for either class",
   "Beginner-friendly instruction",
   "No partner required",
   "Miss a Saturday? Use your rollover classes.",
@@ -101,10 +102,12 @@ export const HERO_POINTS = [
 export const CLASS_CARDS = [
   {
     name: "Salsa",
+    time: "11:00 AM",
     body: "Learn the fundamentals, rhythm, timing, partner connection, and patterns you need to start dancing socially.",
   },
   {
     name: "Bachata",
+    time: "12:00 PM",
     body: "Build your rhythm, footwork, body movement, and partner connection in a welcoming environment.",
   },
 ] as const
@@ -112,11 +115,11 @@ export const CLASS_CARDS = [
 export const HOW_IT_WORKS = [
   {
     title: "Start with your $15 first class",
-    body: "Come try Salsa, Bachata, or both and experience the Studio E community.",
+    body: "Use your ticket for Salsa at 11AM or Bachata at 12PM—whichever you want to try first.",
   },
   {
     title: "Choose your membership",
-    body: "Select one class or both classes every 4 weeks.",
+    body: "Select one class each week or both classes every 4 weeks.",
   },
   {
     title: "Keep building your skills",
@@ -139,10 +142,15 @@ export const EXPECT = [
   "Partner rotation so nobody gets left out",
   "A welcoming environment",
   "Options for different experience levels",
-  "Two hours of dancing, learning, and community",
+  "Two separate classes back-to-back on Saturday",
 ] as const
 
 export const FAQS = [
+  {
+    question: "Are Salsa and Bachata the same class?",
+    answer:
+      "No. They are two separate classes. Salsa is at 11:00 AM and Bachata is at 12:00 PM. Your $15 first-class ticket can be used for either one.",
+  },
   {
     question: "Do I need a partner?",
     answer:
@@ -155,7 +163,8 @@ export const FAQS = [
   },
   {
     question: "Can I take only Salsa or only Bachata?",
-    answer: "Yes. Bronze includes one class. Gold includes both Salsa and Bachata.",
+    answer:
+      "Yes. Your first-class ticket works for either. On membership, Bronze includes one class each week and Gold includes both.",
   },
   {
     question: "What happens if I miss a Saturday?",

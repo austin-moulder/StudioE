@@ -117,6 +117,7 @@ export default function WeekendSalsaBachataClient() {
                 <h3 className="font-montserrat text-xl font-black uppercase tracking-wide text-[#FF3366]">
                   {card.name}
                 </h3>
+                <p className="mt-2 font-montserrat text-2xl font-black text-[#1C1410]">{card.time}</p>
                 <p className="mt-3 text-sm leading-relaxed text-stone-600 sm:text-base">{card.body}</p>
               </article>
             ))}
