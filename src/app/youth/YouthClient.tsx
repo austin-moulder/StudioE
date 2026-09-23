@@ -8,6 +8,7 @@ import {
   ASSETS,
   COPY,
   FAQS,
+  HOW_IT_WORKS,
   PLANS,
   PROGRAM,
   WHY_POINTS,
@@ -132,6 +133,34 @@ export default function YouthClient() {
               {COPY.primaryCta}
             </a>
           </div>
+        </div>
+      </section>
+
+      {/* How enrollment works */}
+      <section className="bg-white px-4 py-14 sm:px-6 sm:py-16" aria-labelledby="how-heading">
+        <div className="mx-auto max-w-3xl">
+          <h2
+            id="how-heading"
+            className="text-center font-montserrat text-3xl font-black tracking-tight text-[#1C1410] sm:text-4xl"
+          >
+            {COPY.howItWorksHeadline}
+          </h2>
+          <p className="mx-auto mt-3 max-w-lg text-center text-base text-stone-600">
+            {COPY.howItWorksBody}
+          </p>
+          <ol className="mt-12 grid gap-10 sm:grid-cols-3 sm:gap-8">
+            {HOW_IT_WORKS.map((item) => (
+              <li key={item.step} className="text-center sm:text-left">
+                <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-[#FF3366]">
+                  Step {item.step}
+                </p>
+                <h3 className="mt-2 font-montserrat text-xl font-black text-[#1C1410]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-stone-600">{item.body}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 

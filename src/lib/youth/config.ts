@@ -84,7 +84,9 @@ export const COPY = {
     "Classes run Monday–Thursday for each age group. Your child can come any of those days—it does not have to be the same day every week. If they are sick or out of town, make the class up later that week or the following week.",
   startHeadline: "Official Start: October 12",
   startBody:
-    "Students can enroll anytime in October and November before we begin cohort programming. Sign up by October 5 and we waive the $100 set-up fee.",
+    "Classes start October 12, with rolling admission through November—join later and your child still gets the full number of classes. Sign up by October 5 and we waive the $100 set-up fee.",
+  howItWorksHeadline: "How Enrollment Works",
+  howItWorksBody: "Three simple steps from signup to first class.",
   whyHeadline: "Why Families Choose Studio E",
   pricingHeadline: "Youth Session Tuition",
   pricingBody:
@@ -94,8 +96,26 @@ export const COPY = {
   setupFeeNote: "Sign up by October 5 and we waive the $100 set-up fee.",
   finalHeadline: "Ready For After-School Dance?",
   finalBody:
-    "Enroll your dancer in the Chicago Latin Dance Youth Program—classes start October 12. Come any Monday–Thursday that works, and lock in the waived set-up fee if you sign up by October 5.",
+    "Enroll your dancer in the Chicago Latin Dance Youth Program—classes start October 12, with rolling admission through November. Come any Monday–Thursday that works, and lock in the waived set-up fee if you sign up by October 5.",
 } as const
+
+export const HOW_IT_WORKS = [
+  {
+    step: "1",
+    title: "Sign Up",
+    body: "Choose Bronze or Gold and complete checkout. You can sign up for multiple children in one go.",
+  },
+  {
+    step: "2",
+    title: "Enroll Your Kids",
+    body: "You’ll be sent to a short enrollment page to add each child’s info, preferred days of the week, and preferred start date.",
+  },
+  {
+    step: "3",
+    title: "Get Confirmed",
+    body: "We’ll text you to confirm enrollment and your selected start date—then you’re set for class.",
+  },
+] as const
 
 export const WHY_POINTS = [
   "Beginner-friendly Latin dance for kids and teens",
@@ -109,7 +129,12 @@ export const FAQS = [
   {
     question: "When do classes start?",
     answer:
-      "Youth classes officially start October 12. You can enroll anytime in October and November before we begin cohort programming. Sign up by October 5 and we waive the $100 set-up fee.",
+      "Youth classes officially start October 12, with rolling admission through November. Join later and your child still gets the full number of classes for the session. Sign up by October 5 and we waive the $100 set-up fee.",
+  },
+  {
+    question: "What happens after I sign up?",
+    answer:
+      "After checkout, you’ll go to an enrollment page to add each child’s info, preferred days of the week, and preferred start date. Then we’ll text you to confirm enrollment and your selected start date.",
   },
   {
     question: "What days can my child come?",
