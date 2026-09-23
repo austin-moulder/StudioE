@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react"
 import { Check, ChevronDown, MapPin, Users } from "lucide-react"
 import {
   formatEventDateLabel,
@@ -10,8 +10,12 @@ import {
   type CountdownParts,
 } from "@/lib/popup-class/event-time"
 import {
+  DEFAULT_POPUP_THEME,
+  DEFAULT_POPUP_UI_EN,
   buildPopupCheckoutUrl,
+  fillTemplate,
   type PopupClassLandingConfig,
+  type PopupClassUiLabels,
 } from "@/lib/popup-class/types"
 
 declare global {
@@ -20,6 +24,8 @@ declare global {
     dataLayer?: Record<string, unknown>[]
   }
 }
+
+type Lang = "en" | "es"
 
 const SPOTS_MIN = 3
 const SPOTS_MAX = 12
@@ -57,36 +63,37 @@ function trackMeta(eventName: string, params?: Record<string, unknown>) {
   }
 }
 
-const ctaClass =
-  "mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-[#FF2D6A] px-6 py-4 text-center font-montserrat text-base font-black uppercase tracking-wide text-white shadow-[0_10px_30px_rgba(255,45,106,0.45)] transition hover:bg-[#E8255C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF2D6A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1A0508] sm:text-lg"
-
 function Countdown({
   parts,
   ended,
   endedLabel,
+  ui,
 }: {
   parts: CountdownParts
   ended: boolean
   endedLabel: string
+  ui: PopupClassUiLabels
 }) {
   if (ended) {
     return (
-      <p className="font-montserrat text-xl font-black text-[#FF2D6A] sm:text-2xl">{endedLabel}</p>
+      <p className="font-montserrat text-xl font-black text-[var(--popup-accent)] sm:text-2xl">
+        {endedLabel}
+      </p>
     )
   }
 
   const units: [string, number][] =
     parts.days > 0
       ? [
-          ["Days", parts.days],
-          ["Hrs", parts.hours],
-          ["Min", parts.minutes],
-          ["Sec", parts.seconds],
+          [ui.countdownDays, parts.days],
+          [ui.countdownHrs, parts.hours],
+          [ui.countdownMin, parts.minutes],
+          [ui.countdownSec, parts.seconds],
         ]
       : [
-          ["Hrs", parts.hours],
-          ["Min", parts.minutes],
-          ["Sec", parts.seconds],
+          [ui.countdownHrs, parts.hours],
+          [ui.countdownMin, parts.minutes],
+          [ui.countdownSec, parts.seconds],
         ]
 
   return (
@@ -111,8 +118,12 @@ function Countdown({
 }
 
 export default function PopupClassLanding({ config }: { config: PopupClassLandingConfig }) {
-  const { event, assets, copy, offerBullets, offerTerms, faqs } = config
+  const { event, assets } = config
+  const theme = config.theme ?? DEFAULT_POPUP_THEME
+  const bilingual = Boolean(config.spanish)
   const embedCheckout = Boolean(config.embedCheckout)
+
+  const [lang, setLang] = useState<Lang>("en")
   const [eventStartMs, setEventStartMs] = useState<number | null>(null)
   const [dateLabel, setDateLabel] = useState("")
   const [parts, setParts] = useState<CountdownParts>({
@@ -127,10 +138,38 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
   const [openFaq, setOpenFaq] = useState<number | null>(0)
   const [checkoutSrc, setCheckoutSrc] = useState<string | null>(null)
 
+  const copy = lang === "es" && config.spanish ? config.spanish.copy : config.copy
+  const offerBullets =
+    lang === "es" && config.spanish ? config.spanish.offerBullets : config.offerBullets
+  const offerTerms = lang === "es" && config.spanish ? config.spanish.offerTerms : config.offerTerms
+  const faqs = lang === "es" && config.spanish ? config.spanish.faqs : config.faqs
+  const durationLabel =
+    lang === "es" && config.spanish ? config.spanish.durationLabel : event.durationLabel
+  const ui: PopupClassUiLabels =
+    lang === "es" && config.spanish ? config.spanish.ui : DEFAULT_POPUP_UI_EN
+
+  const themeStyle = useMemo(
+    () =>
+      ({
+        ["--popup-bg" as string]: theme.pageBg,
+        ["--popup-alt" as string]: theme.altBg,
+        ["--popup-accent" as string]: theme.accent,
+        ["--popup-accent-hover" as string]: theme.accentHover,
+        ["--popup-soft" as string]: theme.soft,
+        ["--popup-final-from" as string]: theme.finalFrom,
+        ["--popup-final-via" as string]: theme.finalVia,
+        ["--popup-final-to" as string]: theme.finalTo,
+        ["--popup-cta-shadow" as string]: theme.ctaShadow,
+      }) as CSSProperties,
+    [theme]
+  )
+
+  const ctaClass =
+    "mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-[var(--popup-accent)] px-6 py-4 text-center font-montserrat text-base font-black uppercase tracking-wide text-white shadow-[0_10px_30px_var(--popup-cta-shadow)] transition hover:bg-[var(--popup-accent-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--popup-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--popup-bg)] sm:text-lg"
+
   useEffect(() => {
     const start = getUpcomingEventStartMs(event)
     setEventStartMs(start)
-    setDateLabel(formatEventDateLabel(start, event.timeZone))
     setSpotsLeft(getSpotsLeft(config.spotsStorageKey))
     trackMeta("ViewContent", {
       content_name: event.name,
@@ -139,6 +178,12 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
       currency: "USD",
     })
   }, [config.spotsStorageKey, event])
+
+  useEffect(() => {
+    if (!eventStartMs) return
+    const locale = lang === "es" ? "es-MX" : "en-US"
+    setDateLabel(formatEventDateLabel(eventStartMs, event.timeZone, locale))
+  }, [event.timeZone, eventStartMs, lang])
 
   useEffect(() => {
     if (!embedCheckout) return
@@ -175,7 +220,32 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
   )
 
   return (
-    <div className="min-h-screen scroll-smooth bg-[#1A0508] pb-24 text-white antialiased sm:pb-0">
+    <div
+      className="min-h-screen scroll-smooth bg-[var(--popup-bg)] pb-24 text-white antialiased sm:pb-0"
+      style={themeStyle}
+      lang={lang}
+    >
+      {config.bannerStripe === "mexican" ? (
+        <div
+          className="flex h-1.5 w-full"
+          aria-hidden
+          style={{
+            background:
+              "linear-gradient(90deg, #006847 0%, #006847 33%, #FFFFFF 33%, #FFFFFF 66%, #CE1126 66%, #CE1126 100%)",
+          }}
+        />
+      ) : null}
+      {config.bannerStripe === "pan-african" ? (
+        <div
+          className="flex h-1.5 w-full"
+          aria-hidden
+          style={{
+            background:
+              "linear-gradient(90deg, #E31C23 0%, #E31C23 33%, #0A0A0A 33%, #0A0A0A 66%, #006B3F 66%, #006B3F 100%)",
+          }}
+        />
+      ) : null}
+
       <header className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
@@ -186,15 +256,32 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
             className="object-cover object-center opacity-35"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1A0508]/70 via-[#2A0A12]/85 to-[#1A0508]" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(to bottom, color-mix(in srgb, var(--popup-bg) 70%, transparent), color-mix(in srgb, var(--popup-alt) 85%, transparent), var(--popup-bg))`,
+            }}
+          />
         </div>
 
         <div className="relative mx-auto max-w-xl px-4 pb-12 pt-10 sm:px-6 sm:pt-14">
-          <p className="text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-[#FF8FB3]">
+          {bilingual ? (
+            <div className="mb-5 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setLang((prev) => (prev === "en" ? "es" : "en"))}
+                className="rounded-md border border-white/30 bg-white/10 px-4 py-2 font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-white backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--popup-soft)]"
+              >
+                {ui.langToggle}
+              </button>
+            </div>
+          ) : null}
+
+          <p className="text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-[var(--popup-soft)]">
             Studio E · Humboldt Park
           </p>
           <p
-            className="mt-3 text-center text-2xl text-[#FF2D6A]"
+            className="mt-3 text-center text-2xl text-[var(--popup-accent)]"
             style={{ fontFamily: "var(--font-popup-script), cursive" }}
           >
             {copy.accentLabel}
@@ -220,22 +307,24 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
             </div>
           </div>
 
-          <div className="mx-auto mt-6 max-w-sm space-y-2 rounded-2xl border border-[#FF2D6A]/35 bg-[#FF2D6A]/10 px-4 py-4 text-center text-sm">
+          <div className="mx-auto mt-6 max-w-sm space-y-2 rounded-2xl border border-[color-mix(in_srgb,var(--popup-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--popup-accent)_10%,transparent)] px-4 py-4 text-center text-sm">
             <p className="font-montserrat text-base font-black text-white">
-              {dateLabel || "Loading date…"}
+              {dateLabel || ui.loadingDate}
             </p>
-            <p className="text-white/85">{event.durationLabel}</p>
+            <p className="text-white/85">{durationLabel}</p>
             <p className="text-white/85">
               {event.venueName} · {event.addressLine}
             </p>
-            <p className="font-montserrat text-lg font-black text-[#FF2D6A]">{copy.priceFriendLine}</p>
+            <p className="font-montserrat text-lg font-black text-[var(--popup-accent)]">
+              {copy.priceFriendLine}
+            </p>
           </div>
 
           <div className="mt-6 text-center">
             <p className="mb-3 font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-white/70">
-              Starts in
+              {ui.startsIn}
             </p>
-            <Countdown parts={parts} ended={ended} endedLabel={copy.countdownEnded} />
+            <Countdown parts={parts} ended={ended} endedLabel={copy.countdownEnded} ui={ui} />
           </div>
 
           <div className="mt-8 flex flex-col items-center">
@@ -275,7 +364,29 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         </div>
       </section>
 
-      <section className="bg-[#2A0A12] px-4 py-12 sm:px-6" aria-labelledby="offer-heading">
+      {copy.educationHeadline && copy.educationBody ? (
+        <section
+          className="border-t border-white/10 px-4 py-12 sm:px-6"
+          aria-labelledby="education-heading"
+        >
+          <div className="mx-auto max-w-xl text-center">
+            <h2
+              id="education-heading"
+              className="font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
+            >
+              {copy.educationHeadline}
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
+              {copy.educationBody}
+            </p>
+          </div>
+        </section>
+      ) : null}
+
+      <section
+        className="bg-[var(--popup-alt)] px-4 py-12 sm:px-6"
+        aria-labelledby="offer-heading"
+      >
         <div className="mx-auto max-w-xl">
           <h2
             id="offer-heading"
@@ -289,7 +400,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
                 key={item}
                 className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5"
               >
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#FF2D6A]" aria-hidden />
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[var(--popup-accent)]" aria-hidden />
                 <span className="text-base leading-snug text-white/90">{item}</span>
               </li>
             ))}
@@ -326,7 +437,10 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         </div>
       </section>
 
-      <section className="bg-[#2A0A12] px-4 py-12 sm:px-6" aria-labelledby="limited-heading">
+      <section
+        className="bg-[var(--popup-alt)] px-4 py-12 sm:px-6"
+        aria-labelledby="limited-heading"
+      >
         <div className="mx-auto max-w-xl text-center">
           <h2
             id="limited-heading"
@@ -337,17 +451,21 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
             {copy.limitedBody}
           </p>
-          <div className="mx-auto mt-8 max-w-sm rounded-2xl border border-[#FF2D6A]/40 bg-[#FF2D6A]/10 px-5 py-6">
-            <Users className="mx-auto h-8 w-8 text-[#FF2D6A]" aria-hidden />
-            <p className="mt-3 font-montserrat text-sm font-bold uppercase tracking-[0.18em] text-[#FF8FB3]">
-              Limited to {event.capacity} attendees
+          <div className="mx-auto mt-8 max-w-sm rounded-2xl border border-[color-mix(in_srgb,var(--popup-accent)_40%,transparent)] bg-[color-mix(in_srgb,var(--popup-accent)_10%,transparent)] px-5 py-6">
+            <Users className="mx-auto h-8 w-8 text-[var(--popup-accent)]" aria-hidden />
+            <p className="mt-3 font-montserrat text-sm font-bold uppercase tracking-[0.18em] text-[var(--popup-soft)]">
+              {fillTemplate(ui.limitedTo, { n: event.capacity })}
             </p>
             {spotsLeft !== null ? (
               <p className="mt-3 font-montserrat text-3xl font-black text-white">
-                {spotsLeft} spot{spotsLeft === 1 ? "" : "s"} left
+                {fillTemplate(spotsLeft === 1 ? ui.spotsLeftOne : ui.spotsLeftMany, {
+                  n: spotsLeft,
+                })}
               </p>
             ) : null}
-            <p className="mt-2 text-xs text-white/60">Cap of {event.capacity} total tickets</p>
+            <p className="mt-2 text-xs text-white/60">
+              {fillTemplate(ui.capOf, { n: event.capacity })}
+            </p>
           </div>
         </div>
       </section>
@@ -364,27 +482,30 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
             {copy.communityBody}
           </p>
           {copy.communityBadge ? (
-            <p className="mt-6 inline-block rounded-full border border-[#FF2D6A] bg-[#FF2D6A]/15 px-5 py-2.5 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF2D6A]">
+            <p className="mt-6 inline-block rounded-full border border-[var(--popup-accent)] bg-[color-mix(in_srgb,var(--popup-accent)_15%,transparent)] px-5 py-2.5 font-montserrat text-sm font-black uppercase tracking-wide text-[var(--popup-accent)]">
               {copy.communityBadge}
             </p>
           ) : null}
         </div>
       </section>
 
-      <section className="bg-[#2A0A12] px-4 py-12 sm:px-6" aria-labelledby="location-heading">
+      <section
+        className="bg-[var(--popup-alt)] px-4 py-12 sm:px-6"
+        aria-labelledby="location-heading"
+      >
         <div className="mx-auto max-w-xl">
           <h2
             id="location-heading"
             className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
           >
-            Where We Dance
+            {ui.locationHeadline}
           </h2>
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-            <MapPin className="mx-auto h-6 w-6 text-[#FF2D6A]" aria-hidden />
+            <MapPin className="mx-auto h-6 w-6 text-[var(--popup-accent)]" aria-hidden />
             <p className="mt-3 font-montserrat text-lg font-black">{event.venueName}</p>
             <p className="mt-1 text-white/85">{event.addressLine}</p>
             <p className="text-white/85">{event.cityLine}</p>
-            <p className="mt-1 text-sm text-[#FF8FB3]">{event.neighborhood}</p>
+            <p className="mt-1 text-sm text-[var(--popup-soft)]">{event.neighborhood}</p>
           </div>
           <div className="mt-5 overflow-hidden rounded-2xl border border-white/10">
             <iframe
@@ -409,7 +530,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
             id="faq-heading"
             className="mb-6 text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
           >
-            FAQ
+            {ui.faqHeadline}
           </h2>
           <div className="divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/5">
             {faqs.map((item, index) => {
@@ -425,13 +546,13 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
                       aria-expanded={open}
                       aria-controls={panelId}
                       onClick={() => setOpenFaq(open ? null : index)}
-                      className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FF2D6A]"
+                      className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--popup-accent)]"
                     >
                       <span className="font-montserrat text-sm font-bold text-white sm:text-base">
                         {item.question}
                       </span>
                       <ChevronDown
-                        className={`h-5 w-5 shrink-0 text-[#FF2D6A] transition ${open ? "rotate-180" : ""}`}
+                        className={`h-5 w-5 shrink-0 text-[var(--popup-accent)] transition ${open ? "rotate-180" : ""}`}
                         aria-hidden
                       />
                     </button>
@@ -452,7 +573,13 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         </div>
       </section>
 
-      <section className="border-t border-white/10 bg-gradient-to-br from-[#FF2D6A] via-[#C4184E] to-[#4A0A1C] px-4 py-14 sm:px-6">
+      <section
+        className="border-t border-white/10 px-4 py-14 sm:px-6"
+        style={{
+          background:
+            "linear-gradient(to bottom right, var(--popup-final-from), var(--popup-final-via), var(--popup-final-to))",
+        }}
+      >
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
             {copy.finalHeadline}
@@ -461,14 +588,17 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           <div className="mt-6 space-y-1 text-sm text-white/90">
             <p className="font-montserrat text-lg font-black">{copy.priceFriendLine}</p>
             <p>{dateLabel}</p>
-            <p>{event.durationLabel}</p>
+            <p>{durationLabel}</p>
           </div>
           <div className="mt-6">
-            <Countdown parts={parts} ended={ended} endedLabel={copy.countdownEnded} />
+            <Countdown parts={parts} ended={ended} endedLabel={copy.countdownEnded} ui={ui} />
           </div>
           {spotsLeft !== null ? (
             <p className="mt-5 font-montserrat text-sm font-bold text-white">
-              Only {spotsLeft} ticket{spotsLeft === 1 ? "" : "s"} left · Cap of {event.capacity}
+              {fillTemplate(spotsLeft === 1 ? ui.ticketsLeftOne : ui.ticketsLeftMany, {
+                n: spotsLeft,
+                capacity: event.capacity,
+              })}
             </p>
           ) : null}
           {!embedCheckout ? (
@@ -476,7 +606,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
               <button
                 type="button"
                 onClick={() => goCheckout("final")}
-                className="mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-white px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-[#FF2D6A] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#C4184E] sm:text-lg"
+                className="mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-white px-6 py-4 font-montserrat text-base font-black uppercase tracking-wide text-[var(--popup-accent)] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--popup-final-via)] sm:text-lg"
               >
                 {copy.primaryCta}
               </button>
@@ -488,7 +618,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
       {embedCheckout ? (
         <section
           id="checkout"
-          className="scroll-mt-6 border-t border-white/10 bg-[#1A0508] px-4 py-14 sm:px-6"
+          className="scroll-mt-6 border-t border-white/10 bg-[var(--popup-bg)] px-4 py-14 sm:px-6"
           aria-labelledby="checkout-heading"
         >
           <div className="mx-auto max-w-xl">
@@ -496,10 +626,10 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
               id="checkout-heading"
               className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
             >
-              Reserve Your Spot
+              {ui.reserveSpot}
             </h2>
             <p className="mx-auto mt-3 max-w-md text-center text-base text-white/80">
-              Complete checkout below. {copy.priceFriendLine}.
+              {fillTemplate(ui.checkoutHelper, { priceLine: copy.priceFriendLine })}
             </p>
             <div className="mt-8 overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
               {checkoutSrc ? (
@@ -523,12 +653,12 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
                   href={checkoutSrc}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-[#FF8FB3] underline underline-offset-2"
+                  className="font-semibold text-[var(--popup-soft)] underline underline-offset-2"
                 >
-                  open checkout in a new tab
+                  {ui.openCheckoutNewTab}
                 </a>
               ) : (
-                "open checkout in a new tab"
+                ui.openCheckoutNewTab
               )}
               .
             </p>
@@ -543,7 +673,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         </p>
       </footer>
 
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[#1A0508]/95 p-3 backdrop-blur sm:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[color-mix(in_srgb,var(--popup-bg)_95%,transparent)] p-3 backdrop-blur sm:hidden">
         <button type="button" onClick={() => goCheckout("sticky")} className={`${ctaClass} max-w-none`}>
           {copy.stickyCta}
         </button>

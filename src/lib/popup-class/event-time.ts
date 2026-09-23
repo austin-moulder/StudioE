@@ -141,8 +141,12 @@ export function getUpcomingEventStartMs(
   )
 }
 
-export function formatEventDateLabel(eventStartMs: number, timeZone: string): string {
-  return new Intl.DateTimeFormat("en-US", {
+export function formatEventDateLabel(
+  eventStartMs: number,
+  timeZone: string,
+  locale: string = "en-US"
+): string {
+  return new Intl.DateTimeFormat(locale, {
     timeZone,
     weekday: "long",
     month: "long",

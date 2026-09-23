@@ -9,6 +9,8 @@ const HIDE_CHROME_PATHS = [
   "/challenge",
   "/twerk-thursday",
   "/reggaeton",
+  "/cumbia-wepa",
+  "/afro-cuban-movement",
   "/latin-morning-reset",
   "/weekend-salsa-bachata",
   "/class-confirmation",
