@@ -7,16 +7,13 @@ import {
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
-/**
- * Wire the FastPay (or GHL) checkout URL when ready.
- * CTAs currently navigate here — replace before running ads.
- */
 export const CUMBIA_WEPA_CHECKOUT_URL =
-  "https://link.fastpaydirect.com/payment-link/PENDING_CUMBIA_WEPA" as const
+  "https://studioe-danceclassestraining.com/wepa-checkout" as const
 
 export const CUMBIA_WEPA_CONFIG: PopupClassLandingConfig = {
   id: "cumbia-wepa",
   checkoutUrl: CUMBIA_WEPA_CHECKOUT_URL,
+  embedCheckout: true,
   spotsStorageKey: "studioe_cumbia_wepa_spots_left_v1",
   theme: MEXICAN_POPUP_THEME,
   bannerStripe: "mexican",

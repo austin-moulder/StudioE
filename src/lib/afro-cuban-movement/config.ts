@@ -7,16 +7,13 @@ import {
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
-/**
- * Wire the FastPay (or GHL) checkout URL when ready.
- * CTAs currently navigate here — replace before running ads.
- */
 export const AFRO_CUBAN_CHECKOUT_URL =
-  "https://link.fastpaydirect.com/payment-link/PENDING_AFRO_CUBAN" as const
+  "https://studioe-danceclassestraining.com/afrocuban-checkout" as const
 
 export const AFRO_CUBAN_CONFIG: PopupClassLandingConfig = {
   id: "afro-cuban-movement",
   checkoutUrl: AFRO_CUBAN_CHECKOUT_URL,
+  embedCheckout: true,
   spotsStorageKey: "studioe_afro_cuban_spots_left_v1",
   theme: AFRO_CUBAN_POPUP_THEME,
   bannerStripe: "pan-african",

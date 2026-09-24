@@ -7,7 +7,8 @@ export const META_PIXEL_ID = "1976276599649833" as const
 
 export const REGGAETON_CONFIG: PopupClassLandingConfig = {
   id: "reggaeton",
-  checkoutUrl: "https://link.fastpaydirect.com/payment-link/6aadc331f426560dbc2f11a8",
+  checkoutUrl: "https://studioe-danceclassestraining.com/reggaeton-checkout",
+  embedCheckout: true,
   /** Bumped so returning visitors get a fresh spots-left roll for the Friday schedule. */
   spotsStorageKey: "studioe_reggaeton_spots_left_v2",
   utm: {
