@@ -250,6 +250,8 @@ export const AFRO_CUBAN_CONFIG: PopupClassLandingConfig = {
       countdownMin: "Min",
       countdownSec: "Seg",
       langToggle: "English",
+      moreWorkshops: "Más talleres próximos",
+      viewWorkshop: "Ver clase",
     },
   },
 }

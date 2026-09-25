@@ -17,6 +17,7 @@ import {
   type PopupClassLandingConfig,
   type PopupClassUiLabels,
 } from "@/lib/popup-class/types"
+import UpcomingWorkshopsCarousel from "@/components/popup-class/UpcomingWorkshopsCarousel"
 
 declare global {
   interface Window {
@@ -665,6 +666,13 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           </div>
         </section>
       ) : null}
+
+      <UpcomingWorkshopsCarousel
+        currentId={config.id}
+        lang={lang}
+        headline={ui.moreWorkshops}
+        ctaLabel={ui.viewWorkshop}
+      />
 
       <footer className="px-4 py-8 text-center text-xs text-white/50 sm:px-6">
         <p className="font-montserrat font-bold text-white/70">{event.venueName}</p>

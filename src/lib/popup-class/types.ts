@@ -54,6 +54,8 @@ export type PopupClassUiLabels = {
   countdownSec: string
   /** Label on the toggle (language you switch into). */
   langToggle: string
+  moreWorkshops: string
+  viewWorkshop: string
 }
 
 export type PopupClassTheme = {
@@ -125,6 +127,8 @@ export const DEFAULT_POPUP_UI_EN: PopupClassUiLabels = {
   countdownMin: "Min",
   countdownSec: "Sec",
   langToggle: "Español",
+  moreWorkshops: "More Upcoming Workshops",
+  viewWorkshop: "View class",
 }
 
 export type PopupClassLandingConfig = {

@@ -244,6 +244,8 @@ export const CUMBIA_WEPA_CONFIG: PopupClassLandingConfig = {
       countdownMin: "Min",
       countdownSec: "Seg",
       langToggle: "English",
+      moreWorkshops: "Más talleres próximos",
+      viewWorkshop: "Ver clase",
     },
   },
 }
