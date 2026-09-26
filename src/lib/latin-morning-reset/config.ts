@@ -13,11 +13,15 @@ export const OFFER = {
   durationDays: 21,
   classTime: "10AM",
   classDays: "Monday through Friday",
+  capacity: 50,
+  redeemByLabel: "November 1",
   venueName: "Studio E",
   addressLine: "2657 W Division St",
   cityLine: "Chicago, IL",
   neighborhood: "Humboldt Park",
 } as const
+
+export const SPOTS_STORAGE_KEY = "studioe_latin_morning_reset_spots_left_v1" as const
 
 export const ASSETS = {
   hero: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Fitness/group_shot.jpg",
@@ -30,17 +34,23 @@ export const UTM = {
 } as const
 
 export const COPY = {
-  announcement: "WEEKDAY 10AM CLASSES | BEGINNER-FRIENDLY | NO PARTNER REQUIRED",
+  announcement: "REDEEM ANYTIME BEFORE NOV 1 | WEEKDAY 10AM | ONLY 50 SPOTS",
   heroHeadline: "Dance Your Way Into Better Energy, Strength, and Confidence Before Noon.",
   heroSubheadline:
-    "The 21-Day Latin Morning Reset is a fun, beginner-friendly weekday workout combining Latin dance, mobility, strength, and community. Show up at 10AM, move your body, meet great people, and start your day feeling better.",
+    "The 21-Day Latin Morning Reset is a fun, beginner-friendly weekday workout combining Latin dance, mobility, strength, and community. Sign up now and start your 21 days anytime before November 1.",
   primaryCta: "START YOUR 21-DAY RESET",
   offerCta: "JOIN THE LATIN MORNING RESET",
   finalCta: "START MY 21-DAY RESET",
   stickyCta: "START YOUR 21-DAY RESET — $21",
-  microcopy: "Only $21 to get started. No dance experience required.",
+  microcopy: "Only $21 · Redeem anytime before November 1 · No dance experience required.",
+  redeemNote:
+    "Buy now, start when you’re ready—redeem your 21 days anytime before November 1.",
   whatYouGetHeadline: "A Better Morning Starts With One Class.",
   howItWorksHeadline: "How It Works",
+  howItWorksBody: "Four simple steps from signup to your first morning workout.",
+  limitedHeadline: "Only 50 Spots Available",
+  limitedBody:
+    "We keep the morning room limited so every class feels personal, welcoming, and easy to follow.",
   formatHeadline: "What’s Inside the Class",
   formatNote:
     "Low-pressure and beginner-friendly. No partner needed. Every movement can be modified.",
@@ -50,7 +60,8 @@ export const COPY = {
   afterBody:
     "Members who want to continue can join Morning Latin Club, our recurring weekday morning community with ongoing classes, strength, mobility, and social connection.",
   finalHeadline: "Stop Waiting For The Perfect Morning.",
-  finalBody: "You do not need more motivation. You need a simple place to show up. Start with 21 days.",
+  finalBody:
+    "You do not need more motivation. You need a simple place to show up. Lock in $21 now and redeem your 21 days anytime before November 1.",
   disclaimer:
     "Participants should consult a medical professional before beginning exercise and should stop if they experience pain, dizziness, or unusual symptoms.",
 } as const
@@ -75,10 +86,22 @@ export const WHAT_YOU_GET = [
 ] as const
 
 export const HOW_IT_WORKS = [
-  "Join us at 10AM, Monday through Friday",
-  "Follow an easy, scalable 60-minute class",
-  "Build consistency over 21 days",
-  "Decide whether the Morning Latin Club is your next step",
+  {
+    title: "Sign up",
+    body: "Grab your spot in the 21-Day Latin Morning Reset for $21.",
+  },
+  {
+    title: "Redeem before November 1",
+    body: "Start whenever you’re ready—your 21 days can begin any time before November 1.",
+  },
+  {
+    title: "Text us your start date",
+    body: "You’ll get a welcome text from the owner. Reply with when you want to begin.",
+  },
+  {
+    title: "Show up for class",
+    body: "Come to Studio E at 2657 W Division St for your first 10AM workout.",
+  },
 ] as const
 
 export const CLASS_FORMAT = [
@@ -99,6 +122,7 @@ export const FOR_YOU_IF = [
 export const OFFER_INCLUDES = [
   "Weekday 10AM access",
   "21-day consistency challenge",
+  "Redeem anytime before November 1",
   "Beginner-friendly instruction",
   "One guest pass",
   "Final Friday celebration class",
@@ -114,6 +138,16 @@ export const FAQS = [
     answer: "No.",
   },
   {
+    question: "When do I have to start?",
+    answer:
+      "Anytime before November 1. Sign up now, then redeem your 21 days when you’re ready—just tell us your preferred start date after you get the welcome text.",
+  },
+  {
+    question: "What happens after I sign up?",
+    answer:
+      "You’ll receive a welcome text from the owner. Reply with when you want to start, then show up at 2657 W Division St for your first weekday 10AM class.",
+  },
+  {
     question: "What should I wear?",
     answer: "Comfortable workout clothes and supportive shoes.",
   },
@@ -124,6 +158,10 @@ export const FAQS = [
   {
     question: "Can I modify the workout?",
     answer: "Yes. Every movement can be scaled.",
+  },
+  {
+    question: "How many spots are available?",
+    answer: "Only 50 spots are available for this reset.",
   },
   {
     question: "Where is it?",

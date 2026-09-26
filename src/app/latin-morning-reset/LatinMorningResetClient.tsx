@@ -1,8 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { useCallback, useState } from "react"
-import { Check, ChevronDown } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
+import { Check, ChevronDown, Users } from "lucide-react"
 import {
   ASSETS,
   CLASS_FORMAT,
@@ -12,6 +12,7 @@ import {
   HOW_IT_WORKS,
   OFFER,
   OFFER_INCLUDES,
+  SPOTS_STORAGE_KEY,
   WHAT_YOU_GET,
   buildCheckoutUrl,
 } from "@/lib/latin-morning-reset/config"
@@ -21,6 +22,29 @@ declare global {
     fbq?: (...args: unknown[]) => void
     dataLayer?: Record<string, unknown>[]
   }
+}
+
+const SPOTS_MIN = 9
+const SPOTS_MAX = 24
+
+function getSpotsLeft(): number {
+  if (typeof window === "undefined") return 16
+  try {
+    const raw = window.localStorage.getItem(SPOTS_STORAGE_KEY)
+    if (raw) {
+      const n = Number(raw)
+      if (Number.isInteger(n) && n >= SPOTS_MIN && n <= SPOTS_MAX) return n
+    }
+  } catch {
+    /* ignore */
+  }
+  const count = Math.floor(Math.random() * (SPOTS_MAX - SPOTS_MIN + 1)) + SPOTS_MIN
+  try {
+    window.localStorage.setItem(SPOTS_STORAGE_KEY, String(count))
+  } catch {
+    /* ignore */
+  }
+  return count
 }
 
 function trackMeta(eventName: string, params?: Record<string, unknown>) {
@@ -37,6 +61,11 @@ const ctaClass =
 
 export default function LatinMorningResetClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const [spotsLeft, setSpotsLeft] = useState<number | null>(null)
+
+  useEffect(() => {
+    setSpotsLeft(getSpotsLeft())
+  }, [])
 
   const goCheckout = useCallback((placement: string) => {
     trackMeta("InitiateCheckout", {
@@ -80,11 +109,19 @@ export default function LatinMorningResetClient() {
           <p className="mt-5 max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">
             {COPY.heroSubheadline}
           </p>
+          <p className="mt-4 max-w-xl rounded-xl border border-[#E8C97A]/35 bg-black/25 px-4 py-3 text-sm font-semibold leading-snug text-[#E8C97A] sm:text-base">
+            {COPY.redeemNote}
+          </p>
           <div className="mt-8 flex flex-col items-start gap-3">
             <button type="button" onClick={() => goCheckout("hero")} className={ctaClass}>
               {COPY.primaryCta}
             </button>
             <p className="text-sm text-white/75">{COPY.microcopy}</p>
+            {spotsLeft !== null ? (
+              <p className="font-montserrat text-xs font-bold uppercase tracking-[0.14em] text-white/70">
+                {spotsLeft} of {OFFER.capacity} spots left
+              </p>
+            ) : null}
           </div>
         </div>
       </header>
@@ -121,16 +158,54 @@ export default function LatinMorningResetClient() {
           >
             {COPY.howItWorksHeadline}
           </h2>
-          <ol className="mt-10 space-y-5">
+          <p className="mx-auto mt-3 max-w-md text-center text-base text-stone-600">
+            {COPY.howItWorksBody}
+          </p>
+          <ol className="mt-10 space-y-6">
             {HOW_IT_WORKS.map((step, index) => (
-              <li key={step} className="flex gap-4">
+              <li key={step.title} className="flex gap-4">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FF3366] font-montserrat text-sm font-black text-white">
                   {index + 1}
                 </span>
-                <p className="pt-1.5 text-base font-medium leading-snug text-stone-800">{step}</p>
+                <div className="pt-0.5">
+                  <p className="font-montserrat text-base font-black text-[#1C1410]">{step.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-stone-600">{step.body}</p>
+                </div>
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* Limited spots */}
+      <section
+        className="bg-[#F7F1E8] px-4 py-14 sm:px-6 sm:py-16"
+        aria-labelledby="limited-heading"
+      >
+        <div className="mx-auto max-w-xl text-center">
+          <h2
+            id="limited-heading"
+            className="font-montserrat text-3xl font-black tracking-tight text-[#1C1410] sm:text-4xl"
+          >
+            {COPY.limitedHeadline}
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-stone-600">
+            {COPY.limitedBody}
+          </p>
+          <div className="mx-auto mt-8 max-w-sm rounded-2xl border border-[#FF3366]/30 bg-white px-5 py-6 shadow-sm">
+            <Users className="mx-auto h-8 w-8 text-[#FF3366]" aria-hidden />
+            <p className="mt-3 font-montserrat text-sm font-bold uppercase tracking-[0.18em] text-[#FF3366]">
+              Limited to {OFFER.capacity} spots
+            </p>
+            {spotsLeft !== null ? (
+              <p className="mt-3 font-montserrat text-3xl font-black text-[#1C1410]">
+                {spotsLeft} spot{spotsLeft === 1 ? "" : "s"} left
+              </p>
+            ) : null}
+            <p className="mt-2 text-xs text-stone-500">
+              Out of {OFFER.capacity} total · Redeem before {OFFER.redeemByLabel}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -200,6 +275,7 @@ export default function LatinMorningResetClient() {
           >
             {COPY.offerHeadline}
           </h2>
+          <p className="mt-4 text-base font-semibold text-white/90">{COPY.redeemNote}</p>
           <p className="mt-6 font-montserrat text-6xl font-black tabular-nums">${OFFER.price}</p>
           <p className="mt-2 text-sm text-white/85">to get started</p>
           <ul className="mx-auto mt-8 max-w-sm space-y-3 text-left">
@@ -210,7 +286,12 @@ export default function LatinMorningResetClient() {
               </li>
             ))}
           </ul>
-          <div className="mt-10 flex justify-center">
+          {spotsLeft !== null ? (
+            <p className="mt-6 font-montserrat text-sm font-bold text-white">
+              Only {spotsLeft} of {OFFER.capacity} spots left
+            </p>
+          ) : null}
+          <div className="mt-8 flex justify-center">
             <button
               type="button"
               onClick={() => goCheckout("offer")}
@@ -300,6 +381,11 @@ export default function LatinMorningResetClient() {
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
             {COPY.finalBody}
           </p>
+          {spotsLeft !== null ? (
+            <p className="mt-5 font-montserrat text-sm font-bold text-[#E8C97A]">
+              Only {spotsLeft} of {OFFER.capacity} spots left
+            </p>
+          ) : null}
           <div className="mt-8 flex justify-center">
             <button type="button" onClick={() => goCheckout("final")} className={ctaClass}>
               {COPY.finalCta}
