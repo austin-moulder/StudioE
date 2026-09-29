@@ -7,7 +7,7 @@ import useEmblaCarousel from "embla-carousel-react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import {
   formatEventDateLabel,
-  getUpcomingEventStartMs,
+  getNextAvailableStartMs,
 } from "@/lib/popup-class/event-time"
 import { POPUP_WORKSHOP_CARDS } from "@/lib/popup-class/workshops"
 
@@ -32,7 +32,7 @@ export default function UpcomingWorkshopsCarousel({
     const now = new Date()
     return POPUP_WORKSHOP_CARDS.filter((card) => card.id !== currentId)
       .map((card) => {
-        const startMs = getUpcomingEventStartMs(card.schedule, now)
+        const startMs = getNextAvailableStartMs(card.schedule, card.soldOutDates, now)
         return {
           ...card,
           startMs,

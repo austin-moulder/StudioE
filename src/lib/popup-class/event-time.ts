@@ -141,6 +141,25 @@ export function getUpcomingEventStartMs(
   )
 }
 
+/** Calendar date of an instant in the given zone, as YYYY-MM-DD. */
+export function getEventDateKey(eventStartMs: number, timeZone: string): string {
+  const p = getZoneParts(new Date(eventStartMs), timeZone)
+  return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`
+}
+
+/** Next occurrence whose date is not in `soldOutDates` (YYYY-MM-DD, event time zone). */
+export function getNextAvailableStartMs(
+  schedule: EventSchedule,
+  soldOutDates: readonly string[] = [],
+  now: Date = new Date()
+): number {
+  let start = getUpcomingEventStartMs(schedule, now)
+  for (let i = 0; i < 52 && soldOutDates.includes(getEventDateKey(start, schedule.timeZone)); i++) {
+    start = getUpcomingEventStartMs(schedule, new Date(start + 1))
+  }
+  return start
+}
+
 export function formatEventDateLabel(
   eventStartMs: number,
   timeZone: string,

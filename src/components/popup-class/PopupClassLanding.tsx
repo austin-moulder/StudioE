@@ -6,6 +6,7 @@ import { Check, ChevronDown, MapPin, Users } from "lucide-react"
 import {
   formatEventDateLabel,
   getCountdownParts,
+  getNextAvailableStartMs,
   getUpcomingEventStartMs,
   type CountdownParts,
 } from "@/lib/popup-class/event-time"
@@ -127,6 +128,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
   const [lang, setLang] = useState<Lang>("en")
   const [eventStartMs, setEventStartMs] = useState<number | null>(null)
   const [dateLabel, setDateLabel] = useState("")
+  const [soldOutStartMs, setSoldOutStartMs] = useState<number | null>(null)
   const [parts, setParts] = useState<CountdownParts>({
     days: 0,
     hours: 0,
@@ -169,7 +171,10 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
     "mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-[var(--popup-accent)] px-6 py-4 text-center font-montserrat text-base font-black uppercase tracking-wide text-white shadow-[0_10px_30px_var(--popup-cta-shadow)] transition hover:bg-[var(--popup-accent-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--popup-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--popup-bg)] sm:text-lg"
 
   useEffect(() => {
-    const start = getUpcomingEventStartMs(event)
+    const soldOutDates = config.soldOut?.dates ?? []
+    const upcoming = getUpcomingEventStartMs(event)
+    const start = getNextAvailableStartMs(event, soldOutDates)
+    setSoldOutStartMs(start !== upcoming ? upcoming : null)
     setEventStartMs(start)
     setSpotsLeft(getSpotsLeft(config.spotsStorageKey))
     trackMeta("ViewContent", {
@@ -178,13 +183,24 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
       value: event.price,
       currency: "USD",
     })
-  }, [config.spotsStorageKey, event])
+  }, [config.soldOut, config.spotsStorageKey, event])
 
   useEffect(() => {
     if (!eventStartMs) return
     const locale = lang === "es" ? "es-MX" : "en-US"
     setDateLabel(formatEventDateLabel(eventStartMs, event.timeZone, locale))
   }, [event.timeZone, eventStartMs, lang])
+
+  const soldOutNotice =
+    config.soldOut && soldOutStartMs && dateLabel
+      ? {
+          headline: config.soldOut.headline,
+          body: fillTemplate(config.soldOut.body, {
+            soldOutDate: formatEventDateLabel(soldOutStartMs, event.timeZone),
+            nextDate: dateLabel,
+          }),
+        }
+      : null
 
   useEffect(() => {
     if (!embedCheckout) return
@@ -275,6 +291,20 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
               >
                 {ui.langToggle}
               </button>
+            </div>
+          ) : null}
+
+          {soldOutNotice ? (
+            <div
+              role="status"
+              className="mx-auto mb-6 max-w-md rounded-2xl border-2 border-[var(--popup-accent)] bg-black/60 px-5 py-4 text-center shadow-[0_10px_30px_var(--popup-cta-shadow)]"
+            >
+              <p className="font-montserrat text-2xl font-black uppercase tracking-wide text-[var(--popup-accent)]">
+                {soldOutNotice.headline}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-white/90 sm:text-base">
+                {soldOutNotice.body}
+              </p>
             </div>
           ) : null}
 
@@ -586,6 +616,11 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
             {copy.finalHeadline}
           </h2>
           <p className="mx-auto mt-3 max-w-md text-white/90">{copy.finalBody}</p>
+          {soldOutNotice ? (
+            <p className="mx-auto mt-4 max-w-md rounded-xl bg-black/30 px-4 py-3 text-sm font-semibold text-white">
+              {soldOutNotice.headline} — {soldOutNotice.body}
+            </p>
+          ) : null}
           <div className="mt-6 space-y-1 text-sm text-white/90">
             <p className="font-montserrat text-lg font-black">{copy.priceFriendLine}</p>
             <p>{dateLabel}</p>
@@ -632,6 +667,11 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
             <p className="mx-auto mt-3 max-w-md text-center text-base text-white/80">
               {fillTemplate(ui.checkoutHelper, { priceLine: copy.priceFriendLine })}
             </p>
+            {soldOutNotice ? (
+              <p className="mx-auto mt-3 max-w-md text-center text-sm font-semibold text-[var(--popup-soft)]">
+                {soldOutNotice.body}
+              </p>
+            ) : null}
             <div className="mt-8 overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
               {checkoutSrc ? (
                 <iframe

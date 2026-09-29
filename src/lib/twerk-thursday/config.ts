@@ -5,10 +5,18 @@ import {
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
+/** Sold-out class dates (YYYY-MM-DD, Chicago). Past dates are ignored automatically. */
+export const TWERK_SOLD_OUT_DATES = ["2026-10-01"] as const
+
 export const TWERK_THURSDAY_CONFIG: PopupClassLandingConfig = {
   id: "twerk-thursday",
   checkoutUrl: "https://studioe-danceclassestraining.com/twerkclass",
   embedCheckout: true,
+  soldOut: {
+    dates: TWERK_SOLD_OUT_DATES,
+    headline: "Sold Out This Week",
+    body: "{soldOutDate} is sold out. Purchase now to save your spot for {nextDate}.",
+  },
   spotsStorageKey: "studioe_twerk_thursday_spots_left_v3",
   utm: {
     utm_source: "meta",

@@ -140,6 +140,16 @@ export type PopupClassLandingConfig = {
   theme?: PopupClassTheme
   /** Cultural color stripe at the top of the page. */
   bannerStripe?: "mexican" | "pan-african"
+  /**
+   * Occurrences that are sold out (YYYY-MM-DD, event time zone). The page skips them,
+   * shows the notice, and returns to normal once those dates pass.
+   * `body` supports {soldOutDate} and {nextDate}.
+   */
+  soldOut?: {
+    dates: readonly string[]
+    headline: string
+    body: string
+  }
   utm: {
     utm_source: string
     utm_medium: string

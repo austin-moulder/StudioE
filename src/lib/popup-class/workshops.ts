@@ -1,4 +1,5 @@
 import type { EventSchedule } from "./event-time"
+import { TWERK_SOLD_OUT_DATES } from "@/lib/twerk-thursday/config"
 
 export type PopupWorkshopCard = {
   id: string
@@ -10,6 +11,7 @@ export type PopupWorkshopCard = {
   durationLabel: string
   durationLabelEs?: string
   schedule: EventSchedule
+  soldOutDates?: readonly string[]
 }
 
 /**
@@ -67,6 +69,7 @@ export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
       startMinute: 30,
       timeZone: "America/Chicago",
     },
+    soldOutDates: TWERK_SOLD_OUT_DATES,
   },
   {
     id: "reggaeton",
