@@ -4,7 +4,7 @@ import { REFERRAL_COPY, REFERRAL_IMAGES } from "@/lib/referrals/config"
 import ReferralsClient from "./ReferralsClient"
 
 const OG_DESCRIPTION =
-  "Invite a friend to Studio E. When they become a qualified paid member, you get $100 cash and they get $25 off their first paid membership payment."
+  "Invite a friend to Studio E. When they become a qualified paid member, you get $100 cash."
 
 export const metadata: Metadata = {
   title: REFERRAL_COPY.pageTitle,

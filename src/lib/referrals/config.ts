@@ -17,17 +17,17 @@ export const MEMBERSHIP_URL = "https://www.joinstudioe.com/membership" as const
 
 export const REFERRAL_SHARE = {
   title: "Bring Your People to Studio E",
-  text: "Hey! I dance at Studio E in Chicago and think you’d love it. Come try salsa, bachata, and more with me. Mention my name when you sign up so we both get the referral benefit:",
+  text: "Hey! I dance at Studio E in Chicago and think you’d love it. Come try salsa, bachata, and more with me. Mention my name when you sign up so they know I sent you:",
   url: REFERRAL_PAGE_URL,
   whatsappMessage:
-    "Hey! I dance at Studio E in Chicago and think you’d love it. Come try salsa, bachata, and more with me. Mention my name when you sign up so we both get the referral benefit: https://www.joinstudioe.com/referrals",
+    "Hey! I dance at Studio E in Chicago and think you’d love it. Come try salsa, bachata, and more with me. Mention my name when you sign up so they know I sent you: https://www.joinstudioe.com/referrals",
 } as const
 
 export const REFERRAL_COPY = {
   pageTitle: "Bring Your People to Studio E",
   heroHeadline: "Your people belong here too.",
   heroBody:
-    "Invite a friend to dance with you at Studio E. When they become a qualified paid member, you get $100 cash and they get $25 off their first paid membership payment.",
+    "Invite a friend to dance with you at Studio E. When they become a qualified paid member, you get $100 cash.",
   primaryCta: "Share with a Friend",
   secondaryCta: "View Memberships",
   stickyCta: "Share With a Friend",
