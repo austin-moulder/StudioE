@@ -27,13 +27,13 @@ export const REFERRAL_COPY = {
   pageTitle: "Bring Your People to Studio E",
   heroHeadline: "Your people belong here too.",
   heroBody:
-    "Invite a friend to dance with you at Studio E. When they become a qualified paid member, you earn Studio E credit and they get $25 off their first paid membership payment.",
+    "Invite a friend to dance with you at Studio E. When they become a qualified paid member, you get $100 cash and they get $25 off their first paid membership payment.",
   primaryCta: "Share with a Friend",
   secondaryCta: "View Memberships",
   stickyCta: "Share With a Friend",
-  rewardsHeadline: "Your referrals add up.",
+  rewardsHeadline: "Get paid in cash for every friend.",
   rewardsNote:
-    "After 5 qualified referrals, earn $25 Studio E credit for every additional qualified referral.",
+    "After 5 qualified referrals, every additional qualified referral pays $200 cash ($100 plus a $100 bonus).",
   progressDisclaimer:
     "This visual shows the reward milestones. Progress isn’t tracked automatically on this page.",
   scriptHeadline: "What should I say?",
@@ -43,28 +43,28 @@ export const REFERRAL_COPY = {
   finalCta: "Share the Referral Offer",
 } as const
 
-/** Credit math: $25 each referral + $50 at 3 + $100 at 5 = $275 at ambassador. */
+/** Cash math: $100 each referral + $50 bonus at 3 + $100 bonus at 5 and every one after. */
 export const REFERRAL_TIERS = [
   {
     id: "first",
     referrals: 1,
     title: "First Referral",
-    reward: "Earn $25 Studio E credit.",
-    totalLabel: null as string | null,
+    reward: "Get $100 cash for every qualified referral.",
+    totalLabel: "$100 cash.",
   },
   {
     id: "connector",
     referrals: 3,
     title: "Studio E Connector",
-    reward: "Refer 3 qualified members and unlock an additional $50 bonus.",
-    totalLabel: "$125 total credit earned.",
+    reward: "Your 3rd qualified referral unlocks an extra $50 bonus.",
+    totalLabel: "$350 cash total.",
   },
   {
     id: "ambassador",
     referrals: 5,
     title: "Studio E Ambassador",
-    reward: "Refer 5 qualified members and unlock an additional $100 bonus.",
-    totalLabel: "$275 total credit earned.",
+    reward: "Your 5th qualified referral unlocks an extra $100 bonus.",
+    totalLabel: "$650 cash total.",
   },
 ] as const
 
@@ -72,8 +72,8 @@ export const HOW_IT_WORKS = [
   "Share Studio E with a friend.",
   "Your friend tells the instructor they heard about Studio E from you before signing up.",
   "They join a paid Studio E membership.",
-  "They remain active through their first 28-day billing cycle.",
-  "Studio E confirms the referral and applies your credit.",
+  "They stay a paid member for 29 days—the referral qualifies on the first day of their second month.",
+  "Studio E confirms the referral and pays you in cash.",
 ] as const
 
 export const QUALIFICATION_RULES = [
@@ -81,9 +81,8 @@ export const QUALIFICATION_RULES = [
   "They must identify the referring member before or at signup.",
   "The referral must result in a paid Bronze Plan, Gold Plan, or 28-Day Challenge.",
   "Free classes, guest passes, unpaid trials, merchandise purchases, and duplicate/self-referrals do not qualify.",
-  "The referred member must remain active through the first 28-day billing cycle.",
-  "Referral credit is issued after verification.",
-  "Credits are non-cash, non-transferable, and cannot be exchanged for cash.",
+  "The referred member must stay a paid member for 29 days. The referral qualifies on the first day of their second month with Studio E.",
+  "Rewards are paid in cash after Studio E verifies the referral.",
   "One referred person can count toward one referring member only.",
   "Studio E may reject duplicate, fraudulent, or unclear referrals.",
 ] as const
@@ -107,22 +106,21 @@ export const REFERRAL_FAQS = [
   {
     question: "What counts as a qualified referral?",
     answer:
-      "A new (or returning after 12+ months inactive) person who names you before or at signup, joins a paid Bronze, Gold, or 28-Day Challenge membership, and stays active through their first 28-day billing cycle. Free classes, guest passes, unpaid trials, merchandise, and self-referrals do not qualify.",
+      "A new (or returning after 12+ months inactive) person who names you before or at signup, joins a paid Bronze, Gold, or 28-Day Challenge membership, and stays a paid member for 29 days. The referral qualifies on the first day of their second month. Free classes, guest passes, unpaid trials, merchandise, and self-referrals do not qualify.",
   },
   {
-    question: "When do I receive my credit?",
+    question: "When do I get paid?",
     answer:
-      "After Studio E verifies the referral—once your friend has remained active through their first 28-day billing cycle. Credit is applied after verification.",
+      "Once your friend reaches day 29 (the first day of their second month) and Studio E verifies the referral, we pay you in cash.",
   },
   {
     question: "Can I refer more than one person?",
     answer:
-      "Yes. Your credits add up across referrals, with bonus unlocks at 3 and 5 qualified referrals, then $25 for each additional qualified referral after 5.",
+      "Yes. Every qualified referral pays $100 cash. Your 3rd adds a $50 bonus ($350 total), your 5th adds a $100 bonus ($650 total), and every referral after that pays $200 ($100 plus a $100 bonus).",
   },
   {
-    question: "Can I earn cash?",
-    answer:
-      "No. Studio E credits are non-cash, non-transferable, and cannot be exchanged for cash.",
+    question: "Is this cash or studio credit?",
+    answer: "Cash. There is no credit system—referral rewards are paid out in cash.",
   },
   {
     question: "What if my friend forgets to mention my name?",
@@ -133,11 +131,6 @@ export const REFERRAL_FAQS = [
     question: "Which memberships qualify?",
     answer:
       "Paid Bronze Plan, Gold Plan, or 28-Day Challenge memberships. Free classes, guest passes, unpaid trials, and merchandise purchases do not qualify.",
-  },
-  {
-    question: "Where can I use my Studio E credit?",
-    answer:
-      "Studio E credit can be used toward Studio E offerings after it is issued. Credits are non-cash and non-transferable. Ask the front desk or an instructor if you need help applying credit on your account.",
   },
 ] as const
 
