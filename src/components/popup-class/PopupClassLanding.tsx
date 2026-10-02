@@ -18,6 +18,7 @@ import {
   type PopupClassLandingConfig,
   type PopupClassUiLabels,
 } from "@/lib/popup-class/types"
+import PhotoGalleryCarousel from "@/components/popup-class/PhotoGalleryCarousel"
 import UpcomingWorkshopsCarousel from "@/components/popup-class/UpcomingWorkshopsCarousel"
 
 declare global {
@@ -146,6 +147,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
     lang === "es" && config.spanish ? config.spanish.offerBullets : config.offerBullets
   const offerTerms = lang === "es" && config.spanish ? config.spanish.offerTerms : config.offerTerms
   const faqs = lang === "es" && config.spanish ? config.spanish.faqs : config.faqs
+  const learnPoints = config.learnPoints
   const durationLabel =
     lang === "es" && config.spanish ? config.spanish.durationLabel : event.durationLabel
   const ui: PopupClassUiLabels =
@@ -369,31 +371,42 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         </div>
       </header>
 
-      <section className="border-t border-white/10 px-4 py-12 sm:px-6" aria-labelledby="video-heading">
-        <div className="mx-auto max-w-xl">
-          <h2
-            id="video-heading"
-            className="mb-6 text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
-          >
-            {copy.videoHeadline}
-          </h2>
-          <div className="mx-auto mt-6 flex max-w-[280px] justify-center overflow-hidden rounded-2xl border border-white/15 bg-black shadow-lg sm:max-w-[320px]">
-            <video
-              className="aspect-[9/16] h-auto w-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-              controls
-              preload="metadata"
-              poster={assets.flyer}
-              aria-label={copy.videoAriaLabel}
+      {assets.video ? (
+        <section className="border-t border-white/10 px-4 py-12 sm:px-6" aria-labelledby="video-heading">
+          <div className="mx-auto max-w-xl">
+            <h2
+              id="video-heading"
+              className="mb-6 text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
             >
-              <source src={assets.video} type="video/mp4" />
-            </video>
+              {copy.videoHeadline}
+            </h2>
+            <div className="mx-auto mt-6 flex max-w-[280px] justify-center overflow-hidden rounded-2xl border border-white/15 bg-black shadow-lg sm:max-w-[320px]">
+              <video
+                className="aspect-[9/16] h-auto w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls
+                preload="metadata"
+                poster={assets.flyer}
+                aria-label={copy.videoAriaLabel}
+              >
+                <source src={assets.video} type="video/mp4" />
+              </video>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
+
+      {config.gallery ? (
+        <PhotoGalleryCarousel
+          headline={copy.galleryHeadline ?? copy.videoHeadline}
+          body={copy.galleryBody}
+          images={config.gallery.images}
+          imageAlt={config.gallery.imageAlt}
+        />
+      ) : null}
 
       {copy.educationHeadline && copy.educationBody ? (
         <section
@@ -410,6 +423,18 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
             <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
               {copy.educationBody}
             </p>
+            {learnPoints?.length ? (
+              <ul className="mx-auto mt-6 max-w-md space-y-3 text-left">
+                {learnPoints.map((point) => (
+                  <li key={point.lead} className="flex items-start gap-3">
+                    <Check className="mt-0.5 h-5 w-5 shrink-0 text-[var(--popup-accent)]" aria-hidden />
+                    <span className="text-base leading-snug text-white/85">
+                      <strong className="font-bold text-white">{point.lead}</strong> {point.rest}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </section>
       ) : null}
@@ -449,24 +474,26 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         </div>
       </section>
 
-      <section className="px-4 py-12 sm:px-6" aria-labelledby="friend-heading">
-        <div className="mx-auto max-w-xl text-center">
-          <h2
-            id="friend-heading"
-            className="font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
-          >
-            {copy.friendHeadline}
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
-            {copy.friendBody}
-          </p>
-          <div className="mt-8 flex justify-center">
-            <button type="button" onClick={() => goCheckout("friend")} className={ctaClass}>
-              {copy.secondaryCta}
-            </button>
+      {copy.friendHeadline && copy.friendBody ? (
+        <section className="px-4 py-12 sm:px-6" aria-labelledby="friend-heading">
+          <div className="mx-auto max-w-xl text-center">
+            <h2
+              id="friend-heading"
+              className="font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
+            >
+              {copy.friendHeadline}
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
+              {copy.friendBody}
+            </p>
+            <div className="mt-8 flex justify-center">
+              <button type="button" onClick={() => goCheckout("friend")} className={ctaClass}>
+                {copy.secondaryCta}
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section
         className="bg-[var(--popup-alt)] px-4 py-12 sm:px-6"

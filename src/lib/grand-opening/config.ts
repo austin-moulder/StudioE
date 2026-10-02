@@ -26,7 +26,7 @@ export const COPY = {
   heroBrand: "Studio E",
   heroHeadline: "Official Grand Opening",
   heroSubheadline:
-    "One night of bomba, workshops, two-room social, performances, merch runway, and food—celebrating our home on Division Street. Every free RSVP is entered into a special raffle worth $1,000+.",
+    "One night of a special guest opening, workshops, two-room social, performances, merch runway, and food—celebrating our home on Division Street. Every free RSVP is entered into a special raffle worth $1,000+.",
   primaryCta: "RSVP FREE",
   stickyCta: "RSVP For Grand Opening",
   nightHeadline: "The Night, Hour By Hour",
@@ -40,14 +40,14 @@ export const COPY = {
     "RSVP free so we can plan the room and welcome you in on October 23. All RSVPs are entered into a special raffle worth $1,000+.",
   finalHeadline: "Be There When Studio E Officially Opens.",
   finalBody:
-    "Bombazo, workshops, social dancing until 1AM, live performances, merch runway, and food from Dope Drip Café and Reina’s Cakes. RSVP free—and get entered into the $1,000+ raffle.",
+    "A special guest opening, workshops, social dancing until 1AM, live performances, merch runway, and food from Dope Drip Café and Reina’s Cakes. RSVP free—and get entered into the $1,000+ raffle.",
 } as const
 
 export const SCHEDULE = [
-  { time: "7:00 PM", title: "Bombazo", detail: "Bompleneras open the night with live bomba energy." },
+  { time: "7:00 PM", title: "Special Guest Opening", detail: "A surprise special guest kicks off the night. Get there early." },
   { time: "8:00 PM", title: "Lessons & Workshops", detail: "Advanced On 2 with Austin · Beginner On 1 with Arik." },
-  { time: "9:00 PM", title: "Social Dance", detail: "Two rooms open. DJ Alvin the Third and DJ K-Arik." },
-  { time: "11:00 PM", title: "Performances", detail: "Una Bulla and Enclave Dance take the floor." },
+  { time: "9:00 PM", title: "Social Dance", detail: "Two rooms open. A special guest DJ—one of Chicago’s top DJs—and DJ K-Arik." },
+  { time: "11:00 PM", title: "Performances", detail: "Una Bulla plus a special guest performance take the floor." },
   { time: "1:00 AM", title: "Social Ends", detail: "Dance until the lights come up." },
 ] as const
 
@@ -68,13 +68,13 @@ export const WORKSHOPS = [
 
 export const SOCIAL_POINTS = [
   "Two social dance rooms",
-  "DJ Alvin the Third",
+  "Special guest DJ (one of Chicago’s top DJs)",
   "DJ K-Arik",
   "Open until 1:00 AM",
 ] as const
 
 export const LINEUP = [
-  { label: "Performances", items: ["Una Bulla", "Enclave Dance"] },
+  { label: "Performances", items: ["Una Bulla", "Special guest performance"] },
   { label: "Runway", items: ["Studio E Merch Runway with students"] },
 ] as const
 
@@ -97,7 +97,7 @@ export const FAQS = [
   },
   {
     question: "What time should I arrive?",
-    answer: "Doors energy starts with Bompleneras at 7:00 PM. Arrive early to settle in before workshops at 8:00 PM.",
+    answer: "A special guest opens the night at 7:00 PM. Arrive early to catch it and settle in before workshops at 8:00 PM.",
   },
   {
     question: "Where is it?",

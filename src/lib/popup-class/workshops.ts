@@ -20,6 +20,24 @@ export type PopupWorkshopCard = {
  */
 export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
   {
+    id: "posing",
+    href: "/posing",
+    name: "Pose With Confidence",
+    nameEs: "Pose With Confidence",
+    flyer:
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Posing_workshop.png",
+    flyerAlt: "Pose With Confidence posing workshop flyer",
+    durationLabel: "3:00 PM – 6:00 PM",
+    durationLabelEs: "3:00 PM – 6:00 PM",
+    schedule: {
+      date: { year: 2026, month: 10, day: 18 },
+      weekday: 0,
+      startHour: 15,
+      startMinute: 0,
+      timeZone: "America/Chicago",
+    },
+  },
+  {
     id: "afro-cuban-movement",
     href: "/afro-cuban-movement",
     name: "Afro-Cuban Movement",

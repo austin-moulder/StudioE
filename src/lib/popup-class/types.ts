@@ -13,10 +13,13 @@ export type PopupClassCopy = {
   secondaryCta: string
   capacityNote: string
   videoHeadline: string
+  galleryHeadline?: string
+  galleryBody?: string
   /** Optional short explainer shown after the video (e.g. “What is Wepa?”). */
   educationHeadline?: string
   educationBody?: string
   offerHeadline: string
+  /** Leave friendHeadline/friendBody empty to hide the bring-a-friend section. */
   friendHeadline: string
   friendBody: string
   priceFriendLine: string
@@ -108,6 +111,19 @@ export const AFRO_CUBAN_POPUP_THEME: PopupClassTheme = {
   ctaShadow: "rgba(227,28,35,0.42)",
 }
 
+/** Deep plum / magenta palette matching the Pose With Confidence flyer. */
+export const POSING_POPUP_THEME: PopupClassTheme = {
+  pageBg: "#14061A",
+  altBg: "#22102B",
+  accent: "#E0408A",
+  accentHover: "#C22F74",
+  soft: "#F3C6DD",
+  finalFrom: "#E0408A",
+  finalVia: "#7A1E62",
+  finalTo: "#2A0B33",
+  ctaShadow: "rgba(224,64,138,0.42)",
+}
+
 export const DEFAULT_POPUP_UI_EN: PopupClassUiLabels = {
   startsIn: "Starts in",
   locationHeadline: "Where We Dance",
@@ -169,8 +185,14 @@ export type PopupClassLandingConfig = {
   }
   assets: {
     flyer: string
-    video: string
+    video?: string
   }
+  gallery?: {
+    images: readonly string[]
+    imageAlt: string
+  }
+  /** Bulleted list under the education section; `lead` renders bold. */
+  learnPoints?: readonly { lead: string; rest: string }[]
   copy: PopupClassCopy
   offerBullets: readonly string[]
   offerTerms: readonly string[]

@@ -19,6 +19,8 @@ export type EventSchedule = {
   weekday: number
   startHour: number
   startMinute: number
+  /** One-time event: always this calendar date instead of the next weekly occurrence. */
+  date?: { year: number; month: number; day: number }
 }
 
 const WEEKDAY_MAP: Record<string, number> = {
@@ -109,6 +111,10 @@ export function getUpcomingEventStartMs(
   now: Date = new Date()
 ): number {
   const tz = schedule.timeZone
+  if (schedule.date) {
+    const { year, month, day } = schedule.date
+    return zonedWallTimeToUtcMs(year, month, day, schedule.startHour, schedule.startMinute, tz)
+  }
   const parts = getZoneParts(now, tz)
   const daysUntil = (schedule.weekday - parts.weekday + 7) % 7
   const thisOccurrence = addCalendarDays(parts.year, parts.month, parts.day, daysUntil)
@@ -154,6 +160,7 @@ export function getNextAvailableStartMs(
   now: Date = new Date()
 ): number {
   let start = getUpcomingEventStartMs(schedule, now)
+  if (schedule.date) return start
   for (let i = 0; i < 52 && soldOutDates.includes(getEventDateKey(start, schedule.timeZone)); i++) {
     start = getUpcomingEventStartMs(schedule, new Date(start + 1))
   }

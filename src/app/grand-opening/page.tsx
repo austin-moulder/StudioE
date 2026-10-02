@@ -7,7 +7,7 @@ import GrandOpeningClient from "./GrandOpeningClient"
 export const metadata: Metadata = {
   title: "Studio E Official Grand Opening",
   description:
-    "Friday, October 23 at Studio E in Humboldt Park. Bombazo, workshops, two-room social, performances, merch runway, and food. Free RSVP—every RSVP enters a special raffle worth $1,000+.",
+    "Friday, October 23 at Studio E in Humboldt Park. Special guest opening, workshops, two-room social, performances, merch runway, and food. Free RSVP—every RSVP enters a special raffle worth $1,000+.",
   openGraph: {
     title: "Studio E Official Grand Opening | Friday, October 23",
     description:

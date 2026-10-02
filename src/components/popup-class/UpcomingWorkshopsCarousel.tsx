@@ -44,6 +44,7 @@ export default function UpcomingWorkshopsCarousel({
               : card.durationLabel,
         }
       })
+      .filter((card) => card.startMs > now.getTime())
       .sort((a, b) => a.startMs - b.startMs)
   }, [currentId, lang, locale])
 
