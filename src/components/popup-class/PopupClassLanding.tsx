@@ -319,6 +319,17 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           >
             {copy.accentLabel}
           </p>
+          {config.addressInHero ? (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.addressLine}, ${event.cityLine}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-auto mt-3 flex w-fit items-center gap-1.5 rounded-full border border-white/25 bg-black/40 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-black/60"
+            >
+              <MapPin className="h-4 w-4 text-[var(--popup-accent)]" aria-hidden />
+              {event.addressLine}, {event.cityLine}
+            </a>
+          ) : null}
 
           <h1 className="mt-3 text-center font-montserrat text-[1.7rem] font-black leading-[1.12] tracking-tight sm:text-4xl">
             {copy.heroHeadline}
@@ -435,6 +446,43 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
                 ))}
               </ul>
             ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      {config.process ? (
+        <section
+          className="border-t border-white/10 px-4 py-12 sm:px-6"
+          aria-labelledby="process-heading"
+        >
+          <div className="mx-auto max-w-xl">
+            <h2
+              id="process-heading"
+              className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
+            >
+              {config.process.headline}
+            </h2>
+            <ol className="mt-8 space-y-4">
+              {config.process.steps.map((step, i) => (
+                <li
+                  key={step.title}
+                  className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-4"
+                >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--popup-accent)] font-montserrat text-sm font-black text-white">
+                    {i + 1}
+                  </span>
+                  <div>
+                    {step.time ? (
+                      <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[var(--popup-soft)]">
+                        {step.time}
+                      </p>
+                    ) : null}
+                    <p className="font-montserrat text-base font-black text-white">{step.title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-white/80">{step.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
       ) : null}

@@ -193,6 +193,12 @@ export type PopupClassLandingConfig = {
   }
   /** Bulleted list under the education section; `lead` renders bold. */
   learnPoints?: readonly { lead: string; rest: string }[]
+  /** Shows the venue address as a pill near the top of the hero. */
+  addressInHero?: boolean
+  process?: {
+    headline: string
+    steps: readonly { time?: string; title: string; body: string }[]
+  }
   copy: PopupClassCopy
   offerBullets: readonly string[]
   offerTerms: readonly string[]
