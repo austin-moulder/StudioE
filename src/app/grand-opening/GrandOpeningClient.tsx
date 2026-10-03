@@ -5,13 +5,13 @@ import Script from "next/script"
 import { useCallback, useEffect, useState } from "react"
 import { Check, ChevronDown, MapPin } from "lucide-react"
 import {
-  ACUITY_RSVP_URL,
   ASSETS,
   COPY,
   EVENT,
   FAQS,
   FOOD,
   LINEUP,
+  RSVP_FORM,
   SCHEDULE,
   SOCIAL_POINTS,
   WORKSHOPS,
@@ -33,6 +33,33 @@ function trackMeta(eventName: string, params?: Record<string, unknown>) {
   }
 }
 
+const FORM_IFRAME_ID = `inline-${RSVP_FORM.id}`
+
+type IFrameResizeWindow = Window & {
+  iFrameResize?: (options: Record<string, unknown>, target: HTMLIFrameElement) => void
+}
+
+function initFormEmbed() {
+  const iframe = document.getElementById(FORM_IFRAME_ID) as HTMLIFrameElement | null
+  if (!iframe) return false
+  if (iframe.getAttribute("data-iframe-resizer-initialized") === "true") return true
+
+  const { iFrameResize } = window as IFrameResizeWindow
+  if (typeof iFrameResize !== "function") return false
+
+  iFrameResize(
+    {
+      autoResize: true,
+      scrolling: false,
+      checkOrigin: false,
+      heightCalculationMethod: "max",
+      minHeight: window.matchMedia("(max-width: 768px)").matches ? 480 : 560,
+    },
+    iframe
+  )
+  return true
+}
+
 const ctaClass =
   "mx-auto inline-flex w-full max-w-md items-center justify-center rounded-2xl bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] px-6 py-4 text-center font-montserrat text-sm font-black uppercase tracking-wide text-white shadow-[0_12px_28px_rgba(255,51,102,0.35)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] focus-visible:ring-offset-2 sm:text-base"
 
@@ -45,6 +72,24 @@ export default function GrandOpeningClient() {
       content_category: "event",
       content_ids: ["grand-opening"],
     })
+  }, [])
+
+  useEffect(() => {
+    let attempts = 0
+    const interval = setInterval(() => {
+      attempts += 1
+      if (initFormEmbed() || attempts >= 50) {
+        clearInterval(interval)
+        if (attempts >= 50) {
+          const iframe = document.getElementById(FORM_IFRAME_ID) as HTMLIFrameElement | null
+          if (iframe && iframe.getAttribute("data-iframe-resizer-initialized") !== "true") {
+            iframe.setAttribute("scrolling", "yes")
+            iframe.style.minHeight = "70vh"
+          }
+        }
+      }
+    }, 200)
+    return () => clearInterval(interval)
   }, [])
 
   const goRsvp = useCallback((placement: string) => {
@@ -249,19 +294,35 @@ export default function GrandOpeningClient() {
             <MapPin className="h-3.5 w-3.5" aria-hidden />
             {EVENT.addressLine} · {EVENT.cityLine}
           </p>
-          <div className="mt-8 overflow-hidden rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+          <div className="mx-auto mt-6 max-w-xl overflow-hidden rounded-2xl bg-white p-1 shadow-[0_20px_50px_rgba(0,0,0,0.4)] sm:mt-8 sm:p-3">
+            <Script
+              src="https://link.msgsndr.com/js/form_embed.js"
+              strategy="afterInteractive"
+              onLoad={initFormEmbed}
+            />
             <iframe
-              src={ACUITY_RSVP_URL}
-              title={`${EVENT.name} RSVP`}
-              className="block min-h-[800px] w-full border-0"
-              allow="payment *"
+              src={RSVP_FORM.url}
+              id={FORM_IFRAME_ID}
+              title={RSVP_FORM.name}
+              data-layout='{"id":"INLINE"}'
+              data-trigger-type="alwaysShow"
+              data-trigger-value=""
+              data-activation-type="alwaysActivated"
+              data-activation-value=""
+              data-deactivation-type="neverDeactivate"
+              data-deactivation-value=""
+              data-form-name={RSVP_FORM.name}
+              data-height="560"
+              data-layout-iframe-id={FORM_IFRAME_ID}
+              data-form-id={RSVP_FORM.id}
+              className="block w-full border-0 bg-white"
+              style={{ width: "100%", minHeight: "480px", border: "none", borderRadius: "8px" }}
             />
           </div>
-          <Script src="https://embed.acuityscheduling.com/js/embed.js" strategy="afterInteractive" />
           <p className="mt-4 text-center text-sm text-white/65">
-            If the scheduler doesn&apos;t load,{" "}
+            If the form doesn&apos;t load,{" "}
             <a
-              href={ACUITY_RSVP_URL}
+              href={RSVP_FORM.url}
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold text-[#E8C97A] underline underline-offset-2"

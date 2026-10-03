@@ -4,8 +4,11 @@
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
-export const ACUITY_RSVP_URL =
-  "https://app.acuityscheduling.com/schedule.php?owner=38921205&appointmentType=98613107" as const
+export const RSVP_FORM = {
+  id: "FgJ6LpKa7iKMZI0CSenq",
+  url: "https://api.leadconnectorhq.com/widget/form/FgJ6LpKa7iKMZI0CSenq",
+  name: "Grand Opening RSVP",
+} as const
 
 export const EVENT = {
   name: "Studio E Official Grand Opening",
@@ -26,7 +29,7 @@ export const COPY = {
   heroBrand: "Studio E",
   heroHeadline: "Official Grand Opening",
   heroSubheadline:
-    "One night of a special guest opening, workshops, two-room social, performances, merch runway, and food—celebrating our home on Division Street. Every free RSVP is entered into a special raffle worth $1,000+.",
+    "One night opening with a community bombazo led by AfriCaribe, plus workshops, a two-room social with DJ Machito, performances, merch runway, food, and an after party—celebrating our home on Paseo Boricua. Every free RSVP is entered into a special raffle worth $1,000+.",
   primaryCta: "RSVP FREE",
   stickyCta: "RSVP For Grand Opening",
   nightHeadline: "The Night, Hour By Hour",
@@ -40,14 +43,24 @@ export const COPY = {
     "RSVP free so we can plan the room and welcome you in on October 23. All RSVPs are entered into a special raffle worth $1,000+.",
   finalHeadline: "Be There When Studio E Officially Opens.",
   finalBody:
-    "A special guest opening, workshops, social dancing until 1AM, live performances, merch runway, and food from Dope Drip Café and Reina’s Cakes. RSVP free—and get entered into the $1,000+ raffle.",
+    "A community bombazo with AfriCaribe, workshops, DJ Machito on the social floor, live performances, merch runway, food from Dope Drip Café and Reina’s Cakes, and a midnight after party. RSVP free—and get entered into the $1,000+ raffle.",
 } as const
 
 export const SCHEDULE = [
-  { time: "7:00 PM", title: "Special Guest Opening", detail: "A surprise special guest kicks off the night. Get there early." },
+  {
+    time: "7:00 PM",
+    title: "Community Bombazo with AfriCaribe",
+    detail:
+      "AfriCaribe hosts a community bombazo—the only fitting way we can imagine to open a Latin dance studio on Paseo Boricua.",
+  },
   { time: "8:00 PM", title: "Lessons & Workshops", detail: "Advanced On 2 with Austin · Beginner On 1 with Arik." },
-  { time: "9:00 PM", title: "Social Dance", detail: "Two rooms open. A special guest DJ—one of Chicago’s top DJs—and DJ K-Arik." },
+  {
+    time: "9:00 PM",
+    title: "Social Dance",
+    detail: "Two rooms open with DJ Machito, organizer of the famous Mambo Revival Social, and DJ K-Arik.",
+  },
   { time: "11:00 PM", title: "Performances", detail: "Una Bulla plus a special guest performance take the floor." },
+  { time: "12:00 AM", title: "After Party", detail: "The after party kicks off in the second room." },
   { time: "1:00 AM", title: "Social Ends", detail: "Dance until the lights come up." },
 ] as const
 
@@ -68,8 +81,9 @@ export const WORKSHOPS = [
 
 export const SOCIAL_POINTS = [
   "Two social dance rooms",
-  "Special guest DJ (one of Chicago’s top DJs)",
+  "DJ Machito (organizer of the Mambo Revival Social)",
   "DJ K-Arik",
+  "After party in the second room at midnight",
   "Open until 1:00 AM",
 ] as const
 
@@ -97,7 +111,8 @@ export const FAQS = [
   },
   {
     question: "What time should I arrive?",
-    answer: "A special guest opens the night at 7:00 PM. Arrive early to catch it and settle in before workshops at 8:00 PM.",
+    answer:
+      "AfriCaribe opens the night with a community bombazo at 7:00 PM. Arrive early to join in and settle in before workshops at 8:00 PM.",
   },
   {
     question: "Where is it?",
