@@ -146,6 +146,20 @@ export default function GrandOpeningClient() {
         </div>
       </header>
 
+      {/* Flyer */}
+      <section className="bg-[#1C1410] px-4 pb-12 pt-2 sm:px-6" aria-label="Grand Opening flyer">
+        <div className="mx-auto max-w-md overflow-hidden rounded-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
+          <Image
+            src={ASSETS.flyer}
+            alt={`${EVENT.name} flyer · ${EVENT.dateLabel}`}
+            width={1080}
+            height={1350}
+            className="h-auto w-full"
+            sizes="(max-width: 640px) 100vw, 28rem"
+          />
+        </div>
+      </section>
+
       {/* Schedule */}
       <section className="px-4 py-14 sm:px-6 sm:py-16" aria-labelledby="night-heading">
         <div className="mx-auto max-w-xl">

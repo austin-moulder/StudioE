@@ -22,6 +22,7 @@ export const EVENT = {
 
 export const ASSETS = {
   hero: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/DSC05837.jpg",
+  flyer: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Grand-Opening-flyer.png",
 } as const
 
 export const COPY = {
@@ -59,7 +60,7 @@ export const SCHEDULE = [
     title: "Social Dance",
     detail: "Two rooms open with DJ Machito, organizer of the famous Mambo Revival Social, and DJ K-Arik.",
   },
-  { time: "11:00 PM", title: "Performances", detail: "Una Bulla plus a special guest performance take the floor." },
+  { time: "11:00 PM", title: "Performances", detail: "Una Bulla and Enclave Verso take the floor." },
   { time: "12:00 AM", title: "After Party", detail: "The after party kicks off in the second room." },
   { time: "1:00 AM", title: "Social Ends", detail: "Dance until the lights come up." },
 ] as const
@@ -88,7 +89,7 @@ export const SOCIAL_POINTS = [
 ] as const
 
 export const LINEUP = [
-  { label: "Performances", items: ["Una Bulla", "Special guest performance"] },
+  { label: "Performances", items: ["Una Bulla", "Enclave Verso"] },
   { label: "Runway", items: ["Studio E Merch Runway with students"] },
 ] as const
 
