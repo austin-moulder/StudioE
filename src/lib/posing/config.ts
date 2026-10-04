@@ -27,16 +27,16 @@ export const POSING_CONFIG: PopupClassLandingConfig = {
     durationLabel: "3:00 PM to 6:00 PM · Arrive 2:45 PM",
     price: 150,
     capacity: 20,
-    venueName: "Studio E",
-    addressLine: "2657 W Division St",
+    venueName: "Indie Media Studios",
+    addressLine: "5553 W Belmont Ave",
     cityLine: "Chicago, IL",
-    neighborhood: "Paseo Boricua · Humboldt Park",
-    mapsEmbedSrc:
-      "https://www.google.com/maps?q=2657+W+Division+St,+Chicago,+IL+60622&output=embed",
+    neighborhood: "Three studio rooms · One location",
+    mapsEmbedSrc: "https://www.google.com/maps?q=5553+W+Belmont+Ave,+Chicago,+IL&output=embed",
   },
   assets: {
     flyer:
-      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Posing_workshop.png",
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Posing.png",
+    flyerSize: { width: 2550, height: 3300 },
   },
   gallery: {
     images: [
@@ -68,7 +68,7 @@ export const POSING_CONFIG: PopupClassLandingConfig = {
       {
         time: "2:45 PM",
         title: "Arrive and get ready",
-        body: "Come to Studio E at 2657 W Division St. Use our private changing areas and mirrors, and our stylist will help you level up your look.",
+        body: "Come to Indie Media Studios at 5553 W Belmont Ave. Use the private changing areas and mirrors, and our stylist will help you level up your look.",
       },
       {
         time: "3:30 – 4:00 PM",
@@ -77,17 +77,8 @@ export const POSING_CONFIG: PopupClassLandingConfig = {
       },
       {
         time: "4:00 PM",
-        title: "First shoot at Studio E",
-        body: "Put your new poses to work in front of the camera right away.",
-      },
-      {
-        time: "4:45 PM",
-        title: "Shoot on Paseo Boricua",
-        body: "We move to a local spot on Paseo Boricua for the second set.",
-      },
-      {
-        title: "Final secret location",
-        body: "We finish the shoot at a surprise location revealed on the day.",
+        title: "Shoot across three studio rooms",
+        body: "Put your new poses to work in three different sets, with multiple looks featuring pieces from top Chicago Fashion Week designers.",
       },
       {
         title: "Get your photos",
@@ -96,10 +87,12 @@ export const POSING_CONFIG: PopupClassLandingConfig = {
     ],
   },
   copy: {
+    heroEyebrow: "Studio E × Indie Media Studios",
+    locationHeadline: "Where We Shoot",
     accentLabel: "Chicago Fashion Week",
     heroHeadline: "Pose With Confidence: Look Better in Every Photo",
     heroSubheadline:
-      "Instantly look better on camera with dynamic poses developed by professional Latin dancers and professional photographers. A 3-hour workshop with a directed photoshoot, on-site styling guidance, and 5 edited photos.",
+      "Instantly look better on camera with dynamic poses developed by professional Latin dancers and professional photographers. A 3-hour workshop with a directed photoshoot, multiple looks with pieces from top Chicago designers, and 5 edited photos.",
     primaryCta: "Reserve My Spot for $150",
     secondaryCta: "",
     capacityNote:
@@ -113,25 +106,26 @@ export const POSING_CONFIG: PopupClassLandingConfig = {
     offerHeadline: "Your $150 Experience Includes",
     friendHeadline: "",
     friendBody: "",
-    priceFriendLine: "$150 · Pro photos & styling guidance included",
+    priceFriendLine: "$150 · Pro photos & designer looks included",
     limitedHeadline: "Limited Spots Available",
     limitedBody:
       "We keep the group small so the photographer and dance coaches can direct every guest personally.",
     communityHeadline: "Part of Chicago Fashion Week",
     communityBody:
-      "Join us in Paseo Boricua for an afternoon of movement, style, and photos you’ll actually want to post—then stay to connect with the community after the shoot.",
+      "Join us at Indie Media Studios for an afternoon of movement, style, and pieces from Chicago Fashion Week designers—then stay to connect with the community after the shoot.",
     communityBadge: "Chicago Fashion Week · October 18",
     finalHeadline: "Look Like Yourself—Only Better.",
     finalBody:
-      "Three hours. Pro direction, styling guidance, three shoot locations, and photos you’ll use for years.",
+      "Three hours. Pro direction, three studio sets, multiple looks with pieces from top Chicago designers, and photos you’ll use for years.",
     countdownEnded: "The workshop is underway.",
     stickyCta: "Reserve My Spot — $150",
-    flyerAlt: "Pose With Confidence posing workshop flyer at Studio E — $150",
+    flyerAlt: "Pose With Confidence posing workshop flyer at Indie Media Studios — $150",
     videoAriaLabel: "Pose With Confidence workshop",
   },
   offerBullets: [
     "Posing fundamentals workshop with professional Latin dancers",
-    "3 shoot locations: Studio E, Paseo Boricua, and a secret final spot",
+    "Shoot across 3 different studio rooms at Indie Media Studios",
+    "Multiple looks with pieces from top Chicago Fashion Week designers",
     "A stylist on standby for hair, makeup, and accessory guidance",
     "Private changing areas and mirrors to get ready",
     "Directed photoshoot with a professional photographer",
@@ -151,7 +145,7 @@ export const POSING_CONFIG: PopupClassLandingConfig = {
     {
       question: "What’s included for $150?",
       answer:
-        "A posing fundamentals workshop, a directed photoshoot with a professional photographer at 3 locations, a stylist on standby for hair, makeup, and accessory guidance, 5 professionally edited photos, and a post-workshop social.",
+        "A posing fundamentals workshop, a directed photoshoot with a professional photographer across 3 studio rooms, multiple looks with pieces from top Chicago designers, a stylist on standby for hair, makeup, and accessory guidance, 5 professionally edited photos, and a post-workshop social.",
     },
     {
       question: "Will someone do my hair and makeup?",
@@ -161,7 +155,7 @@ export const POSING_CONFIG: PopupClassLandingConfig = {
     {
       question: "When and where is it?",
       answer:
-        "Sunday, October 18. Arrive at Studio E, 2657 W Division St, Chicago, at 2:45 PM to get ready. The workshop runs 3:30 to 4:00 PM, then we shoot at Studio E, move to Paseo Boricua at 4:45 PM, and finish at a secret final location.",
+        "Sunday, October 18, at Indie Media Studios, 5553 W Belmont Ave, Chicago, IL. Arrive at 2:45 PM to get ready. The workshop runs 3:30 to 4:00 PM, then we shoot across three different studio rooms, all in the same building.",
     },
     {
       question: "Is this part of Chicago Fashion Week?",
@@ -170,7 +164,7 @@ export const POSING_CONFIG: PopupClassLandingConfig = {
     {
       question: "What should I wear or bring?",
       answer:
-        "Wear clothes that make you feel confident. Then bring plenty of accessories: jewelry, watches, headwear, and props that speak to your personality. The more options you bring, the more our stylist can level up your look. We have private changing areas and mirrors in the studio to help you get ready.",
+        "Bring a look you feel confident in. Select professional designers from Chicago Fashion Week will also be there with special pieces to add variety to your looks—all included in the shoot. Feel free to bring accessories that speak to your personality too (jewelry, watches, headwear, props). There are private changing areas and mirrors on site to help you get ready.",
     },
     {
       question: "When do I get my photos?",

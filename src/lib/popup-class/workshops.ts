@@ -7,6 +7,8 @@ export type PopupWorkshopCard = {
   name: string
   nameEs?: string
   flyer: string
+  /** Use "contain" for non-square flyers so the card doesn't crop them. */
+  flyerFit?: "contain"
   flyerAlt: string
   durationLabel: string
   durationLabelEs?: string
@@ -25,7 +27,8 @@ export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
     name: "Pose With Confidence",
     nameEs: "Pose With Confidence",
     flyer:
-      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Posing_workshop.png",
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Posing.png",
+    flyerFit: "contain",
     flyerAlt: "Pose With Confidence posing workshop flyer",
     durationLabel: "3:00 PM – 6:00 PM",
     durationLabelEs: "3:00 PM – 6:00 PM",

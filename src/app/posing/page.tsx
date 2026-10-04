@@ -15,20 +15,20 @@ const scriptFont = Great_Vibes({
 const { assets, event } = POSING_CONFIG
 
 export const metadata: Metadata = {
-  title: "Pose With Confidence | Chicago Fashion Week Posing Workshop at Studio E",
+  title: "Pose With Confidence | Chicago Fashion Week Posing Workshop at Indie Media Studios",
   description:
-    "Look better in every photo with dynamic poses from professional Latin dancers and photographers. Oct 18, 3–6 PM in Paseo Boricua. $150 includes a pro photoshoot, hair and makeup, and 5 edited photos.",
+    "Look better in every photo with dynamic poses from professional Latin dancers and photographers. Oct 18, 3–6 PM at Indie Media Studios, 5553 W Belmont Ave. $150 includes a pro photoshoot, multiple looks with pieces from top Chicago designers, and 5 edited photos.",
   openGraph: {
-    title: "Pose With Confidence — Chicago Fashion Week at Studio E",
+    title: "Pose With Confidence — Chicago Fashion Week at Indie Media Studios",
     description:
-      "3-hour posing workshop + directed pro photoshoot in Paseo Boricua. Oct 18, 3–6 PM. $150 with hair, makeup, and 5 edited photos.",
+      "3-hour posing workshop + directed pro photoshoot across three studio rooms at 5553 W Belmont Ave. Oct 18, 3–6 PM. $150 with designer looks and 5 edited photos.",
     url: "https://www.joinstudioe.com/posing",
     type: "website",
     images: [
       {
         url: assets.flyer,
-        width: 1080,
-        height: 1080,
+        width: 2550,
+        height: 3300,
         alt: "Pose With Confidence posing workshop flyer",
       },
     ],

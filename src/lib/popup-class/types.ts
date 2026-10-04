@@ -6,6 +6,10 @@ export type FaqItem = {
 }
 
 export type PopupClassCopy = {
+  /** Small label above the accent line; defaults to "Studio E · Humboldt Park". */
+  heroEyebrow?: string
+  /** Overrides the default location section heading. */
+  locationHeadline?: string
   accentLabel: string
   heroHeadline: string
   heroSubheadline: string
@@ -185,6 +189,8 @@ export type PopupClassLandingConfig = {
   }
   assets: {
     flyer: string
+    /** Intrinsic flyer size for non-square flyers; square is assumed when omitted. */
+    flyerSize?: { width: number; height: number }
     video?: string
   }
   gallery?: {

@@ -311,7 +311,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           ) : null}
 
           <p className="text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-[var(--popup-soft)]">
-            Studio E · Humboldt Park
+            {copy.heroEyebrow ?? "Studio E · Humboldt Park"}
           </p>
           <p
             className="mt-3 text-center text-2xl text-[var(--popup-accent)]"
@@ -339,7 +339,14 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           </p>
 
           <div className="mx-auto mt-6 max-w-sm overflow-hidden rounded-2xl border border-white/15 bg-black/30 shadow-xl">
-            <div className="relative aspect-square">
+            <div
+              className="relative aspect-square"
+              style={
+                assets.flyerSize
+                  ? { aspectRatio: `${assets.flyerSize.width} / ${assets.flyerSize.height}` }
+                  : undefined
+              }
+            >
               <Image
                 src={assets.flyer}
                 alt={copy.flyerAlt}
@@ -604,7 +611,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
             id="location-heading"
             className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
           >
-            {ui.locationHeadline}
+            {copy.locationHeadline ?? ui.locationHeadline}
           </h2>
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
             <MapPin className="mx-auto h-6 w-6 text-[var(--popup-accent)]" aria-hidden />
@@ -615,7 +622,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           </div>
           <div className="mt-5 overflow-hidden rounded-2xl border border-white/10">
             <iframe
-              title="Map to Studio E on Division Street"
+              title={`Map to ${event.venueName}`}
               src={event.mapsEmbedSrc}
               className="h-48 w-full grayscale-[30%] contrast-125"
               loading="lazy"

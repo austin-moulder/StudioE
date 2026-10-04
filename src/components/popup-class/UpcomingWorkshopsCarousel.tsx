@@ -107,7 +107,7 @@ export default function UpcomingWorkshopsCarousel({
                         src={card.flyer}
                         alt={card.flyerAlt}
                         fill
-                        className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                        className={`${card.flyerFit === "contain" ? "object-contain" : "object-cover"} transition duration-500 group-hover:scale-[1.03]`}
                         sizes="(max-width: 640px) 82vw, 28rem"
                       />
                     </div>
