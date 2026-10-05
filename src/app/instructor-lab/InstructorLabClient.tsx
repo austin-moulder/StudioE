@@ -85,7 +85,6 @@ const danceStyles = [
 
 const skillItems = [
   { title: "Teaching Presence", detail: "Voice, pacing, classroom control" },
-  { title: "Sales", detail: "How to enroll, retain, and re-enroll students" },
   { title: "Marketing & Content", detail: "Attract students with social media" },
 ]
 
@@ -100,7 +99,7 @@ const steps = [
   },
   {
     title: "Train for 8 Weeks — Then Certify & Join",
-    body: "The 8-week LDIC Program is the interview. Attend weekly sessions, complete demo teaching hours, and earn the Studio E Latin Dance Instructor Certification. Successful participants join the paid instructor team.",
+    body: "The 8-week LDIC Program is the interview. Attend weekly sessions, complete demo teaching hours, and earn the Studio E Latin Dance Instructor Certification. Then complete a 6-week trial instruction period teaching live classes before joining the paid instructor team.",
   },
 ]
 
@@ -123,7 +122,17 @@ const faqs = [
   {
     question: "Is this a paid job?",
     answer:
-      "The 8-week LDIC Program is a paid-in (deposit) training and evaluation period — the interview process itself. Successful participants are invited to join Studio E as paid instructors after completing the program and certification.",
+      "Yes—after you complete the 8-week program, earn your certification, and finish the 6-week trial instruction period. From there, you teach as a paid Studio E instructor.",
+  },
+  {
+    question: "When do I get my $699 deposit back?",
+    answer:
+      "Your deposit is refunded after you complete 6 weeks of instructing at least 3 classes per week (typically one night a week on a 3-hour block). This trial instruction period starts after the 8 weeks of training finish—it’s where you build your confidence teaching live.",
+  },
+  {
+    question: "What’s the private lesson with the founder?",
+    answer:
+      "Every LDIC participant gets a private lesson with the founder of Studio E (a $150 value), included with your enrollment.",
   },
   {
     question: "Can I teach at other studios using this method?",
@@ -273,6 +282,8 @@ export default function InstructorLabClient() {
               "Learn Studio E’s proprietary teaching method",
               "Practice with real Studio E students",
               "Earn the official Studio E Latin Dance Instructor Certification",
+              "Get a private lesson with the Studio E founder ($150 value)",
+              "Build confidence teaching live in a 6-week trial instruction period",
               "Get the chance to join our paid instructor team",
             ].map((item) => (
               <li
@@ -346,7 +357,7 @@ export default function InstructorLabClient() {
             ))}
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {skillItems.map((item) => (
               <Card key={item.title} className="border-none bg-white shadow-sm">
                 <CardContent className="p-5">
@@ -479,15 +490,16 @@ export default function InstructorLabClient() {
                 Investment
               </p>
               <p className="mt-3 font-montserrat text-2xl font-bold text-stone-400 line-through md:text-3xl">
-                $2,499
+                $2,649
               </p>
               <p className="mt-1 font-montserrat text-5xl font-black text-[#FF3366] md:text-6xl">
-                $249
+                $699
               </p>
               <p className="mt-2 text-lg font-medium text-stone-700">Refundable deposit</p>
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-stone-600">
                 Each lab session is typically a $500 28-day challenge we run for our students—$2,499
-                in training value. Your commitment is a $249 refundable deposit.
+                in training value—plus a private lesson with the Studio E founder valued at $150.
+                Your commitment is a $699 refundable deposit.
               </p>
             </div>
 
@@ -502,6 +514,7 @@ export default function InstructorLabClient() {
                     "Attend at least 7 of the 8 sessions (no more than 1 absence).",
                     "Respect and use ONLY Studio E’s proprietary curriculum at Studio E (you agree not to use this method at any other studio or program).",
                     "Complete your demo hours and pursue the instructor route with Studio E.",
+                    "After the 8 weeks, complete a 6-week trial instruction period teaching at least 3 classes per week (typically one night a week on a 3-hour block).",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-3 text-stone-700">
                       <Check className="mt-1 h-4 w-4 flex-shrink-0 text-[#FF3366]" aria-hidden />
@@ -514,17 +527,17 @@ export default function InstructorLabClient() {
               <div className="rounded-xl bg-emerald-50 px-5 py-4 text-stone-800">
                 <p className="font-semibold text-emerald-900">Get your deposit back</p>
                 <p className="mt-1 text-sm leading-relaxed text-emerald-900/90 md:text-base">
-                  If you complete the program, meet the attendance requirement, and are brought on
-                  as an instructor, Studio E returns your full $249 deposit (e.g., via your pay once
-                  you start teaching).
+                  Complete the 8-week program, meet the attendance requirement, and finish 6 weeks of
+                  instructing at least 3 classes per week. Studio E then refunds your full $699
+                  deposit.
                 </p>
               </div>
 
               <div className="rounded-xl bg-stone-100 px-5 py-4 text-stone-700">
                 <p className="font-semibold text-stone-900">If you don’t commit</p>
                 <p className="mt-1 text-sm leading-relaxed md:text-base">
-                  If you decide NOT to go into the instructor route, or you miss more than one
-                  session, you forfeit the deposit. This keeps the room full of serious, committed
+                  If you decide NOT to go into the instructor route, miss more than one session, or
+                  don&apos;t complete the 6-week trial instruction period, you forfeit the deposit. This keeps the room full of serious, committed
                   future instructors.
                 </p>
               </div>
