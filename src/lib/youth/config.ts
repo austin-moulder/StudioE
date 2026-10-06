@@ -15,7 +15,7 @@ export const PROGRAM = {
   daysLabel: "Monday – Thursday",
   enrollmentWindow: "October and November",
   sessionWeeks: 16,
-  setupFeeWaiverDeadline: "October 5",
+  setupFeeWaiverDeadline: "October 12",
   setupFeeAmount: 100,
 } as const
 
@@ -74,7 +74,7 @@ export const PLANS = [
 ] as const
 
 export const COPY = {
-  announcement: "STARTS OCT 12 | SIGN UP BY OCT 5 · $100 SETUP FEE WAIVED",
+  announcement: "STARTS OCT 12 | SIGN UP BEFORE OCT 12 · $100 SETUP FEE WAIVED",
   heroHeadline: "Chicago Latin Dance Youth Program",
   heroSubheadline:
     "Give your child a joyful after-school place to move, make friends, and grow through Latin dance—right in the heart of Humboldt Park. Classes officially start October 12, Monday through Thursday.",
@@ -84,7 +84,7 @@ export const COPY = {
     "Classes run Monday–Thursday for each age group. Your child can come any of those days—it does not have to be the same day every week. If they are sick or out of town, make the class up later that week or the following week.",
   startHeadline: "Official Start: October 12",
   startBody:
-    "Classes start October 12, with rolling admission through November—join later and your child still gets the full number of classes. Sign up by October 5 and we waive the $100 set-up fee.",
+    "Classes start October 12, with rolling admission through November—join later and your child still gets the full number of classes. Sign up before October 12 and we waive the $100 set-up fee.",
   howItWorksHeadline: "How Enrollment Works",
   howItWorksBody: "Three simple steps from signup to first class.",
   whyHeadline: "Why Families Choose Studio E",
@@ -93,10 +93,10 @@ export const COPY = {
     "Bronze is for 1×/week students. Gold is for 2×/week students. Tuition is simply for class time—so kids can grow confidence as dancers.",
   pricingNote:
     "Billed every 4 weeks at the rates below. Tuition covers the full 16-week session—this is a session commitment.",
-  setupFeeNote: "Sign up by October 5 and we waive the $100 set-up fee.",
+  setupFeeNote: "Sign up before October 12 and we waive the $100 set-up fee.",
   finalHeadline: "Ready For After-School Dance?",
   finalBody:
-    "Enroll your dancer in the Chicago Latin Dance Youth Program—classes start October 12, with rolling admission through November. Come any Monday–Thursday that works, and lock in the waived set-up fee if you sign up by October 5.",
+    "Enroll your dancer in the Chicago Latin Dance Youth Program—classes start October 12, with rolling admission through November. Come any Monday–Thursday that works, and lock in the waived set-up fee if you sign up before October 12.",
 } as const
 
 export const HOW_IT_WORKS = [
@@ -129,7 +129,7 @@ export const FAQS = [
   {
     question: "When do classes start?",
     answer:
-      "Youth classes officially start October 12, with rolling admission through November. Join later and your child still gets the full number of classes for the session. Sign up by October 5 and we waive the $100 set-up fee.",
+      "Youth classes officially start October 12, with rolling admission through November. Join later and your child still gets the full number of classes for the session. Sign up before October 12 and we waive the $100 set-up fee.",
   },
   {
     question: "What happens after I sign up?",
@@ -154,7 +154,7 @@ export const FAQS = [
   {
     question: "Is there a set-up fee?",
     answer:
-      "There is a $100 set-up fee. Sign up by October 5 and we waive it.",
+      "There is a $100 set-up fee. Sign up before October 12 and we waive it.",
   },
   {
     question: "How long is the commitment?",
