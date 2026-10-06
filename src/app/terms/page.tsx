@@ -40,12 +40,12 @@ export default function TermsPage() {
         <h2 className="text-2xl font-bold mt-8 mb-4">Membership Autorenewal and Cancellation Terms</h2>
         <p className="font-bold">AUTORENEWAL TERMS:</p>
         <p>
-          Memberships will automatically renew on a monthly basis and your credit or debit card will be charged your monthly membership fee (taxes may apply) unless you cancel prior to your next billing cycle. Membership fees are due immediately upon renewal and are non-refundable. If you cancel after your membership is renewed, you will be charged for the entire month regardless of when you cancel your membership.
+          Memberships will automatically renew every 28 days and your credit or debit card will be charged your membership fee (taxes may apply) unless you cancel prior to your next billing cycle. Membership fees are due immediately upon renewal and are non-refundable. If you cancel after your membership is renewed, you will be charged for the entire 28-day billing cycle regardless of when you cancel your membership.
         </p>
 
         <p className="font-bold">CANCELLATION TERMS:</p>
         <p>
-          Memberships may be canceled by texting &ldquo;cancel&rdquo; to <a href="sms:8164196279" className="text-[#FF3366] hover:underline">816-419-6279</a> or by canceling in person at the studio. We require 30 days&apos; notice before your membership ends.
+          Memberships may be canceled by texting &ldquo;cancel&rdquo; to <a href="sms:8164196279" className="text-[#FF3366] hover:underline">816-419-6279</a> or by canceling in person at the studio.
         </p>
 
         <p>
