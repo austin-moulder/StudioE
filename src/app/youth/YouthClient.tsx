@@ -1,11 +1,13 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import Script from "next/script"
+import { useEffect, useState } from "react"
 import { Check, ChevronDown, MapPin } from "lucide-react"
 import {
   AGE_GROUPS,
   ASSETS,
+  CONTACT_FORM,
   COPY,
   FAQS,
   HOW_IT_WORKS,
@@ -30,11 +32,61 @@ function trackMeta(eventName: string, params?: Record<string, unknown>) {
   }
 }
 
+const CONTACT_IFRAME_ID = `inline-${CONTACT_FORM.id}`
+
+type IFrameResizeWindow = Window & {
+  iFrameResize?: (options: Record<string, unknown>, target: HTMLIFrameElement) => void
+}
+
+function initContactFormEmbed() {
+  const iframe = document.getElementById(CONTACT_IFRAME_ID) as HTMLIFrameElement | null
+  if (!iframe) return false
+  if (iframe.getAttribute("data-iframe-resizer-initialized") === "true") return true
+
+  const { iFrameResize } = window as IFrameResizeWindow
+  if (typeof iFrameResize !== "function") return false
+
+  iFrameResize(
+    {
+      autoResize: true,
+      scrolling: false,
+      checkOrigin: false,
+      heightCalculationMethod: "max",
+      minHeight: window.matchMedia("(max-width: 768px)").matches ? 480 : 560,
+    },
+    iframe
+  )
+  return true
+}
+
+const contactLinkClass =
+  "mt-4 inline-block text-sm font-semibold underline underline-offset-4 transition hover:opacity-80"
+
 const ctaClass =
   "mx-auto inline-flex w-full max-w-md items-center justify-center rounded-2xl bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] px-6 py-4 text-center font-montserrat text-sm font-black uppercase tracking-wide text-white shadow-[0_12px_28px_rgba(255,51,102,0.35)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] focus-visible:ring-offset-2 sm:text-base"
 
 export default function YouthClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+
+  useEffect(() => {
+    let attempts = 0
+    const interval = setInterval(() => {
+      attempts += 1
+      if (initContactFormEmbed()) {
+        clearInterval(interval)
+        return
+      }
+      if (attempts >= 50) {
+        clearInterval(interval)
+        const iframe = document.getElementById(CONTACT_IFRAME_ID) as HTMLIFrameElement | null
+        if (iframe) {
+          iframe.setAttribute("scrolling", "yes")
+          iframe.style.minHeight = "70vh"
+        }
+      }
+    }, 200)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="min-h-screen scroll-smooth bg-[#F7F1E8] text-stone-900 antialiased">
@@ -75,6 +127,11 @@ export default function YouthClient() {
             <a href="#pricing" className={ctaClass}>
               {COPY.primaryCta}
             </a>
+            <div className="text-center">
+              <a href="#contact" className={`${contactLinkClass} text-white/85`}>
+                {COPY.contactLink}
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -274,6 +331,62 @@ export default function YouthClient() {
         </div>
       </section>
 
+      {/* Contact form */}
+      <section
+        id="contact"
+        className="scroll-mt-6 bg-[#F7F1E8] px-4 py-14 sm:px-6 sm:py-16"
+        aria-labelledby="contact-heading"
+      >
+        <div className="mx-auto max-w-xl">
+          <h2
+            id="contact-heading"
+            className="text-center font-montserrat text-3xl font-black tracking-tight text-[#1C1410] sm:text-4xl"
+          >
+            {COPY.contactHeadline}
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-center text-base text-stone-600">
+            {COPY.contactBody}
+          </p>
+          <div className="mt-6 overflow-hidden rounded-2xl border border-[#E8DCC8] bg-white p-1 shadow-sm sm:mt-8 sm:p-3">
+            <Script
+              src="https://link.msgsndr.com/js/form_embed.js"
+              strategy="afterInteractive"
+              onLoad={initContactFormEmbed}
+            />
+            <iframe
+              src={CONTACT_FORM.url}
+              id={CONTACT_IFRAME_ID}
+              title={CONTACT_FORM.name}
+              data-layout='{"id":"INLINE"}'
+              data-trigger-type="alwaysShow"
+              data-trigger-value=""
+              data-activation-type="alwaysActivated"
+              data-activation-value=""
+              data-deactivation-type="neverDeactivate"
+              data-deactivation-value=""
+              data-form-name={CONTACT_FORM.name}
+              data-height="560"
+              data-layout-iframe-id={CONTACT_IFRAME_ID}
+              data-form-id={CONTACT_FORM.id}
+              className="block w-full border-0 bg-white"
+              style={{ width: "100%", minHeight: "480px", border: "none", borderRadius: "8px" }}
+            />
+          </div>
+          <p className="mt-4 text-center text-sm text-stone-500">
+            If the form doesn&apos;t load,{" "}
+            <a
+              href={CONTACT_FORM.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#FF3366] underline underline-offset-2"
+            >
+              open it in a new tab
+            </a>
+            .
+          </p>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="bg-white px-4 py-14 sm:px-6 sm:py-16" aria-labelledby="faq-heading">
         <div className="mx-auto max-w-xl">
@@ -337,6 +450,11 @@ export default function YouthClient() {
             <a href="#pricing" className={ctaClass}>
               {COPY.primaryCta}
             </a>
+            <div>
+              <a href="#contact" className={`${contactLinkClass} text-white/80`}>
+                {COPY.contactLink}
+              </a>
+            </div>
           </div>
         </div>
       </section>

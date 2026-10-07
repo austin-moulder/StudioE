@@ -73,7 +73,17 @@ export const PLANS = [
   },
 ] as const
 
+export const CONTACT_FORM = {
+  id: "ZgTxqbTAMAqPuL3ylojP",
+  url: "https://api.leadconnectorhq.com/widget/form/ZgTxqbTAMAqPuL3ylojP",
+  name: "Youth Program Info Request",
+} as const
+
 export const COPY = {
+  contactLink: "Have questions first? Get more info",
+  contactHeadline: "Not Ready to Enroll Yet?",
+  contactBody:
+    "Leave your info and we’ll reach out to answer your questions about schedules, age groups, and getting your child started.",
   announcement: "STARTS OCT 12 | SIGN UP BEFORE OCT 12 · $100 SETUP FEE WAIVED",
   heroHeadline: "Chicago Latin Dance Youth Program",
   heroSubheadline:
