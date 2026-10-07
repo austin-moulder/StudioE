@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import Script from "next/script"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Clock, Star } from "lucide-react"
@@ -256,6 +257,15 @@ export default function FounderDealPage() {
             strategy="afterInteractive"
             onLoad={initFormEmbed}
           />
+          <p className="mt-4 text-center text-sm text-gray-600">
+            Can only make weekends?{" "}
+            <Link
+              href="/weekend-salsa-bachata"
+              className="font-semibold text-[#FF3366] underline underline-offset-2"
+            >
+              Click here for our Saturday classes →
+            </Link>
+          </p>
         </div>
 
         {/* Urgency Section */}

@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useCallback, useState } from "react"
 import { Check, ChevronDown } from "lucide-react"
 import {
@@ -86,6 +87,15 @@ export default function WeekendSalsaBachataClient() {
               {COPY.primaryCta}
             </button>
             <p className="mt-3 text-center text-sm text-[#E8C97A]">{COPY.ctaMicro}</p>
+            <Link
+              href="/founder-deal"
+              className="mt-5 block max-w-md rounded-xl border border-white/25 bg-black/35 px-4 py-3 text-center text-sm leading-snug text-white/90 backdrop-blur-sm transition hover:bg-black/50"
+            >
+              Can&apos;t make Saturdays? We have classes Monday–Friday evenings, 6:30–9:20 PM.{" "}
+              <span className="font-bold text-[#FF7A5A] underline underline-offset-2">
+                See weekday classes →
+              </span>
+            </Link>
           </div>
 
           <ul className="mx-auto mt-10 max-w-md space-y-2.5">
