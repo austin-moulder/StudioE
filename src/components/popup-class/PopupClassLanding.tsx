@@ -165,12 +165,13 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         ["--popup-final-via" as string]: theme.finalVia,
         ["--popup-final-to" as string]: theme.finalTo,
         ["--popup-cta-shadow" as string]: theme.ctaShadow,
+        ["--popup-accent-text" as string]: theme.accentText ?? "#FFFFFF",
       }) as CSSProperties,
     [theme]
   )
 
   const ctaClass =
-    "mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-[var(--popup-accent)] px-6 py-4 text-center font-montserrat text-base font-black uppercase tracking-wide text-white shadow-[0_10px_30px_var(--popup-cta-shadow)] transition hover:bg-[var(--popup-accent-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--popup-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--popup-bg)] sm:text-lg"
+    "mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-[var(--popup-accent)] px-6 py-4 text-center font-montserrat text-base font-black uppercase tracking-wide text-[var(--popup-accent-text)] shadow-[0_10px_30px_var(--popup-cta-shadow)] transition hover:bg-[var(--popup-accent-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--popup-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--popup-bg)] sm:text-lg"
 
   useEffect(() => {
     const soldOutDates = config.soldOut?.dates ?? []
@@ -253,6 +254,16 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           style={{
             background:
               "linear-gradient(90deg, #006847 0%, #006847 33%, #FFFFFF 33%, #FFFFFF 66%, #CE1126 66%, #CE1126 100%)",
+          }}
+        />
+      ) : null}
+      {config.bannerStripe === "nyc-subway" ? (
+        <div
+          className="flex h-1.5 w-full"
+          aria-hidden
+          style={{
+            background:
+              "linear-gradient(90deg, #EE352E 0%, #EE352E 16.66%, #FF6319 16.66%, #FF6319 33.33%, #FCCC0A 33.33%, #FCCC0A 50%, #00933C 50%, #00933C 66.66%, #0039A6 66.66%, #0039A6 83.33%, #B933AD 83.33%, #B933AD 100%)",
           }}
         />
       ) : null}
@@ -477,7 +488,7 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
                   key={step.title}
                   className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-4"
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--popup-accent)] font-montserrat text-sm font-black text-white">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--popup-accent)] font-montserrat text-sm font-black text-[var(--popup-accent-text)]">
                     {i + 1}
                   </span>
                   <div>

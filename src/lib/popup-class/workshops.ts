@@ -46,7 +46,7 @@ export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
     name: "Salsa On 2 Intensive",
     nameEs: "Salsa On 2 Intensivo",
     flyer:
-      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/On_2.png",
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/On_2_Flyer.png",
     flyerAlt: "Salsa On 2 Intensive class flyer",
     durationLabel: "8:30 PM – 9:30 PM",
     durationLabelEs: "8:30 PM – 9:30 PM",
