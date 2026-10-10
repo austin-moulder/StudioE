@@ -41,6 +41,23 @@ export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
     },
   },
   {
+    id: "salsa-on-2",
+    href: "/salsa-on-2",
+    name: "Salsa On 2 Intensive",
+    nameEs: "Salsa On 2 Intensivo",
+    flyer:
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/On_2.png",
+    flyerAlt: "Salsa On 2 Intensive class flyer",
+    durationLabel: "8:30 PM – 9:30 PM",
+    durationLabelEs: "8:30 PM – 9:30 PM",
+    schedule: {
+      weekday: 2,
+      startHour: 20,
+      startMinute: 30,
+      timeZone: "America/Chicago",
+    },
+  },
+  {
     id: "afro-cuban-movement",
     href: "/afro-cuban-movement",
     name: "Afro-Cuban Movement",
