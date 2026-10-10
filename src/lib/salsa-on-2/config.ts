@@ -73,6 +73,7 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
     "60-minute Salsa On 2 intensive",
     "On 2 timing, footwork, and musicality broken down step by step",
     "Partnerwork you can use on the social floor right away",
+    "Multiple levels of the same sequence—for dancers new to On 2 and seasoned Mamboheads alike",
     "Come alone or bring one friend free (new to the studio)",
     "Personalized instruction in a capped 20-person class",
   ],
@@ -84,9 +85,9 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
   ],
   faqs: [
     {
-      question: "Do I need On 2 experience?",
+      question: "What experience do I need?",
       answer:
-        "No On 2 experience is needed. If you already know basic salsa, you’ll be able to follow along—this class is built to help you make the switch and get comfortable On 2.",
+        "You should have experience dancing salsa. Each class teaches multiple levels of a similar sequence, so there’s something for both the dancer transitioning into On 2 and the well-traveled Mambohead.",
     },
     {
       question: "What does my ticket include?",
