@@ -117,18 +117,17 @@ export const AFRO_CUBAN_POPUP_THEME: PopupClassTheme = {
   ctaShadow: "rgba(227,28,35,0.42)",
 }
 
-/** Subway black, taxi yellow, and MTA blue for New York–style On 2. */
-export const NYC_POPUP_THEME: PopupClassTheme = {
-  pageBg: "#0B0B0C",
-  altBg: "#18191B",
-  accent: "#FCCC0A",
-  accentHover: "#E5B800",
-  soft: "#E8E8E3",
-  finalFrom: "#0039A6",
-  finalVia: "#111214",
-  finalTo: "#0B0B0C",
-  ctaShadow: "rgba(252,204,10,0.32)",
-  accentText: "#111111",
+/** Puerto Rican flag blue and white, with Studio E pink standing in for the red. */
+export const PUERTO_RICO_POPUP_THEME: PopupClassTheme = {
+  pageBg: "#061430",
+  altBg: "#0C1F45",
+  accent: "#FF3366",
+  accentHover: "#E02D5A",
+  soft: "#9CC7FF",
+  finalFrom: "#FF3366",
+  finalVia: "#0A3161",
+  finalTo: "#061430",
+  ctaShadow: "rgba(255,51,102,0.4)",
 }
 
 /** Deep plum / magenta palette matching the Pose With Confidence flyer. */
@@ -177,7 +176,7 @@ export type PopupClassLandingConfig = {
   spotsRange?: { min: number; max: number }
   theme?: PopupClassTheme
   /** Cultural color stripe at the top of the page. */
-  bannerStripe?: "mexican" | "pan-african" | "nyc-subway"
+  bannerStripe?: "mexican" | "pan-african" | "puerto-rico"
   /**
    * Occurrences that are sold out (YYYY-MM-DD, event time zone). The page skips them,
    * shows the notice, and returns to normal once those dates pass.

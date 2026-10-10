@@ -1,6 +1,6 @@
 import {
   CANT_MAKE_THIS_WEEK_FAQ,
-  NYC_POPUP_THEME,
+  PUERTO_RICO_POPUP_THEME,
   type PopupClassLandingConfig,
 } from "@/lib/popup-class/types"
 
@@ -12,8 +12,8 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
   embedCheckout: true,
   spotsStorageKey: "studioe_salsa_on_2_spots_left_v1",
   spotsRange: { min: 5, max: 10 },
-  theme: NYC_POPUP_THEME,
-  bannerStripe: "nyc-subway",
+  theme: PUERTO_RICO_POPUP_THEME,
+  bannerStripe: "puerto-rico",
   utm: {
     utm_source: "meta",
     utm_medium: "paid_social",
@@ -43,7 +43,7 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
       "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Jon_On2.mp4",
   },
   copy: {
-    accentLabel: "New York Style · Tuesday Nights",
+    accentLabel: "Tuesday Night Intensive",
     heroHeadline: "Salsa On 2 Intensive: Find the Groove Chicago’s Best Dancers Use.",
     heroSubheadline:
       "One focused hour on the timing, footwork, and partnerwork that make On 2 feel smooth and musical. Come alone or bring a friend free.",
@@ -62,7 +62,7 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
       "We keep the class small so the instructor can correct your timing and technique in real time and everyone has enough mirror space.",
     communityHeadline: "Train Hard. Then Go Dance.",
     communityBody:
-      "On 2 is New York–style mambo—the smooth, musical timing born on the dance floors of NYC and carried by the strongest social dancers in Chicago. This intensive breaks it down so it actually clicks—then you put it to work with a room full of people who love salsa as much as you do.",
+      "On 2 is New York–style mambo—the smooth, musical timing shaped by Puerto Rican and Latin dancers on the floors of NYC and carried today by the strongest social dancers in Chicago. This intensive breaks it down so it actually clicks—then you put it to work with a room full of people who love salsa as much as you do.",
     communityBadge: "Every Tuesday · 8:30 PM",
     finalHeadline: "Your Tuesday Night Training Is Set.",
     finalBody:

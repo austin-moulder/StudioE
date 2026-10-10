@@ -257,13 +257,13 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           }}
         />
       ) : null}
-      {config.bannerStripe === "nyc-subway" ? (
+      {config.bannerStripe === "puerto-rico" ? (
         <div
           className="flex h-1.5 w-full"
           aria-hidden
           style={{
             background:
-              "linear-gradient(90deg, #EE352E 0%, #EE352E 16.66%, #FF6319 16.66%, #FF6319 33.33%, #FCCC0A 33.33%, #FCCC0A 50%, #00933C 50%, #00933C 66.66%, #0039A6 66.66%, #0039A6 83.33%, #B933AD 83.33%, #B933AD 100%)",
+              "linear-gradient(90deg, #0A3161 0%, #0A3161 25%, #FF3366 25%, #FF3366 40%, #FFFFFF 40%, #FFFFFF 55%, #FF3366 55%, #FF3366 70%, #FFFFFF 70%, #FFFFFF 85%, #FF3366 85%, #FF3366 100%)",
           }}
         />
       ) : null}
