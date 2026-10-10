@@ -109,21 +109,4 @@ export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
     },
     soldOutDates: TWERK_SOLD_OUT_DATES,
   },
-  {
-    id: "reggaeton",
-    href: "/reggaeton",
-    name: "Reggaeton Friday",
-    nameEs: "Reggaeton Friday",
-    flyer:
-      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Reggaeton_Popup.png",
-    flyerAlt: "Reggaeton Friday class flyer",
-    durationLabel: "9:00 PM – 10:00 PM",
-    durationLabelEs: "9:00 PM – 10:00 PM",
-    schedule: {
-      weekday: 5,
-      startHour: 21,
-      startMinute: 0,
-      timeZone: "America/Chicago",
-    },
-  },
 ] as const

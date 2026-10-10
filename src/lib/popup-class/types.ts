@@ -157,6 +157,8 @@ export type PopupClassLandingConfig = {
   /** When true, CTAs scroll to an on-page iframe of checkoutUrl instead of navigating away. */
   embedCheckout?: boolean
   spotsStorageKey: string
+  /** Random spots-left range; defaults to the shared popup range when omitted. */
+  spotsRange?: { min: number; max: number }
   theme?: PopupClassTheme
   /** Cultural color stripe at the top of the page. */
   bannerStripe?: "mexican" | "pan-african"

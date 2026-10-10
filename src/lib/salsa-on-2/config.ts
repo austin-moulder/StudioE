@@ -10,6 +10,7 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
   checkoutUrl: "https://studioe-danceclassestraining.com/salsa-on-2",
   embedCheckout: true,
   spotsStorageKey: "studioe_salsa_on_2_spots_left_v1",
+  spotsRange: { min: 5, max: 10 },
   utm: {
     utm_source: "meta",
     utm_medium: "paid_social",

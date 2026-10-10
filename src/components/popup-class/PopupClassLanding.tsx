@@ -33,18 +33,18 @@ type Lang = "en" | "es"
 const SPOTS_MIN = 3
 const SPOTS_MAX = 12
 
-function getSpotsLeft(storageKey: string): number {
+function getSpotsLeft(storageKey: string, min = SPOTS_MIN, max = SPOTS_MAX): number {
   if (typeof window === "undefined") return 7
   try {
     const raw = window.localStorage.getItem(storageKey)
     if (raw) {
       const n = Number(raw)
-      if (Number.isInteger(n) && n >= SPOTS_MIN && n <= SPOTS_MAX) return n
+      if (Number.isInteger(n) && n >= min && n <= max) return n
     }
   } catch {
     /* ignore */
   }
-  const count = Math.floor(Math.random() * (SPOTS_MAX - SPOTS_MIN + 1)) + SPOTS_MIN
+  const count = Math.floor(Math.random() * (max - min + 1)) + min
   try {
     window.localStorage.setItem(storageKey, String(count))
   } catch {
@@ -178,14 +178,16 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
     const start = getNextAvailableStartMs(event, soldOutDates)
     setSoldOutStartMs(start !== upcoming ? upcoming : null)
     setEventStartMs(start)
-    setSpotsLeft(getSpotsLeft(config.spotsStorageKey))
+    setSpotsLeft(
+      getSpotsLeft(config.spotsStorageKey, config.spotsRange?.min, config.spotsRange?.max)
+    )
     trackMeta("ViewContent", {
       content_name: event.name,
       content_category: "event",
       value: event.price,
       currency: "USD",
     })
-  }, [config.soldOut, config.spotsStorageKey, event])
+  }, [config.soldOut, config.spotsRange, config.spotsStorageKey, event])
 
   useEffect(() => {
     if (!eventStartMs) return
