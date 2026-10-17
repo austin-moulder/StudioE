@@ -20,8 +20,8 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
     utm_campaign: "salsa_on_2_tuesday",
   },
   event: {
-    name: "Salsa On 2 Intensive",
-    format: "Weekly Salsa On 2 intensive",
+    name: "Salsa On 2 Workshop",
+    format: "Weekly Salsa On 2 workshop",
     startHour: 20,
     startMinute: 30,
     timeZone: "America/Chicago",
@@ -43,10 +43,10 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
       "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Jon_On2.mp4",
   },
   copy: {
-    accentLabel: "Tuesday Night Intensive",
-    heroHeadline: "Salsa On 2 Intensive: Find the Groove Chicago’s Best Dancers Use.",
+    accentLabel: "Tuesday Night Workshop",
+    heroHeadline: "Salsa On 2 Workshop: One Sequence, Built for Every Level of On 2.",
     heroSubheadline:
-      "One focused hour on the timing, footwork, and partnerwork that make On 2 feel smooth and musical. Come alone or bring a friend free.",
+      "A special method that challenges advanced dancers and gives On 2 beginners a real place to learn. You should already dance salsa—this is not a class for complete beginners. Come alone or bring a friend free.",
     primaryCta: "Reserve My Spot for $25",
     secondaryCta: "Bring My Friend",
     capacityNote:
@@ -62,21 +62,22 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
       "We keep the class small so the instructor can correct your timing and technique in real time and everyone has enough mirror space.",
     communityHeadline: "Train Hard. Then Go Dance.",
     communityBody:
-      "On 2 is New York–style mambo—the smooth, musical timing shaped by Puerto Rican and Latin dancers on the floors of NYC and carried today by the strongest social dancers in Chicago. This intensive breaks it down so it actually clicks—then you put it to work with a room full of people who love salsa as much as you do.",
+      "On 2 is New York–style mambo—the smooth, musical timing shaped by Puerto Rican and Latin dancers on the floors of NYC and carried today by the strongest social dancers in Chicago. We teach one sequence at several levels in the same room, so advanced dancers stay challenged and dancers stepping into On 2 have a clear path in.",
     communityBadge: "Every Tuesday · 8:30 PM",
     finalHeadline: "Your Tuesday Night Training Is Set.",
     finalBody:
       "Grab your ticket, bring a friend or come solo, and level up your salsa with one focused hour of On 2.",
     countdownEnded: "Class is starting soon.",
     stickyCta: "Reserve My Spot — $25",
-    flyerAlt: "Salsa On 2 Intensive flyer at Studio E — bring a friend for free, $25",
+    flyerAlt: "Salsa On 2 Workshop flyer at Studio E — bring a friend for free, $25",
     videoAriaLabel: "Salsa On 2 class at Studio E",
   },
   offerBullets: [
-    "60-minute Salsa On 2 intensive",
+    "60-minute Salsa On 2 workshop",
+    "A special multi-level method: one sequence taught so advanced dancers stay challenged",
+    "A clear learning space for On 2 beginners who already dance salsa",
     "On 2 timing, footwork, and musicality broken down step by step",
     "Partnerwork you can use on the social floor right away",
-    "Multiple levels of the same sequence—for dancers new to On 2 and seasoned Mamboheads alike",
     "Come alone or bring one friend free (new to the studio)",
     "Personalized instruction in a capped 20-person class",
   ],
@@ -90,11 +91,11 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
     {
       question: "What experience do I need?",
       answer:
-        "You should have experience dancing salsa. Each class teaches multiple levels of a similar sequence, so there’s something for both the dancer transitioning into On 2 and the well-traveled Mambohead.",
+        "You should already dance salsa. This workshop is not for complete beginners. We use a special method—multiple levels of a similar sequence in the same class—so advanced dancers get real value, and dancers transitioning into On 2 get a place to learn without being left behind.",
     },
     {
       question: "What does my ticket include?",
-      answer: "One spot in the 60-minute Salsa On 2 Intensive at Studio E, plus one free friend who is new to the studio.",
+      answer: "One spot in the 60-minute Salsa On 2 Workshop at Studio E, plus one free friend who is new to the studio.",
     },
     {
       question: "Do I need a partner?",

@@ -15,13 +15,13 @@ const scriptFont = Great_Vibes({
 const { assets, event } = SALSA_ON_2_CONFIG
 
 export const metadata: Metadata = {
-  title: "Salsa On 2 Intensive | Studio E Chicago Humboldt Park",
+  title: "Salsa On 2 Workshop | Studio E Chicago Humboldt Park",
   description:
-    "Salsa On 2 intensive in Humboldt Park. $25, bring a friend free. Tuesdays 8:30–9:30 PM at Studio E. Cap of 20.",
+    "Salsa On 2 workshop in Humboldt Park for dancers who already know salsa. A multi-level method for advanced dancers and On 2 beginners. $25, bring a friend free. Tuesdays 8:30–9:30 PM.",
   openGraph: {
-    title: "Salsa On 2 Intensive at Studio E",
+    title: "Salsa On 2 Workshop at Studio E",
     description:
-      "One focused hour of On 2 timing, footwork, and partnerwork. $25, bring a friend free. Tuesdays 8:30 PM.",
+      "One sequence, several levels: value for advanced dancers and a learning space for On 2 beginners. $25, bring a friend free. Tuesdays 8:30 PM.",
     url: "https://www.joinstudioe.com/salsa-on-2",
     type: "website",
     images: [
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
         url: assets.flyer,
         width: 1080,
         height: 1080,
-        alt: "Salsa On 2 Intensive flyer at Studio E",
+        alt: "Salsa On 2 Workshop flyer at Studio E",
       },
     ],
   },

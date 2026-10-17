@@ -48,6 +48,39 @@ export default function TermsPage() {
           Memberships may be canceled by texting &ldquo;cancel&rdquo; to <a href="sms:8164196279" className="text-[#FF3366] hover:underline">816-419-6279</a> or by canceling in person at the studio.
         </p>
 
+        <p className="font-bold">CLASS SIGN-IN:</p>
+        <p>
+          All members must sign in to each class, either in the Glofox app (
+          <a
+            href="https://apps.apple.com/us/app/glofox/id916224471"
+            className="text-[#FF3366] hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            download on the App Store
+          </a>
+          ) or directly in the web app (
+          <a
+            href="https://app.glofox.com/portal/#/branch/6ac3b6187566d632cb062e30/classes-day-view"
+            className="text-[#FF3366] hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            open class sign-in
+          </a>
+          ).
+        </p>
+
+        <p className="font-bold">CLASS CREDIT CANCELLATION:</p>
+        <p>
+          You cannot cancel a class in the app within 2 hours of the start time. If you have not canceled at least 2 hours before class starts, you forfeit that class credit.
+        </p>
+
+        <p className="font-bold">PRIVATE LESSONS:</p>
+        <p>
+          Private appointments and lessons follow a 24-hour reschedule policy. A reschedule requested within 24 hours of the appointment start will not be honored, and the private will be forfeited.
+        </p>
+
         <p>
           The &ldquo;no refund policy&rdquo; discussed in this section shall apply at all times regardless of your decision to terminate your usage, the Company&apos;s decision to terminate your usage, disruption caused to our Software or Service either planned, accidental or intentional, or any reason whatsoever.
         </p>
