@@ -9,7 +9,7 @@ export const OFFER_ENDS_MS = Date.parse("2026-10-24T23:59:00-05:00")
 export const DEAL = {
   name: "Grand Opening Deal",
   price: 49,
-  regularPrice: 249,
+  regularPrice: 124,
   venueName: "Studio E",
   addressLine: "2657 W Division St",
   cityLine: "Chicago, IL",
@@ -42,7 +42,7 @@ export const COPY = {
   heroEyebrow: "Grand Opening Deal",
   heroHeadline: "2 Weeks of Unlimited Classes for $49",
   heroSubheadline:
-    "Our unlimited option is normally $249. Buy tonight, then redeem anytime before January 1, 2027, and dance as much as you want at Studio E.",
+    "Our unlimited option is normally $124. Buy tonight, then redeem anytime before January 1, 2027, and dance as much as you want at Studio E.",
   primaryCta: "Get 2 Weeks Unlimited — $49",
   stickyCta: "Get the Deal — $49",
   offerEndsLabel: "Offer ends",
@@ -53,14 +53,14 @@ export const COPY = {
   howHeadline: "How It Works",
   finalHeadline: "Keep the Night Going.",
   finalBody:
-    "Two weeks of unlimited classes, normally $249, for $49 tonight. Redeem anytime before January 1, 2027.",
+    "Two weeks of unlimited classes, normally $124, for $49 tonight. Redeem anytime before January 1, 2027.",
   checkoutHeadline: "Claim the Grand Opening Deal",
   checkoutHelper: "$49 for 2 weeks of unlimited classes. Redeem by January 1, 2027.",
 } as const
 
 export const INCLUDES = [
   "2 weeks of unlimited Studio E classes",
-  "Normally $249 — tonight it’s $49",
+  "Normally $124 — tonight it’s $49",
   "Buy tonight and redeem anytime before January 1, 2027",
   "Start your two weeks whenever you’re ready, as long as you redeem by New Year’s Day",
   "Same studio, 2657 W Division St, on Paseo Boricua",
@@ -69,7 +69,7 @@ export const INCLUDES = [
 export const STEPS = [
   {
     title: "Buy tonight",
-    body: "The $49 price is only available until 11:59 PM on October 24. After that, unlimited classes go back to $249.",
+    body: "The $49 price is only available until 11:59 PM on October 24. After that, unlimited classes go back to $124.",
   },
   {
     title: "Redeem before January 1, 2027",
@@ -98,9 +98,9 @@ export const FAQS = [
       "During your two weeks you can take as many Studio E classes as you want. This is a one-time pass, not an ongoing membership.",
   },
   {
-    question: "Why is it $49 instead of $249?",
+    question: "Why is it $49 instead of $124?",
     answer:
-      "Our regular unlimited option is $249. This Grand Opening price is only for people buying before 11:59 PM on October 24.",
+      "Our regular unlimited option is $124. This Grand Opening price is only for people buying before 11:59 PM on October 24.",
   },
   {
     question: "Where is the studio?",

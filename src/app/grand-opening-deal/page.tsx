@@ -7,11 +7,11 @@ import GrandOpeningDealClient from "./GrandOpeningDealClient"
 export const metadata: Metadata = {
   title: "Grand Opening Deal | 2 Weeks Unlimited for $49 | Studio E",
   description:
-    "Grand Opening deal at Studio E on Paseo Boricua: $49 for 2 weeks of unlimited classes, normally $249. Buy by 11:59 PM on October 24 and redeem anytime before January 1, 2027.",
+    "Grand Opening deal at Studio E on Paseo Boricua: $49 for 2 weeks of unlimited classes, normally $124. Buy by 11:59 PM on October 24 and redeem anytime before January 1, 2027.",
   openGraph: {
     title: "Grand Opening Deal — 2 Weeks Unlimited for $49",
     description:
-      "Normally $249. Buy tonight, redeem before January 1, 2027, and dance unlimited at Studio E.",
+      "Normally $124. Buy tonight, redeem before January 1, 2027, and dance unlimited at Studio E.",
     url: "https://www.joinstudioe.com/grand-opening-deal",
     type: "website",
     images: [{ url: PHOTOS[0], alt: "Studio E dancers together" }],
