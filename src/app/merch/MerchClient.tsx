@@ -26,6 +26,11 @@ const whyPoints = [
 
 const faqItems = [
   {
+    question: "Is there a discount for first-time buyers?",
+    answer:
+      "Yes. Through October, first-time buyers get 20% off their entire order. The discount applies at Shopify checkout.",
+  },
+  {
     question: "Do members get special pricing?",
     answer:
       "Yes. Studio E members get early access to new drops and special pricing. What’s available now is on the Shopify store, and new pieces show up there first for members.",
@@ -62,8 +67,8 @@ export default function MerchClient() {
     <div className="flex min-h-screen flex-col bg-[#faf8f6] text-stone-900">
       {/* 1. Announcement bar */}
       <div className="sticky top-0 z-40 border-b border-white/10 bg-stone-950 text-center">
-        <p className="px-3 py-2.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.12em] text-white sm:text-xs sm:tracking-[0.18em]">
-          Studio E Merch · Members get early access
+        <p className="px-3 py-2.5 font-montserrat text-[10px] font-bold uppercase tracking-[0.12em] text-white sm:text-xs sm:tracking-[0.16em]">
+          First-time buyers: 20% off your entire order through October
         </p>
       </div>
 
@@ -94,7 +99,15 @@ export default function MerchClient() {
               Rooted in culture and made for movement. Members get early access to new drops and
               special pricing.
             </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="mt-6 max-w-md rounded-2xl border border-white/25 bg-black/40 px-4 py-3 backdrop-blur-sm">
+              <p className="font-montserrat text-sm font-black uppercase tracking-wide text-[#FF7A5A]">
+                20% off in October
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-white/90">
+                First-time buyers get 20% off their entire order for the month of October.
+              </p>
+            </div>
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
               <MerchCta variant="light" className="w-full sm:w-auto">
                 Shop the collection
               </MerchCta>

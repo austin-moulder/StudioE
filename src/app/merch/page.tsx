@@ -5,7 +5,7 @@ import MerchClient from "./MerchClient"
 export const metadata: Metadata = {
   title: "Studio E Merch",
   description:
-    "Studio E apparel rooted in culture and made for movement. Members get early access to new drops and special pricing.",
+    "Studio E apparel rooted in culture and made for movement. First-time buyers get 20% off their entire order through October. Members get early access to new drops and special pricing.",
   openGraph: {
     title: "Studio E Merch",
     description:
