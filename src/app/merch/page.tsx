@@ -3,13 +3,13 @@ import GoogleTag from "@/components/analytics/GoogleTag"
 import MerchClient from "./MerchClient"
 
 export const metadata: Metadata = {
-  title: "Studio E Founders Drop | Grand Opening Merch",
+  title: "Studio E Merch",
   description:
-    "Shop the Studio E Founders Drop and claim the FOUNDER offer on The Classic line.",
+    "Studio E apparel rooted in culture and made for movement. Members get early access to new drops and special pricing.",
   openGraph: {
-    title: "Studio E Founders Drop | Grand Opening Merch",
+    title: "Studio E Merch",
     description:
-      "Shop the Studio E Founders Drop and claim the FOUNDER offer on The Classic line.",
+      "Rooted in culture. Made for movement. Members get early access to new drops and special pricing.",
     url: "https://www.joinstudioe.com/merch",
     type: "website",
   },

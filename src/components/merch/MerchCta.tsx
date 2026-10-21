@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react"
-import { getFounderOfferUrl } from "@/lib/merch/shopify"
+import { getCollectionUrl } from "@/lib/merch/shopify"
 
 type MerchCtaProps = {
   children: React.ReactNode
@@ -20,7 +20,7 @@ const variantClasses = {
 
 export default function MerchCta({
   children,
-  href = getFounderOfferUrl(),
+  href = getCollectionUrl(),
   variant = "primary",
   className = "",
   showIcon = true,

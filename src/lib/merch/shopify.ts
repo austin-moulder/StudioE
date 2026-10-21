@@ -1,18 +1,9 @@
 /**
  * Single source of truth for Studio E Shopify destinations.
  * Update `SHOPIFY_STORE` / paths here — CTAs pull from these helpers.
- *
- * Image placement map (lifestyle / Supabase Merch assets):
- * - Hero: Colombian_hoodie.JPG — couple in hoodies (community + apparel worn)
- * - Editorial detail: DSC04136.jpg — founder backshot / logo mark
- * - Editorial full-body: Mythri_Hoodie.jpg — posed friendly sweater
- * - Editorial candid: Karla_Coffee.JPG — candid community moment
- * - Unused but available: Ilean_expands.jpg, Samm_shirt.jpg
  */
 
 export const SHOPIFY_STORE = "https://studio-e-3328.myshopify.com" as const
-
-export const SHOPIFY_DISCOUNT_CODE = "FOUNDER" as const
 
 /** Only published collection on the store (Home page). */
 export const SHOPIFY_COLLECTION_PATH = "/collections/frontpage" as const
@@ -20,7 +11,7 @@ export const SHOPIFY_COLLECTION_PATH = "/collections/frontpage" as const
 export const MERCH_UTM = {
   utm_source: "studioe",
   utm_medium: "website",
-  utm_campaign: "founders_drop",
+  utm_campaign: "merch",
 } as const
 
 const UTM_QUERY = new URLSearchParams(MERCH_UTM).toString()
@@ -28,12 +19,6 @@ const UTM_QUERY = new URLSearchParams(MERCH_UTM).toString()
 function withUtm(path: string) {
   const separator = path.includes("?") ? "&" : "?"
   return `${path}${separator}${UTM_QUERY}`
-}
-
-/** Primary CTA: applies FOUNDER discount, then redirects into the storefront collection. */
-export function getFounderOfferUrl() {
-  const redirect = withUtm(SHOPIFY_COLLECTION_PATH)
-  return `${SHOPIFY_STORE}/discount/${SHOPIFY_DISCOUNT_CODE}?redirect=${encodeURIComponent(redirect)}`
 }
 
 export function getProductUrl(handle: string) {
@@ -44,20 +29,29 @@ export function getCollectionUrl() {
   return `${SHOPIFY_STORE}${withUtm(SHOPIFY_COLLECTION_PATH)}`
 }
 
+const MERCH_ASSET =
+  "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Merch" as const
+
+function merchPhoto(file: string) {
+  return `${MERCH_ASSET}/${encodeURIComponent(file)}`
+}
+
 export const MERCH_IMAGES = {
-  heroCoupleHoodie:
-    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Merch/Colombian_hoodie.JPG",
-  founderBackshot:
-    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Merch/DSC04136.jpg",
-  mythriHoodie:
-    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Merch/Mythri_Hoodie.jpg",
-  karlaCoffee:
-    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Merch/Karla_Coffee.JPG",
-  ileanExpands:
-    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Merch/Ilean_expands.jpg",
-  sammShirt:
-    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Merch/Samm_shirt.jpg",
+  hero: merchPhoto("2V1A4232 (1).jpg"),
+  group: merchPhoto("2V1A5135 (1).jpg"),
+  coupleOne: merchPhoto("DSC08184.jpg"),
+  coupleTwo: merchPhoto("DSC09483.jpg"),
 } as const
+
+export const MERCH_CAROUSEL = [
+  merchPhoto("2V1A3023 (1).jpg"),
+  merchPhoto("2V1A3949 (1).jpg"),
+  merchPhoto("2V1A4545 (1).jpg"),
+  merchPhoto("2V1A5207 (1).jpg"),
+  merchPhoto("DSC00100.jpg"),
+  merchPhoto("DSC08622.jpg"),
+  merchPhoto("DSC09851.jpg"),
+] as const
 
 /** Featured products — prices confirmed from Shopify products.json (2026-09-08). */
 export const FEATURED_PRODUCTS = [
