@@ -35,11 +35,11 @@ function trackMeta(eventName: string, params?: Record<string, unknown>) {
 }
 
 const ctaClass =
-  "mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-gradient-to-r from-[#FF3366] to-[#C81E4A] px-6 py-4 text-center font-montserrat text-sm font-black uppercase tracking-wide text-white shadow-[0_12px_28px_rgba(255,51,102,0.35)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1410] sm:text-base"
+  "mx-auto flex w-full max-w-md items-center justify-center rounded-2xl bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] px-6 py-4 text-center font-montserrat text-sm font-black uppercase tracking-wide text-white shadow-[0_12px_28px_rgba(255,51,102,0.35)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1410] sm:text-base"
 
 function OfferCountdown({ parts, ended }: { parts: CountdownParts; ended: boolean }) {
   if (ended) {
-    return <p className="font-montserrat text-lg font-black text-[#F3B7C9]">{COPY.offerEnded}</p>
+    return <p className="font-montserrat text-lg font-black text-[#FF3366]">{COPY.offerEnded}</p>
   }
   const units: [string, number][] = [
     ["Days", parts.days],
@@ -124,9 +124,9 @@ export default function GrandOpeningDealClient() {
             href={DEAL.reviewUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mx-auto mt-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1C1410] px-6 py-3.5 font-montserrat text-sm font-black uppercase tracking-wide text-[#F3B7C9] transition hover:bg-black"
+            className="mx-auto mt-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1C1410] px-6 py-3.5 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF3366] transition hover:bg-black"
           >
-            <Star className="h-4 w-4 fill-[#F3B7C9]" aria-hidden />
+            <Star className="h-4 w-4 fill-[#FF3366]" aria-hidden />
             {COPY.reviewCta}
           </a>
         </div>
@@ -143,7 +143,7 @@ export default function GrandOpeningDealClient() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#1C1410]/70 via-[#1C1410]/80 to-[#1C1410]" />
         <div className="relative mx-auto max-w-xl px-4 pb-14 pt-12 sm:px-6 sm:pt-16">
-          <p className="text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-[#F3B7C9]">
+          <p className="text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-[#FF3366]">
             {COPY.heroEyebrow} · {DEAL.neighborhood}
           </p>
           <h1 className="mt-3 text-center font-montserrat text-4xl font-black leading-[1.08] tracking-tight sm:text-5xl">
@@ -153,17 +153,17 @@ export default function GrandOpeningDealClient() {
             {COPY.heroSubheadline}
           </p>
 
-          <div className="mx-auto mt-6 max-w-sm rounded-2xl border border-[#F3B7C9]/40 bg-black/40 px-5 py-5 text-center">
+          <div className="mx-auto mt-6 max-w-sm rounded-2xl border border-[#FF3366]/40 bg-black/40 px-5 py-5 text-center">
             <p className="font-montserrat text-2xl font-bold text-white/40 line-through">
               ${DEAL.regularPrice}
             </p>
-            <p className="font-montserrat text-6xl font-black text-[#FF3366]">${DEAL.price}</p>
+            <p className="font-montserrat text-6xl font-black text-[#FF7A5A]">${DEAL.price}</p>
             <p className="mt-1 text-sm text-white/80">2 weeks of unlimited classes</p>
             <p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-white/70">
               {COPY.newMemberNote}
             </p>
             <p className="mt-3 flex items-center justify-center gap-1.5 text-sm text-white/75">
-              <MapPin className="h-3.5 w-3.5 text-[#F3B7C9]" aria-hidden />
+              <MapPin className="h-3.5 w-3.5 text-[#FF3366]" aria-hidden />
               {DEAL.addressLine}, {DEAL.cityLine}
             </p>
           </div>
@@ -178,7 +178,7 @@ export default function GrandOpeningDealClient() {
 
           <div className="mt-8">
             {ended ? (
-              <p className="text-center font-montserrat text-sm font-bold text-[#F3B7C9]">
+              <p className="text-center font-montserrat text-sm font-bold text-[#FF3366]">
                 {COPY.offerEnded}
               </p>
             ) : (
@@ -362,7 +362,7 @@ export default function GrandOpeningDealClient() {
                   href={checkoutSrc}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-[#F3B7C9] underline underline-offset-2"
+                  className="font-semibold text-[#FF3366] underline underline-offset-2"
                 >
                   open checkout in a new tab
                 </a>
@@ -373,7 +373,7 @@ export default function GrandOpeningDealClient() {
         </section>
       ) : (
         <section className="px-4 py-14 text-center sm:px-6">
-          <p className="font-montserrat text-lg font-black text-[#F3B7C9]">{COPY.offerEnded}</p>
+          <p className="font-montserrat text-lg font-black text-[#FF3366]">{COPY.offerEnded}</p>
         </section>
       )}
 
