@@ -56,7 +56,14 @@ export const COPY = {
     "Two weeks of unlimited classes, normally $124, for $49 tonight. Redeem anytime before January 1, 2027.",
   checkoutHeadline: "Claim the Grand Opening Deal",
   checkoutHelper: "$49 for 2 weeks of unlimited classes. Redeem by January 1, 2027.",
+  newMemberNote:
+    "This offer is only for completely new members. It won’t be honored for anyone who already has a Studio E membership.",
+  scheduleHeadline: "November Schedule",
+  scheduleBody: "Here’s the class schedule you can use during your two weeks.",
 } as const
+
+export const SCHEDULE_IMAGE =
+  "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/November_Schedule.png"
 
 export const INCLUDES = [
   "2 weeks of unlimited Studio E classes",
@@ -96,6 +103,11 @@ export const FAQS = [
     question: "What does unlimited mean?",
     answer:
       "During your two weeks you can take as many Studio E classes as you want. This is a one-time pass, not an ongoing membership.",
+  },
+  {
+    question: "Can current members use this deal?",
+    answer:
+      "No. It’s only available to people who are completely new to Studio E. Existing members won’t be able to redeem it.",
   },
   {
     question: "Why is it $49 instead of $124?",
