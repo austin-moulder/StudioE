@@ -13,14 +13,22 @@ type ZoneParts = {
   weekday: number // 0 Sun … 6 Sat
 }
 
-export type EventSchedule = {
-  timeZone: string
+export type EventScheduleSlot = {
   /** Weekday: 0 = Sunday … 6 = Saturday */
   weekday: number
   startHour: number
   startMinute: number
+}
+
+export type EventSchedule = EventScheduleSlot & {
+  timeZone: string
   /** One-time event: always this calendar date instead of the next weekly occurrence. */
   date?: { year: number; month: number; day: number }
+  /**
+   * Extra weekly slots (same venue). Countdown and carousel sorting use the
+   * soonest upcoming start across the primary schedule and these slots.
+   */
+  additionalSlots?: readonly EventScheduleSlot[]
 }
 
 const WEEKDAY_MAP: Record<string, number> = {
@@ -105,6 +113,7 @@ function addCalendarDays(
 /**
  * If now is before that weekday's start time → that occurrence.
  * If now is at/after start → the following week.
+ * With additionalSlots, returns the soonest upcoming start across all slots.
  */
 export function getUpcomingEventStartMs(
   schedule: EventSchedule,
@@ -115,16 +124,33 @@ export function getUpcomingEventStartMs(
     const { year, month, day } = schedule.date
     return zonedWallTimeToUtcMs(year, month, day, schedule.startHour, schedule.startMinute, tz)
   }
-  const parts = getZoneParts(now, tz)
-  const daysUntil = (schedule.weekday - parts.weekday + 7) % 7
+
+  const primary = getSingleSlotUpcomingMs(schedule, now, tz)
+  if (!schedule.additionalSlots?.length) return primary
+
+  let soonest = primary
+  for (const slot of schedule.additionalSlots) {
+    const next = getSingleSlotUpcomingMs(slot, now, tz)
+    if (next < soonest) soonest = next
+  }
+  return soonest
+}
+
+function getSingleSlotUpcomingMs(
+  slot: EventScheduleSlot,
+  now: Date,
+  timeZone: string
+): number {
+  const parts = getZoneParts(now, timeZone)
+  const daysUntil = (slot.weekday - parts.weekday + 7) % 7
   const thisOccurrence = addCalendarDays(parts.year, parts.month, parts.day, daysUntil)
   const thisStart = zonedWallTimeToUtcMs(
     thisOccurrence.year,
     thisOccurrence.month,
     thisOccurrence.day,
-    schedule.startHour,
-    schedule.startMinute,
-    tz
+    slot.startHour,
+    slot.startMinute,
+    timeZone
   )
 
   if (now.getTime() < thisStart) {
@@ -141,9 +167,9 @@ export function getUpcomingEventStartMs(
     nextOccurrence.year,
     nextOccurrence.month,
     nextOccurrence.day,
-    schedule.startHour,
-    schedule.startMinute,
-    tz
+    slot.startHour,
+    slot.startMinute,
+    timeZone
   )
 }
 

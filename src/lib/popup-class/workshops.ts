@@ -46,15 +46,16 @@ export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
     name: "Salsa On 2 Workshop",
     nameEs: "Taller de Salsa On 2",
     flyer:
-      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/On_2_Flyer.png",
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/On2_Workshop.png",
     flyerAlt: "Salsa On 2 Workshop flyer",
-    durationLabel: "8:30 PM – 9:30 PM",
-    durationLabelEs: "8:30 PM – 9:30 PM",
+    durationLabel: "Tue 8:30 PM or Thu 7:30 PM",
+    durationLabelEs: "Mar 8:30 PM o Jue 7:30 PM",
     schedule: {
       weekday: 2,
       startHour: 20,
       startMinute: 30,
       timeZone: "America/Chicago",
+      additionalSlots: [{ weekday: 4, startHour: 19, startMinute: 30 }],
     },
   },
   {

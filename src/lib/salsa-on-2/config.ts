@@ -17,7 +17,7 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
   utm: {
     utm_source: "meta",
     utm_medium: "paid_social",
-    utm_campaign: "salsa_on_2_tuesday",
+    utm_campaign: "salsa_on_2_weekly",
   },
   event: {
     name: "Salsa On 2 Workshop",
@@ -26,7 +26,8 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
     startMinute: 30,
     timeZone: "America/Chicago",
     weekday: 2,
-    durationLabel: "8:30 PM to 9:30 PM",
+    additionalSlots: [{ weekday: 4, startHour: 19, startMinute: 30 }],
+    durationLabel: "Tuesday 8:30 PM or Thursday 7:30 PM",
     price: 25,
     capacity: 20,
     venueName: "Studio E",
@@ -38,15 +39,15 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
   },
   assets: {
     flyer:
-      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/On_2_Flyer.png",
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/On2_Workshop.png",
     video:
       "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Jon_On2.mp4",
   },
   copy: {
-    accentLabel: "Tuesday Night Workshop",
+    accentLabel: "Two Nights a Week",
     heroHeadline: "Salsa On 2 Workshop: One Sequence, Built for Every Level of On 2.",
     heroSubheadline:
-      "A special method that challenges advanced dancers and gives On 2 beginners a real place to learn. You should already dance salsa—this is not a class for complete beginners. Come alone or bring a friend free.",
+      "Now two options: Tuesday at 8:30 PM or Thursday at 7:30 PM. Purchase your ticket, then reply to the message you receive with your preferred class that week. You should already dance salsa—this is not a class for complete beginners. Come alone or bring a friend free.",
     primaryCta: "Reserve My Spot for $25",
     secondaryCta: "Bring My Friend",
     capacityNote:
@@ -63,10 +64,10 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
     communityHeadline: "Train Hard. Then Go Dance.",
     communityBody:
       "On 2 is New York–style mambo—the smooth, musical timing shaped by Puerto Rican and Latin dancers on the floors of NYC and carried today by the strongest social dancers in Chicago. We teach one sequence at several levels in the same room, so advanced dancers stay challenged and dancers stepping into On 2 have a clear path in.",
-    communityBadge: "Every Tuesday · 8:30 PM",
-    finalHeadline: "Your Tuesday Night Training Is Set.",
+    communityBadge: "Tue 8:30 PM · Thu 7:30 PM",
+    finalHeadline: "Pick Your Night. Level Up Your On 2.",
     finalBody:
-      "Grab your ticket, bring a friend or come solo, and level up your salsa with one focused hour of On 2.",
+      "Grab your ticket, reply with Tuesday or Thursday, and bring a friend or come solo for one focused hour of On 2.",
     countdownEnded: "Class is starting soon.",
     stickyCta: "Reserve My Spot — $25",
     flyerAlt: "Salsa On 2 Workshop flyer at Studio E — bring a friend for free, $25",
@@ -74,6 +75,8 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
   },
   offerBullets: [
     "60-minute Salsa On 2 workshop",
+    "Two nights: Tuesday 8:30 PM or Thursday 7:30 PM",
+    "Buy your ticket, then reply to the confirmation message with your preferred class that week",
     "A special multi-level method: one sequence taught so advanced dancers stay challenged",
     "A clear learning space for On 2 beginners who already dance salsa",
     "On 2 timing, footwork, and musicality broken down step by step",
@@ -86,8 +89,14 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
     "The free friend must be new to the studio.",
     "One free friend per paid ticket.",
     "Only 20 total tickets available.",
+    "After purchase, reply to the confirmation message with Tuesday 8:30 PM or Thursday 7:30 PM for that week.",
   ],
   faqs: [
+    {
+      question: "Which night do I come?",
+      answer:
+        "You have two options: Tuesday at 8:30 PM or Thursday at 7:30 PM. Purchase your ticket, then reply to the message you receive with your preferred class that week.",
+    },
     {
       question: "What experience do I need?",
       answer:
@@ -95,7 +104,8 @@ export const SALSA_ON_2_CONFIG: PopupClassLandingConfig = {
     },
     {
       question: "What does my ticket include?",
-      answer: "One spot in the 60-minute Salsa On 2 Workshop at Studio E, plus one free friend who is new to the studio.",
+      answer:
+        "One spot in a 60-minute Salsa On 2 Workshop at Studio E (Tuesday 8:30 PM or Thursday 7:30 PM), plus one free friend who is new to the studio.",
     },
     {
       question: "Do I need a partner?",

@@ -17,11 +17,11 @@ const { assets, event } = SALSA_ON_2_CONFIG
 export const metadata: Metadata = {
   title: "Salsa On 2 Workshop | Studio E Chicago Humboldt Park",
   description:
-    "Salsa On 2 workshop in Humboldt Park for dancers who already know salsa. A multi-level method for advanced dancers and On 2 beginners. $25, bring a friend free. Tuesdays 8:30–9:30 PM.",
+    "Salsa On 2 workshop in Humboldt Park for dancers who already know salsa. Tuesday 8:30 PM or Thursday 7:30 PM—buy your ticket, then reply with your preferred night. $25, bring a friend free.",
   openGraph: {
     title: "Salsa On 2 Workshop at Studio E",
     description:
-      "One sequence, several levels: value for advanced dancers and a learning space for On 2 beginners. $25, bring a friend free. Tuesdays 8:30 PM.",
+      "One sequence, several levels. Two nights: Tuesday 8:30 PM or Thursday 7:30 PM. $25, bring a friend free.",
     url: "https://www.joinstudioe.com/salsa-on-2",
     type: "website",
     images: [
