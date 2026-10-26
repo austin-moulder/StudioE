@@ -11,6 +11,7 @@ const HIDE_CHROME_PATHS = [
   "/reggaeton",
   "/salsa-on-2",
   "/cumbia-wepa",
+  "/merengue",
   "/afro-cuban-movement",
   "/posing",
   "/latin-morning-reset",

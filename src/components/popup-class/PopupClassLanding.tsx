@@ -267,6 +267,16 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           }}
         />
       ) : null}
+      {config.bannerStripe === "dominican" ? (
+        <div
+          className="flex h-1.5 w-full"
+          aria-hidden
+          style={{
+            background:
+              "linear-gradient(90deg, #002D62 0%, #002D62 46%, #FFFFFF 46%, #FFFFFF 54%, #CE1126 54%, #CE1126 100%)",
+          }}
+        />
+      ) : null}
       {config.bannerStripe === "pan-african" ? (
         <div
           className="flex h-1.5 w-full"

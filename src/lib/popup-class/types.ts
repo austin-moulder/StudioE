@@ -91,6 +91,19 @@ export const DEFAULT_POPUP_THEME: PopupClassTheme = {
   ctaShadow: "rgba(255,45,106,0.45)",
 }
 
+/** Deep blue and flag red for a quiet Dominican merengue night. */
+export const DOMINICAN_POPUP_THEME: PopupClassTheme = {
+  pageBg: "#071018",
+  altBg: "#0E1C2C",
+  accent: "#CE1126",
+  accentHover: "#A50E1E",
+  soft: "#D6E4F0",
+  finalFrom: "#002D62",
+  finalVia: "#0E1C2C",
+  finalTo: "#6E1020",
+  ctaShadow: "rgba(206,17,38,0.4)",
+}
+
 /** Green / white / red night palette for Mexican street-cumbia energy. */
 export const MEXICAN_POPUP_THEME: PopupClassTheme = {
   pageBg: "#0B1610",
@@ -176,7 +189,7 @@ export type PopupClassLandingConfig = {
   spotsRange?: { min: number; max: number }
   theme?: PopupClassTheme
   /** Cultural color stripe at the top of the page. */
-  bannerStripe?: "mexican" | "pan-african" | "puerto-rico"
+  bannerStripe?: "mexican" | "pan-african" | "puerto-rico" | "dominican"
   /**
    * Occurrences that are sold out (YYYY-MM-DD, event time zone). The page skips them,
    * shows the notice, and returns to normal once those dates pass.

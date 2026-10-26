@@ -58,6 +58,23 @@ export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
     },
   },
   {
+    id: "merengue",
+    href: "/merengue",
+    name: "Merengue Workshop",
+    nameEs: "Taller de Merengue",
+    flyer:
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Merengue_PopUp.png",
+    flyerAlt: "Merengue partnerwork workshop flyer",
+    durationLabel: "6:30 PM – 7:30 PM",
+    durationLabelEs: "6:30 PM – 7:30 PM",
+    schedule: {
+      weekday: 3,
+      startHour: 18,
+      startMinute: 30,
+      timeZone: "America/Chicago",
+    },
+  },
+  {
     id: "afro-cuban-movement",
     href: "/afro-cuban-movement",
     name: "Afro-Cuban Movement",
