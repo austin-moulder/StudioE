@@ -58,6 +58,23 @@ export const POPUP_WORKSHOP_CARDS: readonly PopupWorkshopCard[] = [
     },
   },
   {
+    id: "chacha",
+    href: "/chacha",
+    name: "Cha-Cha Workshop",
+    nameEs: "Taller de Cha-Cha",
+    flyer:
+      "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/ChaCha_PopUp.png",
+    flyerAlt: "Cha-Cha workshop flyer",
+    durationLabel: "7:30 PM – 8:30 PM",
+    durationLabelEs: "7:30 PM – 8:30 PM",
+    schedule: {
+      weekday: 2,
+      startHour: 19,
+      startMinute: 30,
+      timeZone: "America/Chicago",
+    },
+  },
+  {
     id: "merengue",
     href: "/merengue",
     name: "Merengue Workshop",

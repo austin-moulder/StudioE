@@ -91,6 +91,20 @@ export const DEFAULT_POPUP_THEME: PopupClassTheme = {
   ctaShadow: "rgba(255,45,106,0.45)",
 }
 
+/** Black and champagne gold for a quiet ballroom frame around street cha-cha. */
+export const BALLROOM_POPUP_THEME: PopupClassTheme = {
+  pageBg: "#0E0C0A",
+  altBg: "#1A1612",
+  accent: "#C6A15B",
+  accentHover: "#A88645",
+  accentText: "#1A1208",
+  soft: "#F3E6D0",
+  finalFrom: "#C6A15B",
+  finalVia: "#2A2218",
+  finalTo: "#0E0C0A",
+  ctaShadow: "rgba(198,161,91,0.38)",
+}
+
 /** Deep blue and flag red for a quiet Dominican merengue night. */
 export const DOMINICAN_POPUP_THEME: PopupClassTheme = {
   pageBg: "#071018",
@@ -189,7 +203,7 @@ export type PopupClassLandingConfig = {
   spotsRange?: { min: number; max: number }
   theme?: PopupClassTheme
   /** Cultural color stripe at the top of the page. */
-  bannerStripe?: "mexican" | "pan-african" | "puerto-rico" | "dominican"
+  bannerStripe?: "mexican" | "pan-african" | "puerto-rico" | "dominican" | "ballroom"
   /**
    * Occurrences that are sold out (YYYY-MM-DD, event time zone). The page skips them,
    * shows the notice, and returns to normal once those dates pass.

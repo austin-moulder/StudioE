@@ -267,6 +267,16 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
           }}
         />
       ) : null}
+      {config.bannerStripe === "ballroom" ? (
+        <div
+          className="h-1.5 w-full"
+          aria-hidden
+          style={{
+            background:
+              "linear-gradient(90deg, #0E0C0A 0%, #C6A15B 18%, #F3E6D0 50%, #C6A15B 82%, #0E0C0A 100%)",
+          }}
+        />
+      ) : null}
       {config.bannerStripe === "dominican" ? (
         <div
           className="flex h-1.5 w-full"
