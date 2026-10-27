@@ -73,7 +73,8 @@ export default function Footer() {
               <span className="font-montserrat font-bold text-xl">STUDIO E</span>
             </Link>
             <p className="text-sm text-gray-500 mt-2">
-              Connecting passionate dance instructors with eager students since 2023.
+              A Latin social dance community in Chicago — confidence, belonging, and street-style
+              Salsa &amp; Bachata.
             </p>
             <div className="mt-4 flex gap-4">
               <Link href="https://www.facebook.com/profile.php?id=61551116319222" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800">
@@ -99,68 +100,60 @@ export default function Footer() {
             <h3 className="mb-4 text-sm font-montserrat font-semibold">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="text-gray-500 hover:text-gray-800">
-                  Home
+                <Link href="/founder-deal" className="text-gray-500 hover:text-gray-800">
+                  Classes
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-500 hover:text-gray-800">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/instructors" className="text-gray-500 hover:text-gray-800">
-                  Find Instructors
+                <Link href="/challenge" className="text-gray-500 hover:text-gray-800">
+                  28-Day Challenge
                 </Link>
               </li>
               <li>
                 <Link href="/events" className="text-gray-500 hover:text-gray-800">
-                  Upcoming Events
+                  Events
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-gray-500 hover:text-gray-800">
-                  Blog
+                <Link href="/merch" className="text-gray-500 hover:text-gray-800">
+                  Merch
                 </Link>
               </li>
-              <li className="pt-2 border-t">
-                <Link 
-                  href="/hire-instructors" 
-                  className="text-[#FF3366] hover:text-[#9933CC] font-medium flex items-center gap-1"
-                >
-                  For Studios & Venues
+              <li>
+                <Link href="/careers" className="text-gray-500 hover:text-gray-800">
+                  Careers
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="mb-4 text-sm font-montserrat font-semibold">Dance Styles</h3>
+            <h3 className="mb-4 text-sm font-montserrat font-semibold">Get Started</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/instructors?search=salsa" className="text-gray-500 hover:text-gray-800">
-                  Salsa
+                <Link href="/founder-deal" className="text-gray-500 hover:text-gray-800">
+                  First Class Free
                 </Link>
               </li>
               <li>
-                <Link href="/instructors?search=bachata" className="text-gray-500 hover:text-gray-800">
-                  Bachata
+                <Link href="/about" className="text-gray-500 hover:text-gray-800">
+                  About Studio E
                 </Link>
               </li>
               <li>
-                <Link href="/instructors?search=heels" className="text-gray-500 hover:text-gray-800">
-                  Heels
+                <Link href="/contact" className="text-gray-500 hover:text-gray-800">
+                  Contact
                 </Link>
               </li>
               <li>
-                <Link href="/instructors?search=hip+hop" className="text-gray-500 hover:text-gray-800">
-                  Hip Hop
-                </Link>
-              </li>
-              <li>
-                <Link href="/instructors" className="text-gray-500 hover:text-gray-800">
-                  Other
-                </Link>
+                <a
+                  href="https://studio-e-3328.myshopify.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-gray-800"
+                >
+                  Shop Merch
+                </a>
               </li>
             </ul>
           </div>

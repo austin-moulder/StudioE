@@ -9,14 +9,11 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import SignInModal from "./auth/SignInModal";
 
 const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Instructors", href: "/instructors" },
-  { name: "Classes", href: "/classes" },
+  { name: "Classes", href: "/founder-deal" },
+  { name: "28-Day Challenge", href: "/challenge" },
   { name: "Events", href: "/events" },
-  { name: "Podcast", href: "/podcast" },
-  { name: "Blog", href: "/blog" },
-  { name: "Contact", href: "/contact" },
+  { name: "Merch", href: "/merch" },
+  { name: "Careers", href: "/careers" },
 ];
 
 export default function Navbar() {
