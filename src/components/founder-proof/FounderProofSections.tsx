@@ -85,7 +85,7 @@ export function FounderTrackRecordSection({
     <section className={t.sectionAlt}>
       <div className="mx-auto max-w-5xl">
         <p className={t.eyebrow}>Founder track record</p>
-        <h2 className={t.heading}>Why operators pay $150+/hour for this time</h2>
+        <h2 className={t.heading}>Why operators pay $250+/hour for this time</h2>
         <p className={t.body}>
           Austin René Moulder has sat in BCG war rooms, scaled marketplace ops at nine-figure
           revenue, helped raise institutional capital, and is now bootstrapping Chicago’s

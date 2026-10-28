@@ -14,6 +14,11 @@ export const RSVP_FORM = {
   url: "https://api.leadconnectorhq.com/widget/form/UoxcpP6swhlIvNw1KHpi",
 } as const
 
+export const SPOTS_STORAGE_KEY = "studioe_business_workshop_spots_left_v1" as const
+export const SPOTS_CAPACITY = 20 as const
+export const SPOTS_MIN = 5 as const
+export const SPOTS_MAX = 15 as const
+
 export const EVENT = {
   name: "Build Your Business in 90 Minutes",
   dateLabel: "Sunday, November 22, 2026",

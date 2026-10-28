@@ -34,7 +34,7 @@ export const FOUNDER_ACHIEVEMENTS = [
   {
     org: "Studio E · Founder",
     detail:
-      "Bootstrapping best-in-class Latin social dance studios in Chicago’s Puerto Rican cultural district. Hit $15K MRR in the first 90 days, on track for $30K MRR and $40K top line by December at ~70% margin.",
+      "Bootstrapping best-in-class Latin social dance studios in Chicago’s Puerto Rican cultural district—170 active members before the grand opening.",
   },
   {
     org: "Homeaglow · Director of Operations",
@@ -49,7 +49,7 @@ export const FOUNDER_ACHIEVEMENTS = [
   {
     org: "Cohort Guidance · Marketing Lead & Strategic Advisor",
     detail:
-      "Helped build the nation’s first private-quality affordable edtech college-guidance platform (50+ mentors) through a $2M Learn Capital seed. Drove 33,000 clicks, 10× YOY site traffic, and 30× YOY unique visitors.",
+      "Helped build the nation’s first private-quality affordable edtech college-guidance platform (50+ mentors), backed by Learn Capital—Silicon Valley’s top edtech VC. Drove 10× YOY site traffic and 30× YOY unique visitors.",
   },
   {
     org: "Boston Consulting Group · Consultant",
@@ -64,7 +64,7 @@ export const FOUNDER_ACHIEVEMENTS = [
 ] as const
 
 export const FOUNDER_RATE_LINE =
-  "Career professionals regularly pay $150+ per hour for operator time at this level." as const
+  "Career professionals regularly pay $250+ per hour for operator time at this level." as const
 
 export const FOUNDER_FREE_WORKSHOP_LINE =
   "This workshop is absolutely free—same playbooks, zero tuition." as const

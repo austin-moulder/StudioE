@@ -19,8 +19,32 @@ import {
   FLYER,
   LEARN_POINTS,
   RSVP_FORM,
+  SPOTS_CAPACITY,
+  SPOTS_MAX,
+  SPOTS_MIN,
+  SPOTS_STORAGE_KEY,
   WORKSHOP_START_MS,
 } from "@/lib/business-workshop/config"
+
+function getSpotsLeft(): number {
+  if (typeof window === "undefined") return 10
+  try {
+    const raw = window.localStorage.getItem(SPOTS_STORAGE_KEY)
+    if (raw) {
+      const n = Number(raw)
+      if (Number.isInteger(n) && n >= SPOTS_MIN && n <= SPOTS_MAX) return n
+    }
+  } catch {
+    /* ignore */
+  }
+  const count = Math.floor(Math.random() * (SPOTS_MAX - SPOTS_MIN + 1)) + SPOTS_MIN
+  try {
+    window.localStorage.setItem(SPOTS_STORAGE_KEY, String(count))
+  } catch {
+    /* ignore */
+  }
+  return count
+}
 
 const FORM_IFRAME_ID = `inline-${RSVP_FORM.id}`
 
@@ -112,6 +136,11 @@ function Countdown() {
 
 export default function BusinessWorkshopClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const [spotsLeft, setSpotsLeft] = useState<number | null>(null)
+
+  useEffect(() => {
+    setSpotsLeft(getSpotsLeft())
+  }, [])
 
   useEffect(() => {
     let attempts = 0
@@ -146,7 +175,7 @@ export default function BusinessWorkshopClient() {
         <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:items-center lg:py-20">
           <div>
             <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
-              Free 90-minute workshop · Spots limited
+              Free 90-minute workshop · Cap of {SPOTS_CAPACITY}
             </p>
             <h1 className="mt-4 font-montserrat text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl">
               Build Your Business in 90 Minutes
@@ -171,6 +200,12 @@ export default function BusinessWorkshopClient() {
             <div className="mt-8 max-w-md">
               <Countdown />
             </div>
+
+            {spotsLeft !== null ? (
+              <p className="mt-5 inline-flex items-center rounded-full border border-[#FF3366]/40 bg-[#FF3366]/15 px-4 py-2 text-sm font-semibold text-white">
+                Only {spotsLeft} of {SPOTS_CAPACITY} spots left
+              </p>
+            ) : null}
 
             <div className="mt-8">
               <a href="#rsvp" className={ctaClass}>
@@ -362,7 +397,7 @@ export default function BusinessWorkshopClient() {
         <div className="mx-auto max-w-xl">
           <div className="mb-8 text-center">
             <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
-              Free · Spots limited
+              Free · Cap of {SPOTS_CAPACITY}
             </p>
             <h2 className="mt-3 font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
               Reserve your spot
@@ -370,6 +405,11 @@ export default function BusinessWorkshopClient() {
             <p className="mt-3 text-white/75">
               {EVENT.dateLabel} · {EVENT.timeLabel} · Studio E
             </p>
+            {spotsLeft !== null ? (
+              <p className="mt-3 text-sm font-semibold text-[#FF7A5A]">
+                Only {spotsLeft} spots left · Cap of {SPOTS_CAPACITY}
+              </p>
+            ) : null}
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-white p-2 shadow-xl sm:p-4">
