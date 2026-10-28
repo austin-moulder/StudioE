@@ -4,12 +4,20 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import Script from "next/script"
-import { ArrowRight, Check, ChevronDown, Clock, MapPin, Star } from "lucide-react"
 import {
-  FounderTrackRecordSection,
-  SuccessStoriesSection,
-} from "@/components/founder-proof/FounderProofSections"
+  ArrowRight,
+  Check,
+  ChevronDown,
+  Clock,
+  Handshake,
+  MapPin,
+  Megaphone,
+  ShieldCheck,
+  Sparkles,
+  Target,
+} from "lucide-react"
 import { getCountdownParts } from "@/lib/popup-class/event-time"
+import { BUSINESS_SUCCESS_STORIES } from "@/lib/founder-proof/content"
 import {
   AUSTIN_BIO,
   AUSTIN_PHOTO,
@@ -56,10 +64,8 @@ function initFormEmbed() {
   const iframe = document.getElementById(FORM_IFRAME_ID) as HTMLIFrameElement | null
   if (!iframe) return false
   if (iframe.getAttribute("data-iframe-resizer-initialized") === "true") return true
-
   const { iFrameResize } = window as IFrameResizeWindow
   if (typeof iFrameResize !== "function") return false
-
   const isMobile = window.matchMedia("(max-width: 768px)").matches
   iFrameResize(
     {
@@ -82,16 +88,53 @@ function enableFormEmbedScrollFallback() {
   iframe.style.overflow = "auto"
 }
 
+const BENEFITS = [
+  {
+    title: "Build an offer people want",
+    body: "Leave with a clearer, more sellable offer—not a vague idea.",
+    icon: Target,
+  },
+  {
+    title: "Create proof people trust",
+    body: "Learn how to stack social proof so prospects believe you faster.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Turn attention into sales",
+    body: "Connect marketing to a simple, repeatable path to revenue.",
+    icon: Megaphone,
+  },
+] as const
+
+const HOW_IT_WORKS = [
+  { title: "Reserve", body: "Claim your free spot online." },
+  { title: "Attend", body: `${EVENT.dateLabel} · ${EVENT.timeLabel} at Studio E.` },
+  { title: "Leave with the playbook", body: "Offer, proof, marketing, and sales—in 90 minutes." },
+  {
+    title: "Explore the Accelerator",
+    body: "If you want 8 weeks of live projects, continue to the Career Accelerator.",
+  },
+] as const
+
+const TESTIMONIALS = BUSINESS_SUCCESS_STORIES.slice(0, 3)
+
 const ctaClass =
-  "inline-flex w-full max-w-md items-center justify-center rounded-2xl bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] px-6 py-4 text-center font-montserrat text-sm font-black uppercase tracking-wide text-white shadow-[0_12px_28px_rgba(255,51,102,0.35)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] sm:text-base"
+  "inline-flex w-full max-w-md items-center justify-center rounded-2xl bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] px-6 py-4 text-center font-montserrat text-sm font-black uppercase tracking-wide text-white shadow-[0_12px_28px_rgba(255,51,102,0.35)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0B1220] sm:text-base"
+
+function ReserveCta({ className = "" }: { className?: string }) {
+  return (
+    <a href="#rsvp" className={`${ctaClass} ${className}`}>
+      Reserve My Free Spot
+      <ArrowRight className="ml-2 h-5 w-5" aria-hidden />
+    </a>
+  )
+}
 
 function Countdown() {
   const [parts, setParts] = useState(() => getCountdownParts(WORKSHOP_START_MS))
 
   useEffect(() => {
-    const id = window.setInterval(() => {
-      setParts(getCountdownParts(WORKSHOP_START_MS))
-    }, 1000)
+    const id = window.setInterval(() => setParts(getCountdownParts(WORKSHOP_START_MS)), 1000)
     return () => window.clearInterval(id)
   }, [])
 
@@ -111,20 +154,20 @@ function Countdown() {
   ]
 
   return (
-    <div>
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
+    <div aria-live="polite">
+      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/65">
         Starts in
       </p>
-      <div className="grid grid-cols-4 gap-2 sm:gap-3">
+      <div className="grid grid-cols-4 gap-2">
         {cells.map((cell) => (
           <div
             key={cell.label}
-            className="rounded-xl border border-white/15 bg-white/10 px-2 py-3 text-center backdrop-blur-sm"
+            className="rounded-xl border border-white/15 bg-white/10 px-2 py-2.5 text-center"
           >
-            <p className="font-montserrat text-2xl font-black tabular-nums text-white sm:text-3xl">
+            <p className="font-montserrat text-xl font-black tabular-nums sm:text-2xl">
               {String(cell.value).padStart(2, "0")}
             </p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-white/65">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">
               {cell.label}
             </p>
           </div>
@@ -158,118 +201,138 @@ export default function BusinessWorkshopClient() {
     <div className="min-h-screen scroll-smooth bg-[#0B1220] pb-24 text-white antialiased sm:pb-0">
       <Script src="https://link.msgsndr.com/js/form_embed.js" strategy="afterInteractive" />
 
-      {/* HERO */}
-      <section className="relative overflow-hidden">
+      {/* 1. HERO */}
+      <header className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src={FLYER}
-            alt="Build Your Business in 90 Minutes workshop flyer"
+            alt=""
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center opacity-40"
+            className="object-cover object-center opacity-30"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0B1220]/70 via-[#0B1220]/85 to-[#0B1220]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0B1220]/75 via-[#0B1220]/9 to-[#0B1220]" />
         </div>
 
-        <div className="relative z-10 mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:items-center lg:py-20">
+        <div className="relative z-10 mx-auto grid max-w-6xl gap-8 px-5 py-12 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-16">
           <div>
             <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
-              Free 90-minute workshop · Cap of {SPOTS_CAPACITY}
+              Free workshop · Cap of {SPOTS_CAPACITY}
             </p>
-            <h1 className="mt-4 font-montserrat text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl">
-              Build Your Business in 90 Minutes
+            <h1 className="mt-3 font-montserrat text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl">
+              Build a Business in 90 Minutes
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
-              Learn the nitty-gritty of incorporating a business, building a killer offer, acquiring
-              massive social proof, launching a scalable marketing campaign, and driving sales—so you
-              know how to build a business and make money from it.
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
+              A free, practical workshop for turning an idea, skill, or existing business into a
+              clearer path to revenue.
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/80">
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="h-4 w-4 text-[#FF7A5A]" aria-hidden />
-                {EVENT.dateLabel} · {EVENT.timeLabel}
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <MapPin className="h-4 w-4 text-[#FF7A5A]" aria-hidden />
-                {EVENT.venueName} · {EVENT.addressLine}
-              </span>
-            </div>
+            <ul className="mt-6 space-y-2 text-sm text-white/85">
+              <li className="flex items-center gap-2">
+                <Clock className="h-4 w-4 flex-shrink-0 text-[#FF7A5A]" aria-hidden />
+                <span>
+                  {EVENT.dateLabel} · {EVENT.timeLabel}
+                </span>
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 flex-shrink-0 text-[#FF7A5A]" aria-hidden />
+                <span>
+                  {EVENT.venueName} · {EVENT.addressLine}, {EVENT.neighborhood}
+                </span>
+              </li>
+            </ul>
 
-            <div className="mt-8 max-w-md">
+            <div className="mt-6 max-w-sm">
               <Countdown />
             </div>
 
             {spotsLeft !== null ? (
-              <p className="mt-5 inline-flex items-center rounded-full border border-[#FF3366]/40 bg-[#FF3366]/15 px-4 py-2 text-sm font-semibold text-white">
+              <p className="mt-4 text-sm font-semibold text-[#FF7A5A]">
                 Only {spotsLeft} of {SPOTS_CAPACITY} spots left
               </p>
             ) : null}
 
-            <div className="mt-8">
-              <a href="#rsvp" className={ctaClass}>
-                Reserve My Free Spot
-                <ArrowRight className="ml-2 h-5 w-5" aria-hidden />
-              </a>
+            <div className="mt-7">
+              <ReserveCta />
             </div>
           </div>
 
           <div className="relative mx-auto aspect-square w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 shadow-2xl lg:max-w-none">
             <Image
               src={FLYER}
-              alt="Build Your Business in 90 Minutes — Sunday, Nov 22, 3:00–4:30 PM"
+              alt={`${EVENT.name} flyer — ${EVENT.dateLabel}, ${EVENT.timeLabel}`}
               fill
-              sizes="(max-width: 1024px) 90vw, 380px"
+              sizes="(max-width: 1024px) 90vw, 420px"
               className="object-cover"
               priority
             />
           </div>
         </div>
+      </header>
+
+      {/* 2. BENEFIT CARDS */}
+      <section className="border-t border-white/10 px-5 py-14 sm:px-8 sm:py-16" aria-labelledby="benefits-heading">
+        <div className="mx-auto max-w-5xl">
+          <h2 id="benefits-heading" className="sr-only">
+            Core benefits
+          </h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {BENEFITS.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-2xl border border-white/10 bg-[#111827] p-5"
+              >
+                <item.icon className="h-6 w-6 text-[#FF3366]" aria-hidden />
+                <h3 className="mt-4 font-montserrat text-lg font-bold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">{item.body}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <ReserveCta />
+          </div>
+        </div>
       </section>
 
-      {/* WHAT YOU'LL LEARN */}
-      <section className="border-t border-white/10 bg-[#111827] px-5 py-16 sm:px-8 sm:py-20">
+      {/* 3. WHAT YOU'LL LEAVE WITH */}
+      <section
+        id="learn"
+        className="scroll-mt-20 border-t border-white/10 bg-[#111827] px-5 py-14 sm:px-8 sm:py-16"
+      >
         <div className="mx-auto max-w-5xl">
           <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
             In 90 minutes
           </p>
-          <h2 className="mt-3 font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            What you’ll walk out knowing
+          <h2 className="mt-2 font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
+            What you’ll leave with
           </h2>
-          <p className="mt-4 max-w-2xl text-white/75">
-            A practical playbook—not theory fluff. Five core moves every operator needs.
-          </p>
-          <ul className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {LEARN_POINTS.map((item, index) => (
+          <ol className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {LEARN_POINTS.map((item, i) => (
               <li
                 key={item.title}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 md:last:col-span-2 lg:last:col-span-1"
+                className="rounded-2xl border border-white/10 bg-[#0B1220] p-5 lg:last:col-span-1"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FF3366] font-montserrat text-sm font-black">
-                  {index + 1}
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FF3366] text-sm font-black">
+                  {i + 1}
                 </span>
-                <h3 className="mt-4 font-montserrat text-lg font-bold">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/70">{item.body}</p>
+                <h3 className="mt-3 font-montserrat text-base font-bold">{item.title}</h3>
+                <p className="mt-1.5 text-sm text-white/70">{item.body}</p>
               </li>
             ))}
-          </ul>
+          </ol>
+          <div className="mt-8 flex justify-center">
+            <ReserveCta />
+          </div>
         </div>
       </section>
 
-      {/* WHO IT'S FOR */}
-      <section className="px-5 py-16 sm:px-8 sm:py-20">
+      {/* 4. WHO IT'S FOR */}
+      <section className="px-5 py-14 sm:px-8 sm:py-16">
         <div className="mx-auto max-w-4xl">
-          <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
-            Perfect for
-          </p>
-          <h2 className="mt-3 font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            Built for ambitious professionals
+          <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
+            Who it’s for
           </h2>
-          <p className="mt-4 max-w-2xl text-white/75">
-            Whether you’re early in your career or already running something, this workshop meets
-            you where you are—and shows you how to make money from what you build.
-          </p>
           <ul className="mt-8 grid gap-3 sm:grid-cols-2">
             {AUDIENCES.map((item) => (
               <li
@@ -281,95 +344,112 @@ export default function BusinessWorkshopClient() {
               </li>
             ))}
           </ul>
-          <p className="mt-8 rounded-2xl border border-[#FF3366]/30 bg-[#FF3366]/10 px-5 py-4 text-base font-medium leading-relaxed text-white/95">
-            By the end of the workshop, you’ll know how to build a business and make money from it.
-          </p>
+          <div className="mt-8 flex justify-center">
+            <ReserveCta />
+          </div>
         </div>
       </section>
 
-      {/* FACILITATOR */}
-      <section className="border-y border-white/10 bg-[#111827] px-5 py-16 sm:px-8 sm:py-20">
-        <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[minmax(0,280px)_1fr] md:gap-14">
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-[280px] overflow-hidden rounded-2xl">
+      {/* 5. AUSTIN COMPACT PROOF */}
+      <section className="border-y border-white/10 bg-[#111827] px-5 py-12 sm:px-8">
+        <div className="mx-auto flex max-w-4xl flex-col items-start gap-5 sm:flex-row sm:items-center">
+          <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-full border border-white/15">
             <Image
               src={AUSTIN_PHOTO}
               alt="Austin Moulder, workshop facilitator"
               fill
-              sizes="280px"
+              sizes="80px"
               className="object-cover object-top"
             />
           </div>
           <div>
-            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
-              Facilitated by
+            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-[#FF7A5A]">
+              Facilitated by Austin Moulder
             </p>
-            <h2 className="mt-3 font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-              Austin Moulder
-            </h2>
-            <div className="mt-3 flex gap-0.5" aria-label="Proven operator track record">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-[#F5B301] text-[#F5B301]" aria-hidden />
-              ))}
-            </div>
-            <p className="mt-5 text-base leading-relaxed text-white/80 sm:text-lg">{AUSTIN_BIO}</p>
+            <p className="mt-2 text-sm leading-relaxed text-white/80 sm:text-base">
+              BCG consultant (1% offer rate) · Ops Director for a $250M marketplace · VC-backed
+              edtech founder · Bootstrapping Studio E (170 active members before grand opening)
+            </p>
+            <p className="mt-2 text-xs text-white/55">
+              Career professionals regularly pay $250+/hour for operator time at this level. This
+              workshop is free.
+            </p>
           </div>
         </div>
       </section>
 
-      <FounderTrackRecordSection theme="dark" showFreeWorkshopCallout />
-      <SuccessStoriesSection theme="dark" />
-
-      {/* DETAILS + MAP */}
-      <section className="px-5 py-16 sm:px-8 sm:py-20">
+      {/* 6. TESTIMONIALS */}
+      <section className="px-5 py-14 sm:px-8 sm:py-16" aria-labelledby="stories-heading">
         <div className="mx-auto max-w-5xl">
-          <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
-            When &amp; where
-          </p>
-          <h2 className="mt-3 font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            Show up ready to build
+          <h2 id="stories-heading" className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
+            What professionals say
           </h2>
-          <div className="mt-8 grid gap-8 lg:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-[#111827] p-6">
-              <p className="font-montserrat text-lg font-bold">{EVENT.dateLabel}</p>
-              <p className="mt-1 text-white/80">{EVENT.timeLabel}</p>
-              <p className="mt-5 font-semibold">{EVENT.venueName}</p>
-              <p className="text-white/75">
-                {EVENT.addressLine}
-                <br />
-                {EVENT.cityLine} · {EVENT.neighborhood}
-              </p>
-              <a href="#rsvp" className={`${ctaClass} mt-8`}>
-                Reserve My Free Spot
-              </a>
-            </div>
-            <div className="overflow-hidden rounded-2xl border border-white/10">
-              <iframe
-                title={`Map to ${EVENT.venueName}`}
-                src={EVENT.mapsEmbedSrc}
-                className="h-64 w-full border-0 lg:h-full lg:min-h-[280px]"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {TESTIMONIALS.map((story) => (
+              <blockquote
+                key={story.name}
+                className="flex flex-col rounded-2xl border border-white/10 bg-[#111827] p-5"
+              >
+                <p className="flex-1 text-sm leading-relaxed text-white/80">“{story.quote}”</p>
+                <footer className="mt-4 border-t border-white/10 pt-3">
+                  <cite className="not-italic font-montserrat text-sm font-bold">{story.name}</cite>
+                  <p className="text-xs text-white/55">{story.role}</p>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <ReserveCta />
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="border-t border-white/10 bg-[#111827] px-5 py-16 sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-center font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            FAQ
+      {/* 7. HOW IT WORKS */}
+      <section className="border-t border-white/10 bg-[#111827] px-5 py-14 sm:px-8 sm:py-16">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
+            How it works
           </h2>
-          <div className="mt-10 space-y-3">
+          <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {HOW_IT_WORKS.map((step, i) => (
+              <li key={step.title} className="rounded-2xl border border-white/10 bg-[#0B1220] p-4">
+                <span className="font-montserrat text-xs font-bold uppercase tracking-wider text-[#FF7A5A]">
+                  Step {i + 1}
+                </span>
+                <h3 className="mt-2 font-montserrat text-base font-bold">{step.title}</h3>
+                <p className="mt-1 text-sm text-white/70">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <ReserveCta />
+          </div>
+          <p className="mt-4 text-center text-sm text-white/60">
+            After the workshop,{" "}
+            <Link href="/career-accelerator" className="font-semibold text-[#FF7A5A] underline-offset-2 hover:underline">
+              explore the Career Accelerator
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
+
+      {/* 8. FAQ */}
+      <section className="px-5 py-14 sm:px-8 sm:py-16">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-center font-montserrat text-3xl font-black tracking-tight">FAQ</h2>
+          <div className="mt-8 space-y-2">
             {FAQS.map((faq, index) => {
               const open = openFaq === index
               return (
-                <div key={faq.question} className="overflow-hidden rounded-2xl border border-white/10 bg-[#0B1220]">
+                <div
+                  key={faq.question}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-[#111827]"
+                >
                   <button
                     type="button"
                     onClick={() => setOpenFaq(open ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366]"
                     aria-expanded={open}
                   >
                     <span className="font-montserrat text-sm font-bold sm:text-base">
@@ -381,7 +461,7 @@ export default function BusinessWorkshopClient() {
                     />
                   </button>
                   {open ? (
-                    <p className="border-t border-white/10 px-5 pb-5 pt-3 text-sm leading-relaxed text-white/75">
+                    <p className="border-t border-white/10 px-5 pb-4 pt-3 text-sm leading-relaxed text-white/75">
                       {faq.answer}
                     </p>
                   ) : null}
@@ -392,22 +472,25 @@ export default function BusinessWorkshopClient() {
         </div>
       </section>
 
-      {/* RSVP FORM */}
-      <section id="rsvp" className="scroll-mt-20 px-5 py-16 sm:px-8 sm:py-20">
+      {/* 9. FINAL RSVP */}
+      <section id="rsvp" className="scroll-mt-20 border-t border-white/10 bg-[#111827] px-5 py-14 sm:px-8 sm:py-16">
         <div className="mx-auto max-w-xl">
           <div className="mb-8 text-center">
-            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
+            <p className="inline-flex items-center gap-2 font-montserrat text-xs font-semibold uppercase tracking-[0.2em] text-[#FF7A5A]">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden />
               Free · Cap of {SPOTS_CAPACITY}
             </p>
-            <h2 className="mt-3 font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
+            <h2 className="mt-3 font-montserrat text-3xl font-black tracking-tight">
               Reserve your spot
             </h2>
             <p className="mt-3 text-white/75">
-              {EVENT.dateLabel} · {EVENT.timeLabel} · Studio E
+              {EVENT.dateLabel} · {EVENT.timeLabel}
+              <br />
+              {EVENT.venueName} · {EVENT.addressLine}
             </p>
             {spotsLeft !== null ? (
               <p className="mt-3 text-sm font-semibold text-[#FF7A5A]">
-                Only {spotsLeft} spots left · Cap of {SPOTS_CAPACITY}
+                Only {spotsLeft} spots left
               </p>
             ) : null}
           </div>
@@ -427,61 +510,37 @@ export default function BusinessWorkshopClient() {
               data-height="560"
               data-layout-iframe-id={FORM_IFRAME_ID}
               data-form-id={RSVP_FORM.id}
-              title="Build Your Business in 90 Minutes RSVP"
+              title="Reserve your free Build a Business in 90 Minutes spot"
               className="w-full border-none"
               style={{ minHeight: "480px", width: "100%" }}
             />
           </div>
 
-          <div className="mt-10 rounded-2xl border border-[#FF3366]/30 bg-[#FF3366]/10 px-5 py-6 text-center sm:px-8">
-            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-[#FF7A5A]">
-              After you RSVP
-            </p>
-            <h3 className="mt-3 font-montserrat text-2xl font-black tracking-tight">
-              Ready for the full Career Accelerator?
-            </h3>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/80">
-              The free workshop is step one. When you’re ready for 8 weeks of live projects,
-              mentorship, and placement opportunities, continue to the Career Accelerator.
+          <div className="mt-8 rounded-2xl border border-white/15 bg-[#0B1220] px-5 py-6 text-center">
+            <Handshake className="mx-auto h-6 w-6 text-[#FF7A5A]" aria-hidden />
+            <h3 className="mt-3 font-montserrat text-lg font-bold">Next step after you RSVP</h3>
+            <p className="mx-auto mt-2 max-w-sm text-sm text-white/70">
+              Want 8 weeks of live projects and mentorship? Apply to the Career Accelerator when
+              you’re ready.
             </p>
             <Link
               href="/career-accelerator"
-              className="mt-6 inline-flex items-center justify-center rounded-2xl bg-white px-6 py-3.5 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF3366] transition hover:bg-[#FAF7F5]"
+              className="mt-4 inline-flex items-center justify-center font-montserrat text-sm font-bold text-[#FF7A5A] underline-offset-4 hover:underline"
             >
               Go to Career Accelerator
-              <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+              <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden />
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL */}
-      <section className="relative overflow-hidden px-5 py-16 sm:px-8 sm:py-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#FF3366] via-[#8B1538] to-[#0B1220]" />
-        <div className="relative z-10 mx-auto max-w-2xl text-center">
-          <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            Make money doing what you love.
-          </h2>
-          <p className="mt-4 text-white/90">
-            90 minutes. One playbook. Leave knowing how to build—and monetize—your business.
-          </p>
-          <div className="mt-8 flex justify-center">
-            <a
-              href="#rsvp"
-              className="inline-flex items-center justify-center rounded-2xl bg-white px-7 py-4 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF3366] transition hover:bg-[#FAF7F5]"
-            >
-              Reserve My Free Spot
-            </a>
           </div>
         </div>
       </section>
 
       {/* Sticky mobile CTA */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0B1220]/95 p-3 backdrop-blur-md sm:hidden">
-        <a href="#rsvp" className={ctaClass}>
-          Reserve My Free Spot
-        </a>
+        <ReserveCta />
       </div>
+
+      {/* Screen-reader detail preserved */}
+      <p className="sr-only">{AUSTIN_BIO}</p>
     </div>
   )
 }
