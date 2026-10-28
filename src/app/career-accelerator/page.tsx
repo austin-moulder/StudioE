@@ -8,11 +8,19 @@ const META_PIXEL_ID = "1976276599649833"
 export const metadata: Metadata = {
   title: "Career Accelerator | Studio E 8-Week Career Bootcamp",
   description:
-    "Studio E’s 8-week Career Accelerator in Humboldt Park, Chicago. Learn real marketing, operations, sales, and recruiting skills inside a live business—and position yourself for real opportunities.",
+    "Studio E’s 8-week Career Accelerator taught by Austin Moulder. Start with a free Build a Business in 90 Minutes workshop on Sunday, November 22nd at 3 PM. $799 refundable deposit.",
   openGraph: {
     title: "Career Accelerator – 8-Week Career Bootcamp at Studio E",
     description:
-      "Learn real marketing, ops, sales, and recruiting skills in a live, hands-on environment at Studio E HQ.",
+      "Start with a free workshop on Nov 22, then join Austin Moulder’s 8-week accelerator. Live projects, bonuses, and a $799 refundable deposit.",
+    images: [
+      {
+        url: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Accelerator.jpg",
+        width: 1080,
+        height: 1350,
+        alt: "Austin Moulder, Career Accelerator instructor",
+      },
+    ],
     url: "https://www.joinstudioe.com/career-accelerator",
     type: "website",
   },

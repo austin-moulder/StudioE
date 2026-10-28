@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import Script from "next/script"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -12,10 +13,32 @@ import {
   MapPin,
   Rocket,
   ShieldCheck,
+  Sparkles,
   Target,
   Users,
   X,
 } from "lucide-react"
+
+const AUSTIN_PHOTO =
+  "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Accelerator.jpg"
+
+const DEPOSIT = 799
+
+const BONUSES = [
+  "Founder-led networking dinner",
+  "Portfolio documentation for interviews",
+  "Mock interview preparation",
+  "Operator showcase to demonstrate outcomes of your project",
+] as const
+
+const PROJECT_EXAMPLES = [
+  "Referral campaigns",
+  "Conversion rate optimization campaigns",
+  "Throughput optimization",
+  "Customer retention analysis",
+  "Affiliate partnership campaign builds",
+  "Ad and lead nurture campaigns",
+] as const
 
 const FORM_URL = "https://api.leadconnectorhq.com/widget/form/79ExHftDf8qbN9cJxL67"
 const FORM_ID = "79ExHftDf8qbN9cJxL67"
@@ -136,8 +159,12 @@ const weeks = [
 
 const steps = [
   {
+    title: "Attend the free workshop",
+    body: "Your first step is Studio E’s free “Build a Business in 90 Minutes” workshop—Sunday, November 22nd at 3:00 PM at Studio E HQ.",
+  },
+  {
     title: "Apply",
-    body: "Click “Apply for Career Accelerator” and complete the short application—including your background and goals.",
+    body: "Complete the short Career Accelerator application—including your background and goals.",
   },
   {
     title: "Selection",
@@ -145,7 +172,7 @@ const steps = [
   },
   {
     title: "Train Weekly",
-    body: "Come to Studio E on Sundays, 7:30 – 9:00 PM for 8 weeks, and complete small implementation projects between sessions.",
+    body: "Come to Studio E on Sundays, 7:30 – 9:00 PM for 8 weeks, and complete live implementation projects between sessions.",
   },
   {
     title: "Placement Opportunities",
@@ -156,15 +183,24 @@ const steps = [
 const outcomes = [
   "A clear understanding of how a real small business runs behind the scenes.",
   "Concrete skills in marketing, operations, sales, customer success, and recruiting.",
-  "Tangible projects you helped with at Studio E.",
+  "Tangible projects you helped with at Studio E—work you can show in interviews.",
   "A shot at being placed in real business functions at Studio E if you’re a strong fit.",
 ]
 
 const faqs = [
   {
-    question: "Is there a cost to join?",
+    question: "What’s the first step?",
     answer:
-      "Yes—a $249 refundable deposit. It’s a commitment device, not a tuition fee. If you complete the Career Accelerator, Studio E returns your full deposit.",
+      "Attend the free “Build a Business in 90 Minutes” workshop at Studio E on Sunday, November 22nd at 3:00 PM. That’s how you get a clear look at the accelerator before you commit.",
+  },
+  {
+    question: "Is there a cost to join?",
+    answer: `Yes—a $${DEPOSIT} refundable deposit. It’s a commitment device, not a tuition fee. If you complete the Career Accelerator, Studio E returns your full deposit.`,
+  },
+  {
+    question: "Who teaches the accelerator?",
+    answer:
+      "Austin Moulder—former Boston Consulting Group consultant (1% offer rate), former Operations Director for a $250M tech marketplace overseeing 150+ employees, former VC-backed edtech entrepreneur, and now the bootstrapped owner of Chicago’s fastest-growing Latin dance business (170 active members before the grand opening).",
   },
   {
     question: "Do I need previous experience?",
@@ -280,6 +316,18 @@ export default function CareerAcceleratorClient() {
               </span>
             </p>
 
+            <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-white/25 bg-white/10 px-5 py-4 text-left backdrop-blur-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#FF7A5A]">
+                First step · Free
+              </p>
+              <p className="mt-2 font-montserrat text-lg font-bold leading-snug">
+                Build a Business in 90 Minutes
+              </p>
+              <p className="mt-1 text-sm text-white/90">
+                Sunday, November 22nd · 3:00 PM · Studio E
+              </p>
+            </div>
+
             <div className="mt-10">
               <ApplyButton />
             </div>
@@ -325,6 +373,72 @@ export default function CareerAcceleratorClient() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* FIRST STEP WORKSHOP */}
+      <section id="workshop" className="scroll-mt-24 border-b border-stone-200/80 bg-[#FFF5F7] px-4 py-16 md:py-20">
+        <div className="container mx-auto max-w-3xl text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8B1538]">
+            First step
+          </p>
+          <h2 className="mt-3 font-montserrat text-3xl font-black text-stone-900 md:text-4xl">
+            Build a Business in 90 Minutes
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-600">
+            Before you join the Career Accelerator, attend this free workshop at Studio E. Get a
+            clear look at how a real business is built—and whether the 8-week program is the right
+            next step for you.
+          </p>
+          <div className="mx-auto mt-8 flex max-w-lg flex-col gap-3 rounded-2xl border border-[#FF3366]/20 bg-white px-6 py-6 text-left shadow-sm sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-montserrat text-base font-bold text-stone-900">
+                Sunday, November 22nd
+              </p>
+              <p className="mt-1 text-sm text-stone-600">3:00 PM · Studio E · 2657 W Division St</p>
+              <p className="mt-2 text-sm font-semibold text-[#FF3366]">Free to attend</p>
+            </div>
+            <a
+              href="#apply"
+              className="inline-flex items-center justify-center rounded-xl bg-[#FF3366] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#E02D5A]"
+            >
+              Get started
+              <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* INSTRUCTOR */}
+      <section className="bg-white px-4 py-16 md:py-20">
+        <div className="container mx-auto max-w-5xl">
+          <div className="grid items-center gap-10 md:grid-cols-[minmax(0,280px)_1fr] md:gap-14">
+            <div className="relative mx-auto aspect-[4/5] w-full max-w-[280px] overflow-hidden rounded-2xl shadow-lg">
+              <Image
+                src={AUSTIN_PHOTO}
+                alt="Austin Moulder, Career Accelerator instructor"
+                fill
+                sizes="280px"
+                className="object-cover object-top"
+                priority
+              />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8B1538]">
+                Taught by
+              </p>
+              <h2 className="mt-3 font-montserrat text-3xl font-black text-stone-900 md:text-4xl">
+                Austin Moulder
+              </h2>
+              <p className="mt-5 text-lg leading-relaxed text-stone-600">
+                Former consultant for Boston Consulting Group (1% offer rate). Former Operations
+                Director for a $250M tech marketplace where he oversaw 150+ employees. Former
+                VC-backed entrepreneur for an education technology startup. Now the bootstrapped
+                owner of Chicago’s fastest-growing Latin dance business—170 active members before
+                the grand opening.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -392,6 +506,60 @@ export default function CareerAcceleratorClient() {
         </div>
       </section>
 
+      {/* PROJECT EXAMPLES */}
+      <section className="bg-white px-4 py-16 md:py-20">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8B1538]">
+              Live projects
+            </p>
+            <h2 className="mt-3 font-montserrat text-3xl font-black text-stone-900 md:text-4xl">
+              Work that looks like the real job
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-stone-600">
+              Between sessions you’ll ship implementation work on Studio E’s live business—the kind
+              of projects operators actually run.
+            </p>
+          </div>
+          <ul className="mt-10 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+            {PROJECT_EXAMPLES.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-3 rounded-xl border border-stone-200/80 bg-[#FAF8F6] px-4 py-4 text-stone-800"
+              >
+                <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#FF3366]" aria-hidden />
+                <span className="font-medium leading-snug">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* BONUSES */}
+      <section className="bg-[#FAF8F6] px-4 py-16 md:py-20">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8B1538]">Bonuses</p>
+            <h2 className="mt-3 font-montserrat text-3xl font-black text-stone-900 md:text-4xl">
+              Included with the accelerator
+            </h2>
+          </div>
+          <ul className="mx-auto mt-10 grid max-w-3xl gap-4 sm:grid-cols-2">
+            {BONUSES.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-3 rounded-2xl border border-[#FF3366]/15 bg-white px-5 py-5 shadow-sm"
+              >
+                <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#FF3366]/10 text-[#FF3366]">
+                  <Sparkles className="h-4 w-4" aria-hidden />
+                </span>
+                <span className="pt-1 font-semibold leading-snug text-stone-900">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* HOW IT WORKS */}
       <section className="bg-white px-4 py-16 md:py-20">
         <div className="container mx-auto max-w-3xl">
@@ -400,7 +568,7 @@ export default function CareerAcceleratorClient() {
               How it works
             </p>
             <h2 className="mt-3 font-montserrat text-3xl font-black text-stone-900 md:text-4xl">
-              From application to opportunity
+              From free workshop to opportunity
             </h2>
           </div>
 
@@ -530,7 +698,7 @@ export default function CareerAcceleratorClient() {
                 Investment
               </p>
               <p className="mt-2 font-montserrat text-5xl font-black text-[#FF3366] md:text-6xl">
-                $249
+                ${DEPOSIT}
               </p>
               <p className="mt-2 text-lg font-medium text-stone-700">Refundable deposit</p>
             </div>
@@ -543,9 +711,9 @@ export default function CareerAcceleratorClient() {
                 </h3>
                 <ul className="mt-4 space-y-3">
                   {[
-                    "Pay a $249 deposit to secure your spot in the Career Accelerator.",
+                    `Pay a $${DEPOSIT} deposit to secure your spot in the Career Accelerator.`,
                     "Show up, do the work, and complete the 8-week program.",
-                    "Complete the program and Studio E returns your full $249 deposit.",
+                    `Complete the program and Studio E returns your full $${DEPOSIT} deposit.`,
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-3 text-stone-700">
                       <Check className="mt-1 h-4 w-4 flex-shrink-0 text-[#FF3366]" aria-hidden />
@@ -558,7 +726,7 @@ export default function CareerAcceleratorClient() {
               <div className="rounded-xl bg-emerald-50 px-5 py-4 text-stone-800">
                 <p className="font-semibold text-emerald-900">Get your deposit back</p>
                 <p className="mt-1 text-sm leading-relaxed text-emerald-900/90 md:text-base">
-                  If you complete the Career Accelerator, Studio E returns your full $249
+                  If you complete the Career Accelerator, Studio E returns your full ${DEPOSIT}{" "}
                   deposit—this is a commitment device, not tuition.
                 </p>
               </div>
