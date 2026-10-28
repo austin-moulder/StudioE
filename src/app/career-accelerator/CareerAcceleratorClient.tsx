@@ -18,6 +18,10 @@ import {
   Users,
   X,
 } from "lucide-react"
+import {
+  FounderTrackRecordSection,
+  SuccessStoriesSection,
+} from "@/components/founder-proof/FounderProofSections"
 
 const AUSTIN_PHOTO =
   "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Accelerator.jpg"
@@ -441,6 +445,9 @@ export default function CareerAcceleratorClient() {
           </div>
         </div>
       </section>
+
+      <FounderTrackRecordSection theme="light" />
+      <SuccessStoriesSection theme="light" centeredIntro />
 
       {/* WHAT YOU’LL LEARN */}
       <section className="bg-[#FAF8F6] px-4 py-16 md:py-20">

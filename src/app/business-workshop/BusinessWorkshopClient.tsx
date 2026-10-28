@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import Script from "next/script"
 import { ArrowRight, Check, ChevronDown, Clock, MapPin, Star } from "lucide-react"
+import {
+  FounderTrackRecordSection,
+  SuccessStoriesSection,
+} from "@/components/founder-proof/FounderProofSections"
 import { getCountdownParts } from "@/lib/popup-class/event-time"
 import {
   AUSTIN_BIO,
@@ -276,6 +281,9 @@ export default function BusinessWorkshopClient() {
         </div>
       </section>
 
+      <FounderTrackRecordSection theme="dark" showFreeWorkshopCallout />
+      <SuccessStoriesSection theme="dark" />
+
       {/* DETAILS + MAP */}
       <section className="px-5 py-16 sm:px-8 sm:py-20">
         <div className="mx-auto max-w-5xl">
@@ -383,6 +391,26 @@ export default function BusinessWorkshopClient() {
               className="w-full border-none"
               style={{ minHeight: "480px", width: "100%" }}
             />
+          </div>
+
+          <div className="mt-10 rounded-2xl border border-[#FF3366]/30 bg-[#FF3366]/10 px-5 py-6 text-center sm:px-8">
+            <p className="font-montserrat text-xs font-semibold uppercase tracking-[0.18em] text-[#FF7A5A]">
+              After you RSVP
+            </p>
+            <h3 className="mt-3 font-montserrat text-2xl font-black tracking-tight">
+              Ready for the full Career Accelerator?
+            </h3>
+            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/80">
+              The free workshop is step one. When you’re ready for 8 weeks of live projects,
+              mentorship, and placement opportunities, continue to the Career Accelerator.
+            </p>
+            <Link
+              href="/career-accelerator"
+              className="mt-6 inline-flex items-center justify-center rounded-2xl bg-white px-6 py-3.5 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF3366] transition hover:bg-[#FAF7F5]"
+            >
+              Go to Career Accelerator
+              <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+            </Link>
           </div>
         </div>
       </section>
