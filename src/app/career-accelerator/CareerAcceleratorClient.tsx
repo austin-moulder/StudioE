@@ -399,10 +399,10 @@ export default function CareerAcceleratorClient() {
               <p className="mt-2 text-sm font-semibold text-[#FF3366]">Free to attend</p>
             </div>
             <a
-              href="#apply"
+              href="/business-workshop"
               className="inline-flex items-center justify-center rounded-xl bg-[#FF3366] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#E02D5A]"
             >
-              Get started
+              Reserve free workshop
               <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
             </a>
           </div>
