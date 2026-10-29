@@ -8,8 +8,8 @@ import {
   AGE_GROUPS,
   ASSETS,
   CONTACT_FORM,
-  COPY,
-  FAQS,
+  getYouthCopy,
+  getYouthFaqs,
   HOW_IT_WORKS,
   PLANS,
   PROGRAM,
@@ -67,6 +67,8 @@ const ctaClass =
 
 export default function YouthClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const copy = getYouthCopy()
+  const faqs = getYouthFaqs()
 
   useEffect(() => {
     let attempts = 0
@@ -92,7 +94,7 @@ export default function YouthClient() {
     <div className="min-h-screen scroll-smooth bg-[#F7F1E8] text-stone-900 antialiased">
       <div className="bg-[#1C1410] px-4 py-2.5 text-center">
         <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#E8C97A] sm:text-xs">
-          {COPY.announcement}
+          {copy.announcement}
         </p>
       </div>
 
@@ -114,10 +116,10 @@ export default function YouthClient() {
             Studio E · Youth Program
           </p>
           <h1 className="text-center font-montserrat text-4xl font-black leading-[1.08] tracking-tight animate-[youth-rise_0.85s_ease-out_0.08s_both] sm:text-5xl md:text-6xl">
-            {COPY.heroHeadline}
+            {copy.heroHeadline}
           </h1>
           <p className="mx-auto mt-5 max-w-lg text-center text-base leading-relaxed text-white/90 animate-[youth-rise_0.9s_ease-out_0.16s_both] sm:text-lg">
-            {COPY.heroSubheadline}
+            {copy.heroSubheadline}
           </p>
           <p className="mt-4 flex items-center justify-center gap-2 font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-white/70 animate-[youth-rise_0.9s_ease-out_0.2s_both]">
             <MapPin className="h-3.5 w-3.5 text-[#E8C97A]" aria-hidden />
@@ -125,11 +127,11 @@ export default function YouthClient() {
           </p>
           <div className="mt-8 animate-[youth-rise_1s_ease-out_0.28s_both]">
             <a href="#pricing" className={ctaClass}>
-              {COPY.primaryCta}
+              {copy.primaryCta}
             </a>
             <div className="text-center">
               <a href="#contact" className={`${contactLinkClass} text-white/85`}>
-                {COPY.contactLink}
+                {copy.contactLink}
               </a>
             </div>
           </div>
@@ -143,10 +145,10 @@ export default function YouthClient() {
             id="schedule-heading"
             className="text-center font-montserrat text-3xl font-black tracking-tight text-[#1C1410] sm:text-4xl"
           >
-            {COPY.scheduleHeadline}
+            {copy.scheduleHeadline}
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-center text-base text-stone-600">
-            {COPY.scheduleBody}
+            {copy.scheduleBody}
           </p>
           <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:gap-8">
             {AGE_GROUPS.map((group) => (
@@ -177,17 +179,17 @@ export default function YouthClient() {
             id="start-heading"
             className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
           >
-            {COPY.startHeadline}
+            {copy.startHeadline}
           </h2>
           <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-white/90">
-            {COPY.startBody}
+            {copy.startBody}
           </p>
           <div className="mt-8">
             <a
               href="#pricing"
               className="mx-auto inline-flex w-full max-w-md items-center justify-center rounded-2xl bg-white px-6 py-4 font-montserrat text-sm font-black uppercase tracking-wide text-[#FF3366] shadow-lg transition hover:bg-white/95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#FF3366] sm:text-base"
             >
-              {COPY.primaryCta}
+              {copy.primaryCta}
             </a>
           </div>
         </div>
@@ -200,10 +202,10 @@ export default function YouthClient() {
             id="how-heading"
             className="text-center font-montserrat text-3xl font-black tracking-tight text-[#1C1410] sm:text-4xl"
           >
-            {COPY.howItWorksHeadline}
+            {copy.howItWorksHeadline}
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-center text-base text-stone-600">
-            {COPY.howItWorksBody}
+            {copy.howItWorksBody}
           </p>
           <ol className="mt-12 grid gap-10 sm:grid-cols-3 sm:gap-8">
             {HOW_IT_WORKS.map((item) => (
@@ -238,7 +240,7 @@ export default function YouthClient() {
               id="why-heading"
               className="font-montserrat text-3xl font-black tracking-tight text-[#1C1410] sm:text-4xl"
             >
-              {COPY.whyHeadline}
+              {copy.whyHeadline}
             </h2>
             <ul className="mt-8 space-y-3">
               {WHY_POINTS.map((item) => (
@@ -263,13 +265,12 @@ export default function YouthClient() {
             id="pricing-heading"
             className="text-center font-montserrat text-3xl font-black tracking-tight text-[#1C1410] sm:text-4xl"
           >
-            {COPY.pricingHeadline}
+            {copy.pricingHeadline}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-center text-base text-stone-600">
-            {COPY.pricingBody}
+            {copy.pricingBody}
           </p>
-          <p className="mt-2 text-center text-sm font-semibold text-[#FF3366]">{COPY.setupFeeNote}</p>
-          <p className="mt-2 text-center text-sm text-stone-500">{COPY.pricingNote}</p>
+          <p className="mt-2 text-center text-sm text-stone-500">{copy.pricingNote}</p>
 
           <div className="mt-10 grid gap-5 md:grid-cols-2">
             {PLANS.map((plan) => (
@@ -342,10 +343,10 @@ export default function YouthClient() {
             id="contact-heading"
             className="text-center font-montserrat text-3xl font-black tracking-tight text-[#1C1410] sm:text-4xl"
           >
-            {COPY.contactHeadline}
+            {copy.contactHeadline}
           </h2>
           <p className="mx-auto mt-3 max-w-md text-center text-base text-stone-600">
-            {COPY.contactBody}
+            {copy.contactBody}
           </p>
           <div className="mt-6 overflow-hidden rounded-2xl border border-[#E8DCC8] bg-white p-1 shadow-sm sm:mt-8 sm:p-3">
             <Script
@@ -397,7 +398,7 @@ export default function YouthClient() {
             FAQ
           </h2>
           <div className="divide-y divide-[#E8DCC8] border-y border-[#E8DCC8]">
-            {FAQS.map((item, index) => {
+            {faqs.map((item, index) => {
               const open = openFaq === index
               const panelId = `youth-faq-${index}`
               const buttonId = `youth-faq-btn-${index}`
@@ -441,18 +442,18 @@ export default function YouthClient() {
       <section className="bg-[#1C1410] px-4 py-16 text-white sm:px-6 sm:py-20">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            {COPY.finalHeadline}
+            {copy.finalHeadline}
           </h2>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/85">
-            {COPY.finalBody}
+            {copy.finalBody}
           </p>
           <div className="mt-8">
             <a href="#pricing" className={ctaClass}>
-              {COPY.primaryCta}
+              {copy.primaryCta}
             </a>
             <div>
               <a href="#contact" className={`${contactLinkClass} text-white/80`}>
-                {COPY.contactLink}
+                {copy.contactLink}
               </a>
             </div>
           </div>

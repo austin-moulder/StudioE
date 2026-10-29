@@ -1,28 +1,38 @@
 import type { Metadata } from "next"
 import Script from "next/script"
 import GoogleTag from "@/components/analytics/GoogleTag"
-import { ASSETS, META_PIXEL_ID, PROGRAM } from "@/lib/youth/config"
+import {
+  ASSETS,
+  formatYouthStartLabel,
+  getYouthStartMonday,
+  META_PIXEL_ID,
+  PROGRAM,
+} from "@/lib/youth/config"
 import YouthClient from "./YouthClient"
 
-export const metadata: Metadata = {
-  title: "Chicago Latin Dance Youth Program",
-  description:
-    "After-school Latin dance starting October 12, Monday–Thursday. Ages 5–8 and 9–17. Flexible days with make-ups. Sign up before October 12 and we waive the $100 set-up fee. Bronze 1×/wk, Gold 2×/wk—16-week session.",
-  openGraph: {
-    title: "Chicago Latin Dance Youth Program | Studio E",
-    description:
-      "Youth Latin dance at Studio E starts October 12. Come any Mon–Thu; make up missed days. Sign up before Oct 12 to waive the $100 set-up fee.",
-    url: "https://www.joinstudioe.com/youth",
-    type: "website",
-    images: [
-      {
-        url: ASSETS.group,
-        width: 1200,
-        height: 800,
-        alt: "Chicago Latin Dance Youth Program at Studio E",
-      },
-    ],
-  },
+/** Start Monday is derived from the request time (now + 2 weeks). */
+export const dynamic = "force-dynamic"
+
+export function generateMetadata(): Metadata {
+  const startLabel = formatYouthStartLabel(getYouthStartMonday())
+  return {
+    title: "Chicago Latin Dance Youth Program",
+    description: `After-school Latin dance starting ${startLabel}, Monday–Thursday. Ages 5–8 and 9–17. Flexible days with make-ups. Bronze 1×/wk, Gold 2×/wk—16-week session.`,
+    openGraph: {
+      title: "Chicago Latin Dance Youth Program | Studio E",
+      description: `Youth Latin dance at Studio E starts ${startLabel}. Come any Mon–Thu; make up missed days.`,
+      url: "https://www.joinstudioe.com/youth",
+      type: "website",
+      images: [
+        {
+          url: ASSETS.group,
+          width: 1200,
+          height: 800,
+          alt: "Chicago Latin Dance Youth Program at Studio E",
+        },
+      ],
+    },
+  }
 }
 
 export default function YouthPage() {
@@ -55,7 +65,8 @@ export default function YouthPage() {
       </noscript>
       <YouthClient />
       <p className="sr-only">
-        {PROGRAM.name} at {PROGRAM.venueName}, {PROGRAM.addressLine}, {PROGRAM.cityLine}.
+        {PROGRAM.name} at {PROGRAM.venueName}, {PROGRAM.addressLine}, {PROGRAM.cityLine}. Classes
+        start {formatYouthStartLabel(getYouthStartMonday())}.
       </p>
     </>
   )

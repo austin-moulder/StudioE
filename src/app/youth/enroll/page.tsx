@@ -4,6 +4,8 @@ import GoogleTag from "@/components/analytics/GoogleTag"
 import { META_PIXEL_ID } from "@/lib/youth/enroll-config"
 import YouthEnrollClient from "./YouthEnrollClient"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Youth Program Enrollment",
   description:

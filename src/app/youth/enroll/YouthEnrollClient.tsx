@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import Script from "next/script"
 import { Check } from "lucide-react"
-import { ENROLL_COPY, ENROLL_FORM } from "@/lib/youth/enroll-config"
+import { ENROLL_FORM, getEnrollCopy } from "@/lib/youth/enroll-config"
 
 const FORM_IFRAME_ID = `inline-${ENROLL_FORM.id}`
 
@@ -61,6 +61,8 @@ function enableFormEmbedScrollFallback() {
 }
 
 export default function YouthEnrollClient() {
+  const copy = getEnrollCopy()
+
   useEffect(() => {
     trackMeta("ViewContent", {
       content_name: "Youth Program Enrollment Form",
@@ -100,7 +102,7 @@ export default function YouthEnrollClient() {
     <div className="min-h-screen scroll-smooth bg-[#F7F1E8] text-stone-900 antialiased">
       <div className="bg-[#1C1410] px-4 py-2.5 text-center">
         <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#E8C97A] sm:text-xs">
-          {ENROLL_COPY.announcement}
+          {copy.announcement}
         </p>
       </div>
 
@@ -110,10 +112,10 @@ export default function YouthEnrollClient() {
             Studio E · Youth Program
           </p>
           <h1 className="mt-3 font-montserrat text-3xl font-black tracking-tight sm:text-4xl md:text-5xl">
-            {ENROLL_COPY.headline}
+            {copy.headline}
           </h1>
           <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/90 sm:text-lg">
-            {ENROLL_COPY.subheadline}
+            {copy.subheadline}
           </p>
         </div>
       </header>
@@ -124,10 +126,10 @@ export default function YouthEnrollClient() {
             id="next-steps-heading"
             className="text-center font-montserrat text-2xl font-black tracking-tight text-[#1C1410] sm:text-3xl"
           >
-            {ENROLL_COPY.nextStepsHeadline}
+            {copy.nextStepsHeadline}
           </h2>
           <ul className="mt-8 space-y-3">
-            {ENROLL_COPY.nextSteps.map((step) => (
+            {copy.nextSteps.map((step) => (
               <li key={step} className="flex items-start gap-3">
                 <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#FF3366]" aria-hidden />
                 <span className="text-base leading-snug text-stone-800">{step}</span>
@@ -135,7 +137,7 @@ export default function YouthEnrollClient() {
             ))}
           </ul>
           <p className="mx-auto mt-8 max-w-md text-center text-sm leading-relaxed text-stone-600">
-            {ENROLL_COPY.rollingAdmissionNote}
+            {copy.rollingAdmissionNote}
           </p>
         </div>
       </section>
@@ -153,7 +155,7 @@ export default function YouthEnrollClient() {
             Child Enrollment Form
           </h2>
           <p className="mx-auto mt-3 max-w-md text-center text-base text-stone-600">
-            {ENROLL_COPY.formIntro}
+            {copy.formIntro}
           </p>
 
           <div className="mt-8 overflow-visible rounded-2xl border border-[#E8DCC8] bg-[#F7F1E8]/40 p-2 shadow-sm sm:p-4">
@@ -199,7 +201,7 @@ export default function YouthEnrollClient() {
 
       <footer className="border-t border-[#E8DCC8] bg-[#F7F1E8] px-4 py-10 text-center text-sm text-stone-500 sm:px-6">
         <p className="font-montserrat text-base font-bold text-[#1C1410]">Studio E</p>
-        <p className="mt-1">{ENROLL_COPY.footerNote}</p>
+        <p className="mt-1">{copy.footerNote}</p>
       </footer>
     </div>
   )

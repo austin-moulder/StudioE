@@ -5,18 +5,87 @@
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
+export const YOUTH_TIME_ZONE = "America/Chicago" as const
+
+const WEEKDAY_OFFSET: Record<string, number> = {
+  Mon: 0,
+  Tue: 1,
+  Wed: 2,
+  Thu: 3,
+  Fri: 4,
+  Sat: 5,
+  Sun: 6,
+}
+
+type ChicagoParts = {
+  year: number
+  month: number
+  day: number
+  weekday: string
+}
+
+function getChicagoParts(date: Date): ChicagoParts {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: YOUTH_TIME_ZONE,
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    weekday: "short",
+  }).formatToParts(date)
+
+  const map = Object.fromEntries(
+    parts.filter((p) => p.type !== "literal").map((p) => [p.type, p.value])
+  )
+
+  return {
+    year: Number(map.year),
+    month: Number(map.month),
+    day: Number(map.day),
+    weekday: map.weekday,
+  }
+}
+
+/**
+ * Starting week Monday = Monday of the calendar week that contains
+ * (current America/Chicago date + 14 days).
+ */
+export function getYouthStartMonday(now: Date = new Date()): Date {
+  const today = getChicagoParts(now)
+  const plusTwoWeeks = getChicagoParts(
+    new Date(Date.UTC(today.year, today.month - 1, today.day + 14, 18, 0, 0))
+  )
+  const offset = WEEKDAY_OFFSET[plusTwoWeeks.weekday] ?? 0
+  return new Date(
+    Date.UTC(plusTwoWeeks.year, plusTwoWeeks.month - 1, plusTwoWeeks.day - offset, 18, 0, 0)
+  )
+}
+
+export function formatYouthStartLabel(date: Date = getYouthStartMonday()): string {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
+    month: "long",
+    day: "numeric",
+  }).format(date)
+}
+
+export function formatYouthStartShort(date: Date = getYouthStartMonday()): string {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
+    month: "short",
+    day: "numeric",
+  })
+    .format(date)
+    .toUpperCase()
+}
+
 export const PROGRAM = {
   name: "Chicago Latin Dance Youth Program",
   venueName: "Studio E",
   addressLine: "2657 W Division St",
   cityLine: "Chicago, IL",
   neighborhood: "Humboldt Park · Paseo Boricua",
-  startDateLabel: "October 12",
   daysLabel: "Monday – Thursday",
-  enrollmentWindow: "October and November",
   sessionWeeks: 16,
-  setupFeeWaiverDeadline: "October 12",
-  setupFeeAmount: 100,
 } as const
 
 export const ASSETS = {
@@ -79,35 +148,37 @@ export const CONTACT_FORM = {
   name: "Youth Program Info Request",
 } as const
 
-export const COPY = {
-  contactLink: "Have questions first? Get more info",
-  contactHeadline: "Not Ready to Enroll Yet?",
-  contactBody:
-    "Leave your info and we’ll reach out to answer your questions about schedules, age groups, and getting your child started.",
-  announcement: "STARTS OCT 12 | SIGN UP BEFORE OCT 12 · $100 SETUP FEE WAIVED",
-  heroHeadline: "Chicago Latin Dance Youth Program",
-  heroSubheadline:
-    "Give your child a joyful after-school place to move, make friends, and grow through Latin dance—right in the heart of Humboldt Park. Classes officially start October 12, Monday through Thursday.",
-  primaryCta: "ENROLL IN YOUTH PROGRAM",
-  scheduleHeadline: "Two Age Groups. Flexible Monday Through Thursday.",
-  scheduleBody:
-    "Classes run Monday–Thursday for each age group. Your child can come any of those days—it does not have to be the same day every week. If they are sick or out of town, make the class up later that week or the following week.",
-  startHeadline: "Official Start: October 12",
-  startBody:
-    "Classes start October 12, with rolling admission through November—join later and your child still gets the full number of classes. Sign up before October 12 and we waive the $100 set-up fee.",
-  howItWorksHeadline: "How Enrollment Works",
-  howItWorksBody: "Three simple steps from signup to first class.",
-  whyHeadline: "Why Families Choose Studio E",
-  pricingHeadline: "Youth Session Tuition",
-  pricingBody:
-    "Bronze is for 1×/week students. Gold is for 2×/week students. Tuition is simply for class time—so kids can grow confidence as dancers.",
-  pricingNote:
-    "Billed every 4 weeks at the rates below. Tuition covers the full 16-week session—this is a session commitment.",
-  setupFeeNote: "Sign up before October 12 and we waive the $100 set-up fee.",
-  finalHeadline: "Ready For After-School Dance?",
-  finalBody:
-    "Enroll your dancer in the Chicago Latin Dance Youth Program—classes start October 12, with rolling admission through November. Come any Monday–Thursday that works, and lock in the waived set-up fee if you sign up before October 12.",
-} as const
+export function getYouthCopy(now: Date = new Date()) {
+  const monday = getYouthStartMonday(now)
+  const startLabel = formatYouthStartLabel(monday)
+  const short = formatYouthStartShort(monday)
+  return {
+    startLabel,
+    contactLink: "Have questions first? Get more info",
+    contactHeadline: "Not Ready to Enroll Yet?",
+    contactBody:
+      "Leave your info and we’ll reach out to answer your questions about schedules, age groups, and getting your child started.",
+    announcement: `STARTS ${short} · MONDAY–THURSDAY`,
+    heroHeadline: "Chicago Latin Dance Youth Program",
+    heroSubheadline: `Give your child a joyful after-school place to move, make friends, and grow through Latin dance—right in the heart of Humboldt Park. Classes officially start ${startLabel}, Monday through Thursday.`,
+    primaryCta: "ENROLL IN YOUTH PROGRAM",
+    scheduleHeadline: "Two Age Groups. Flexible Monday Through Thursday.",
+    scheduleBody:
+      "Classes run Monday–Thursday for each age group. Your child can come any of those days—it does not have to be the same day every week. If they are sick or out of town, make the class up later that week or the following week.",
+    startHeadline: `Official Start: ${startLabel}`,
+    startBody: `Classes start ${startLabel}, with rolling admission—join later and your child still gets the full number of classes.`,
+    howItWorksHeadline: "How Enrollment Works",
+    howItWorksBody: "Three simple steps from signup to first class.",
+    whyHeadline: "Why Families Choose Studio E",
+    pricingHeadline: "Youth Session Tuition",
+    pricingBody:
+      "Bronze is for 1×/week students. Gold is for 2×/week students. Tuition is simply for class time—so kids can grow confidence as dancers.",
+    pricingNote:
+      "Billed every 4 weeks at the rates below. Tuition covers the full 16-week session—this is a session commitment.",
+    finalHeadline: "Ready For After-School Dance?",
+    finalBody: `Enroll your dancer in the Chicago Latin Dance Youth Program—classes start ${startLabel}, with rolling admission. Come any Monday–Thursday that works.`,
+  }
+}
 
 export const HOW_IT_WORKS = [
   {
@@ -135,56 +206,53 @@ export const WHY_POINTS = [
   "No partner required to start",
 ] as const
 
-export const FAQS = [
-  {
-    question: "When do classes start?",
-    answer:
-      "Youth classes officially start October 12, with rolling admission through November. Join later and your child still gets the full number of classes for the session. Sign up before October 12 and we waive the $100 set-up fee.",
-  },
-  {
-    question: "What happens after I sign up?",
-    answer:
-      "After checkout, you’ll go to an enrollment page to add each child’s info, preferred days of the week, and preferred start date. Then we’ll text you to confirm enrollment and your selected start date.",
-  },
-  {
-    question: "What days can my child come?",
-    answer:
-      "Monday through Thursday. Your child can come on any of those days—it does not have to be the same weekday every week. Ages 5–8 meet 4:15–5:15 PM and ages 9–17 meet 5:15–6:15 PM.",
-  },
-  {
-    question: "What if my child is sick or out of town?",
-    answer:
-      "Make the class up later that same week or the following week. You are not locked into one fixed weekday.",
-  },
-  {
-    question: "What’s the difference between Bronze and Gold?",
-    answer:
-      "Bronze is for students who take 1 class per week. Gold is for students who take 2 classes per week. Both are billed every 4 weeks for the full 16-week session.",
-  },
-  {
-    question: "Is there a set-up fee?",
-    answer:
-      "There is a $100 set-up fee. Sign up before October 12 and we waive it.",
-  },
-  {
-    question: "How long is the commitment?",
-    answer:
-      "Tuition is priced every 4 weeks, but it covers a full 16-week session. Enrolling is a commitment for the entire session.",
-  },
-  {
-    question: "What ages is the youth program for?",
-    answer: "We have a class for ages 5–8 (4:15–5:15 PM) and a class for ages 9–17 (5:15–6:15 PM).",
-  },
-  {
-    question: "Does my child need dance experience?",
-    answer: "No. Classes are designed to welcome beginners and help them build from the fundamentals.",
-  },
-  {
-    question: "Do they need a partner?",
-    answer: "No. Dancers can come alone and learn with the group.",
-  },
-  {
-    question: "Where is class?",
-    answer: `Studio E, ${PROGRAM.addressLine}, ${PROGRAM.cityLine}, in ${PROGRAM.neighborhood}.`,
-  },
-] as const
+export function getYouthFaqs(now: Date = new Date()) {
+  const startLabel = formatYouthStartLabel(getYouthStartMonday(now))
+  return [
+    {
+      question: "When do classes start?",
+      answer: `Youth classes officially start ${startLabel}, with rolling admission. Join later and your child still gets the full number of classes for the session.`,
+    },
+    {
+      question: "What happens after I sign up?",
+      answer:
+        "After checkout, you’ll go to an enrollment page to add each child’s info, preferred days of the week, and preferred start date. Then we’ll text you to confirm enrollment and your selected start date.",
+    },
+    {
+      question: "What days can my child come?",
+      answer:
+        "Monday through Thursday. Your child can come on any of those days—it does not have to be the same weekday every week. Ages 5–8 meet 4:15–5:15 PM and ages 9–17 meet 5:15–6:15 PM.",
+    },
+    {
+      question: "What if my child is sick or out of town?",
+      answer:
+        "Make the class up later that same week or the following week. You are not locked into one fixed weekday.",
+    },
+    {
+      question: "What’s the difference between Bronze and Gold?",
+      answer:
+        "Bronze is for students who take 1 class per week. Gold is for students who take 2 classes per week. Both are billed every 4 weeks for the full 16-week session.",
+    },
+    {
+      question: "How long is the commitment?",
+      answer:
+        "Tuition is priced every 4 weeks, but it covers a full 16-week session. Enrolling is a commitment for the entire session.",
+    },
+    {
+      question: "What ages is the youth program for?",
+      answer: "We have a class for ages 5–8 (4:15–5:15 PM) and a class for ages 9–17 (5:15–6:15 PM).",
+    },
+    {
+      question: "Does my child need dance experience?",
+      answer: "No. Classes are designed to welcome beginners and help them build from the fundamentals.",
+    },
+    {
+      question: "Do they need a partner?",
+      answer: "No. Dancers can come alone and learn with the group.",
+    },
+    {
+      question: "Where is class?",
+      answer: `Studio E, ${PROGRAM.addressLine}, ${PROGRAM.cityLine}, in ${PROGRAM.neighborhood}.`,
+    },
+  ]
+}
