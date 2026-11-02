@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Clock, Sparkles, Users, Zap } from "lucide-react"
 import OfferVideo from "@/components/OfferVideo"
+import PulseShoesCallout from "@/components/pulse/PulseShoesCallout"
 import { SHARED_VIDEO_POSTER } from "@/lib/consolation-pass/config"
 
 const CHECKOUT_URL = "https://link.fastpaydirect.com/payment-link/6a8dba67d6768df054447de5"
@@ -163,6 +164,10 @@ export default function NewMemberDealClient() {
             )}
           </CardContent>
         </Card>
+
+        <div className="mb-10">
+          <PulseShoesCallout placement="newmember_callout" />
+        </div>
 
         <p className="text-center text-sm text-gray-500">
           Questions?{" "}

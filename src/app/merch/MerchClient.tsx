@@ -7,6 +7,7 @@ import MerchCta from "@/components/merch/MerchCta"
 import MerchFaq from "@/components/merch/MerchFaq"
 import MerchGallery from "@/components/merch/MerchGallery"
 import MerchProductCard from "@/components/merch/MerchProductCard"
+import PulseShoesCallout from "@/components/pulse/PulseShoesCallout"
 import { FEATURED_PRODUCTS, MERCH_CAROUSEL, MERCH_IMAGES } from "@/lib/merch/shopify"
 
 const whyPoints = [
@@ -161,6 +162,9 @@ export default function MerchClient() {
           </div>
           <div className="mt-10 text-center">
             <MerchCta variant="secondary">Shop the full collection</MerchCta>
+          </div>
+          <div className="mx-auto mt-12 max-w-3xl">
+            <PulseShoesCallout placement="merch_callout" />
           </div>
         </div>
       </section>
