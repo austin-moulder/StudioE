@@ -1,6 +1,6 @@
 /**
  * Instagram-bio workshop hub catalog.
- * All prices, times, venues, and checkout URLs come from existing popup configs.
+ * Prices, times, venues, and paths come from existing popup configs.
  */
 
 import { AFRO_CUBAN_CONFIG } from "@/lib/afro-cuban-movement/config"
@@ -12,17 +12,10 @@ import {
   getNextAvailableStartMs,
   type EventSchedule,
 } from "@/lib/popup-class/event-time"
-import { buildPopupCheckoutUrl, type PopupClassLandingConfig } from "@/lib/popup-class/types"
+import type { PopupClassLandingConfig } from "@/lib/popup-class/types"
 import { POSING_CONFIG } from "@/lib/posing/config"
-import { REGGAETON_CONFIG } from "@/lib/reggaeton/config"
 import { SALSA_ON_2_CONFIG } from "@/lib/salsa-on-2/config"
 import { TWERK_THURSDAY_CONFIG, TWERK_SOLD_OUT_DATES } from "@/lib/twerk-thursday/config"
-
-export const WORKSHOPS_HUB_UTM = {
-  utm_source: "instagram",
-  utm_medium: "bio",
-  utm_campaign: "workshops_hub",
-} as const
 
 export type WorkshopListing = {
   id: string
@@ -35,15 +28,17 @@ export type WorkshopListing = {
   description: string
   flyer: string
   flyerAlt: string
-  registrationUrl: string
+  /** Internal landing page — CTA goes here, not checkout. */
+  landingPath: string
   capacity?: number
+  /** $25 includes one additional friend free (from existing workshop offers). */
+  includesFriendFree: boolean
   soldOutDates?: readonly string[]
 }
 
 /** Style labels taken from each workshop’s existing name/format. */
 const STYLE_BY_ID: Record<string, string> = {
   "twerk-thursday": "Twerk",
-  reggaeton: "Reggaeton",
   merengue: "Merengue",
   chacha: "Cha-Cha",
   "cumbia-wepa": "Cumbia",
@@ -52,8 +47,18 @@ const STYLE_BY_ID: Record<string, string> = {
   posing: "Posing",
 }
 
+const LANDING_PATH_BY_ID: Record<string, string> = {
+  "twerk-thursday": "/twerk-thursday",
+  merengue: "/merengue",
+  chacha: "/chacha",
+  "cumbia-wepa": "/cumbia-wepa",
+  "afro-cuban-movement": "/afro-cuban-movement",
+  "salsa-on-2": "/salsa-on-2",
+  posing: "/posing",
+}
+
 function toListing(config: PopupClassLandingConfig): WorkshopListing {
-  const { event, assets, copy, checkoutUrl, id, soldOut } = config
+  const { event, assets, copy, id, soldOut } = config
   return {
     id,
     title: event.name,
@@ -72,15 +77,17 @@ function toListing(config: PopupClassLandingConfig): WorkshopListing {
     description: copy.heroSubheadline,
     flyer: assets.flyer,
     flyerAlt: copy.flyerAlt || `${event.name} flyer`,
-    registrationUrl: buildPopupCheckoutUrl(checkoutUrl, WORKSHOPS_HUB_UTM),
+    landingPath: LANDING_PATH_BY_ID[id] ?? `/${id}`,
     capacity: event.capacity,
+    // Existing bring-a-friend offer on workshop landings; excluded for Twerk per hub copy.
+    includesFriendFree: id !== "twerk-thursday",
     soldOutDates: soldOut?.dates ?? (id === "twerk-thursday" ? TWERK_SOLD_OUT_DATES : undefined),
   }
 }
 
 /**
  * Active low-ticket / specialty workshops sourced from live landing configs.
- * Posing is included only while its fixed date is still upcoming.
+ * Reggaeton is disabled for now. Posing only appears while its fixed date is upcoming.
  */
 export const WORKSHOP_LISTINGS: readonly WorkshopListing[] = [
   toListing(CHACHA_CONFIG),
@@ -89,7 +96,6 @@ export const WORKSHOP_LISTINGS: readonly WorkshopListing[] = [
   toListing(AFRO_CUBAN_CONFIG),
   toListing(CUMBIA_WEPA_CONFIG),
   toListing(TWERK_THURSDAY_CONFIG),
-  toListing(REGGAETON_CONFIG),
   toListing(POSING_CONFIG),
 ]
 

@@ -1,7 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { Calendar, Clock, MapPin } from "lucide-react"
+import Link from "next/link"
+import { Calendar, Clock, MapPin, Users } from "lucide-react"
 import type { ResolvedWorkshop } from "@/lib/workshops/catalog"
 
 declare global {
@@ -19,86 +20,101 @@ function trackWorkshopReserve(workshop: ResolvedWorkshop) {
     content_ids: [workshop.id],
     value: workshop.price,
     currency: "USD",
-    outbound_url: workshop.registrationUrl,
+    landing_path: workshop.landingPath,
   }
   window.dataLayer = window.dataLayer || []
   window.dataLayer.push({ event: "workshop_reserve_click", ...params })
-  window.dataLayer.push({ event: "outbound_click", ...params })
   if (typeof window.fbq === "function") {
     window.fbq("trackCustom", "WorkshopReserveClick", params)
-    window.fbq("track", "InitiateCheckout", params)
+    window.fbq("track", "Lead", params)
   }
 }
 
 type WorkshopCardProps = {
   workshop: ResolvedWorkshop
   featured?: boolean
+  /** Tighter padding for carousel slides */
+  compact?: boolean
 }
 
-export default function WorkshopCard({ workshop, featured = false }: WorkshopCardProps) {
+export default function WorkshopCard({
+  workshop,
+  featured = false,
+  compact = false,
+}: WorkshopCardProps) {
   return (
     <article
-      className={`overflow-hidden rounded-2xl border bg-white shadow-sm ${
-        featured ? "border-[#FF3366]/40 ring-1 ring-[#FF3366]/20" : "border-stone-200"
+      className={`flex h-full flex-col overflow-hidden rounded-3xl border bg-white shadow-sm transition-shadow hover:shadow-md ${
+        featured ? "border-2 border-[#FF3366]" : "border-stone-200"
       }`}
     >
-      <div className="grid sm:grid-cols-[112px_1fr]">
-        <div className="relative aspect-square bg-stone-100 sm:aspect-auto sm:min-h-full">
-          <Image
-            src={workshop.flyer}
-            alt={workshop.flyerAlt}
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 640px) 100vw, 112px"
-          />
+      <div className="relative aspect-square bg-stone-100">
+        <Image
+          src={workshop.flyer}
+          alt={workshop.flyerAlt}
+          fill
+          className="object-contain object-center"
+          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 280px"
+        />
+        {featured ? (
+          <span className="absolute left-3 top-3 rounded-full bg-[#FF3366] px-3 py-0.5 font-montserrat text-[10px] font-bold uppercase tracking-wide text-white">
+            Next up
+          </span>
+        ) : null}
+      </div>
+
+      <div className={`flex flex-1 flex-col gap-2.5 ${compact ? "p-3.5" : "p-4"}`}>
+        <div>
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF3366]">
+            {workshop.style}
+          </p>
+          <h3 className="mt-1 font-montserrat text-lg font-black leading-snug text-stone-900 line-clamp-2">
+            {workshop.title}
+          </h3>
         </div>
 
-        <div className="flex flex-col gap-3 p-4 sm:p-5">
+        <ul className="space-y-1.5 text-xs text-stone-600 sm:text-sm">
+          <li className="flex items-center gap-2">
+            <Calendar className="h-3.5 w-3.5 shrink-0 text-[#FF3366]" aria-hidden />
+            <span>{workshop.dateLabel}</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <Clock className="h-3.5 w-3.5 shrink-0 text-[#FF3366]" aria-hidden />
+            <span>{workshop.durationLabel}</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#FF3366]" aria-hidden />
+            <span className="line-clamp-1">{workshop.locationLabel}</span>
+          </li>
+        </ul>
+
+        <p className="text-xs leading-relaxed text-stone-600 line-clamp-3 sm:text-sm">
+          {workshop.description}
+        </p>
+
+        {workshop.includesFriendFree ? (
+          <p className="flex items-start gap-1.5 text-xs font-semibold text-stone-800">
+            <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#FF3366]" aria-hidden />
+            ${workshop.price} includes 1 additional friend free
+          </p>
+        ) : null}
+
+        <div className="mt-auto flex items-center justify-between gap-3 pt-2">
           <div>
-            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF3366]">
-              {workshop.style}
-            </p>
-            <h3 className="mt-1 font-montserrat text-lg font-black leading-snug text-stone-900 sm:text-xl">
-              {workshop.title}
-            </h3>
+            <p className="font-montserrat text-xl font-black text-stone-900">${workshop.price}</p>
+            {workshop.capacity ? (
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
+                Cap {workshop.capacity}
+              </p>
+            ) : null}
           </div>
-
-          <ul className="space-y-1.5 text-sm text-stone-600">
-            <li className="flex items-start gap-2">
-              <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-[#FF3366]" aria-hidden />
-              <span>{workshop.dateLabel}</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Clock className="mt-0.5 h-4 w-4 shrink-0 text-[#FF3366]" aria-hidden />
-              <span>{workshop.durationLabel}</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#FF3366]" aria-hidden />
-              <span>{workshop.locationLabel}</span>
-            </li>
-          </ul>
-
-          <p className="text-sm leading-relaxed text-stone-600">{workshop.description}</p>
-
-          <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-1">
-            <p className="font-montserrat text-2xl font-black text-stone-900">
-              ${workshop.price}
-              {workshop.capacity ? (
-                <span className="ml-2 align-middle text-xs font-semibold uppercase tracking-wide text-stone-400">
-                  Cap {workshop.capacity}
-                </span>
-              ) : null}
-            </p>
-            <a
-              href={workshop.registrationUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackWorkshopReserve(workshop)}
-              className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] px-4 py-2.5 font-montserrat text-xs font-black uppercase tracking-wide text-white shadow-md shadow-[#FF3366]/25 transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] focus-visible:ring-offset-2"
-            >
-              Reserve My Spot
-            </a>
-          </div>
+          <Link
+            href={workshop.landingPath}
+            onClick={() => trackWorkshopReserve(workshop)}
+            className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-[#FF3366] to-[#FF7A5A] px-4 py-2.5 font-montserrat text-xs font-black uppercase tracking-wide text-white shadow-md shadow-[#FF3366]/25 transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3366] focus-visible:ring-offset-2"
+          >
+            Reserve My Spot
+          </Link>
         </div>
       </div>
     </article>

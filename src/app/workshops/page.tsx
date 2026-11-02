@@ -53,8 +53,8 @@ export default function WorkshopsPage() {
       <WorkshopsClient />
       <p className="sr-only">
         Studio E dance workshops in Chicago. Book Salsa, Bachata, Cumbia, Merengue, Cha-Cha,
-        Reggaeton, Twerk, Afro-Cuban, and specialty workshops. Low-cost tickets with direct
-        registration.
+        Twerk, Afro-Cuban, and specialty workshops. Low-cost tickets with registration through
+        each workshop page.
       </p>
     </>
   )
