@@ -72,8 +72,8 @@ export default function MembershipPage() {
                     <h3 className="text-4xl font-black mb-2">28-Day Challenge</h3>
                     <p className="text-white/80 italic text-lg mb-4">No recurring charges. Results in 28 days.</p>
                     <div className="flex items-baseline justify-center gap-3">
-                      <span className="text-2xl font-bold text-white/60 line-through">$600</span>
-                      <span className="text-5xl font-black">$399</span>
+                      <span className="text-2xl font-bold text-white/60 line-through">$599</span>
+                      <span className="text-5xl font-black">$499</span>
                     </div>
                     <p className="mt-2 text-sm text-white/80">When you sign up before your first class</p>
                   </div>
@@ -87,6 +87,29 @@ export default function MembershipPage() {
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                       <span>Unlimited classes</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>Skills Assessment</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>Personalized Program</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>Weekly Practice Plan</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>
+                        Performance Guarantee — know all fundamentals of your chosen genre, or get an
+                        additional month of group classes free
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>Official Studio E T-Shirt</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />

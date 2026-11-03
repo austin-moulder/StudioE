@@ -14,8 +14,8 @@ export const CHALLENGE_PAGE_URL = "https://www.joinstudioe.com/challenge" as con
 
 export const PRICING = {
   regular: 599,
-  early: 399,
-  earlyNote: "Lock in $399 when you sign up before your first class.",
+  early: 499,
+  earlyNote: "Lock in $499 when you sign up before your first class.",
 } as const
 
 export const MEMBER_BOGO = {
@@ -42,8 +42,8 @@ export const COPY = {
   heroHeadline: "Master one dance in 28 days.",
   heroBody:
     "Four private lessons plus unlimited group classes — built so the curriculum sticks for life.",
-  primaryCta: "Start My Challenge — $399",
-  stickyCta: "Lock In $399",
+  primaryCta: "Start My Challenge — $499",
+  stickyCta: "Lock In $499",
   includedHeadline: "What’s in every challenge",
   tracksHeadline: "Pick your focus",
   tracksBody: "Every track uses the same package. Choose the style you want to own.",
@@ -58,6 +58,11 @@ export const COPY = {
 export const INCLUDED = [
   "4 private lessons focused on your challenge track",
   "Unlimited eligible group classes during the 28 days",
+  "Skills Assessment",
+  "Personalized Program",
+  "Weekly Practice Plan",
+  "Performance Guarantee — know all fundamentals of your chosen genre, or receive an additional month of group classes free",
+  "Official Studio E T-Shirt",
   "English or Spanish instruction",
   "Choose private times that work for you (space permitting)",
   "1–2 privates per week so you learn and retain the material",
@@ -110,7 +115,7 @@ export const FAQS = [
   {
     question: "What’s included?",
     answer:
-      "Every 28-day challenge includes 4 private lessons plus unlimited eligible group classes for the duration of the challenge.",
+      "Every 28-day challenge includes 4 private lessons, unlimited eligible group classes, a skills assessment, personalized program, weekly practice plan, performance guarantee (know all fundamentals of your chosen genre or receive an additional month of group classes free), and an official Studio E T-Shirt.",
   },
   {
     question: "Do I pick English or Spanish?",
@@ -123,9 +128,9 @@ export const FAQS = [
       "You choose private times that work for your schedule, space permitting. Most students book 1–2 privates per week.",
   },
   {
-    question: "How do I get the $399 price?",
+    question: "How do I get the $499 price?",
     answer:
-      "Sign up before your first class to lock in $399 instead of the regular $599 rate.",
+      "Sign up before your first class to lock in $499 instead of the regular $599 rate.",
   },
   {
     question: "Is checkout the same for every challenge?",

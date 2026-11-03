@@ -3,7 +3,7 @@ import { CHALLENGE_IMAGES, COPY } from "@/lib/challenge/config"
 import ChallengeClient from "./ChallengeClient"
 
 const OG_DESCRIPTION =
-  "Studio E 28-day challenges: 4 privates plus unlimited group classes in salsa, bachata, cumbia, and more. Lock in $399 before your first class."
+  "Studio E 28-day challenges: 4 privates plus unlimited group classes in salsa, bachata, cumbia, and more. Lock in $499 before your first class."
 
 export const metadata: Metadata = {
   title: COPY.pageTitle,
