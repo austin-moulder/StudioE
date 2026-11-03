@@ -33,24 +33,21 @@ function reportRsvpConversion(url?: string) {
   return false
 }
 
-function isAcuityBookingMessage(data: unknown): boolean {
+function isRsvpSubmitMessage(data: unknown): boolean {
   if (!data) return false
 
   if (typeof data === "string") {
     try {
-      return isAcuityBookingMessage(JSON.parse(data))
+      return isRsvpSubmitMessage(JSON.parse(data))
     } catch {
-      return /AcuityEvent|acuity_booking_confirmed/i.test(data)
+      return /form.?submit|lead.?submit|thank.?you|ghl|leadconnector/i.test(data)
     }
   }
 
   if (typeof data === "object") {
-    const eventName = String((data as { event?: string }).event || "")
-    return (
-      eventName === "AcuityEvent" ||
-      eventName === "acuity_booking_confirmed" ||
-      eventName === "Acuity_Scheduled"
-    )
+    const payload = data as { event?: string; type?: string; action?: string }
+    const token = `${payload.event || ""} ${payload.type || ""} ${payload.action || ""}`
+    return /form.?submit|lead.?submit|submit|thank/i.test(token)
   }
 
   return false
@@ -58,21 +55,7 @@ function isAcuityBookingMessage(data: unknown): boolean {
 
 /**
  * Google Ads tag + RSVP conversion tracking for /social.
- *
- * Acuity bookings happen inside a cross-origin iframe, so conversion fires when
- * Acuity posts a booking message to the parent window. Add this in Acuity →
- * Integrations → Custom Conversion Tracking:
- *
- * try {
- *   var postobject = JSON.stringify({
- *     event: "AcuityEvent",
- *     Email: "%email%",
- *     ID: "%id%",
- *     Type: "%type%",
- *     AppointmentType: "%appointmentType%"
- *   });
- *   window.parent.parent.postMessage(postobject, "*");
- * } catch (e) {}
+ * Fires when the LeadConnector form posts a submit/thank-you message.
  */
 export default function SocialGoogleAds() {
   useEffect(() => {
@@ -87,10 +70,12 @@ export default function SocialGoogleAds() {
 
     const onMessage = (event: MessageEvent) => {
       const origin = event.origin || ""
-      const fromAcuity =
-        origin.includes("acuityscheduling.com") || origin.includes("squarespace.com")
+      const fromGhl =
+        origin.includes("leadconnectorhq.com") ||
+        origin.includes("msgsndr.com") ||
+        origin.includes("gohighlevel.com")
 
-      if (isAcuityBookingMessage(event.data) || (fromAcuity && isAcuityBookingMessage(event.data))) {
+      if (fromGhl && isRsvpSubmitMessage(event.data)) {
         fireOnce()
       }
     }
