@@ -4,35 +4,29 @@ import GoogleTag from "@/components/analytics/GoogleTag"
 import {
   ASSETS,
   formatYouthStartLabel,
-  getYouthStartMonday,
   META_PIXEL_ID,
   PROGRAM,
+  YOUTH_START,
 } from "@/lib/youth/config"
 import YouthClient from "./YouthClient"
 
-/** Start Monday is derived from the request time (now + 2 weeks). */
-export const dynamic = "force-dynamic"
-
-export function generateMetadata(): Metadata {
-  const startLabel = formatYouthStartLabel(getYouthStartMonday())
-  return {
-    title: "Chicago Latin Dance Youth Program",
-    description: `After-school Latin dance starting ${startLabel}, Monday–Thursday. Ages 5–8 and 9–17. Flexible days with make-ups. Bronze 1×/wk, Gold 2×/wk—16-week session.`,
-    openGraph: {
-      title: "Chicago Latin Dance Youth Program | Studio E",
-      description: `Youth Latin dance at Studio E starts ${startLabel}. Come any Mon–Thu; make up missed days.`,
-      url: "https://www.joinstudioe.com/youth",
-      type: "website",
-      images: [
-        {
-          url: ASSETS.group,
-          width: 1200,
-          height: 800,
-          alt: "Chicago Latin Dance Youth Program at Studio E",
-        },
-      ],
-    },
-  }
+export const metadata: Metadata = {
+  title: "Chicago Latin Dance Youth Program",
+  description: `After-school Latin dance starting ${YOUTH_START.label}. Tuesday–Thursday. Ages 5–12 (4:30–5:15) and 13–17 (5:15–6:15). $89 deposit covers January; free classes for the rest of 2026. Monthly thereafter.`,
+  openGraph: {
+    title: "Chicago Latin Dance Youth Program | Studio E",
+    description: `Youth Latin dance at Studio E starts ${YOUTH_START.label}. Tue–Thu. $89 deposit covers January.`,
+    url: "https://www.joinstudioe.com/youth",
+    type: "website",
+    images: [
+      {
+        url: ASSETS.group,
+        width: 1200,
+        height: 800,
+        alt: "Chicago Latin Dance Youth Program at Studio E",
+      },
+    ],
+  },
 }
 
 export default function YouthPage() {
@@ -66,7 +60,7 @@ export default function YouthPage() {
       <YouthClient />
       <p className="sr-only">
         {PROGRAM.name} at {PROGRAM.venueName}, {PROGRAM.addressLine}, {PROGRAM.cityLine}. Classes
-        start {formatYouthStartLabel(getYouthStartMonday())}.
+        start {formatYouthStartLabel()}. Tuesday through Thursday. Ages 5–12 and 13–17.
       </p>
     </>
   )

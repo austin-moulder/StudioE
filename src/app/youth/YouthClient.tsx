@@ -150,9 +150,12 @@ export default function YouthClient() {
           <p className="mx-auto mt-3 max-w-lg text-center text-base text-stone-600">
             {copy.scheduleBody}
           </p>
-          <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:gap-8">
+          <div className="mt-12 grid gap-8 lg:grid-cols-2">
             {AGE_GROUPS.map((group) => (
-              <article key={group.id} className="text-center sm:text-left">
+              <article
+                key={group.id}
+                className="rounded-2xl border border-[#E8DCC8] bg-white p-6 shadow-sm sm:p-7"
+              >
                 <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-[#FF3366]">
                   {group.ages}
                 </p>
@@ -160,6 +163,17 @@ export default function YouthClient() {
                   {group.time}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-stone-600">{group.body}</p>
+                <p className="mt-5 font-montserrat text-xs font-bold uppercase tracking-[0.16em] text-[#1C1410]">
+                  {group.curriculumHeadline}
+                </p>
+                <ul className="mt-3 space-y-2.5">
+                  {group.curriculum.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5 text-sm text-stone-700">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#FF3366]" aria-hidden />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </article>
             ))}
           </div>
@@ -298,7 +312,7 @@ export default function YouthClient() {
                   <span className="text-sm text-stone-500">/ {plan.cadence}</span>
                 </div>
                 <p className="mt-2 text-xs text-stone-500">
-                  Billed every 4 weeks · full 16-week session
+                  Monthly · every 4 weeks = 1 session · no 16-week lock-in
                 </p>
                 <ul className="mt-6 flex-1 space-y-2.5">
                   {plan.includes.map((item) => (
