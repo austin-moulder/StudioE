@@ -1,5 +1,5 @@
 /**
- * Config for /get-started — $39 Founder Private landing.
+ * Config for /get-started — $39 private lesson landing.
  */
 
 export const CHECKOUT_URL =
@@ -8,7 +8,7 @@ export const CHECKOUT_URL =
 export const UTM = {
   utm_source: "get_started",
   utm_medium: "landing",
-  utm_campaign: "founder_private_39",
+  utm_campaign: "private_39",
 } as const
 
 export const PRICING = {
@@ -32,7 +32,7 @@ const VIBES_BASE =
   "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes" as const
 
 export const IMAGES = {
-  hero: `${CHALLENGE_ASSET_BASE}/DSC05745.jpg`,
+  hero: `${VIBES_BASE}/Arik_Private.PNG`,
   practice: `${CHALLENGE_ASSET_BASE}/DSC05764%20(1).jpg`,
   community: `${CHALLENGE_ASSET_BASE}/IMG_2657.JPG`,
   vibes: [
@@ -105,7 +105,7 @@ export const VALUE_CARDS = [
 
 export const STEPS = [
   {
-    title: "Purchase your Founder Private",
+    title: "Purchase your private",
     body: "Secure your $39 lesson through checkout below. Scheduling comes after payment.",
   },
   {
@@ -165,11 +165,11 @@ export const FAQS = [
   {
     question: "Is this really only $39?",
     answer:
-      "Yes. This Founder Private is $39 for a full 60-minute private dance lesson at Studio E.",
+      "Yes. This private is $39 for a full 60-minute private dance lesson at Studio E.",
   },
   {
     question: "What is the normal price?",
-    answer: "A standard 60-minute private lesson at Studio E is $150. This Founder offer is $39.",
+    answer: "A standard 60-minute private lesson at Studio E is $150. This offer is $39.",
   },
   {
     question: "Do I need a partner?",

@@ -13,7 +13,7 @@ export const MEMBER_BOGO_URL =
 export const CHALLENGE_PAGE_URL = "https://www.joinstudioe.com/challenge" as const
 
 export const PRICING = {
-  regular: 599,
+  regular: 799,
   early: 499,
   earlyNote: "Lock in $499 when you sign up before your first class.",
 } as const
@@ -130,7 +130,7 @@ export const FAQS = [
   {
     question: "How do I get the $499 price?",
     answer:
-      "Sign up before your first class to lock in $499 instead of the regular $599 rate.",
+      "Sign up before your first class to lock in $499 instead of the regular $799 rate.",
   },
   {
     question: "Is checkout the same for every challenge?",

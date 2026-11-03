@@ -72,7 +72,7 @@ export default function MembershipPage() {
                     <h3 className="text-4xl font-black mb-2">28-Day Challenge</h3>
                     <p className="text-white/80 italic text-lg mb-4">No recurring charges. Results in 28 days.</p>
                     <div className="flex items-baseline justify-center gap-3">
-                      <span className="text-2xl font-bold text-white/60 line-through">$599</span>
+                      <span className="text-2xl font-bold text-white/60 line-through">$799</span>
                       <span className="text-5xl font-black">$499</span>
                     </div>
                     <p className="mt-2 text-sm text-white/80">When you sign up before your first class</p>

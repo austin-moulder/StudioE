@@ -85,7 +85,7 @@ function CheckoutEmbed({ src, tall }: { src: string | null; tall?: boolean }) {
       {src ? (
         <iframe
           src={src}
-          title="Studio E $39 Founder Private checkout"
+          title="Studio E $39 private lesson checkout"
           className={`block w-full border-0 bg-white ${tall ? "min-h-[900px]" : "min-h-[820px]"}`}
           loading="lazy"
           allow="payment *"
@@ -112,7 +112,7 @@ function scrollToCheckout() {
 function ScrollCta({ placement, label = COPY.primaryCta }: { placement: string; label?: string }) {
   const onClick = useCallback(() => {
     trackMeta("InitiateCheckout", {
-      content_name: "Founder Private $39",
+      content_name: "Private Lesson $39",
       value: PRICING.sale,
       currency: "USD",
       placement,
@@ -135,7 +135,7 @@ export default function GetStartedClient() {
   useEffect(() => {
     setSpotsLeft(getSpotsLeft())
     trackMeta("ViewContent", {
-      content_name: "Founder Private $39",
+      content_name: "Private Lesson $39",
       content_category: "private_lesson",
       value: PRICING.sale,
       currency: "USD",
@@ -149,7 +149,7 @@ export default function GetStartedClient() {
       <section className="relative isolate overflow-hidden bg-stone-950 text-white">
         <Image
           src={IMAGES.hero}
-          alt="Studio E dancers in a focused private lesson"
+          alt="Private dance lesson at Studio E Chicago"
           fill
           priority
           className="object-cover object-center opacity-35"
