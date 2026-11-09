@@ -18,10 +18,11 @@ export const EVENT = {
   shortName: "KC Weekender",
   format: "3 hours total · 3 classes",
   city: "Kansas City",
-  datePlaceholder: "[EVENT DATE]",
-  startTimePlaceholder: "[START TIME]",
-  venueNamePlaceholder: "[VENUE NAME]",
-  venueAddressPlaceholder: "[VENUE ADDRESS]",
+  dateLabel: "Saturday, November 28th",
+  timeLabel: "10:00 AM – 1:00 PM",
+  venueName: "Johnson County Arts and Heritage Center",
+  addressLine: "8788 Metcalf Avenue",
+  cityLine: "Overland Park, KS 66212",
 } as const
 
 export const PRICING = {
@@ -37,7 +38,7 @@ const CHALLENGE =
   "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/28-day-challenge" as const
 
 export const ASSETS = {
-  hero: `${CHALLENGE}/DSC05745.jpg`,
+  hero: `${VIBES}/Arik_Private.PNG`,
   instructor:
     "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Accelerator.jpg",
   gallery: [
@@ -88,7 +89,7 @@ export const INSTRUCTOR = {
 export const COPY = {
   pageTitle: "Studio E KC Latin Dance Weekend | Kansas City Salsa",
   metaDescription:
-    "Three hours. Three salsa classes. Full pass $75 or single class $30. Studio E brings Chicago-level Latin dance instruction to Kansas City.",
+    "Saturday, Nov 28 · 10 AM–1 PM at Johnson County Arts and Heritage Center. Three salsa classes. Full pass $75 or single class $30. Studio E brings Chicago-level Latin dance to Kansas City.",
   heroHeadline: "Three Hours. Three Classes. One Serious Upgrade to Your Salsa.",
   heroSubheadline: "Studio E is bringing Chicago-level Latin dance instruction to Kansas City.",
   primaryCta: "Get the Full Pass",
@@ -118,6 +119,11 @@ export const FAQS = [
       "Latin dancers in Kansas City—especially beginner and intermediate social dancers who want a focused salsa upgrade.",
   },
   {
+    question: "Is this On 1 or On 2?",
+    answer:
+      "This weekend is On 1. We also offer privates if you want to level up your On 2—send a message to @the_studio_e on Instagram for more information.",
+  },
+  {
     question: "Do I need a partner?",
     answer:
       "No. You can attend solo. Partnerwork is taught in class—details on rotating partners will be confirmed on site.",
@@ -129,11 +135,11 @@ export const FAQS = [
   {
     question: "What should I bring?",
     answer:
-      "Comfortable clothes you can move in and shoes you can dance in. Water is recommended. [Any venue-specific details TBD.]",
+      "Comfortable clothes you can move in and shoes you can dance in. Water is recommended.",
   },
   {
     question: "What happens after I purchase?",
     answer:
-      "You’ll receive confirmation through checkout. Event date, start time, and venue details will be shared as they are finalized—or appear in your purchase confirmation if already set.",
+      "You’ll receive confirmation through checkout with event details. Classes are Saturday, November 28th, 10:00 AM–1:00 PM at Johnson County Arts and Heritage Center, 8788 Metcalf Avenue, Overland Park, KS 66212.",
   },
 ] as const

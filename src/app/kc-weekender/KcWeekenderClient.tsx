@@ -116,14 +116,18 @@ export default function KcWeekenderClient() {
 
           <div className="mx-auto mt-6 max-w-lg rounded-2xl border border-white/15 bg-black/40 px-5 py-4 text-center text-sm text-white/80">
             <p>
-              <span className="font-semibold text-white/55">Date:</span> {EVENT.datePlaceholder}
+              <span className="font-semibold text-white/55">Date:</span> {EVENT.dateLabel}
             </p>
             <p className="mt-1">
-              <span className="font-semibold text-white/55">Start:</span> {EVENT.startTimePlaceholder}
+              <span className="font-semibold text-white/55">Time:</span> {EVENT.timeLabel}
             </p>
-            <p className="mt-1 flex items-center justify-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5 text-[#FF3366]" aria-hidden />
-              {EVENT.venueNamePlaceholder} · {EVENT.venueAddressPlaceholder}
+            <p className="mt-1 flex items-start justify-center gap-1.5">
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#FF3366]" aria-hidden />
+              <span>
+                {EVENT.venueName}
+                <br />
+                {EVENT.addressLine}, {EVENT.cityLine}
+              </span>
             </p>
             <p className="mt-2 text-xs text-white/55">{EVENT.format}</p>
           </div>
@@ -440,7 +444,10 @@ export default function KcWeekenderClient() {
         <p className="font-montserrat font-bold text-white/80">{EVENT.brand}</p>
         <p className="mt-1">{EVENT.name}</p>
         <p className="mt-1 text-xs">
-          {EVENT.datePlaceholder} · {EVENT.venueNamePlaceholder}
+          {EVENT.dateLabel} · {EVENT.timeLabel}
+        </p>
+        <p className="mt-1 text-xs">
+          {EVENT.venueName} · {EVENT.addressLine}, {EVENT.cityLine}
         </p>
       </footer>
 
