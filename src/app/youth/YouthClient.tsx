@@ -16,6 +16,7 @@ import {
   HERO_FACTS,
   HERO_TAGS,
   HOW_IT_WORKS,
+  NEXT_BILLING,
   PLANS,
   PROGRAM,
   TRUST_POINTS,
@@ -405,25 +406,74 @@ export default function YouthClient() {
         </div>
       </section>
 
-      {/* Enrollment options — secondary conversion */}
+      {/* Enrollment — deposit + free rest of year */}
       <section
         id="pricing"
         className="scroll-mt-24 bg-[#1C1410] px-4 py-14 text-white sm:px-6 sm:py-16"
         aria-labelledby="pricing-heading"
       >
         <div className="mx-auto max-w-3xl">
+          <p className="text-center font-montserrat text-xs font-bold uppercase tracking-[0.22em] text-[#E8C97A]">
+            {DEPOSIT.freePreviewHeadline}
+          </p>
           <h2
             id="pricing-heading"
-            className="text-center font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
+            className="mt-2 text-center font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
           >
             {COPY.pricingHeadline}
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-center text-base text-white/80">
+          <p className="mx-auto mt-4 max-w-xl text-center text-base leading-relaxed text-white/85">
             {COPY.pricingBody}
           </p>
-          <p className="mt-2 text-center text-sm text-white/60">{COPY.pricingNote}</p>
+          <p className="mx-auto mt-3 max-w-xl text-center text-sm font-semibold text-[#E8C97A]">
+            {COPY.pricingNote}
+          </p>
 
-          <div className="mt-10 grid gap-5 md:grid-cols-2">
+          <div className="mx-auto mt-8 max-w-md rounded-2xl border border-[#FF3366]/40 bg-white/5 p-6 text-center">
+            <p className="font-montserrat text-xs font-bold uppercase tracking-[0.18em] text-[#FF7A5A]">
+              Today
+            </p>
+            <p className="mt-2 font-montserrat text-5xl font-black">${DEPOSIT.price}</p>
+            <p className="mt-1 text-sm text-white/75">
+              Deposit applied to {DEPOSIT.covers}
+            </p>
+            <ul className="mt-5 space-y-2 text-left text-sm text-white/80">
+              {[
+                "Unlimited youth classes free for the rest of 2026",
+                "Small class sizes & personalized attention while we build",
+                `No charge again until ${NEXT_BILLING.label}`,
+                "Then choose Bronze or Gold",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#E8C97A]" aria-hidden />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href={DEPOSIT.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() =>
+                trackMeta("InitiateCheckout", {
+                  content_name: `${PROGRAM.name} — Deposit`,
+                  value: DEPOSIT.price,
+                  currency: "USD",
+                  placement: "youth_deposit",
+                })
+              }
+              className={`mt-8 ${primaryCtaClass}`}
+            >
+              {COPY.secondaryCta}
+            </a>
+          </div>
+
+          <h3 className="mt-14 text-center font-montserrat text-2xl font-black tracking-tight">
+            {COPY.plansHeadline}
+          </h3>
+          <p className="mx-auto mt-2 max-w-lg text-center text-sm text-white/65">{COPY.plansBody}</p>
+
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
             {PLANS.map((plan) => (
               <article
                 key={plan.id}
@@ -457,7 +507,7 @@ export default function YouthClient() {
                   </span>
                 </div>
                 <p className={`mt-2 text-xs ${plan.featured ? "text-stone-500" : "text-white/55"}`}>
-                  ${DEPOSIT.price} deposit covers January · then monthly
+                  Starts {NEXT_BILLING.label} · not charged at deposit
                 </p>
                 <ul className="mt-6 flex-1 space-y-2.5">
                   {plan.includes.map((item) => (
@@ -477,27 +527,27 @@ export default function YouthClient() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href={plan.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() =>
-                    trackMeta("InitiateCheckout", {
-                      content_name: `${PROGRAM.name} — ${plan.name}`,
-                      value: DEPOSIT.price,
-                      currency: "USD",
-                      placement: `youth_${plan.id}`,
-                    })
-                  }
-                  className={`mt-8 ${primaryCtaClass}`}
-                >
-                  {COPY.secondaryCta}
-                </a>
               </article>
             ))}
           </div>
 
-          <div className="mx-auto mt-8 max-w-md text-center">
+          <div className="mx-auto mt-10 flex max-w-md flex-col gap-3">
+            <a
+              href={DEPOSIT.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() =>
+                trackMeta("InitiateCheckout", {
+                  content_name: `${PROGRAM.name} — Deposit`,
+                  value: DEPOSIT.price,
+                  currency: "USD",
+                  placement: "youth_deposit_after_plans",
+                })
+              }
+              className={primaryCtaClass}
+            >
+              {COPY.secondaryCta}
+            </a>
             <button
               type="button"
               onClick={() => scrollToId("contact")}

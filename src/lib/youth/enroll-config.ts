@@ -2,7 +2,7 @@
  * Post-checkout youth enrollment — collect child info after FastPay signup.
  */
 
-import { formatYouthStartLabel, YOUTH_START } from "@/lib/youth/config"
+import { NEXT_BILLING, YOUTH_START } from "@/lib/youth/config"
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
@@ -13,7 +13,6 @@ export const ENROLL_FORM = {
 } as const
 
 export function getEnrollCopy(_now: Date = new Date()) {
-  const startLabel = formatYouthStartLabel()
   return {
     announcement: "YOU’RE IN · ONE MORE STEP",
     headline: "Tell Us About Your Dancer",
@@ -25,10 +24,10 @@ export function getEnrollCopy(_now: Date = new Date()) {
     nextSteps: [
       "Submit the enrollment form below for each child",
       "You’ll get a text confirming enrollment",
-      `Official start ${startLabel} · Tuesday–Thursday at Studio E`,
-      `Classes for the rest of 2026 are free · your $89 deposit covers January ${YOUTH_START.yearLabel}`,
+      "Free unlimited youth classes for the rest of 2026 · Tuesday–Thursday at Studio E",
+      `Your $89 deposit is applied to ${YOUTH_START.label} · next charge ${NEXT_BILLING.label} (Bronze or Gold)`,
     ],
-    rollingAdmissionNote: `Official start is ${startLabel}. Enjoy free youth classes for the rest of 2026 until then—your deposit covers January.`,
+    rollingAdmissionNote: `Free classes for the rest of 2026 while we build—small groups and personalized attention. Your $89 deposit applies to ${YOUTH_START.label}. You won’t be charged again until ${NEXT_BILLING.label}.`,
     footerNote: "Studio E · 2657 W Division St, Chicago, IL",
   }
 }

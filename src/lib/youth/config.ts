@@ -1,21 +1,27 @@
 /**
  * Chicago Latin Dance Youth Program landing.
  * Primary conversion: Youth Program Info Request form.
- * Secondary: $89 deposit enrollment (Bronze/Gold monthly).
+ * Secondary: $89 deposit (applied to January 2027). Free unlimited classes
+ * for the rest of 2026. Next charge February 2, 2027 (Bronze or Gold).
  */
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
 export const YOUTH_TIME_ZONE = "America/Chicago" as const
 
-/** Official paid program start (January 1 following the free 2026 preview window). */
+/** Deposit applied to January 2027; next billing decision Feb 2, 2027. */
 export const YOUTH_START = {
   year: 2027,
   month: 1,
   day: 1,
-  label: "January 1",
-  short: "JAN 1",
+  label: "January 2027",
+  short: "JAN 2027",
   yearLabel: "2027",
+} as const
+
+export const NEXT_BILLING = {
+  label: "February 2, 2027",
+  short: "Feb 2, 2027",
 } as const
 
 /** @deprecated Prefer YOUTH_START — kept for callers that still expect a Date. */
@@ -56,7 +62,11 @@ export const HERO_FACTS = [
   { label: "Location", value: "2657 W Division St, Chicago" },
 ] as const
 
-export const HERO_TAGS = ["Beginner-friendly", "No partner required"] as const
+export const HERO_TAGS = [
+  "Beginner-friendly",
+  "No partner required",
+  "Free classes for the rest of 2026",
+] as const
 
 export const AGE_GROUPS = [
   {
@@ -91,13 +101,20 @@ export const AGE_GROUPS = [
   },
 ] as const
 
+/** Single FastPay link for the $89 youth deposit. */
+export const DEPOSIT_URL =
+  "https://link.fastpaydirect.com/payment-link/6af20709d4cfb789aef228d4" as const
+
 export const DEPOSIT = {
   price: 89,
-  covers: "January classes",
+  covers: "January 2027",
+  href: DEPOSIT_URL,
+  freePreviewHeadline: "Free classes for the rest of 2026",
   freePreviewNote:
-    "All youth classes for the rest of 2026—until the January start—are FREE. Your $89 deposit covers January.",
+    "Pay an $89 deposit now—applied to January 2027. From today through the end of 2026, your child gets unlimited youth classes free while we build the program. That means really small class sizes and personalized attention. You will not be charged again until February 2, 2027, when you can choose the Bronze or Gold plan.",
 } as const
 
+/** Plans parents choose starting February 2, 2027 — not charged at deposit. */
 export const PLANS = [
   {
     id: "bronze",
@@ -106,9 +123,7 @@ export const PLANS = [
     price: 89,
     cadence: "every 4 weeks",
     frequency: "1 class per week",
-    href: "https://link.fastpaydirect.com/payment-link/6ab3f511baea3cadef54ed93",
     includes: [
-      "$89 deposit covers January classes",
       "1 class per week",
       "Monthly billing every 4 weeks",
       "Make-up flexibility across Tuesday–Thursday",
@@ -124,9 +139,7 @@ export const PLANS = [
     cadence: "every 4 weeks",
     frequency: "2 classes per week",
     featured: true,
-    href: "https://link.fastpaydirect.com/payment-link/6ab3f553baea3cadef54ed96",
     includes: [
-      "$89 deposit covers January, then continue on Gold monthly",
       "2 classes per week",
       "Monthly billing every 4 weeks",
       "Make-up flexibility across Tuesday–Thursday",
@@ -143,7 +156,7 @@ export const CONTACT_FORM = {
 } as const
 
 export const COPY = {
-  announcement: `STARTS ${YOUTH_START.short} · FREE CLASSES THROUGH 2026 · TUE–THU`,
+  announcement: `FREE CLASSES FOR THE REST OF 2026 · $89 DEPOSIT → JAN 2027 · NEXT CHARGE ${NEXT_BILLING.short.toUpperCase()}`,
   heroHeadline: "Give Your Child a Place to Move, Make Friends, and Grow.",
   heroSubheadline:
     "Beginner-friendly Latin dance classes for kids and teens in Humboldt Park, with flexible Tuesday–Thursday scheduling and age-appropriate instruction.",
@@ -156,11 +169,12 @@ export const COPY = {
   offerBody: "Age-appropriate Latin dance after school—built for kids and teens.",
   howHeadline: "How It Works",
   howBody: "Start with a short form. We’ll help you choose the right fit.",
-  pricingHeadline: "Enrollment Options",
+  pricingHeadline: "Free for the Rest of 2026",
   pricingBody:
-    "Ready now? You can enroll immediately. Have questions first? Submit the form and we’ll help you choose.",
-  pricingNote:
-    "Both age groups perform in a showcase at the end of each 4-month block. Monthly billing every 4 weeks after the $89 January deposit.",
+    "Parents pay an $89 deposit for their child, applied to January 2027. Between now and then, your child has unlimited access to youth classes—for free—while we build the program. Expect really small class sizes and personalized attention.",
+  pricingNote: `You will not be charged again until ${NEXT_BILLING.label}, when you can decide to continue on the Gold or Bronze plan.`,
+  plansHeadline: "Plans starting February 2027",
+  plansBody: `On ${NEXT_BILLING.label}, choose Bronze (1×/week) or Gold (2×/week). Until then, the $89 deposit is all you pay.`,
   trustHeadline: "What Parents Want to Know",
   finalHeadline: "Still Have Questions?",
   finalBody:
@@ -181,23 +195,23 @@ export const HOW_IT_WORKS = [
   },
   {
     step: "3",
-    title: "Choose your attendance pattern",
-    body: "Pick the Tuesday–Thursday days that work for your family—days can flex week to week.",
+    title: "Pay the $89 deposit",
+    body: "Your deposit is applied to January 2027. Free unlimited youth classes for the rest of 2026 while we build—small groups, personalized attention.",
   },
   {
     step: "4",
-    title: "Pay the deposit and begin",
-    body: "The earlier you start, the more free classes you get before January. Your $89 deposit covers January.",
+    title: "Choose Bronze or Gold later",
+    body: `No charge again until ${NEXT_BILLING.label}. Then decide whether to continue on Bronze or Gold.`,
   },
 ] as const
 
 export const TRUST_POINTS = [
+  "Free unlimited classes for the rest of 2026",
+  "Small class sizes & personalized attention while we build",
   "Age-appropriate instruction",
-  "Beginner-friendly",
-  "Consent and respectful partnering",
-  "Flexible scheduling",
-  "Humboldt Park location",
-  "Showcase opportunity",
+  "Beginner-friendly · consent & respectful partnering",
+  "Flexible Tuesday–Thursday scheduling",
+  "Humboldt Park location · showcase every 4 months",
 ] as const
 
 export const FAQS = [
@@ -232,22 +246,31 @@ export const FAQS = [
   {
     question: "What does the deposit cover?",
     answer:
-      "The $89 deposit covers January classes. Youth classes for the rest of 2026—until the January start—are free.",
+      "The $89 deposit is applied to January 2027. For the rest of 2026, your child gets unlimited youth classes free while we build the program—small class sizes and personalized attention.",
+  },
+  {
+    question: "Are classes really free for the rest of 2026?",
+    answer:
+      "Yes. After the $89 deposit, there is no additional charge until February 2, 2027. Between now and then, attendance is unlimited and free.",
+  },
+  {
+    question: "When will I be charged again?",
+    answer: `Not until ${NEXT_BILLING.label}. Then you can choose the Bronze plan ($89 every 4 weeks, 1 class/week) or the Gold plan ($124 every 4 weeks, 2 classes/week).`,
   },
   {
     question: "What is the monthly price after the deposit?",
     answer:
-      "After January, tuition continues monthly every 4 weeks. Bronze is $89 for 1 class per week. Gold is $124 for 2 classes per week.",
+      "Nothing until February 2, 2027. Starting then, Bronze is $89 every 4 weeks (1 class/week) and Gold is $124 every 4 weeks (2 classes/week).",
   },
   {
     question: "Is there a long-term commitment?",
     answer:
-      "No. It’s monthly—every 4 weeks is one session. There is no 16-week lock-in.",
+      "No. After February 2027, plans are monthly—every 4 weeks is one session. There is no 16-week lock-in.",
   },
   {
     question: "How does enrollment work?",
     answer:
-      "Most parents start by submitting the info form so we can help with age group and schedule. If you’re ready now, you can pay the $89 deposit, then complete a short enrollment form for each child.",
+      "Most parents start by submitting the info form so we can help with age group and schedule. If you’re ready now, pay the $89 deposit, then complete a short enrollment form for each child.",
   },
   {
     question: "What should my child wear?",

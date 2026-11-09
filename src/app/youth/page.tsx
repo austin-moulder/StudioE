@@ -12,10 +12,10 @@ import YouthClient from "./YouthClient"
 
 export const metadata: Metadata = {
   title: "Chicago Latin Dance Youth Program",
-  description: `After-school Latin dance starting ${YOUTH_START.label}. Tuesday–Thursday. Ages 5–12 (4:30–5:15) and 13–17 (5:15–6:15). $89 deposit covers January; free classes for the rest of 2026. Monthly thereafter.`,
+  description: `After-school Latin dance for ages 5–12 and 13–17. Tuesday–Thursday. $89 deposit applied to January 2027. Free unlimited classes for the rest of 2026. Next charge February 2, 2027.`,
   openGraph: {
     title: "Chicago Latin Dance Youth Program | Studio E",
-    description: `Youth Latin dance at Studio E starts ${YOUTH_START.label}. Tue–Thu. $89 deposit covers January.`,
+    description: `Free youth classes for the rest of 2026. $89 deposit applied to ${YOUTH_START.label}. Next charge February 2, 2027.`,
     url: "https://www.joinstudioe.com/youth",
     type: "website",
     images: [
