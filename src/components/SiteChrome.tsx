@@ -25,6 +25,7 @@ const HIDE_CHROME_PATHS = [
   "/workshops",
   "/get-started",
   "/kc-weekender",
+  "/kc-weekender-intensive",
 ]
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {

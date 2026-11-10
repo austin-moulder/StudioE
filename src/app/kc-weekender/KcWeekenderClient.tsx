@@ -19,6 +19,7 @@ import {
   PRICING,
   UTM,
 } from "@/lib/kc-weekender/config"
+import { INTENSIVE_TEASER } from "@/lib/kc-weekender/intensive-config"
 
 declare global {
   interface Window {
@@ -367,6 +368,60 @@ export default function KcWeekenderClient() {
               </button>
             </article>
           </div>
+
+          {/* Full-pass intensive upsell */}
+          <aside
+            id="intensive"
+            className="relative mt-10 scroll-mt-24 overflow-hidden rounded-3xl border-2 border-[#E8C97A]/50 bg-gradient-to-br from-[#2A2218] via-[#1C1410] to-[#0F1419] p-6 sm:p-8"
+            aria-labelledby="intensive-heading"
+          >
+            <div className="absolute inset-y-0 right-0 hidden w-1/3 opacity-30 md:block">
+              <Image
+                src={ASSETS.hero}
+                alt=""
+                fill
+                className="object-cover object-center"
+                sizes="300px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#1C1410]" />
+            </div>
+            <div className="relative max-w-2xl">
+              <p className="font-montserrat text-[11px] font-bold uppercase tracking-[0.22em] text-[#E8C97A]">
+                {INTENSIVE_TEASER.eyebrow}
+              </p>
+              <h3
+                id="intensive-heading"
+                className="mt-3 font-montserrat text-2xl font-black leading-tight tracking-tight sm:text-3xl"
+              >
+                {INTENSIVE_TEASER.headline}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-white/80 sm:text-base">
+                {INTENSIVE_TEASER.subheadline}
+              </p>
+              <div className="mt-4 flex flex-wrap items-baseline gap-3">
+                <span className="font-montserrat text-4xl font-black text-[#FF7A5A]">
+                  ${INTENSIVE_TEASER.price}
+                </span>
+                <span className="text-sm text-white/65">add-on · full-pass buyers only</span>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-[#E8C97A]">{INTENSIVE_TEASER.scarcity}</p>
+              <Link
+                href={INTENSIVE_TEASER.href}
+                onClick={() =>
+                  trackMeta("ViewContent", {
+                    content_name: "KC Intensive Teaser CTA",
+                    content_category: "workshop_upsell",
+                    value: INTENSIVE_TEASER.price,
+                    currency: "USD",
+                    placement: "kc_weekender_after_full_pass",
+                  })
+                }
+                className={`mt-6 ${primaryCtaClass} max-w-md`}
+              >
+                {INTENSIVE_TEASER.cta}
+              </Link>
+            </div>
+          </aside>
         </div>
       </section>
 
