@@ -3,7 +3,7 @@
  * Premium add-on for full-pass buyers only.
  */
 
-import { ASSETS, EVENT, INSTRUCTOR } from "@/lib/kc-weekender/config"
+import { EVENT, INSTRUCTOR } from "@/lib/kc-weekender/config"
 
 export const META_PIXEL_ID = "1976276599649833" as const
 
@@ -29,10 +29,24 @@ export const INTENSIVE = {
     "Participants should already know the basic salsa step and be comfortable dancing with a partner.",
 } as const
 
+/** Distinct from /kc-weekender gallery — coaching / floor-focused frames. */
 export const INTENSIVE_ASSETS = {
-  hero: ASSETS.hero,
+  hero: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/28-day-challenge/DSC05745.jpg",
   instructor: INSTRUCTOR.photo,
-  gallery: ASSETS.gallery,
+  gallery: [
+    {
+      src: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/DSC05837.jpg",
+      alt: "Studio E dancers in a focused moment on the floor",
+    },
+    {
+      src: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/DSC05316.jpg",
+      alt: "Partner connection during Studio E social dancing",
+    },
+    {
+      src: "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes/Wide_group.jpg",
+      alt: "Wide view of dancers moving together at Studio E",
+    },
+  ],
 } as const
 
 export const INTENSIVE_FOCUS = [
@@ -46,7 +60,7 @@ export const INTENSIVE_FOCUS = [
 
 export const INTENSIVE_STACK = [
   "Small-group format capped at 10",
-  "At least 3 direct instructor feedback points to refine across the day of workshops",
+  "At least 3 direct instructor feedback points to refine across the day",
   "Partner rotation and focused drills",
   "Personalized corrections",
   "One usable salsa combination",
@@ -57,8 +71,8 @@ export const INTENSIVE_COPY = {
   pageTitle: "9:00 AM Salsa Intensive | KC Weekender Add-On",
   metaDescription:
     "Full-pass add-on: 9:00 AM Salsa Intensive before the KC Weekender. Small group of 10. Partnerwork, timing & styling lab for $49.",
-  announcement: "FULL-PASS ADD-ON · CAP OF 10 · SAT NOV 28",
-  heroEyebrow: "Studio E · KC Weekender Intensive",
+  announcement: "FULL-PASS ONLY · CAP OF 10 · 9:00 AM",
+  heroEyebrow: "Add-on lab · Sat Nov 28",
   heroHeadline:
     "Want a personalized list of improvement areas before the workshops start? Add the 9:00 AM Salsa Intensive.",
   heroSubheadline:
@@ -71,19 +85,14 @@ export const INTENSIVE_COPY = {
   notForHeadline: "Not for",
   notFor: "Not recommended if you have never taken a salsa class.",
   scarcity: "Only 10 spots. This will not be available after capacity is reached.",
-  focusHeadline: "What this intensive is",
+  focusHeadline: "Sixty minutes. Direct coaching.",
   focusBody:
-    "This is not an extra beginner class and not a choreography class. It is a small-group coaching intensive.",
-  stackHeadline: "What’s included",
-  photoHeadline: "Coaching that transfers to the floor",
-  photoBody:
-    "Partnerwork, timing, and styling—refined in a small room before the main workshop day begins.",
-  contextHeadline: "Before the main workshop",
-  contextBody: `This lab runs ${INTENSIVE.timeLabel} at ${EVENT.venueName}, immediately before the ${EVENT.timeLabel} KC Weekender classes.`,
-  checkoutHeadline: "Add your intensive",
-  checkoutHelper: "Full-pass buyers only · $49 · Cap of 10",
-  finalHeadline: "Start the day with a clear list of what to improve.",
-  finalBody: "Sixty minutes of focused coaching. Then walk into the workshops already sharper.",
+    "Not a beginner class. Not choreography. A small-group lab on timing, connection, and styling.",
+  stackHeadline: "Included",
+  checkoutHeadline: "Reserve your intensive spot",
+  checkoutHelper: `$${INTENSIVE.price} · Full-pass buyers only · Cap of ${INTENSIVE.capacity}`,
+  finalHeadline: "Walk into the workshops already sharper.",
+  finalBody: "One hour of focused feedback. Then the main day starts at 10.",
 } as const
 
 export const INTENSIVE_FAQS = [
@@ -118,3 +127,5 @@ export const INTENSIVE_TEASER = {
   price: INTENSIVE.price,
   scarcity: INTENSIVE_COPY.scarcity,
 } as const
+
+export { EVENT, INSTRUCTOR }
