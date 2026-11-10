@@ -99,12 +99,13 @@ export default function KcWeekenderClient() {
       {/* Hero */}
       <section className="relative isolate overflow-hidden">
         <Image
-          src={ASSETS.hero}
-          alt="Studio E salsa instruction"
+          src={ASSETS.flyer}
+          alt=""
           fill
           priority
           className="object-cover object-center opacity-35"
           sizes="100vw"
+          aria-hidden
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0F1419]/70 via-[#0F1419]/85 to-[#0F1419]" />
 
@@ -118,6 +119,19 @@ export default function KcWeekenderClient() {
           <p className="mx-auto mt-4 max-w-xl text-center text-base leading-relaxed text-white/85 sm:text-lg">
             {COPY.heroSubheadline}
           </p>
+
+          <div className="mx-auto mt-6 max-w-sm overflow-hidden rounded-2xl border border-white/15 bg-black/30 shadow-xl">
+            <div className="relative aspect-square">
+              <Image
+                src={ASSETS.flyer}
+                alt={ASSETS.flyerAlt}
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, 28rem"
+              />
+            </div>
+          </div>
 
           <div className="mx-auto mt-6 max-w-lg rounded-2xl border border-white/15 bg-black/40 px-5 py-4 text-center text-sm text-white/80">
             <p>

@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: ASSETS.hero,
-        width: 1200,
-        height: 800,
-        alt: "Studio E salsa instruction",
+        url: ASSETS.flyer,
+        width: 1080,
+        height: 1080,
+        alt: ASSETS.flyerAlt,
       },
     ],
   },

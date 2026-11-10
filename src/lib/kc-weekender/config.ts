@@ -62,6 +62,9 @@ const CHALLENGE =
   "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/28-day-challenge" as const
 
 export const ASSETS = {
+  flyer:
+    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Popups/Kc_weekender_1.png",
+  flyerAlt: "Studio E KC Latin Dance Weekend flyer — Saturday November 28",
   hero: `${VIBES}/Arik_Private.PNG`,
   instructor:
     "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Accelerator.jpg",
