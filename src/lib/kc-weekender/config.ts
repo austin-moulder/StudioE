@@ -23,6 +23,8 @@ export const EVENT = {
   venueName: "Johnson County Arts and Heritage Center",
   addressLine: "8788 Metcalf Avenue",
   cityLine: "Overland Park, KS 66212",
+  /** America/Chicago — doors / first class */
+  startMs: Date.parse("2026-11-28T10:00:00-06:00"),
 } as const
 
 export const PRICING = {
@@ -31,6 +33,28 @@ export const PRICING = {
   individualTotal: 90,
   savings: 15,
 } as const
+
+/** Spots theater: start at 34 of 40, trickle to 2 by event day. */
+export const CAPACITY = {
+  total: 40,
+  startLeft: 34,
+  endLeft: 2,
+  /** When the countdown from 34 begins (America/Chicago). */
+  trickleStartMs: Date.parse("2026-11-09T00:00:00-06:00"),
+} as const
+
+/**
+ * Spots remaining decline linearly from startLeft → endLeft between
+ * trickleStartMs and EVENT.startMs.
+ */
+export function getKcSpotsLeft(nowMs: number = Date.now()): number {
+  const { startLeft, endLeft, trickleStartMs } = CAPACITY
+  const endMs = EVENT.startMs
+  if (nowMs <= trickleStartMs) return startLeft
+  if (nowMs >= endMs) return endLeft
+  const progress = (nowMs - trickleStartMs) / (endMs - trickleStartMs)
+  return Math.max(endLeft, Math.round(startLeft - progress * (startLeft - endLeft)))
+}
 
 const VIBES =
   "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes" as const
@@ -64,20 +88,28 @@ export const ASSETS = {
 export const CLASSES = [
   {
     id: "fundamentals",
+    time: "10:00 AM",
     title: "Salsa Fundamentals",
     body: "Build the patterns, timing, and partner connection that make social dancing feel easier.",
   },
   {
+    id: "partnerwork",
+    time: "11:00 AM",
+    title: "Salsa Partnerwork and Creativity",
+    body: "Learn partner connection, creative options, and how to keep dances interesting without freezing up.",
+  },
+  {
     id: "musicality",
+    time: "12:00 PM",
     title: "Salsa Musicality and Styling",
     body: "Learn how to hear the music, add intentional styling, and look more confident without overthinking.",
   },
-  {
-    id: "footwork",
-    title: "Salsa Footwork",
-    body: "Train faster, sharper footwork and bring a distinct flavor to your dancing.",
-  },
 ] as const
+
+export const AUDIENCE_COPY = {
+  headline: "Built for KC dancers who want a real salsa upgrade.",
+  body: "Beginners are welcome, especially in Class 1. Experienced dancers will get layered variations and higher-level challenges throughout the day.",
+} as const
 
 export const INSTRUCTOR = {
   name: "Austin Moulder",
@@ -99,9 +131,10 @@ export const COPY = {
   credibilityBody:
     "Real instruction energy from Studio E’s Chicago community—teaching, partnerwork, and high-energy group moments.",
   learnHeadline: "What you’ll learn",
-  learnBody: "Three focused salsa classes in one weekend.",
+  learnBody: "Three focused salsa classes in one weekend—10 AM to 1 PM.",
   offerHeadline: "Choose your ticket",
   offerBody: `Full pass covers all three classes for $${PRICING.fullPass}. Buying individually is $${PRICING.individualTotal}—save $${PRICING.savings} with the full pass.`,
+  spotsLine: (n: number) => `Only ${n} of ${CAPACITY.total} spots left`,
   instructorHeadline: "Your instructor",
   instructorStudioLine:
     "Studio E is a Chicago-based Latin social dance brand rooted in Humboldt Park / Paseo Boricua.",
@@ -116,7 +149,7 @@ export const FAQS = [
   {
     question: "Who is this for?",
     answer:
-      "Latin dancers in Kansas City—especially beginner and intermediate social dancers who want a focused salsa upgrade.",
+      "Built for KC dancers who want a real salsa upgrade. Beginners are welcome, especially in Class 1. Experienced dancers will get layered variations and higher-level challenges throughout the day.",
   },
   {
     question: "Is this On 1 or On 2?",

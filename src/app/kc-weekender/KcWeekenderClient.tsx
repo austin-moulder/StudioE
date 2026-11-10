@@ -8,11 +8,13 @@ import StudioELogo from "@/components/StudioELogo"
 import { buildPopupCheckoutUrl } from "@/lib/popup-class/types"
 import {
   ASSETS,
+  AUDIENCE_COPY,
   CHECKOUT_URL,
   CLASSES,
   COPY,
   EVENT,
   FAQS,
+  getKcSpotsLeft,
   INSTRUCTOR,
   PRICING,
   UTM,
@@ -50,8 +52,10 @@ function scrollToCheckout() {
 export default function KcWeekenderClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
   const [checkoutSrc, setCheckoutSrc] = useState<string | null>(null)
+  const [spotsLeft, setSpotsLeft] = useState<number | null>(null)
 
   useEffect(() => {
+    setSpotsLeft(getKcSpotsLeft())
     trackMeta("ViewContent", {
       content_name: EVENT.name,
       content_category: "workshop",
@@ -130,7 +134,19 @@ export default function KcWeekenderClient() {
               </span>
             </p>
             <p className="mt-2 text-xs text-white/55">{EVENT.format}</p>
+            {spotsLeft != null ? (
+              <p className="mt-3 font-montserrat text-sm font-black text-[#FF7A5A]" aria-live="polite">
+                {COPY.spotsLine(spotsLeft)}
+              </p>
+            ) : null}
           </div>
+
+          <p className="mx-auto mt-5 max-w-lg text-center text-sm font-semibold text-white/90">
+            {AUDIENCE_COPY.headline}
+          </p>
+          <p className="mx-auto mt-2 max-w-lg text-center text-sm leading-relaxed text-white/70">
+            {AUDIENCE_COPY.body}
+          </p>
 
           <div className="mx-auto mt-6 flex max-w-sm flex-wrap items-baseline justify-center gap-3 rounded-2xl border border-[#FF3366]/35 bg-black/35 px-5 py-4">
             <div className="text-center">
@@ -176,6 +192,11 @@ export default function KcWeekenderClient() {
           <p className="mx-auto mt-2 max-w-md text-center text-sm text-white/70">
             {COPY.checkoutHelper}
           </p>
+          {spotsLeft != null ? (
+            <p className="mt-3 text-center font-montserrat text-sm font-black text-[#FF7A5A]" aria-live="polite">
+              {COPY.spotsLine(spotsLeft)}
+            </p>
+          ) : null}
           <div className="mt-8 overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
             {checkoutSrc ? (
               <iframe
@@ -255,12 +276,16 @@ export default function KcWeekenderClient() {
                 className="rounded-2xl border border-white/10 bg-[#0F1419] p-6"
               >
                 <p className="font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-[#FF3366]">
-                  Class {i + 1}
+                  Class {i + 1} · {cls.time}
                 </p>
                 <h3 className="mt-2 font-montserrat text-xl font-black">{cls.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-white/75">{cls.body}</p>
               </article>
             ))}
+          </div>
+          <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-white/10 bg-[#0F1419] px-5 py-5 text-center">
+            <p className="font-montserrat text-sm font-black text-white">{AUDIENCE_COPY.headline}</p>
+            <p className="mt-2 text-sm leading-relaxed text-white/70">{AUDIENCE_COPY.body}</p>
           </div>
           <div className="mx-auto mt-10 max-w-md">
             <button type="button" onClick={() => goCheckout("learn")} className={primaryCtaClass}>
@@ -293,7 +318,7 @@ export default function KcWeekenderClient() {
                 </li>
                 <li className="flex gap-2">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#E8C97A]" aria-hidden />
-                  Beginner &amp; intermediate friendly
+                  {AUDIENCE_COPY.headline}
                 </li>
               </ul>
               <button
@@ -324,10 +349,15 @@ export default function KcWeekenderClient() {
                 {CLASSES.map((cls) => (
                   <li key={cls.id} className="flex gap-2">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#FF3366]" aria-hidden />
-                    {cls.title}
+                    {cls.time} · {cls.title}
                   </li>
                 ))}
               </ul>
+              {spotsLeft != null ? (
+                <p className="mt-4 text-center text-sm font-bold text-[#FF3366]">
+                  {COPY.spotsLine(spotsLeft)}
+                </p>
+              ) : null}
               <button
                 type="button"
                 onClick={() => goCheckout("offer_full")}
