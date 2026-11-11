@@ -10,7 +10,8 @@ export const YOGA_PILATES_CONFIG: PopupClassLandingConfig = {
   id: "yoga-pilates",
   checkoutUrl: "https://studioe-danceclassestraining.com/yoga-pilates",
   embedCheckout: true,
-  spotsStorageKey: "studioe_yoga_pilates_spots_left_v1",
+  spotsStorageKey: "studioe_yoga_pilates_spots_left_v2",
+  spotsRange: { min: 12, max: 15 },
   theme: RECHARGE_POPUP_THEME,
   utm: {
     utm_source: "meta",
@@ -77,8 +78,8 @@ export const YOGA_PILATES_CONFIG: PopupClassLandingConfig = {
     videoHeadline: "Slow Down. Breathe. Rebuild.",
     educationHeadline: "A Unique Latina Wellness Space",
     educationBody:
-      "This isn’t a crowded gym class. It’s a softer Saturday morning built for recovery, strength, and community—yoga to open and settle, pilates to rebuild from the core. Typically $35 per person per class. One class is $25 (50% off with a friend). The full 2-hour workshop is $35—75% off when you bring a friend.",
-    offerHeadline: "Your Ticket Options",
+      "This isn’t a crowded gym class. It’s a softer Saturday morning built for recovery, strength, and community—yoga to open and settle, pilates to rebuild from the core. Come for one class or stay for both. Every ticket includes a friend free.",
+    offerHeadline: "",
     friendHeadline: "Every Ticket Includes a Friend Free",
     friendBody:
       "Purchase once and bring someone with you at no extra cost. Share their name after checkout, then show up together.",
@@ -98,37 +99,18 @@ export const YOGA_PILATES_CONFIG: PopupClassLandingConfig = {
     flyerAlt: "Yoga + Pilates Saturday workshop flyer at Studio E — friend free",
     videoAriaLabel: "Yoga and pilates recharge energy at Studio E",
   },
-  offerBullets: [
-    "Full 2-hour workshop: Yoga 10 AM + Pilates 11 AM for $35 (typically $70 value)",
-    "Or take 1 class for $25 (typically $35)",
-    "Every ticket includes one friend free",
-    "With a friend on the full workshop, you’re at about 75% off typical pricing",
-    "With a friend on 1 class, you’re at about 50% off typical pricing",
-    "Latina-focused wellness space at 2659 W Division St",
-    "Mats available to rent at the studio",
-    "Calm, capped Saturday morning class",
-  ],
-  offerTerms: [
-    "If you purchase 1 class, text us after checkout to reserve Yoga (10 AM) or Pilates (11 AM).",
-    "Share your friend’s name after purchase so we can check you both in.",
-    "One free friend per paid ticket.",
-    "Mats available to rent on site.",
-  ],
+  offerBullets: [],
+  offerTerms: [],
   faqs: [
     {
       question: "What’s the difference between $25 and $35?",
       answer:
-        "$25 is one class—Yoga at 10 AM or Pilates at 11 AM (tell us which after checkout). $35 is the full 2-hour workshop covering both. Typical pricing is $35 per person per class.",
+        "$25 is one class—Yoga at 10 AM or Pilates at 11 AM (tell us which after checkout). $35 is the full 2-hour workshop covering both.",
     },
     {
       question: "Do I get a friend free?",
       answer:
         "Yes. Every ticket includes one friend free. After checkout, tell us their name so we can check you both in.",
-    },
-    {
-      question: "How much am I saving?",
-      answer:
-        "Classes are typically $35 per person. One class at $25 with a friend free is about 50% off. The full workshop at $35 with a friend free is about 75% off versus paying typical rates for both of you.",
     },
     {
       question: "Do I need experience?",

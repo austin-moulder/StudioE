@@ -527,40 +527,42 @@ export default function PopupClassLanding({ config }: { config: PopupClassLandin
         </section>
       ) : null}
 
-      <section
-        className="bg-[var(--popup-alt)] px-4 py-12 sm:px-6"
-        aria-labelledby="offer-heading"
-      >
-        <div className="mx-auto max-w-xl">
-          <h2
-            id="offer-heading"
-            className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
-          >
-            {copy.offerHeadline}
-          </h2>
-          <ul className="mt-8 space-y-3">
-            {offerBullets.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5"
-              >
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[var(--popup-accent)]" aria-hidden />
-                <span className="text-base leading-snug text-white/90">{item}</span>
-              </li>
-            ))}
-          </ul>
-          <ul className="mt-6 space-y-2 text-sm text-white/65">
-            {offerTerms.map((term) => (
-              <li key={term}>• {term}</li>
-            ))}
-          </ul>
-          <div className="mt-8 flex justify-center">
-            <button type="button" onClick={() => goCheckout("offer")} className={ctaClass}>
-              {copy.primaryCta}
-            </button>
+      {copy.offerHeadline ? (
+        <section
+          className="bg-[var(--popup-alt)] px-4 py-12 sm:px-6"
+          aria-labelledby="offer-heading"
+        >
+          <div className="mx-auto max-w-xl">
+            <h2
+              id="offer-heading"
+              className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
+            >
+              {copy.offerHeadline}
+            </h2>
+            <ul className="mt-8 space-y-3">
+              {offerBullets.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5"
+                >
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-[var(--popup-accent)]" aria-hidden />
+                  <span className="text-base leading-snug text-white/90">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <ul className="mt-6 space-y-2 text-sm text-white/65">
+              {offerTerms.map((term) => (
+                <li key={term}>• {term}</li>
+              ))}
+            </ul>
+            <div className="mt-8 flex justify-center">
+              <button type="button" onClick={() => goCheckout("offer")} className={ctaClass}>
+                {copy.primaryCta}
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {copy.friendHeadline && copy.friendBody ? (
         <section className="px-4 py-12 sm:px-6" aria-labelledby="friend-heading">
