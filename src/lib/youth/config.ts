@@ -56,8 +56,8 @@ export const ASSETS = {
 } as const
 
 export const HERO_FACTS = [
-  { label: "Ages 5–12", value: "4:30 – 5:15 PM" },
-  { label: "Ages 13–17", value: "5:15 – 6:15 PM" },
+  { label: "Ages", value: "5–17 (split into 2 groups)" },
+  { label: "Time", value: "5:15 – 6:15 PM" },
   { label: "Days", value: "Tuesday – Thursday" },
   { label: "Location", value: "2657 W Division St, Chicago" },
 ] as const
@@ -72,8 +72,8 @@ export const AGE_GROUPS = [
   {
     id: "littles",
     ages: "Ages 5–12",
-    time: "4:30 – 5:15 PM",
-    body: "Playful after-school movement, rhythm, coordination, confidence, friendship, and respect.",
+    time: "5:15 – 6:15 PM",
+    body: "Playful after-school movement, rhythm, coordination, confidence, friendship, and respect. Same hour as teens—split into their own group.",
     curriculumHeadline: "Curriculum",
     curriculum: [
       "Socialization activities that help kids connect and feel welcome",
@@ -88,7 +88,7 @@ export const AGE_GROUPS = [
     id: "teens",
     ages: "Ages 13–17",
     time: "5:15 – 6:15 PM",
-    body: "Latin social dance foundations, strength, musicality, partner connection, confidence, and self-expression.",
+    body: "Latin social dance foundations, strength, musicality, partner connection, confidence, and self-expression. Same hour as younger dancers—split into their own group.",
     curriculumHeadline: "Curriculum",
     curriculum: [
       "Beginning strength training and exercise for dancers",
@@ -165,8 +165,9 @@ export const COPY = {
   formHeadline: "Youth Program Info Request",
   formBody:
     "Have questions about age groups, schedules, or getting started? Leave your information and we’ll text or call you shortly.",
-  offerHeadline: "Two Age Groups. Clear Schedules.",
-  offerBody: "Age-appropriate Latin dance after school—built for kids and teens.",
+  offerHeadline: "Two Groups. One Hour.",
+  offerBody:
+    "Ages 5–17 meet Tuesday–Thursday from 5:15–6:15 PM. We split into two age-appropriate groups in the same time slot.",
   howHeadline: "How It Works",
   howBody: "Start with a short form. We’ll help you choose the right fit.",
   pricingHeadline: "Free for the Rest of 2026",
@@ -218,11 +219,12 @@ export const FAQS = [
   {
     question: "What ages are accepted?",
     answer:
-      "Ages 5–12 and ages 13–17. Each group has its own class time so instruction stays age-appropriate.",
+      "Ages 5–17. We split into two groups (roughly 5–12 and 13–17) so instruction stays age-appropriate.",
   },
   {
     question: "What time does each age group meet?",
-    answer: "Ages 5–12 meet 4:30–5:15 PM. Ages 13–17 meet 5:15–6:15 PM.",
+    answer:
+      "Both groups meet 5:15–6:15 PM, Tuesday through Thursday. Kids and teens are split into two groups during that same hour.",
   },
   {
     question: "Which days can my child attend?",

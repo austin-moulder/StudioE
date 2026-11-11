@@ -12,7 +12,7 @@ import YouthClient from "./YouthClient"
 
 export const metadata: Metadata = {
   title: "Chicago Latin Dance Youth Program",
-  description: `After-school Latin dance for ages 5–12 and 13–17. Tuesday–Thursday. $89 deposit applied to January 2027. Free unlimited classes for the rest of 2026. Next charge February 2, 2027.`,
+  description: `After-school Latin dance for ages 5–17, Tuesday–Thursday 5:15–6:15 PM (split into two groups). $89 deposit applied to January 2027. Free unlimited classes for the rest of 2026. Next charge February 2, 2027.`,
   openGraph: {
     title: "Chicago Latin Dance Youth Program | Studio E",
     description: `Free youth classes for the rest of 2026. $89 deposit applied to ${YOUTH_START.label}. Next charge February 2, 2027.`,
@@ -60,7 +60,8 @@ export default function YouthPage() {
       <YouthClient />
       <p className="sr-only">
         {PROGRAM.name} at {PROGRAM.venueName}, {PROGRAM.addressLine}, {PROGRAM.cityLine}. Classes
-        start {formatYouthStartLabel()}. Tuesday through Thursday. Ages 5–12 and 13–17.
+        start {formatYouthStartLabel()}. Tuesday through Thursday, 5:15–6:15 PM. Ages 5–17
+        in two groups.
       </p>
     </>
   )
