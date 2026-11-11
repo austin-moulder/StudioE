@@ -16,6 +16,7 @@ import type { PopupClassLandingConfig } from "@/lib/popup-class/types"
 import { POSING_CONFIG } from "@/lib/posing/config"
 import { SALSA_ON_2_CONFIG } from "@/lib/salsa-on-2/config"
 import { TWERK_THURSDAY_CONFIG, TWERK_SOLD_OUT_DATES } from "@/lib/twerk-thursday/config"
+import { YOGA_PILATES_CONFIG } from "@/lib/yoga-pilates/config"
 
 export type WorkshopListing = {
   id: string
@@ -45,6 +46,7 @@ const STYLE_BY_ID: Record<string, string> = {
   "afro-cuban-movement": "Afro-Cuban",
   "salsa-on-2": "Salsa On 2",
   posing: "Posing",
+  "yoga-pilates": "Yoga + Pilates",
 }
 
 const LANDING_PATH_BY_ID: Record<string, string> = {
@@ -55,6 +57,7 @@ const LANDING_PATH_BY_ID: Record<string, string> = {
   "afro-cuban-movement": "/afro-cuban-movement",
   "salsa-on-2": "/salsa-on-2",
   posing: "/posing",
+  "yoga-pilates": "/yoga-pilates",
 }
 
 function toListing(config: PopupClassLandingConfig): WorkshopListing {
@@ -97,6 +100,7 @@ export const WORKSHOP_LISTINGS: readonly WorkshopListing[] = [
   toListing(CUMBIA_WEPA_CONFIG),
   toListing(TWERK_THURSDAY_CONFIG),
   toListing(POSING_CONFIG),
+  toListing(YOGA_PILATES_CONFIG),
 ]
 
 export type ResolvedWorkshop = WorkshopListing & {

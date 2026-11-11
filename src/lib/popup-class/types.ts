@@ -170,6 +170,19 @@ export const POSING_POPUP_THEME: PopupClassTheme = {
   ctaShadow: "rgba(224,64,138,0.42)",
 }
 
+/** Soft sage / sand palette for yoga + pilates recharge energy. */
+export const RECHARGE_POPUP_THEME: PopupClassTheme = {
+  pageBg: "#0E1714",
+  altBg: "#15241E",
+  accent: "#6FA382",
+  accentHover: "#5B8C6E",
+  soft: "#E4D5B8",
+  finalFrom: "#6FA382",
+  finalVia: "#3E5F4F",
+  finalTo: "#0E1714",
+  ctaShadow: "rgba(111,163,130,0.4)",
+}
+
 export const DEFAULT_POPUP_UI_EN: PopupClassUiLabels = {
   startsIn: "Starts in",
   locationHeadline: "Where We Dance",
