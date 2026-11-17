@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { ChevronDown, MapPin } from "lucide-react"
+import { Check, ChevronDown, ExternalLink, MapPin, Star } from "lucide-react"
 import StudioELogo from "@/components/StudioELogo"
 import {
   getCountdownParts,
@@ -11,14 +11,22 @@ import {
 } from "@/lib/popup-class/event-time"
 import { buildPopupCheckoutUrl } from "@/lib/popup-class/types"
 import {
+  ASSETS,
   CHECKOUT_URL,
   COPY,
   FAQS,
+  INSTRUCTOR,
+  OUTCOMES,
+  PRICING,
   PROCESS,
   SERIES_START_MS,
+  SOCIAL,
+  TESTIMONIALS,
   UTM,
   VENUE,
   WORKSHOPS,
+  getWorkshopById,
+  type SpecialtyWorkshopId,
 } from "@/lib/special-workshops-chicago/config"
 
 declare global {
@@ -27,6 +35,8 @@ declare global {
     dataLayer?: Record<string, unknown>[]
   }
 }
+
+const SELECTION_KEY = "studioe_specialty_workshop_selection_v1"
 
 function trackMeta(eventName: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return
@@ -48,7 +58,7 @@ function scrollToId(id: string) {
 function Countdown({ parts, ended }: { parts: CountdownParts; ended: boolean }) {
   if (ended) {
     return (
-      <p className="font-montserrat text-xl font-black text-[#E8C97A] sm:text-2xl">
+      <p className="font-montserrat text-lg font-black text-[#E8C97A] sm:text-xl">
         {COPY.countdownEnded}
       </p>
     )
@@ -70,53 +80,20 @@ function Countdown({ parts, ended }: { parts: CountdownParts; ended: boolean }) 
 
   return (
     <div
-      className="flex flex-wrap items-center justify-center gap-2 sm:gap-3"
+      className="flex flex-wrap items-center justify-center gap-2"
       role="timer"
       aria-live="polite"
     >
       {units.map(([label, value]) => (
         <div
           key={label}
-          className="min-w-[4rem] rounded-xl border border-white/15 bg-black/35 px-2.5 py-2 text-center backdrop-blur-sm"
+          className="min-w-[3.5rem] rounded-lg border border-white/15 bg-black/40 px-2 py-1.5 text-center"
         >
-          <div className="font-montserrat text-2xl font-black tabular-nums text-white sm:text-3xl">
+          <div className="font-montserrat text-xl font-black tabular-nums text-white sm:text-2xl">
             {pad(value)}
           </div>
-          <div className="text-[10px] font-bold uppercase tracking-wider text-white/65">{label}</div>
+          <div className="text-[9px] font-bold uppercase tracking-wider text-white/65">{label}</div>
         </div>
-      ))}
-    </div>
-  )
-}
-
-function Snowfall() {
-  const flakes = useMemo(
-    () =>
-      Array.from({ length: 28 }, (_, i) => ({
-        id: i,
-        left: `${(i * 37) % 100}%`,
-        delay: `${(i % 12) * 0.45}s`,
-        duration: `${9 + (i % 7)}s`,
-        size: 2 + (i % 4),
-        opacity: 0.25 + (i % 5) * 0.1,
-      })),
-    []
-  )
-
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      {flakes.map((flake) => (
-        <span
-          key={flake.id}
-          className="absolute top-[-8%] rounded-full bg-white"
-          style={{
-            left: flake.left,
-            width: flake.size,
-            height: flake.size,
-            opacity: flake.opacity,
-            animation: `specialty-snow ${flake.duration} linear ${flake.delay} infinite`,
-          }}
-        />
       ))}
     </div>
   )
@@ -125,12 +102,105 @@ function Snowfall() {
 const primaryCtaClass =
   "inline-flex w-full items-center justify-center rounded-2xl bg-[#C41E3A] px-6 py-4 text-center font-montserrat text-sm font-black uppercase tracking-wide text-white shadow-[0_12px_28px_rgba(196,30,58,0.4)] transition hover:bg-[#A51830] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C97A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A1610] sm:text-base"
 
-const secondaryCtaClass =
-  "inline-flex w-full items-center justify-center rounded-2xl border-2 border-[#E8C97A]/55 bg-transparent px-6 py-3.5 text-center font-montserrat text-sm font-black uppercase tracking-wide text-[#E8C97A] transition hover:bg-[#E8C97A]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C97A] sm:text-base"
+const secondaryOutlineClass =
+  "inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-[#E8C97A]/60 bg-transparent px-6 py-3.5 text-center font-montserrat text-sm font-black uppercase tracking-wide text-[#E8C97A] transition hover:bg-[#E8C97A]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8C97A] sm:text-base"
+
+function CheckoutPanel({
+  checkoutSrc,
+  iframeReady,
+  selectedTitle,
+  onRetry,
+  headingId,
+}: {
+  checkoutSrc: string | null
+  iframeReady: boolean
+  selectedTitle: string | null
+  onRetry: () => void
+  headingId: string
+}) {
+  return (
+    <div className="mx-auto max-w-xl">
+      <h2
+        id={headingId}
+        className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
+      >
+        {COPY.checkoutHeadline}
+      </h2>
+      <p className="mx-auto mt-2 max-w-md text-center text-sm text-white/70">{COPY.checkoutHelper}</p>
+
+      <div className="mt-4 rounded-2xl border border-[#E8C97A]/35 bg-black/35 px-4 py-3 text-center">
+        <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8C97A]">
+          Ticket
+        </p>
+        <p className="mt-1 font-montserrat text-3xl font-black text-white">
+          ${PRICING.ticket}
+          <span className="ml-2 text-sm font-bold text-white/70">· Friend free</span>
+        </p>
+        {selectedTitle ? (
+          <p className="mt-2 text-sm text-white/85">
+            <span className="text-white/55">{COPY.selectedLabel}:</span> {selectedTitle}
+          </p>
+        ) : (
+          <p className="mt-2 text-sm text-[#E8C97A]">{COPY.selectPrompt}</p>
+        )}
+      </div>
+
+      <div className="mt-5">
+        {checkoutSrc ? (
+          <a
+            href={checkoutSrc}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={secondaryOutlineClass}
+          >
+            {COPY.checkoutFallback}
+            <ExternalLink className="h-4 w-4" aria-hidden />
+          </a>
+        ) : (
+          <button type="button" onClick={onRetry} className={secondaryOutlineClass}>
+            {COPY.checkoutFallback}
+          </button>
+        )}
+      </div>
+
+      <div className="mt-5 overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
+        {checkoutSrc && iframeReady ? (
+          <iframe
+            src={checkoutSrc}
+            title="Specialty workshop ticket checkout"
+            className="block min-h-[780px] w-full border-0 bg-white"
+            loading="eager"
+            allow="payment *"
+          />
+        ) : (
+          <div className="flex min-h-[200px] flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+            <p className="text-sm text-stone-600">
+              {checkoutSrc
+                ? "Checkout is opening… If it doesn’t appear, use the button above."
+                : "Preparing checkout… Use the button above anytime."}
+            </p>
+            {checkoutSrc ? (
+              <a
+                href={checkoutSrc}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-montserrat text-sm font-black uppercase tracking-wide text-[#C41E3A] underline underline-offset-2"
+              >
+                {COPY.checkoutFallback}
+              </a>
+            ) : null}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 export default function SpecialWorkshopsClient() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const [selectedId, setSelectedId] = useState<SpecialtyWorkshopId | null>(null)
   const [checkoutSrc, setCheckoutSrc] = useState<string | null>(null)
+  const [iframeReady, setIframeReady] = useState(false)
   const [parts, setParts] = useState<CountdownParts>({
     days: 0,
     hours: 0,
@@ -140,13 +210,42 @@ export default function SpecialWorkshopsClient() {
   })
   const [ended, setEnded] = useState(false)
 
+  const selected = useMemo(() => getWorkshopById(selectedId), [selectedId])
+
+  const rebuildCheckoutSrc = useCallback((workshopId: SpecialtyWorkshopId | null) => {
+    const workshop = getWorkshopById(workshopId)
+    const extra: Record<string, string> = { placement: "embed" }
+    if (workshop) {
+      extra.workshop = workshop.id
+      extra.workshop_name = workshop.title
+      extra.utm_content = workshop.id
+    }
+    return buildPopupCheckoutUrl(CHECKOUT_URL, UTM, extra)
+  }, [])
+
   useEffect(() => {
     trackMeta("ViewContent", {
       content_name: "Specialty Workshops Chicago Christmas",
       content_category: "workshop",
+      value: PRICING.ticket,
+      currency: "USD",
     })
-    setCheckoutSrc(buildPopupCheckoutUrl(CHECKOUT_URL, UTM, { placement: "embed" }))
+
+    try {
+      const saved = window.localStorage.getItem(SELECTION_KEY) as SpecialtyWorkshopId | null
+      if (saved && getWorkshopById(saved)) setSelectedId(saved)
+    } catch {
+      /* ignore */
+    }
   }, [])
+
+  useEffect(() => {
+    const src = rebuildCheckoutSrc(selectedId)
+    setCheckoutSrc(src)
+    setIframeReady(false)
+    const readyTimer = window.setTimeout(() => setIframeReady(true), 400)
+    return () => window.clearTimeout(readyTimer)
+  }, [rebuildCheckoutSrc, selectedId])
 
   useEffect(() => {
     const tick = () => {
@@ -159,14 +258,55 @@ export default function SpecialWorkshopsClient() {
     return () => window.clearInterval(id)
   }, [])
 
-  const goCheckout = useCallback((placement: string) => {
+  const selectWorkshop = useCallback((id: SpecialtyWorkshopId, placement: string) => {
+    setSelectedId(id)
+    try {
+      window.localStorage.setItem(SELECTION_KEY, id)
+    } catch {
+      /* ignore */
+    }
+    const workshop = getWorkshopById(id)
     trackMeta("InitiateCheckout", {
-      content_name: "Specialty Workshops Chicago Christmas",
+      content_name: workshop?.title ?? "Specialty Workshop",
       content_category: "workshop",
+      value: PRICING.ticket,
+      currency: "USD",
       placement,
+      workshop: id,
     })
     scrollToId("checkout")
   }, [])
+
+  const goTicket = useCallback(
+    (placement: string) => {
+      if (selectedId) {
+        selectWorkshop(selectedId, placement)
+        return
+      }
+      trackMeta("InitiateCheckout", {
+        content_name: "Specialty Workshops Chicago Christmas",
+        content_category: "workshop",
+        value: PRICING.ticket,
+        currency: "USD",
+        placement,
+      })
+      scrollToId("workshops")
+    },
+    [selectWorkshop, selectedId]
+  )
+
+  const snowFlakes = useMemo(
+    () =>
+      Array.from({ length: 18 }, (_, i) => ({
+        id: i,
+        left: `${(i * 41) % 100}%`,
+        delay: `${(i % 10) * 0.5}s`,
+        duration: `${10 + (i % 6)}s`,
+        size: 2 + (i % 3),
+        opacity: 0.2 + (i % 4) * 0.1,
+      })),
+    []
+  )
 
   return (
     <div className="relative min-h-screen scroll-smooth bg-[#0A1610] pb-24 text-white antialiased sm:pb-0">
@@ -174,23 +314,15 @@ export default function SpecialWorkshopsClient() {
         dangerouslySetInnerHTML={{
           __html: `
             @keyframes specialty-snow {
-              0% { transform: translate3d(0, 0, 0); }
-              100% { transform: translate3d(12px, 110vh, 0); }
-            }
-            @keyframes specialty-glow {
-              0%, 100% { opacity: 0.35; }
-              50% { opacity: 0.7; }
-            }
-            @keyframes specialty-rise {
-              from { opacity: 0; transform: translateY(18px); }
-              to { opacity: 1; transform: translateY(0); }
+              0% { transform: translate3d(0, -5%, 0); }
+              100% { transform: translate3d(10px, 105vh, 0); }
             }
           `,
         }}
       />
 
       {/* Sticky header */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0A1610]/92 backdrop-blur">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0A1610]/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link href="/" className="flex items-center gap-2" aria-label="Studio E home">
             <StudioELogo width={36} height={36} alt="Studio E Logo" className="h-9 w-9" />
@@ -198,103 +330,164 @@ export default function SpecialWorkshopsClient() {
               STUDIO E
             </span>
           </Link>
-          <p
-            className="text-lg text-[#E8C97A] sm:text-xl"
-            style={{ fontFamily: "var(--font-specialty-script), cursive" }}
-          >
-            {COPY.accentLabel}
+          <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.16em] text-[#E8C97A] sm:text-xs">
+            ${PRICING.ticket} · Friend free
           </p>
           <button
             type="button"
-            onClick={() => goCheckout("header")}
-            className={`${primaryCtaClass} !w-auto !px-4 !py-2.5 !text-xs sm:!text-sm`}
+            onClick={() => goTicket("header")}
+            className={`${primaryCtaClass} !w-auto !px-3 !py-2.5 !text-[10px] sm:!px-4 sm:!text-xs`}
           >
-            {COPY.stickyCta}
+            {COPY.primaryCta}
           </button>
         </div>
       </header>
 
-      {/* Hero — brand, headline, support, CTA, full-bleed flyer */}
-      <section className="relative isolate min-h-[88vh] overflow-hidden">
+      {/* Hero */}
+      <section className="relative isolate overflow-hidden">
         <Image
           src={WORKSHOPS[0].flyer}
-          alt={COPY.flyerHeroAlt}
+          alt=""
           fill
           priority
-          className="object-cover object-[center_20%]"
+          className="object-cover object-[center_18%] opacity-35"
           sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A1610]/45 via-[#0A1610]/72 to-[#0A1610]" />
-        <div
-          className="pointer-events-none absolute -left-24 top-10 h-64 w-64 rounded-full bg-[#C41E3A]/25 blur-3xl"
-          style={{ animation: "specialty-glow 5s ease-in-out infinite" }}
           aria-hidden
         />
-        <div
-          className="pointer-events-none absolute -right-16 bottom-0 h-72 w-72 rounded-full bg-[#1F6B45]/30 blur-3xl"
-          style={{ animation: "specialty-glow 6.5s ease-in-out infinite" }}
-          aria-hidden
-        />
-        <Snowfall />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A1610]/50 via-[#0A1610]/85 to-[#0A1610]" />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+          {snowFlakes.map((flake) => (
+            <span
+              key={flake.id}
+              className="absolute top-0 rounded-full bg-white"
+              style={{
+                left: flake.left,
+                width: flake.size,
+                height: flake.size,
+                opacity: flake.opacity,
+                animation: `specialty-snow ${flake.duration} linear ${flake.delay} infinite`,
+              }}
+            />
+          ))}
+        </div>
 
-        <div className="relative mx-auto flex min-h-[88vh] max-w-3xl flex-col justify-end px-4 pb-14 pt-24 sm:px-6 sm:pb-16">
-          <p
-            className="text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-[#E8C97A]"
-            style={{ animation: "specialty-rise 0.7s ease-out both" }}
-          >
+        <div className="relative mx-auto max-w-3xl px-4 pb-12 pt-10 sm:px-6 sm:pb-14 sm:pt-14">
+          <p className="text-center font-montserrat text-[11px] font-bold uppercase tracking-[0.28em] text-[#E8C97A]">
             {COPY.heroEyebrow}
           </p>
-          <p
-            className="mt-3 text-center text-3xl text-[#E8C97A] sm:text-4xl"
-            style={{
-              fontFamily: "var(--font-specialty-script), cursive",
-              animation: "specialty-rise 0.8s ease-out both",
-            }}
-          >
-            {COPY.accentLabel}
-          </p>
-          <h1
-            className="mt-3 text-center font-montserrat text-3xl font-black leading-[1.1] tracking-tight sm:text-5xl"
-            style={{ animation: "specialty-rise 0.9s ease-out both" }}
-          >
+          <h1 className="mt-4 text-center font-montserrat text-[1.65rem] font-black leading-[1.12] tracking-tight sm:text-4xl md:text-5xl">
             {COPY.heroHeadline}
           </h1>
-          <p
-            className="mx-auto mt-4 max-w-xl text-center text-base leading-relaxed text-white/85 sm:text-lg"
-            style={{ animation: "specialty-rise 1s ease-out both" }}
-          >
+          <p className="mx-auto mt-4 max-w-2xl text-center text-sm leading-relaxed text-white/85 sm:text-base">
             {COPY.heroSubheadline}
           </p>
 
-          <div
-            className="mx-auto mt-8 flex w-full max-w-md flex-col gap-3"
-            style={{ animation: "specialty-rise 1.15s ease-out both" }}
-          >
-            <button type="button" onClick={() => goCheckout("hero_primary")} className={primaryCtaClass}>
+          <dl className="mx-auto mt-7 grid max-w-lg grid-cols-2 gap-3 text-center sm:grid-cols-3">
+            <div className="rounded-xl border border-white/10 bg-black/35 px-3 py-3">
+              <dt className="text-[10px] font-bold uppercase tracking-wider text-white/50">Dates</dt>
+              <dd className="mt-1 font-montserrat text-sm font-black">Dec 3 · 10 · 17</dd>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/35 px-3 py-3">
+              <dt className="text-[10px] font-bold uppercase tracking-wider text-white/50">Time</dt>
+              <dd className="mt-1 font-montserrat text-sm font-black">8:30–10:00 PM</dd>
+            </div>
+            <div className="col-span-2 rounded-xl border border-white/10 bg-black/35 px-3 py-3 sm:col-span-1">
+              <dt className="text-[10px] font-bold uppercase tracking-wider text-white/50">Level</dt>
+              <dd className="mt-1 font-montserrat text-sm font-black">Advanced</dd>
+            </div>
+          </dl>
+
+          <p className="mx-auto mt-4 flex max-w-lg items-start justify-center gap-1.5 text-center text-sm text-white/75">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#C41E3A]" aria-hidden />
+            <span>
+              {VENUE.name}, {VENUE.addressLine}, {VENUE.cityLine}
+            </span>
+          </p>
+
+          <div className="mx-auto mt-6 max-w-sm rounded-2xl border border-[#C41E3A]/45 bg-black/45 px-5 py-4 text-center">
+            <p className="font-montserrat text-[10px] font-bold uppercase tracking-[0.2em] text-[#E8C97A]">
+              Workshop ticket
+            </p>
+            <p className="mt-1 font-montserrat text-5xl font-black text-white">${PRICING.ticket}</p>
+            <p className="mt-1 text-sm font-semibold text-white/80">Includes one friend free</p>
+            <p className="mt-2 text-xs text-white/55">
+              One ticket = one workshop night · Cap {PRICING.capacityPerWorkshop} per night
+            </p>
+          </div>
+
+          <div className="mx-auto mt-6 max-w-md">
+            <Countdown parts={parts} ended={ended} />
+          </div>
+
+          <div className="mx-auto mt-7 max-w-md">
+            <button type="button" onClick={() => goTicket("hero")} className={primaryCtaClass}>
               {COPY.primaryCta}
             </button>
-            <button
-              type="button"
-              onClick={() => scrollToId("workshops")}
-              className={secondaryCtaClass}
-            >
-              {COPY.secondaryCta}
+            <p className="mt-3 text-center text-xs text-white/55">
+              Next: choose your workshop → checkout → reply with your friend’s name
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Early checkout */}
+      <section
+        id="checkout"
+        className="scroll-mt-20 border-y border-white/10 bg-[#102018] px-4 py-12 sm:px-6"
+        aria-labelledby="checkout-heading"
+      >
+        <CheckoutPanel
+          checkoutSrc={checkoutSrc}
+          iframeReady={iframeReady}
+          selectedTitle={selected?.title ?? null}
+          onRetry={() => setCheckoutSrc(rebuildCheckoutSrc(selectedId))}
+          headingId="checkout-heading"
+        />
+        <p className="mx-auto mt-4 max-w-md text-center text-xs text-white/50">
+          Prefer to pick a night first?{" "}
+          <button
+            type="button"
+            onClick={() => scrollToId("workshops")}
+            className="font-semibold text-[#E8C97A] underline underline-offset-2"
+          >
+            Jump to workshop selection
+          </button>
+        </p>
+      </section>
+
+      {/* Outcomes */}
+      <section className="px-4 py-14 sm:px-6 sm:py-16" aria-labelledby="value-heading">
+        <div className="mx-auto max-w-3xl">
+          <h2
+            id="value-heading"
+            className="text-center font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
+          >
+            {COPY.valueHeadline}
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-base text-white/70">{COPY.valueBody}</p>
+          <ul className="mt-10 space-y-4">
+            {OUTCOMES.map((item) => (
+              <li
+                key={item.title}
+                className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4"
+              >
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#E8C97A]" aria-hidden />
+                <div>
+                  <p className="font-montserrat text-base font-black">{item.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-white/70">{item.body}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="mx-auto mt-10 max-w-md">
+            <button type="button" onClick={() => goTicket("value")} className={primaryCtaClass}>
+              {COPY.primaryCta}
             </button>
           </div>
         </div>
       </section>
 
-      {/* Countdown strip */}
-      <section className="border-y border-white/10 bg-[#0E1C14] px-4 py-8 sm:px-6" aria-label="Countdown">
-        <div className="mx-auto max-w-md">
-          <p className="mb-3 text-center font-montserrat text-xs font-bold uppercase tracking-[0.2em] text-white/60">
-            First night starts in
-          </p>
-          <Countdown parts={parts} ended={ended} />
-        </div>
-      </section>
-
-      {/* Workshops */}
+      {/* Workshop cards */}
       <section
         id="workshops"
         className="scroll-mt-20 border-y border-white/10 bg-[#102018] px-4 py-14 sm:px-6 sm:py-16"
@@ -307,157 +500,178 @@ export default function SpecialWorkshopsClient() {
           >
             {COPY.workshopsHeadline}
           </h2>
-          <p className="mx-auto mt-3 max-w-lg text-center text-base text-white/70">
+          <p className="mx-auto mt-3 max-w-2xl text-center text-base text-white/70">
             {COPY.workshopsBody}
           </p>
 
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
-            {WORKSHOPS.map((workshop, index) => (
-              <article key={workshop.id} className="flex flex-col">
-                <div className="relative aspect-square overflow-hidden rounded-sm bg-black/40 shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
-                  <Image
-                    src={workshop.flyer}
-                    alt={workshop.flyerAlt}
-                    fill
-                    className="object-cover transition duration-500 hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    priority={index === 0}
-                  />
-                </div>
-                <p className="mt-4 font-montserrat text-[11px] font-bold uppercase tracking-[0.2em] text-[#E8C97A]">
-                  {workshop.dateLabel}
-                </p>
-                <h3 className="mt-1 font-montserrat text-xl font-black tracking-tight">
-                  {workshop.title}
-                </h3>
-                <p className="mt-1 text-sm text-white/70">{workshop.subtitle}</p>
-                <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-white/50">
-                  {workshop.timeLabel} · {workshop.tags}
-                </p>
-              </article>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {WORKSHOPS.map((workshop, index) => {
+              const isSelected = selectedId === workshop.id
+              return (
+                <article
+                  key={workshop.id}
+                  className={`flex flex-col overflow-hidden rounded-2xl border bg-[#0A1610] ${
+                    isSelected ? "border-[#E8C97A] ring-2 ring-[#E8C97A]/40" : "border-white/10"
+                  }`}
+                >
+                  <div className="relative aspect-square bg-black/40">
+                    <Image
+                      src={workshop.flyer}
+                      alt={workshop.flyerAlt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      priority={index === 0}
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    <p className="font-montserrat text-[11px] font-bold uppercase tracking-[0.18em] text-[#E8C97A]">
+                      {workshop.dateLabel}
+                    </p>
+                    <h3 className="mt-1 font-montserrat text-xl font-black tracking-tight">
+                      {workshop.title}
+                    </h3>
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-white/55">
+                      {workshop.style} · {workshop.skillLevel} · {workshop.timeLabel}
+                    </p>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-white/75">
+                      {workshop.outcome}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => selectWorkshop(workshop.id, `card_${workshop.id}`)}
+                      className={`${primaryCtaClass} mt-5 !py-3.5 !text-xs`}
+                      aria-pressed={isSelected}
+                    >
+                      {isSelected ? "Selected — Continue to Checkout" : COPY.chooseCta}
+                    </button>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Proof */}
+      <section className="px-4 py-14 sm:px-6 sm:py-16" aria-labelledby="proof-heading">
+        <div className="mx-auto max-w-5xl">
+          <h2
+            id="proof-heading"
+            className="text-center font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
+          >
+            {COPY.proofHeadline}
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-base text-white/70">{COPY.proofBody}</p>
+
+          <div className="mx-auto mt-8 flex max-w-md flex-wrap items-center justify-center gap-4 text-center">
+            <a
+              href={SOCIAL.googleReviewsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-[#E8C97A]/40"
+            >
+              {SOCIAL.googleRating}★ · {SOCIAL.googleReviewCount} Google reviews
+            </a>
+            <a
+              href={SOCIAL.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-[#E8C97A]/40"
+            >
+              {SOCIAL.instagramHandle}
+            </a>
+          </div>
+
+          <div className="mx-auto mt-10 aspect-video max-w-3xl overflow-hidden rounded-2xl border border-white/10">
+            <iframe
+              src={ASSETS.testimonialVideoEmbed}
+              title="Studio E community testimonials"
+              className="h-full w-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            {ASSETS.gallery.map((photo) => (
+              <div key={photo.src} className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-stone-900">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, 33vw"
+                  loading="lazy"
+                />
+              </div>
             ))}
           </div>
 
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            {TESTIMONIALS.map((review) => (
+              <blockquote
+                key={review.name}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
+              >
+                <div className="flex gap-0.5 text-[#E8C97A]" aria-label="5 star Google review">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-current" aria-hidden />
+                  ))}
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-white/85">&ldquo;{review.quote}&rdquo;</p>
+                <footer className="mt-3 flex items-center justify-between gap-2 text-xs">
+                  <span className="font-semibold text-white/60">— {review.name}</span>
+                  <a
+                    href={review.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-[#E8C97A] underline underline-offset-2"
+                  >
+                    Google review
+                  </a>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+
+          <div className="mx-auto mt-12 flex max-w-2xl flex-col items-center gap-5 rounded-2xl border border-white/10 bg-[#102018] p-6 sm:flex-row sm:items-start">
+            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full border border-white/15">
+              <Image
+                src={INSTRUCTOR.photo}
+                alt={`${INSTRUCTOR.name}, ${INSTRUCTOR.role}`}
+                fill
+                className="object-cover"
+                sizes="96px"
+              />
+            </div>
+            <div className="text-center sm:text-left">
+              <p className="font-montserrat text-lg font-black">{INSTRUCTOR.name}</p>
+              <p className="text-sm font-semibold text-[#E8C97A]">{INSTRUCTOR.role}</p>
+              <p className="mt-2 text-sm leading-relaxed text-white/70">{INSTRUCTOR.bio}</p>
+            </div>
+          </div>
+
           <div className="mx-auto mt-10 max-w-md">
-            <button type="button" onClick={() => goCheckout("workshops")} className={primaryCtaClass}>
+            <button type="button" onClick={() => goTicket("proof")} className={primaryCtaClass}>
               {COPY.primaryCta}
             </button>
           </div>
         </div>
       </section>
 
-      {/* Process */}
-      <section className="px-4 py-14 sm:px-6 sm:py-16" aria-labelledby="process-heading">
-        <div className="mx-auto max-w-3xl">
+      {/* What to expect / FAQ */}
+      <section
+        className="border-y border-white/10 bg-[#102018] px-4 py-14 sm:px-6 sm:py-16"
+        aria-labelledby="expect-heading"
+      >
+        <div className="mx-auto max-w-2xl">
           <h2
-            id="process-heading"
+            id="expect-heading"
             className="text-center font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
           >
-            {PROCESS.headline}
-          </h2>
-          <ol className="mt-10 space-y-6">
-            {PROCESS.steps.map((step, i) => (
-              <li key={step.title} className="flex gap-4">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#C41E3A] font-montserrat text-sm font-black text-white">
-                  {i + 1}
-                </span>
-                <div>
-                  <p className="font-montserrat text-lg font-black">{step.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-white/75">{step.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* Checkout */}
-      <section
-        id="checkout"
-        className="scroll-mt-20 border-y border-white/10 bg-[#102018] px-4 py-12 sm:px-6"
-        aria-labelledby="checkout-heading"
-      >
-        <div className="mx-auto max-w-xl">
-          <h2
-            id="checkout-heading"
-            className="text-center font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
-          >
-            {COPY.checkoutHeadline}
-          </h2>
-          <p className="mx-auto mt-2 max-w-md text-center text-sm text-white/70">
-            {COPY.checkoutHelper}
-          </p>
-          <div className="mt-8 overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
-            {checkoutSrc ? (
-              <iframe
-                src={checkoutSrc}
-                title="Specialty workshops checkout"
-                className="block min-h-[820px] w-full border-0 bg-white"
-                loading="lazy"
-                allow="payment *"
-              />
-            ) : (
-              <div className="flex min-h-[240px] items-center justify-center px-6 text-sm text-stone-500">
-                Loading checkout…
-              </div>
-            )}
-          </div>
-          <p className="mt-4 text-center text-sm text-white/55">
-            If checkout doesn&apos;t load,{" "}
-            {checkoutSrc ? (
-              <a
-                href={checkoutSrc}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-[#E8C97A] underline underline-offset-2"
-              >
-                open it in a new tab
-              </a>
-            ) : (
-              "open it in a new tab"
-            )}
-            .
-          </p>
-        </div>
-      </section>
-
-      {/* Location */}
-      <section className="px-4 py-14 sm:px-6 sm:py-16" aria-labelledby="location-heading">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2
-            id="location-heading"
-            className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
-          >
-            {COPY.locationHeadline}
-          </h2>
-          <p className="mt-4 font-montserrat text-lg font-black">{VENUE.name}</p>
-          <p className="mt-2 flex items-start justify-center gap-1.5 text-sm text-white/75">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#C41E3A]" aria-hidden />
-            <span>
-              {VENUE.addressLine}
-              <br />
-              {VENUE.cityLine}
-              <br />
-              {VENUE.neighborhood}
-            </span>
-          </p>
-          <div className="mt-8 overflow-hidden rounded-2xl border border-white/10">
-            <iframe
-              src={VENUE.mapsEmbedSrc}
-              title="Studio E location map"
-              className="h-64 w-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="border-t border-white/10 bg-[#102018] px-4 py-14 sm:px-6 sm:py-16">
-        <div className="mx-auto max-w-2xl">
-          <h2 className="text-center font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            {COPY.faqHeadline}
+            {COPY.expectHeadline}
           </h2>
           <ul className="mt-8 divide-y divide-white/10">
             {FAQS.map((faq, i) => {
@@ -488,26 +702,111 @@ export default function SpecialWorkshopsClient() {
         </div>
       </section>
 
-      {/* Final */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#C41E3A] via-[#7A1528] to-[#0A1610] px-4 py-16 sm:px-6 sm:py-20">
-        <Snowfall />
-        <div className="relative mx-auto max-w-xl text-center">
-          <h2 className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl">
-            {COPY.finalHeadline}
+      {/* Urgency */}
+      <section className="px-4 py-12 sm:px-6" aria-labelledby="urgency-heading">
+        <div className="mx-auto max-w-xl rounded-2xl border border-[#C41E3A]/40 bg-gradient-to-br from-[#3A1018] to-[#0A1610] px-6 py-8 text-center">
+          <h2
+            id="urgency-heading"
+            className="font-montserrat text-2xl font-black tracking-tight sm:text-3xl"
+          >
+            {COPY.urgencyHeadline}
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-base text-white/85">{COPY.finalBody}</p>
-          <div className="mx-auto mt-8 max-w-md">
-            <button type="button" onClick={() => goCheckout("final")} className={primaryCtaClass}>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-white/75">
+            {COPY.urgencyBody}
+          </p>
+          <p className="mt-4 font-montserrat text-sm font-black text-[#E8C97A]">
+            ${PRICING.ticket} · Friend free · {PRICING.capacityPerWorkshop} tickets per night
+          </p>
+          <div className="mx-auto mt-6 max-w-sm">
+            <button type="button" onClick={() => goTicket("urgency")} className={primaryCtaClass}>
               {COPY.primaryCta}
             </button>
           </div>
         </div>
       </section>
 
+      {/* Confirmation flow */}
+      <section
+        className="border-y border-white/10 bg-[#102018] px-4 py-14 sm:px-6 sm:py-16"
+        aria-labelledby="confirm-heading"
+      >
+        <div className="mx-auto max-w-3xl">
+          <h2
+            id="confirm-heading"
+            className="text-center font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
+          >
+            {COPY.confirmationHeadline}
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-base text-white/70">
+            {COPY.confirmationBody}
+          </p>
+          <ol className="mt-10 space-y-5">
+            {PROCESS.steps.map((step, i) => (
+              <li key={step.title} className="flex gap-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#C41E3A] font-montserrat text-sm font-black">
+                  {i + 1}
+                </span>
+                <div>
+                  <p className="font-montserrat text-lg font-black">{step.title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-white/75">{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Bottom checkout CTA + fallback */}
+      <section
+        id="checkout-bottom"
+        className="scroll-mt-20 px-4 py-14 sm:px-6 sm:py-16"
+        aria-labelledby="checkout-bottom-heading"
+      >
+        <div className="mx-auto max-w-xl text-center">
+          <h2
+            id="checkout-bottom-heading"
+            className="font-montserrat text-3xl font-black tracking-tight sm:text-4xl"
+          >
+            {COPY.finalHeadline}
+          </h2>
+          <p className="mt-3 text-base text-white/75">{COPY.finalBody}</p>
+          {selected ? (
+            <p className="mt-4 text-sm text-[#E8C97A]">
+              {COPY.selectedLabel}: <span className="font-bold text-white">{selected.title}</span> ·{" "}
+              {selected.dateShort}
+            </p>
+          ) : null}
+          <div className="mx-auto mt-8 flex max-w-md flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => goTicket("final")}
+              className={primaryCtaClass}
+            >
+              {COPY.primaryCta}
+            </button>
+            {checkoutSrc ? (
+              <a
+                href={checkoutSrc}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={secondaryOutlineClass}
+              >
+                {COPY.checkoutFallback}
+                <ExternalLink className="h-4 w-4" aria-hidden />
+              </a>
+            ) : null}
+          </div>
+          <p className="mt-6 text-sm text-white/55">
+            <MapPin className="mr-1 inline h-3.5 w-3.5 text-[#C41E3A]" aria-hidden />
+            {VENUE.name} · {VENUE.addressLine}, {VENUE.cityLine}
+          </p>
+        </div>
+      </section>
+
       {/* Mobile sticky CTA */}
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[#0A1610]/95 p-3 backdrop-blur sm:hidden">
-        <button type="button" onClick={() => goCheckout("sticky_mobile")} className={primaryCtaClass}>
-          {COPY.stickyCta}
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[#0A1610]/96 p-3 backdrop-blur sm:hidden">
+        <button type="button" onClick={() => goTicket("sticky_mobile")} className={primaryCtaClass}>
+          {COPY.primaryCta} — ${PRICING.ticket}
         </button>
       </div>
     </div>

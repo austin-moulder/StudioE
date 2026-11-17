@@ -66,9 +66,10 @@ export default function SpecialWorkshopsChicagoPage() {
       </noscript>
       <SpecialWorkshopsClient />
       <p className="sr-only">
-        Studio E Christmas specialty workshops at {VENUE.name}, {VENUE.addressLine},{" "}
-        {VENUE.cityLine}. Thursdays December 3, 10, and 17 from 8:30–10:00 PM. Wepa Wonderland,
-        Unwrap the Rhythm, and Salsa Shines with Santa.
+        Three advanced Christmas Latin dance workshops at {VENUE.name}, {VENUE.addressLine},{" "}
+        {VENUE.cityLine}. Thursdays December 3, 10, and 17 from 8:30–10:00 PM. $30 ticket includes
+        one friend free. Wepa Wonderland, Unwrap the Rhythm, and Salsa Shines with Santa. Cap of
+        20 tickets per workshop.
       </p>
     </div>
   )
