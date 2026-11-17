@@ -15,7 +15,6 @@ import {
   CHECKOUT_URL,
   COPY,
   FAQS,
-  INSTRUCTOR,
   OUTCOMES,
   PRICING,
   PROCESS,
@@ -232,8 +231,14 @@ export default function SpecialWorkshopsClient() {
     })
 
     try {
+      const fromQuery = new URLSearchParams(window.location.search).get(
+        "workshop"
+      ) as SpecialtyWorkshopId | null
       const saved = window.localStorage.getItem(SELECTION_KEY) as SpecialtyWorkshopId | null
-      if (saved && getWorkshopById(saved)) setSelectedId(saved)
+      const initial =
+        (fromQuery && getWorkshopById(fromQuery) ? fromQuery : null) ||
+        (saved && getWorkshopById(saved) ? saved : null)
+      if (initial) setSelectedId(initial)
     } catch {
       /* ignore */
     }
@@ -634,23 +639,6 @@ export default function SpecialWorkshopsClient() {
                 </footer>
               </blockquote>
             ))}
-          </div>
-
-          <div className="mx-auto mt-12 flex max-w-2xl flex-col items-center gap-5 rounded-2xl border border-white/10 bg-[#102018] p-6 sm:flex-row sm:items-start">
-            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full border border-white/15">
-              <Image
-                src={INSTRUCTOR.photo}
-                alt={`${INSTRUCTOR.name}, ${INSTRUCTOR.role}`}
-                fill
-                className="object-cover"
-                sizes="96px"
-              />
-            </div>
-            <div className="text-center sm:text-left">
-              <p className="font-montserrat text-lg font-black">{INSTRUCTOR.name}</p>
-              <p className="text-sm font-semibold text-[#E8C97A]">{INSTRUCTOR.role}</p>
-              <p className="mt-2 text-sm leading-relaxed text-white/70">{INSTRUCTOR.bio}</p>
-            </div>
           </div>
 
           <div className="mx-auto mt-10 max-w-md">

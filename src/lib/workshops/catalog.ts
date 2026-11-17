@@ -15,6 +15,11 @@ import {
 import type { PopupClassLandingConfig } from "@/lib/popup-class/types"
 import { POSING_CONFIG } from "@/lib/posing/config"
 import { SALSA_ON_2_CONFIG } from "@/lib/salsa-on-2/config"
+import {
+  PRICING as SPECIALTY_PRICING,
+  VENUE as SPECIALTY_VENUE,
+  WORKSHOPS as SPECIALTY_WORKSHOPS,
+} from "@/lib/special-workshops-chicago/config"
 import { TWERK_THURSDAY_CONFIG, TWERK_SOLD_OUT_DATES } from "@/lib/twerk-thursday/config"
 import { YOGA_PILATES_CONFIG } from "@/lib/yoga-pilates/config"
 
@@ -88,6 +93,46 @@ function toListing(config: PopupClassLandingConfig): WorkshopListing {
   }
 }
 
+function specialtyListings(): WorkshopListing[] {
+  return SPECIALTY_WORKSHOPS.map((workshop) => {
+    const start = new Date(workshop.startMs)
+    // America/Chicago wall parts for fixed-date scheduling
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(start)
+    const get = (type: Intl.DateTimeFormatPartTypes) =>
+      parts.find((p) => p.type === type)?.value ?? ""
+    return {
+      id: workshop.id,
+      title: workshop.title,
+      style: workshop.style,
+      schedule: {
+        weekday: 4,
+        startHour: 20,
+        startMinute: 30,
+        timeZone: "America/Chicago",
+        date: {
+          year: Number(get("year")),
+          month: Number(get("month")),
+          day: Number(get("day")),
+        },
+      },
+      durationLabel: `${workshop.timeLabel} · Advanced`,
+      locationLabel: `${SPECIALTY_VENUE.name} · ${SPECIALTY_VENUE.addressLine}`,
+      price: SPECIALTY_PRICING.ticket,
+      description: workshop.outcome,
+      flyer: workshop.flyer,
+      flyerAlt: workshop.flyerAlt,
+      landingPath: `/special-workshops-chicago?workshop=${workshop.id}`,
+      capacity: SPECIALTY_PRICING.capacityPerWorkshop,
+      includesFriendFree: true,
+    }
+  })
+}
+
 /**
  * Active low-ticket / specialty workshops sourced from live landing configs.
  * Reggaeton is disabled for now. Posing only appears while its fixed date is upcoming.
@@ -101,6 +146,7 @@ export const WORKSHOP_LISTINGS: readonly WorkshopListing[] = [
   toListing(TWERK_THURSDAY_CONFIG),
   toListing(POSING_CONFIG),
   toListing(YOGA_PILATES_CONFIG),
+  ...specialtyListings(),
 ]
 
 export type ResolvedWorkshop = WorkshopListing & {

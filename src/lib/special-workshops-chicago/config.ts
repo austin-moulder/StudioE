@@ -47,8 +47,6 @@ const VIBES =
   "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Vibes" as const
 
 export const ASSETS = {
-  instructor:
-    "https://rnlubphxootnmsurnuvr.supabase.co/storage/v1/object/public/assetsv1/Instructors/Austin_Accelerator.jpg",
   gallery: [
     {
       src: `${VIBES}/DSC05448.jpg`,
@@ -144,13 +142,6 @@ export const OUTCOMES = [
     body: "One $30 ticket = one workshop night you select. Bring a friend free.",
   },
 ] as const
-
-export const INSTRUCTOR = {
-  name: "Austin Moulder",
-  role: "Founder of Studio E",
-  bio: "Founder of Studio E, Chicago’s Latin social dance studio in the heart of Humboldt Park / Paseo Boricua.",
-  photo: ASSETS.instructor,
-} as const
 
 /** Verbatim Google reviews already used across Studio E landings. */
 export const TESTIMONIALS = [
