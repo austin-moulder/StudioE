@@ -29,6 +29,7 @@ const HIDE_CHROME_PATHS = [
   "/yoga-pilates",
   "/first-class-sign-in",
   "/special-workshops-chicago",
+  "/black-friday-deal",
 ]
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
